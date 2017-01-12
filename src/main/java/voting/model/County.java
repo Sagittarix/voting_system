@@ -1,5 +1,7 @@
 package voting.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 /**
@@ -12,6 +14,7 @@ public class County {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
+    @JsonIgnore
     @ManyToOne
     private District district;
     private Long voterCount;
@@ -19,9 +22,8 @@ public class County {
     public County() {
     }
 
-    public County(String name, District district, Long voterCount) {
+    public County(String name, Long voterCount) {
         this.name = name;
-        this.district = district;
         this.voterCount = voterCount;
     }
 

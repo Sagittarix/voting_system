@@ -22,10 +22,8 @@ public class District {
     public District() {
     }
 
-    public District(String name, List<County> counties, List<Candidate> candidates) {
+    public District(String name) {
         this.name = name;
-        this.counties = counties;
-        this.candidates = candidates;
     }
 
     public Long getId() {
@@ -48,17 +46,17 @@ public class District {
         return counties;
     }
 
-    public void setCounties(List<County> counties) {
-        this.counties = counties;
-    }
+//    public void setCounties(List<County> counties) {
+//        this.counties = counties;
+//    }
 
     public List<Candidate> getCandidates() {
         return candidates;
     }
 
-    public void setCandidates(List<Candidate> candidates) {
-        this.candidates = candidates;
-    }
+//    public void setCandidates(List<Candidate> candidates) {
+//        this.candidates = candidates;
+//    }
 
     public void addCounty(County county) {
         if (counties == null) {

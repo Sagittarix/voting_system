@@ -1,6 +1,7 @@
 package voting.model;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,16 +15,15 @@ public class Party {
     private Long id;
     private String name;
     private String shortName;
-    @OneToMany(mappedBy = "party")
-    private List<Candidate> candidates;
+    @OneToMany(mappedBy = "party", cascade = CascadeType.ALL)
+    private List<Candidate> candidates = new ArrayList<>();
 
     public Party() {
     }
 
-    public Party(String name, String shortName, List<Candidate> candidates) {
+    public Party(String name, String shortName) {
         this.name = name;
         this.shortName = shortName;
-        this.candidates = candidates;
     }
 
     public Long getId() {
@@ -55,7 +55,8 @@ public class Party {
         return candidates;
     }
 
-    public void setCandidates(List<Candidate> candidates) {
-        this.candidates = candidates;
+    public void addCandidate(Candidate candidate) {
+        candidates.add(candidate);
+        candidate.setParty(this);
     }
 }

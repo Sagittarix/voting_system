@@ -1,5 +1,7 @@
 package voting.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 /**
@@ -14,20 +16,20 @@ public class Candidate {
     private String personId;
     private String firstName;
     private String lastName;
+    @JsonIgnore
     @ManyToOne
     private District district;
+    @JsonIgnore
     @ManyToOne
     private Party party;
 
     public Candidate() {
     }
 
-    public Candidate(String personId, String firstName, String lastName, District district, Party party) {
+    public Candidate(String personId, String firstName, String lastName) {
         this.personId = personId;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.district = district;
-        this.party = party;
     }
 
     public Long getId() {

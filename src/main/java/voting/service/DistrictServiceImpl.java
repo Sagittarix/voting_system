@@ -32,10 +32,10 @@ public class DistrictServiceImpl implements DistrictService {
     @Transactional
     @Override
     public District addNewDistrict(DistrictData districtData) {
-        District district = new District(districtData.getName(), null, null);
+        District district = new District(districtData.getName());
         districtData.getCountiesData().forEach(
                 countyData -> {
-                    County county = new County(countyData.getName(), null, countyData.getVoterCount());
+                    County county = new County(countyData.getName(), countyData.getVoterCount());
                     district.addCounty(county);
                 });
         districtData.getCandidatesData().forEach(
@@ -45,7 +45,7 @@ public class DistrictServiceImpl implements DistrictService {
                         // TODO: validate that data in both instances are equivalent
                     } else {
                         candidate = new Candidate(candidateData.getPersonId(),
-                                candidateData.getFirstName(), candidateData.getLastName(), null, null);
+                                candidateData.getFirstName(), candidateData.getLastName());
                     }
                     district.addCandidate(candidate);
                 });

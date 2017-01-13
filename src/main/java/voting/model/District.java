@@ -15,9 +15,9 @@ public class District {
     private Long id;
     private String name;
     @OneToMany(mappedBy = "district", cascade = CascadeType.ALL)
-    private List<County> counties;
+    private List<County> counties = new ArrayList<>();
     @OneToMany(mappedBy = "district", cascade = CascadeType.ALL)
-    private List<Candidate> candidates;
+    private List<Candidate> candidates = new ArrayList<>();
 
     public District() {
     }
@@ -59,17 +59,11 @@ public class District {
 //    }
 
     public void addCounty(County county) {
-        if (counties == null) {
-            counties = new ArrayList<>();
-        }
         counties.add(county);
         county.setDistrict(this);
     }
 
     public void addCandidate(Candidate candidate) {
-        if (candidates == null) {
-            candidates = new ArrayList<>();
-        }
         candidates.add(candidate);
         candidate.setDistrict(this);
     }

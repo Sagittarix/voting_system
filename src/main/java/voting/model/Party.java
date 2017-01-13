@@ -27,7 +27,6 @@ public class Party {
     }
 
     public Long getId() {
-
         return id;
     }
 

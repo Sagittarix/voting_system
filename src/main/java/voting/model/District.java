@@ -14,7 +14,7 @@ public class District {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
-    @OneToMany(mappedBy = "district", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "district", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<County> counties = new ArrayList<>();
     @OneToMany(mappedBy = "district", cascade = CascadeType.ALL)
     private List<Candidate> candidates = new ArrayList<>();

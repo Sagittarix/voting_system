@@ -15,7 +15,7 @@ public class Party {
     private Long id;
     private String name;
     private String shortName;
-    @OneToMany(mappedBy = "party", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "party", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Candidate> candidates = new ArrayList<>();
 
     public Party() {

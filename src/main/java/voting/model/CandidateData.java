@@ -13,20 +13,8 @@ public class CandidateData {
     private String lastName;
     private String partyShortName;
 
-    public CandidateData() {
-    }
-
-    public CandidateData(Long id, String personId, String firstName, String lastName, String partyShortName) {
-
-        this.id = id;
-        this.personId = personId;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.partyShortName = partyShortName;
-    }
 
     public Long getId() {
-
         return id;
     }
 

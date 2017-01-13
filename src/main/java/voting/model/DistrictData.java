@@ -1,5 +1,7 @@
 package voting.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.OneToMany;
 import java.util.List;
 
@@ -11,18 +13,11 @@ public class DistrictData {
 
     private Long id;
     private String name;
+    @JsonProperty("counties")
     private List<CountyData> countiesData;
+    @JsonProperty("candidates")
     private List<CandidateData> candidatesData;
 
-    public DistrictData() {
-    }
-
-    public DistrictData(Long id, String name, List<CountyData> countiesData, List<CandidateData> candidatesData) {
-        this.id = id;
-        this.name = name;
-        this.countiesData = countiesData;
-        this.candidatesData = candidatesData;
-    }
 
     public Long getId() {
         return id;

@@ -11,18 +11,8 @@ public class CountyData {
     private String name;
     private Long voterCount;
 
-    public CountyData() {
-    }
-
-    public CountyData(Long id, String name, Long voterCount) {
-
-        this.id = id;
-        this.name = name;
-        this.voterCount = voterCount;
-    }
 
     public Long getId() {
-
         return id;
     }
 

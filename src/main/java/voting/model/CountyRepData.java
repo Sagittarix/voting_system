@@ -12,19 +12,8 @@ public class CountyRepData {
     private String lastName;
     private Long countyId;
 
-    public CountyRepData() {
-    }
-
-    public CountyRepData(Long id, String firstName, String lastName, Long countyId) {
-
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.countyId = countyId;
-    }
 
     public Long getId() {
-
         return id;
     }
 

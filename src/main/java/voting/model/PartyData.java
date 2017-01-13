@@ -1,5 +1,7 @@
 package voting.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.OneToMany;
 import java.util.List;
 
@@ -11,21 +13,11 @@ public class PartyData {
     private Long id;
     private String name;
     private String shortName;
+    @JsonProperty("candidates")
     private List<CandidateData> candidatesData;
 
-    public PartyData() {
-    }
-
-    public PartyData(Long id, String name, String shortName, List<CandidateData> candidatesData) {
-
-        this.id = id;
-        this.name = name;
-        this.shortName = shortName;
-        this.candidatesData = candidatesData;
-    }
 
     public Long getId() {
-
         return id;
     }
 

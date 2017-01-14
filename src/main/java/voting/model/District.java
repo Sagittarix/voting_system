@@ -16,7 +16,7 @@ public class District {
     private String name;
     @OneToMany(mappedBy = "district", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<County> counties = new ArrayList<>();
-    @OneToMany(mappedBy = "district", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "district")
     private List<Candidate> candidates = new ArrayList<>();
 
     public District() {

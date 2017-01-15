@@ -63,9 +63,24 @@ public class District {
         county.setDistrict(this);
     }
 
+    public void removeCounty(County county) {
+        counties.remove(county);
+        county.setDistrict(null);
+    }
+
     public void addCandidate(Candidate candidate) {
         candidates.add(candidate);
         candidate.setDistrict(this);
+    }
+
+    public void removeCandidate(Candidate candidate) {
+        candidates.remove(candidate);
+        candidate.setDistrict(null);
+    }
+
+    public void removeAllCandidates() {
+        candidates.forEach(c -> c.setDistrict(null));
+        candidates = null;
     }
 
     @Override

@@ -40,7 +40,11 @@ public class DistrictServiceImpl implements DistrictService {
     @Transactional
     @Override
     public void deleteDistrict(Long id) {
-        districtRepository.delete(id);
+        District district = districtRepository.findOne(id);
+        if (district != null) {
+            district.removeAllCandidates();
+            districtRepository.delete(id);
+        }
     }
 
     @Override

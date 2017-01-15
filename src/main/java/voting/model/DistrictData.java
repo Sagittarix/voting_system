@@ -9,7 +9,7 @@ import java.util.List;
  * Created by domas on 1/12/17.
  */
 
-public class NewDistrictData {
+public class DistrictData {
 
     private Long id;
     private String name;

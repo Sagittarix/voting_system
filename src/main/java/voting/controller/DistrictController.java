@@ -2,7 +2,6 @@ package voting.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import voting.model.CountyRep;
 import voting.model.District;
 import voting.model.DistrictData;
 import voting.service.DistrictService;

@@ -40,6 +40,11 @@ public class CandidateServiceImpl implements CandidateService{
     }
 
     @Override
+    public Candidate getCandidate(String personId) {
+        return candidateRepository.findByPersonId(personId);
+    }
+
+    @Override
     public List<Candidate> getCandidates() {
         return (List<Candidate>) candidateRepository.findAll();
     }

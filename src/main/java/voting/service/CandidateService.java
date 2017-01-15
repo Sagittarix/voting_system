@@ -19,6 +19,8 @@ public interface CandidateService {
 
     Candidate getCandidate(Long id);
 
+    Candidate getCandidate(String personId);
+
     List<Candidate> getCandidates();
 
 }

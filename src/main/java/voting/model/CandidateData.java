@@ -21,6 +21,10 @@ public class CandidateData {
     @NotNull
     @Length(min = 1, max = 40)
     private String lastName;
+
+
+    // not sure ar situ reik, kolkas palieku
+    private Long partyId;
     private String partyShortName;
     private Long numberInPartyList;
 
@@ -55,6 +59,14 @@ public class CandidateData {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public Long getPartyId() {
+        return partyId;
+    }
+
+    public void setPartyId(Long partyId) {
+        this.partyId = partyId;
     }
 
     public String getPartyShortName() {

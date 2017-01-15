@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import voting.model.Candidate;
 import voting.model.CandidateData;
-import voting.model.District;
 import voting.repository.CandidateRepository;
 
 import java.util.List;

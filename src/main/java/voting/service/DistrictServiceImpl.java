@@ -3,13 +3,11 @@ package voting.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import voting.model.Candidate;
 import voting.model.County;
 import voting.model.District;
 import voting.model.DistrictData;
-import voting.repository.CandidateRepository;
 import voting.repository.DistrictRepository;
-import voting.repository.PartyRepository;
+
 import java.util.List;
 
 /**
@@ -19,14 +17,10 @@ import java.util.List;
 public class DistrictServiceImpl implements DistrictService {
 
     private DistrictRepository districtRepository;
-    private PartyRepository partyRepository;
-    private CandidateRepository candidateRepository;
 
     @Autowired
-    public DistrictServiceImpl(DistrictRepository districtRepository, PartyRepository partyRepository, CandidateRepository candidateRepository) {
+    public DistrictServiceImpl(DistrictRepository districtRepository) {
         this.districtRepository = districtRepository;
-        this.partyRepository = partyRepository;
-        this.candidateRepository = candidateRepository;
     }
 
     @Transactional

@@ -1,6 +1,5 @@
 package voting.service;
 
-import voting.model.CountyRep;
 import voting.model.District;
 import voting.model.DistrictData;
 
@@ -13,7 +12,7 @@ public interface DistrictService {
 
     District addNewDistrict(DistrictData districtData);
 
-    District updateDistrict(DistrictData districtData);
+//    District updateDistrict(DistrictData districtData);
 
     void deleteDistrict(Long id);
 

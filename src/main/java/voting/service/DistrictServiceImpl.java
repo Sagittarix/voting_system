@@ -33,29 +33,14 @@ public class DistrictServiceImpl implements DistrictService {
     @Override
     public District addNewDistrict(DistrictData districtData) {
         District district = new District(districtData.getName());
-        districtData.getCountiesData().forEach(
-                countyData -> {
-                    County county = new County(countyData.getName(), countyData.getVoterCount());
-                    district.addCounty(county);
-                });
-        districtData.getCandidatesData().forEach(
-                candidateData -> {
-                    Candidate candidate = candidateRepository.findByPersonId(candidateData.getPersonId());
-                    if (candidate != null) {
-                        // TODO: validate that data in both instances are equivalent
-                    } else {
-                        candidate = new Candidate(candidateData.getPersonId(),
-                                candidateData.getFirstName(), candidateData.getLastName());
-                    }
-                    district.addCandidate(candidate);
-                });
+        if (districtData.getCountiesData() != null) {
+            districtData.getCountiesData().forEach(
+                    countyData -> {
+                        County county = new County(countyData.getName(), countyData.getVoterCount());
+                        district.addCounty(county);
+                    });
+        }
         return districtRepository.save(district);
-    }
-
-    @Transactional
-    @Override
-    public District updateDistrict(DistrictData districtData) {
-        return null;
     }
 
     @Transactional

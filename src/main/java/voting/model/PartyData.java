@@ -3,6 +3,7 @@ package voting.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.OneToMany;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -16,6 +17,7 @@ public class PartyData {
     private String name;
     @NotNull
     private String shortName;
+    @Valid
     @NotNull
     @JsonProperty("candidates")
     private List<CandidateData> candidatesData;

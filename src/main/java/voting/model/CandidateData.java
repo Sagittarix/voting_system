@@ -12,6 +12,7 @@ public class CandidateData {
     private String firstName;
     private String lastName;
     private String partyShortName;
+    private Long numberInPartyList;
 
 
     public Long getId() {
@@ -52,5 +53,13 @@ public class CandidateData {
 
     public void setPartyShortName(String partyShortName) {
         this.partyShortName = partyShortName;
+    }
+
+    public Long getNumberInPartyList() {
+        return numberInPartyList;
+    }
+
+    public void setNumberInPartyList(Long numberInPartyList) {
+        this.numberInPartyList = numberInPartyList;
     }
 }

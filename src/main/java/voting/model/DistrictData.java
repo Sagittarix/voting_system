@@ -9,14 +9,12 @@ import java.util.List;
  * Created by domas on 1/12/17.
  */
 
-public class DistrictData {
+public class NewDistrictData {
 
     private Long id;
     private String name;
     @JsonProperty("counties")
     private List<CountyData> countiesData;
-    @JsonProperty("candidates")
-    private List<CandidateData> candidatesData;
 
 
     public Long getId() {
@@ -43,11 +41,4 @@ public class DistrictData {
         this.countiesData = countiesData;
     }
 
-    public List<CandidateData> getCandidatesData() {
-        return candidatesData;
-    }
-
-    public void setCandidatesData(List<CandidateData> candidatesData) {
-        this.candidatesData = candidatesData;
-    }
 }

@@ -3,6 +3,7 @@ package voting.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import voting.model.District;
+import voting.model.DistrictCandidatesData;
 import voting.model.DistrictData;
 import voting.service.DistrictService;
 
@@ -44,5 +45,9 @@ public class DistrictController {
         districtService.deleteDistrict(id);
     }
 
+    @PostMapping("/{id}/candidates")
+    public District addCandidateList(@Valid @RequestBody DistrictCandidatesData districtCandidatesData) {
+        return districtService.addCandidateList(districtCandidatesData);
+    }
 
 }

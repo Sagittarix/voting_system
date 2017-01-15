@@ -3,9 +3,7 @@ package voting.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import voting.model.County;
-import voting.model.District;
-import voting.model.DistrictData;
+import voting.model.*;
 import voting.repository.DistrictRepository;
 
 import java.util.List;
@@ -17,11 +15,14 @@ import java.util.List;
 public class DistrictServiceImpl implements DistrictService {
 
     private DistrictRepository districtRepository;
+    private CandidateService candidateService;
 
     @Autowired
-    public DistrictServiceImpl(DistrictRepository districtRepository) {
+    public DistrictServiceImpl(DistrictRepository districtRepository, CandidateService candidateService) {
         this.districtRepository = districtRepository;
+        this.candidateService = candidateService;
     }
+
 
     @Transactional
     @Override
@@ -56,4 +57,22 @@ public class DistrictServiceImpl implements DistrictService {
     public List<District> getDistricts() {
         return (List<District>) districtRepository.findAll();
     }
+
+    @Transactional
+    @Override
+    public District addCandidateList(DistrictCandidatesData districtCandidatesData) {
+        District district = districtRepository.findOne(districtCandidatesData.getDistrictId());
+        // TODO: add validation: jei kandidatas jau priskirtas kitam districtui, turi mesti errora
+        // TODO: add validation: kad nebutu kandidatas iskeltas partijos, o partijos sarase jo nera
+        districtCandidatesData.getCandidatesData().forEach(
+                candidateData -> {
+                    Candidate candidate = candidateService.getCandidate(candidateData.getPersonId());
+                    if (candidate == null) {
+                        candidate = candidateService.addNewCandidate(candidateData);
+                    }
+                    district.addCandidate(candidate);
+                });
+        return districtRepository.save(district);
+    }
+
 }

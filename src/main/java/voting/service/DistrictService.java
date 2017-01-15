@@ -1,6 +1,7 @@
 package voting.service;
 
 import voting.model.District;
+import voting.model.DistrictCandidatesData;
 import voting.model.DistrictData;
 
 import java.util.List;
@@ -20,4 +21,5 @@ public interface DistrictService {
 
     List<District> getDistricts();
 
+    District addCandidateList(DistrictCandidatesData districtCandidatesData);
 }

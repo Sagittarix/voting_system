@@ -33,7 +33,7 @@ public class CountyRepController {
     }
 
     @PostMapping
-    public CountyRep addNewCountyRep(@RequestBody CountyRep countyRep) {
+    public CountyRep addNewCountyRep(@Valid @RequestBody CountyRep countyRep) {
         return countyRepService.addNewCountyRep(countyRep);
     }
 

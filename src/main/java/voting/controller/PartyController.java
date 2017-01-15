@@ -6,6 +6,7 @@ import voting.model.Party;
 import voting.model.PartyData;
 import voting.service.PartyService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -33,7 +34,7 @@ public class PartyController {
     }
 
     @PostMapping
-    public Party addNewParty(@RequestBody PartyData partyData) {
+    public Party addNewParty(@Valid @RequestBody PartyData partyData) {
         return partyService.addNewParty(partyData);
     }
 

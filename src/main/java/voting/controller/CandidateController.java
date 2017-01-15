@@ -6,6 +6,7 @@ import voting.model.Candidate;
 import voting.model.CandidateData;
 import voting.service.CandidateService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -34,7 +35,7 @@ public class CandidateController {
     }
 
     @PostMapping
-    public Candidate addNewCandidate(@RequestBody CandidateData candidateData) {
+    public Candidate addNewCandidate(@Valid @RequestBody CandidateData candidateData) {
         return candidateService.addNewCandidate(candidateData);
     }
 

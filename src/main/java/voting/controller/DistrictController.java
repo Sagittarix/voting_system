@@ -6,6 +6,7 @@ import voting.model.District;
 import voting.model.DistrictData;
 import voting.service.DistrictService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -34,7 +35,7 @@ public class DistrictController {
     }
 
     @PostMapping
-    public District addNewDistrict(@RequestBody DistrictData districtData) {
+    public District addNewDistrict(@Valid @RequestBody DistrictData districtData) {
         return districtService.addNewDistrict(districtData);
     }
 

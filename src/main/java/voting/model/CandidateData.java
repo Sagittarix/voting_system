@@ -1,6 +1,10 @@
 package voting.model;
 
+import org.hibernate.validator.constraints.Length;
+
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 /**
  * Created by domas on 1/12/17.
@@ -8,8 +12,14 @@ import javax.persistence.ManyToOne;
 public class CandidateData {
 
     private Long id;
+    @NotNull
+    @Pattern(regexp = "\\d{11}")
     private String personId;
+    @NotNull
+    @Length(min = 1, max = 40)
     private String firstName;
+    @NotNull
+    @Length(min = 1, max = 40)
     private String lastName;
     private String partyShortName;
     private Long numberInPartyList;

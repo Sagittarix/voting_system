@@ -1,6 +1,7 @@
 package voting.model;
 
 import javax.persistence.OneToOne;
+import javax.validation.constraints.NotNull;
 
 /**
  * Created by domas on 1/12/17.
@@ -8,8 +9,11 @@ import javax.persistence.OneToOne;
 public class CountyRepData {
 
     private Long id;
+    @NotNull
     private String firstName;
+    @NotNull
     private String lastName;
+    @NotNull
     private Long countyId;
 
 

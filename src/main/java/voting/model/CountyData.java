@@ -1,6 +1,7 @@
 package voting.model;
 
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
 
 /**
  * Created by domas on 1/12/17.
@@ -8,6 +9,7 @@ import javax.persistence.ManyToOne;
 public class CountyData {
 
     private Long id;
+    @NotNull
     private String name;
     private Long voterCount;
 

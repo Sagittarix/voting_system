@@ -3,6 +3,7 @@ package voting.model;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by domas on 1/10/17.
@@ -84,7 +85,28 @@ public class District {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        District district = (District) o;
+        return Objects.equals(id, district.id) &&
+                Objects.equals(name, district.name) &&
+                Objects.equals(counties, district.counties) &&
+                Objects.equals(candidates, district.candidates);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, counties, candidates);
+    }
+
+    @Override
     public String toString() {
-        return String.format("%s: %d counties, %d candidates", name, counties.size(), candidates.size());
+        return "District{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", counties=" + counties +
+                ", candidates=" + candidates +
+                '}';
     }
 }

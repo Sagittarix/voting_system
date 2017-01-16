@@ -2,6 +2,7 @@ package voting.model;
 
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
+import java.util.Objects;
 
 /**
  * Created by domas on 1/12/17.
@@ -36,5 +37,29 @@ public class CountyData {
 
     public void setVoterCount(Long voterCount) {
         this.voterCount = voterCount;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CountyData that = (CountyData) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(name, that.name) &&
+                Objects.equals(voterCount, that.voterCount);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, voterCount);
+    }
+
+    @Override
+    public String toString() {
+        return "CountyData{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", voterCount=" + voterCount +
+                '}';
     }
 }

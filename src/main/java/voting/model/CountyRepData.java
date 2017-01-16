@@ -2,6 +2,7 @@ package voting.model;
 
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
+import java.util.Objects;
 
 /**
  * Created by domas on 1/12/17.
@@ -47,5 +48,31 @@ public class CountyRepData {
 
     public void setCountyId(Long countyId) {
         this.countyId = countyId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CountyRepData that = (CountyRepData) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(firstName, that.firstName) &&
+                Objects.equals(lastName, that.lastName) &&
+                Objects.equals(countyId, that.countyId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, firstName, lastName, countyId);
+    }
+
+    @Override
+    public String toString() {
+        return "CountyRepData{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", countyId=" + countyId +
+                '}';
     }
 }

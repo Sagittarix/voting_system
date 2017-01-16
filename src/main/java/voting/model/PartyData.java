@@ -6,6 +6,7 @@ import javax.persistence.OneToMany;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by domas on 1/12/17.
@@ -53,5 +54,31 @@ public class PartyData {
 
     public void setCandidatesData(List<CandidateData> candidatesData) {
         this.candidatesData = candidatesData;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PartyData partyData = (PartyData) o;
+        return Objects.equals(id, partyData.id) &&
+                Objects.equals(name, partyData.name) &&
+                Objects.equals(shortName, partyData.shortName) &&
+                Objects.equals(candidatesData, partyData.candidatesData);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, shortName, candidatesData);
+    }
+
+    @Override
+    public String toString() {
+        return "PartyData{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", shortName='" + shortName + '\'' +
+                ", candidatesData=" + candidatesData +
+                '}';
     }
 }

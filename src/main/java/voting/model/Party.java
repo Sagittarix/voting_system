@@ -3,6 +3,7 @@ package voting.model;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by domas on 1/10/17.
@@ -45,5 +46,31 @@ public class Party {
     public void addCandidate(Candidate candidate) {
         candidates.add(candidate);
         candidate.setParty(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Party party = (Party) o;
+        return Objects.equals(id, party.id) &&
+                Objects.equals(name, party.name) &&
+                Objects.equals(shortName, party.shortName) &&
+                Objects.equals(candidates, party.candidates);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, shortName, candidates);
+    }
+
+    @Override
+    public String toString() {
+        return "Party{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", shortName='" + shortName + '\'' +
+                ", candidates=" + candidates +
+                '}';
     }
 }

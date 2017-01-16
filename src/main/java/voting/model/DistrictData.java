@@ -6,6 +6,7 @@ import javax.persistence.OneToMany;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by domas on 1/12/17.
@@ -46,4 +47,27 @@ public class DistrictData {
         this.countiesData = countiesData;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DistrictData that = (DistrictData) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(name, that.name) &&
+                Objects.equals(countiesData, that.countiesData);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, countiesData);
+    }
+
+    @Override
+    public String toString() {
+        return "DistrictData{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", countiesData=" + countiesData +
+                '}';
+    }
 }

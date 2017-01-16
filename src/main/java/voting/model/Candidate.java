@@ -3,6 +3,7 @@ package voting.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 /**
  * Created by domas on 1/10/17.
@@ -64,9 +65,33 @@ public class Candidate {
         this.party = party;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Candidate candidate = (Candidate) o;
+        return Objects.equals(id, candidate.id) &&
+                Objects.equals(personId, candidate.personId) &&
+                Objects.equals(firstName, candidate.firstName) &&
+                Objects.equals(lastName, candidate.lastName) &&
+                Objects.equals(district, candidate.district) &&
+                Objects.equals(party, candidate.party);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, personId, firstName, lastName, district, party);
+    }
 
     @Override
     public String toString() {
-        return String.format("%s: %s %s", personId, firstName, lastName);
+        return "Candidate{" +
+                "id=" + id +
+                ", personId='" + personId + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", district=" + district +
+                ", party=" + party +
+                '}';
     }
 }

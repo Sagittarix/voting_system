@@ -3,6 +3,7 @@ package voting.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 /**
  * Created by domas on 1/10/17.
@@ -51,8 +52,30 @@ public class County {
         this.voterCount = voterCount;
     }
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        County county = (County) o;
+        return Objects.equals(id, county.id) &&
+                Objects.equals(name, county.name) &&
+                Objects.equals(district, county.district) &&
+                Objects.equals(voterCount, county.voterCount);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, district, voterCount);
+    }
+
     @Override
     public String toString() {
-        return String.format("%s, %s", name, district.getName());
+        return "County{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", district=" + district +
+                ", voterCount=" + voterCount +
+                '}';
     }
 }

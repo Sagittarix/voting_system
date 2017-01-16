@@ -5,6 +5,7 @@ import org.hibernate.validator.constraints.Length;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import java.util.Objects;
 
 /**
  * Created by domas on 1/12/17.
@@ -83,5 +84,37 @@ public class CandidateData {
 
     public void setNumberInPartyList(Long numberInPartyList) {
         this.numberInPartyList = numberInPartyList;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CandidateData that = (CandidateData) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(personId, that.personId) &&
+                Objects.equals(firstName, that.firstName) &&
+                Objects.equals(lastName, that.lastName) &&
+                Objects.equals(partyId, that.partyId) &&
+                Objects.equals(partyShortName, that.partyShortName) &&
+                Objects.equals(numberInPartyList, that.numberInPartyList);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, personId, firstName, lastName, partyId, partyShortName, numberInPartyList);
+    }
+
+    @Override
+    public String toString() {
+        return "CandidateData{" +
+                "id=" + id +
+                ", personId='" + personId + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", partyId=" + partyId +
+                ", partyShortName='" + partyShortName + '\'' +
+                ", numberInPartyList=" + numberInPartyList +
+                '}';
     }
 }

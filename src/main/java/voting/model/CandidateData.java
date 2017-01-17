@@ -26,6 +26,7 @@ public class CandidateData {
 
     // not sure ar situ reik, kolkas palieku
     private Long partyId;
+    private String partyName;
     private String partyShortName;
     private Long numberInPartyList;
 
@@ -86,6 +87,15 @@ public class CandidateData {
         this.numberInPartyList = numberInPartyList;
     }
 
+    public String getPartyName() {
+        return partyName;
+    }
+
+    public void setPartyName(String partyName) {
+        this.partyName = partyName;
+    }
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -96,13 +106,14 @@ public class CandidateData {
                 Objects.equals(firstName, that.firstName) &&
                 Objects.equals(lastName, that.lastName) &&
                 Objects.equals(partyId, that.partyId) &&
+                Objects.equals(partyName, that.partyName) &&
                 Objects.equals(partyShortName, that.partyShortName) &&
                 Objects.equals(numberInPartyList, that.numberInPartyList);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, personId, firstName, lastName, partyId, partyShortName, numberInPartyList);
+        return Objects.hash(id, personId, firstName, lastName, partyId, partyName, partyShortName, numberInPartyList);
     }
 
     @Override
@@ -113,6 +124,7 @@ public class CandidateData {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", partyId=" + partyId +
+                ", partyName='" + partyName + '\'' +
                 ", partyShortName='" + partyShortName + '\'' +
                 ", numberInPartyList=" + numberInPartyList +
                 '}';

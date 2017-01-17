@@ -2,7 +2,6 @@ package voting.service;
 
 import voting.model.Candidate;
 import voting.model.CandidateData;
-import voting.model.District;
 
 import java.util.List;
 

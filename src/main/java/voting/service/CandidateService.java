@@ -12,8 +12,6 @@ public interface CandidateService {
 
     Candidate addNewCandidate(CandidateData candidateData);
 
-//    Candidate updateCandidate(CandidateData candidateData);
-
     void deleteCandidate(Long id);
 
     Candidate getCandidate(Long id);

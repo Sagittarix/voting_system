@@ -9,16 +9,14 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
 import voting.dto.CandidateData;
-import voting.dto.CandidateListData;
+import voting.dto.DistrictData;
 import voting.exception.ErrorResponse;
 import voting.exception.StorageException;
 import voting.exception.StorageFileNotFoundException;
 import voting.model.District;
-import voting.dto.DistrictData;
 import voting.service.DistrictService;
 import voting.service.StorageService;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.Arrays;
@@ -63,10 +61,8 @@ public class DistrictController {
     }
 
     @PostMapping("/{id}/candidates")
-    public District addCandidateList(@PathVariable Long id, @Valid @RequestBody CandidateData[] candidates) {
-        CandidateListData candidateListData = new CandidateListData();
-        candidateListData.setCandidatesData(Arrays.asList(candidates));
-        return districtService.addCandidateList(id, candidateListData);
+    public District addCandidateList(@PathVariable Long id, @Valid @RequestBody CandidateData[] candidateListData) {
+        return districtService.addCandidateList(id, Arrays.asList(candidateListData));
     }
 
     @DeleteMapping("/{id}/candidates")
@@ -78,9 +74,7 @@ public class DistrictController {
     public District handleFileUpload(@PathVariable Long id, @RequestParam(name = "file") MultipartFile file)
             throws IOException, CsvException {
         String fileName = "district_" + id;
-        storageService.store(fileName, file);
-        CandidateListData candidateListData = new CandidateListData();
-        candidateListData.setCandidatesData(storageService.parseDistrictCandidateDataList(fileName));
+        List<CandidateData> candidateListData = (storageService.parseDistrictCandidateDataList(fileName));
         return districtService.addCandidateList(id, candidateListData);
     }
 

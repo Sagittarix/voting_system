@@ -1,8 +1,8 @@
 package voting.service;
 
-import voting.model.District;
-import voting.dto.CandidateListData;
+import voting.dto.CandidateData;
 import voting.dto.DistrictData;
+import voting.model.District;
 
 import java.util.List;
 
@@ -21,7 +21,7 @@ public interface DistrictService {
 
     List<District> getDistricts();
 
-    District addCandidateList(Long id, CandidateListData candidateListData);
+    District addCandidateList(Long id, List<CandidateData> candidateListData);
 
     void deleteCandidateList(Long id);
 }

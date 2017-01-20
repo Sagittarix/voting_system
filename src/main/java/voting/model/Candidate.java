@@ -23,6 +23,7 @@ public class Candidate {
     @JsonIgnore
     @ManyToOne
     private Party party;
+    private Long positionInPartyList;
 
     public Candidate() {
     }
@@ -65,6 +66,14 @@ public class Candidate {
         this.party = party;
     }
 
+    public Long getPositionInPartyList() {
+        return positionInPartyList;
+    }
+
+    public void setPositionInPartyList(Long positionInPartyList) {
+        this.positionInPartyList = positionInPartyList;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -75,12 +84,13 @@ public class Candidate {
                 Objects.equals(firstName, candidate.firstName) &&
                 Objects.equals(lastName, candidate.lastName) &&
                 Objects.equals(district, candidate.district) &&
-                Objects.equals(party, candidate.party);
+                Objects.equals(party, candidate.party) &&
+                Objects.equals(positionInPartyList, candidate.positionInPartyList);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, personId, firstName, lastName, district, party);
+        return Objects.hash(id, personId, firstName, lastName, district, party, positionInPartyList);
     }
 
     @Override
@@ -92,6 +102,7 @@ public class Candidate {
                 ", lastName='" + lastName + '\'' +
                 ", district=" + district +
                 ", party=" + party +
+                ", positionInPartyList=" + positionInPartyList +
                 '}';
     }
 }

@@ -27,7 +27,7 @@ public class CandidateData {
     private Long partyId;
     private String partyName;
     private String partyShortName;
-    private Long numberInPartyList;
+    private Long positionInPartyList;
 
 
     public Long getId() {
@@ -70,22 +70,6 @@ public class CandidateData {
         this.partyId = partyId;
     }
 
-    public String getPartyShortName() {
-        return partyShortName;
-    }
-
-    public void setPartyShortName(String partyShortName) {
-        this.partyShortName = partyShortName;
-    }
-
-    public Long getNumberInPartyList() {
-        return numberInPartyList;
-    }
-
-    public void setNumberInPartyList(Long numberInPartyList) {
-        this.numberInPartyList = numberInPartyList;
-    }
-
     public String getPartyName() {
         return partyName;
     }
@@ -94,6 +78,21 @@ public class CandidateData {
         this.partyName = partyName;
     }
 
+    public String getPartyShortName() {
+        return partyShortName;
+    }
+
+    public void setPartyShortName(String partyShortName) {
+        this.partyShortName = partyShortName;
+    }
+
+    public Long getPositionInPartyList() {
+        return positionInPartyList;
+    }
+
+    public void setPositionInPartyList(Long positionInPartyList) {
+        this.positionInPartyList = positionInPartyList;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -107,12 +106,12 @@ public class CandidateData {
                 Objects.equals(partyId, that.partyId) &&
                 Objects.equals(partyName, that.partyName) &&
                 Objects.equals(partyShortName, that.partyShortName) &&
-                Objects.equals(numberInPartyList, that.numberInPartyList);
+                Objects.equals(positionInPartyList, that.positionInPartyList);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, personId, firstName, lastName, partyId, partyName, partyShortName, numberInPartyList);
+        return Objects.hash(id, personId, firstName, lastName, partyId, partyName, partyShortName, positionInPartyList);
     }
 
     @Override
@@ -125,7 +124,7 @@ public class CandidateData {
                 ", partyId=" + partyId +
                 ", partyName='" + partyName + '\'' +
                 ", partyShortName='" + partyShortName + '\'' +
-                ", numberInPartyList=" + numberInPartyList +
+                ", positionInPartyList=" + positionInPartyList +
                 '}';
     }
 }

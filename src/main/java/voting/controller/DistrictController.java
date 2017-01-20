@@ -8,11 +8,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
+import voting.dto.CandidateListData;
 import voting.exception.ErrorResponse;
 import voting.exception.StorageException;
 import voting.exception.StorageFileNotFoundException;
 import voting.model.District;
-import voting.dto.DistrictCandidatesData;
 import voting.dto.DistrictData;
 import voting.service.DistrictService;
 import voting.service.StorageService;
@@ -61,8 +61,8 @@ public class DistrictController {
     }
 
     @PostMapping("/{id}/candidates")
-    public District addCandidateList(@Valid @RequestBody DistrictCandidatesData districtCandidatesData) {
-        return districtService.addCandidateList(districtCandidatesData);
+    public District addCandidateList(@PathVariable Long id, @Valid @RequestBody CandidateListData candidateListData) {
+        return districtService.addCandidateList(id, candidateListData);
     }
 
     @PostMapping(value = "/{id}/candidates/upload", consumes = "multipart/form-data")
@@ -71,10 +71,9 @@ public class DistrictController {
 
         String fileName = "district_" + id;
         storageService.store(fileName, file);
-        DistrictCandidatesData districtCandidatesData = new DistrictCandidatesData();
-        districtCandidatesData.setDistrictId(id);
-        districtCandidatesData.setCandidatesData(storageService.parseDistrictCandidateDataList(fileName));
-        return districtService.addCandidateList(districtCandidatesData);
+        CandidateListData candidateListData = new CandidateListData();
+        candidateListData.setCandidatesData(storageService.parseDistrictCandidateDataList(fileName));
+        return districtService.addCandidateList(id, candidateListData);
     }
 
     @ExceptionHandler({CsvException.class, StorageException.class, IOException.class})

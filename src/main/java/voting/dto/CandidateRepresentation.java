@@ -1,6 +1,8 @@
 package voting.dto;
 
 import org.hibernate.validator.constraints.Length;
+import voting.model.Candidate;
+import voting.model.Party;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -9,19 +11,12 @@ import java.util.Objects;
 /**
  * Created by domas on 1/12/17.
  */
-public class CandidateData {
+public class CandidateRepresentation {
 
     private Long id;
-    @NotNull
-    @Pattern(regexp = "\\d{11}")
     private String personId;
-    @NotNull
-    @Length(min = 1, max = 40)
     private String firstName;
-    @NotNull
-    @Length(min = 1, max = 40)
     private String lastName;
-
 
     // not sure ar situ reik, kolkas palieku
     private Long partyId;
@@ -30,6 +25,25 @@ public class CandidateData {
     private Long positionInPartyList;
 
 
+    public CandidateRepresentation() {
+
+    }
+
+    public CandidateRepresentation(Candidate candidate) {
+        this.id = candidate.getId();
+        this.personId = candidate.getPersonId();
+        this.firstName = candidate.getFirstName();
+        this.lastName = candidate.getLastName();
+        Party party = candidate.getParty();
+        if (party != null) {
+            this.partyId = party.getId();
+            this.partyName = party.getName();
+            this.partyShortName = party.getShortName();
+        }
+        this.positionInPartyList = candidate.getPositionInPartyList() != null ? candidate.getPositionInPartyList() : 0;
+    }
+
+    
     public Long getId() {
         return id;
     }
@@ -70,6 +84,14 @@ public class CandidateData {
         this.partyId = partyId;
     }
 
+    public String getPartyName() {
+        return partyName;
+    }
+
+    public void setPartyName(String partyName) {
+        this.partyName = partyName;
+    }
+
     public String getPartyShortName() {
         return partyShortName;
     }
@@ -86,20 +108,12 @@ public class CandidateData {
         this.positionInPartyList = positionInPartyList;
     }
 
-    public String getPartyName() {
-        return partyName;
-    }
-
-    public void setPartyName(String partyName) {
-        this.partyName = partyName;
-    }
-
-
     @Override
     public boolean equals(Object o) {
+
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        CandidateData that = (CandidateData) o;
+        CandidateRepresentation that = (CandidateRepresentation) o;
         return Objects.equals(id, that.id) &&
                 Objects.equals(personId, that.personId) &&
                 Objects.equals(firstName, that.firstName) &&
@@ -117,7 +131,7 @@ public class CandidateData {
 
     @Override
     public String toString() {
-        return "CandidateData{" +
+        return "CandidateRepresentation{" +
                 "id=" + id +
                 ", personId='" + personId + '\'' +
                 ", firstName='" + firstName + '\'' +

@@ -3,12 +3,11 @@ package voting.service;
 import com.opencsv.exceptions.CsvException;
 import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
-import voting.model.CandidateData;
+import voting.dto.CandidateData;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.stream.Stream;
 
 /**
  * Created by domas on 1/16/17.

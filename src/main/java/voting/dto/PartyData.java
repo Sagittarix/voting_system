@@ -1,8 +1,7 @@
-package voting.model;
+package voting.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import javax.persistence.OneToMany;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.List;

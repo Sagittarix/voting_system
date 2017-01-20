@@ -3,7 +3,7 @@ package voting.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import voting.model.Candidate;
-import voting.model.CandidateData;
+import voting.dto.CandidateData;
 import voting.service.CandidateService;
 
 import javax.validation.Valid;

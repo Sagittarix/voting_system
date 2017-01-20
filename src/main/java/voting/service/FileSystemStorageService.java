@@ -9,7 +9,7 @@ import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 import voting.exception.StorageException;
 import voting.exception.StorageFileNotFoundException;
-import voting.model.CandidateData;
+import voting.dto.CandidateData;
 
 import java.io.FileReader;
 import java.io.IOException;

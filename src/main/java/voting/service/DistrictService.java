@@ -1,8 +1,8 @@
 package voting.service;
 
 import voting.model.District;
-import voting.model.DistrictCandidatesData;
-import voting.model.DistrictData;
+import voting.dto.DistrictCandidatesData;
+import voting.dto.DistrictData;
 
 import java.util.List;
 

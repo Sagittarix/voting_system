@@ -1,6 +1,5 @@
-package voting.model;
+package voting.dto;
 
-import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 import java.util.Objects;
 

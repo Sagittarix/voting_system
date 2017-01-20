@@ -11,16 +11,13 @@ import org.springframework.web.multipart.MultipartFile;
 import voting.exception.ErrorResponse;
 import voting.exception.StorageException;
 import voting.exception.StorageFileNotFoundException;
-import voting.model.CandidateData;
 import voting.model.District;
-import voting.model.DistrictCandidatesData;
-import voting.model.DistrictData;
+import voting.dto.DistrictCandidatesData;
+import voting.dto.DistrictData;
 import voting.service.DistrictService;
 import voting.service.StorageService;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.Part;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;

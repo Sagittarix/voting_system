@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import voting.model.Candidate;
 import voting.model.Party;
-import voting.model.PartyData;
+import voting.dto.PartyData;
 import voting.repository.CandidateRepository;
 import voting.repository.PartyRepository;
 

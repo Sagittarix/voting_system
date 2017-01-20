@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
+import voting.dto.CandidateData;
 import voting.dto.CandidateListData;
 import voting.exception.ErrorResponse;
 import voting.exception.StorageException;
@@ -20,6 +21,7 @@ import voting.service.StorageService;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -61,14 +63,20 @@ public class DistrictController {
     }
 
     @PostMapping("/{id}/candidates")
-    public District addCandidateList(@PathVariable Long id, @Valid @RequestBody CandidateListData candidateListData) {
+    public District addCandidateList(@PathVariable Long id, @Valid @RequestBody CandidateData[] candidates) {
+        CandidateListData candidateListData = new CandidateListData();
+        candidateListData.setCandidatesData(Arrays.asList(candidates));
         return districtService.addCandidateList(id, candidateListData);
     }
 
-    @PostMapping(value = "/{id}/candidates/upload", consumes = "multipart/form-data")
-    public District handleFileUpload(@PathVariable Long id, @RequestParam(name = "file") MultipartFile file,
-            HttpServletRequest request) throws IOException, CsvException {
+    @DeleteMapping("/{id}/candidates")
+    public void deleteCandidateList(@PathVariable Long id) {
+        districtService.deleteCandidateList(id);
+    }
 
+    @PostMapping(value = "/{id}/candidates/upload", consumes = "multipart/form-data")
+    public District handleFileUpload(@PathVariable Long id, @RequestParam(name = "file") MultipartFile file)
+            throws IOException, CsvException {
         String fileName = "district_" + id;
         storageService.store(fileName, file);
         CandidateListData candidateListData = new CandidateListData();

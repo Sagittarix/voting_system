@@ -81,7 +81,7 @@ public class District {
 
     public void removeAllCandidates() {
         candidates.forEach(c -> c.setDistrict(null));
-        candidates = null;
+        candidates = new ArrayList<Candidate>();
     }
 
     @Override

@@ -22,4 +22,6 @@ public interface DistrictService {
     List<District> getDistricts();
 
     District addCandidateList(Long id, CandidateListData candidateListData);
+
+    void deleteCandidateList(Long id);
 }

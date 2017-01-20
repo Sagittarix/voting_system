@@ -18,6 +18,9 @@ import voting.model.DistrictData;
 import voting.service.DistrictService;
 import voting.service.StorageService;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.Part;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
@@ -65,8 +68,10 @@ public class DistrictController {
         return districtService.addCandidateList(districtCandidatesData);
     }
 
-    @PostMapping("/{id}/candidates/upload")
-    public District handleFileUpload(@PathVariable Long id, @RequestParam("file") MultipartFile file) throws IOException, CsvException {
+    @PostMapping(value = "/{id}/candidates/upload", consumes = "multipart/form-data")
+    public District handleFileUpload(@PathVariable Long id, @RequestParam(name = "file") MultipartFile file,
+            HttpServletRequest request) throws IOException, CsvException {
+
         String fileName = "district_" + id;
         storageService.store(fileName, file);
         DistrictCandidatesData districtCandidatesData = new DistrictCandidatesData();

@@ -17,6 +17,9 @@ import voting.model.District;
 import voting.service.DistrictService;
 import voting.service.StorageService;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.Part;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.Arrays;

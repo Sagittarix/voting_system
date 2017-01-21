@@ -77,6 +77,7 @@ public class DistrictController {
     public District handleFileUpload(@PathVariable Long id, @RequestParam(name = "file") MultipartFile file)
             throws IOException, CsvException {
         String fileName = "district_" + id;
+        storageService.store(fileName, file);
         List<CandidateData> candidateListData = (storageService.parseDistrictCandidateDataList(fileName));
         return districtService.addCandidateList(id, candidateListData);
     }

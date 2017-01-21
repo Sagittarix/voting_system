@@ -2,6 +2,7 @@ package voting.controller;
 
 import com.opencsv.exceptions.CsvException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import voting.exception.StorageException;
 import voting.exception.StorageFileNotFoundException;
 import voting.model.District;
 import voting.service.DistrictService;
+import voting.service.ParsingService;
 import voting.service.StorageService;
 
 import javax.servlet.ServletException;
@@ -37,11 +39,13 @@ public class DistrictController {
 
     private DistrictService districtService;
     private StorageService storageService;
+    private ParsingService parsingService;
 
     @Autowired
-    public DistrictController(DistrictService districtService, StorageService storageService) {
+    public DistrictController(DistrictService districtService, StorageService storageService, ParsingService parsingService) {
         this.districtService = districtService;
         this.storageService = storageService;
+        this.parsingService = parsingService;
     }
 
 
@@ -80,7 +84,8 @@ public class DistrictController {
             throws IOException, CsvException {
         String fileName = "district_" + id;
         storageService.store(fileName, file);
-        List<CandidateData> candidateListData = (storageService.parseDistrictCandidateDataList(fileName));
+        Resource fileResource = storageService.loadAsResource(fileName);
+        List<CandidateData> candidateListData = (parsingService.parseDistrictCandidateDataList(fileResource.getFile()));
         return new DistrictRepresentation(districtService.addCandidateList(id, candidateListData));
     }
 

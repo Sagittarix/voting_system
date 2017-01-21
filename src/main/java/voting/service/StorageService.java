@@ -22,6 +22,6 @@ public interface StorageService {
 
     void deleteAll();
 
-    public List<CandidateData> parseDistrictCandidateDataList(String fileName) throws CsvException, IOException;
+
 
 }

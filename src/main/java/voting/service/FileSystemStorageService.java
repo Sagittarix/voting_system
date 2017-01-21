@@ -84,37 +84,4 @@ public class FileSystemStorageService implements StorageService {
     }
 
 
-    @Override
-    public List<CandidateData> parseDistrictCandidateDataList(String fileName) throws CsvException, IOException {
-        String header = "Vardas,Pavardė,Asmens_kodas,Partija";
-        List<CandidateData> candidateDataList = new ArrayList<>();
-        int columnCount = header.split(",").length;
-
-        CSVReader reader = new CSVReader(new FileReader(rootLocation.resolve(fileName).toFile()));
-        String[] line;
-
-        line = reader.readNext();
-
-        if (header.split(",").length != columnCount
-                || !Arrays.equals(line, header.split(","))) {
-            throw (new CsvException("No header or header doesn't match"));
-        }
-
-        int lineNumber = 1;
-        while ((line = reader.readNext()) != null) {
-            if (line.length != columnCount) {
-                throw (new CsvException());
-            }
-            //TODO: add exception handling
-            CandidateData candidateData = new CandidateData();
-            candidateData.setFirstName(line[0]);
-            candidateData.setLastName(line[1]);
-            candidateData.setPersonId(line[2]);
-            candidateData.setPartyName(line[3]);
-            candidateDataList.add(candidateData);
-            lineNumber++;
-        }
-        return candidateDataList;
-    }
-
 }

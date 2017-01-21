@@ -2,12 +2,14 @@ package voting.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import voting.dto.CandidateRepresentation;
 import voting.model.Candidate;
 import voting.dto.CandidateData;
 import voting.service.CandidateService;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by domas on 1/10/17.
@@ -25,18 +27,18 @@ public class CandidateController {
     }
 
     @GetMapping
-    public List<Candidate> getCandidates() {
-        return candidateService.getCandidates();
+    public List<CandidateRepresentation> getCandidates() {
+        return candidateService.getCandidates().stream().map(c -> new CandidateRepresentation(c)).collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
-    public Candidate getCandidate(@PathVariable Long id) {
-        return candidateService.getCandidate(id);
+    public CandidateRepresentation getCandidate(@PathVariable Long id) {
+        return new CandidateRepresentation(candidateService.getCandidate(id));
     }
 
     @PostMapping
-    public Candidate addNewCandidate(@Valid @RequestBody CandidateData candidateData) {
-        return candidateService.addNewCandidate(candidateData);
+    public CandidateRepresentation addNewCandidate(@Valid @RequestBody CandidateData candidateData) {
+        return new CandidateRepresentation(candidateService.addNewCandidate(candidateData));
     }
 
     @DeleteMapping("/{id}")

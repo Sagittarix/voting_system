@@ -2,12 +2,14 @@ package voting.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import voting.dto.PartyRepresentation;
 import voting.model.Party;
 import voting.dto.PartyData;
 import voting.service.PartyService;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by domas on 1/15/17.
@@ -24,18 +26,18 @@ public class PartyController {
     }
 
     @GetMapping
-    public List<Party> getParties() {
-        return partyService.getParties();
+    public List<PartyRepresentation> getParties() {
+        return partyService.getParties().stream().map(p -> new PartyRepresentation(p)).collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
-    public Party getParty(@PathVariable Long id) {
-        return partyService.getParty(id);
+    public PartyRepresentation getParty(@PathVariable Long id) {
+        return new PartyRepresentation(partyService.getParty(id));
     }
 
     @PostMapping
-    public Party addNewParty(@Valid @RequestBody PartyData partyData) {
-        return partyService.addNewParty(partyData);
+    public PartyRepresentation addNewParty(@Valid @RequestBody PartyData partyData) {
+        return new PartyRepresentation(partyService.addNewParty(partyData));
     }
 
     @DeleteMapping("/{id}")

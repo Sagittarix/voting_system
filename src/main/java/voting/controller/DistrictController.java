@@ -10,6 +10,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
 import voting.dto.CandidateData;
 import voting.dto.DistrictData;
+import voting.dto.DistrictRepresentation;
 import voting.exception.ErrorResponse;
 import voting.exception.StorageException;
 import voting.exception.StorageFileNotFoundException;
@@ -24,6 +25,7 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by domas on 1/10/17.
@@ -44,18 +46,18 @@ public class DistrictController {
 
 
     @GetMapping
-    public List<District> getDistricts() {
-        return districtService.getDistricts();
+    public List<DistrictRepresentation> getDistricts() {
+        return districtService.getDistricts().stream().map(d -> new DistrictRepresentation(d)).collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
-    public District getDistrict(@PathVariable Long id) {
-        return districtService.getDistrict(id);
+    public DistrictRepresentation getDistrict(@PathVariable Long id) {
+        return new DistrictRepresentation(districtService.getDistrict(id));
     }
 
     @PostMapping
-    public District addNewDistrict(@Valid @RequestBody DistrictData districtData) {
-        return districtService.addNewDistrict(districtData);
+    public DistrictRepresentation addNewDistrict(@Valid @RequestBody DistrictData districtData) {
+        return new DistrictRepresentation(districtService.addNewDistrict(districtData));
     }
 
     @DeleteMapping("/{id}")
@@ -64,8 +66,8 @@ public class DistrictController {
     }
 
     @PostMapping("/{id}/candidates")
-    public District addCandidateList(@PathVariable Long id, @Valid @RequestBody CandidateData[] candidateListData) {
-        return districtService.addCandidateList(id, Arrays.asList(candidateListData));
+    public DistrictRepresentation addCandidateList(@PathVariable Long id, @Valid @RequestBody CandidateData[] candidateListData) {
+        return new DistrictRepresentation(districtService.addCandidateList(id, Arrays.asList(candidateListData)));
     }
 
     @DeleteMapping("/{id}/candidates")
@@ -74,12 +76,12 @@ public class DistrictController {
     }
 
     @PostMapping(value = "/{id}/candidates/upload", consumes = "multipart/form-data")
-    public District handleFileUpload(@PathVariable Long id, @RequestParam(name = "file") MultipartFile file)
+    public DistrictRepresentation handleFileUpload(@PathVariable Long id, @RequestParam(name = "file") MultipartFile file)
             throws IOException, CsvException {
         String fileName = "district_" + id;
         storageService.store(fileName, file);
         List<CandidateData> candidateListData = (storageService.parseDistrictCandidateDataList(fileName));
-        return districtService.addCandidateList(id, candidateListData);
+        return new DistrictRepresentation(districtService.addCandidateList(id, candidateListData));
     }
 
     @ExceptionHandler({CsvException.class, StorageException.class, IOException.class})
@@ -99,6 +101,5 @@ public class DistrictController {
         body.setMessage(ex.getMessage());
         return new ResponseEntity(body, new HttpHeaders(), status);
     }
-
 
 }

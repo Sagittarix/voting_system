@@ -2,6 +2,8 @@ package voting.service;
 
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
@@ -27,17 +29,18 @@ import java.util.List;
 @Service
 public class FileSystemStorageService implements StorageService {
 
-    private final Path rootLocation;
+    @Value("${storage.rootLocation}")
+    private Path rootLocation;
 
 //    @Autowired
 //    public FileSystemStorageService(StorageProperties properties) {
 //        this.rootLocation = Paths.get(properties.getLocation());
 //    }
 
-
-    public FileSystemStorageService() {
-        this.rootLocation = Paths.get("uploaded-files");
-    }
+//    // TODO: rootLocation is hardcoded - need to push it to properties file or somewhere else
+//    public FileSystemStorageService() {
+//        this.rootLocation = Paths.get("uploaded-files");
+//    }
 
     @Override
     public void store(String fileName, MultipartFile file) {

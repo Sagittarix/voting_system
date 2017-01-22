@@ -39,6 +39,8 @@ public class DataPreloader implements CommandLineRunner {
         District district1 = new District("Vilnius");
         District district2 = new District("Kaunas");
         District district3 = new District("Klaipėda");
+        District district4 = new District("District 4");
+        District district5 = new District("District asd");
 
         County county1 = new County("Senamiestis", 3000L);
         County county2 = new County("Naujamiestis", 3000L);
@@ -55,6 +57,8 @@ public class DataPreloader implements CommandLineRunner {
         districtRepository.save(district1);
         districtRepository.save(district2);
         districtRepository.save(district3);
+        districtRepository.save(district4);
+        districtRepository.save(district5);
 
         Party party1 = new Party("Demokratai", "DEM");
         Party party2 = new Party("Tvarka ir tesingumas", "TT");

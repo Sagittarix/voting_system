@@ -80,9 +80,7 @@ public class DistrictServiceImpl implements DistrictService {
     @Override
     public void deleteCandidateList(Long id) {
         District district = districtRepository.findOne(id);
-        System.out.println("SIZE = " + district.getCandidates().size());
         district.removeAllCandidates();
-        System.out.println("SIZE = " + district.getCandidates().size());
         districtRepository.save(district);
     }
 

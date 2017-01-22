@@ -10,22 +10,18 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
 import voting.dto.CandidateData;
+import voting.dto.CandidateListData;
 import voting.dto.DistrictData;
 import voting.dto.DistrictRepresentation;
 import voting.exception.ErrorResponse;
 import voting.exception.StorageException;
 import voting.exception.StorageFileNotFoundException;
-import voting.model.District;
 import voting.service.DistrictService;
 import voting.service.ParsingService;
 import voting.service.StorageService;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.Part;
 import javax.validation.Valid;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -69,9 +65,9 @@ public class DistrictController {
         districtService.deleteDistrict(id);
     }
 
-    @PostMapping("/{id}/candidates")
-    public DistrictRepresentation addCandidateList(@PathVariable Long id, @Valid @RequestBody CandidateData[] candidateListData) {
-        return new DistrictRepresentation(districtService.addCandidateList(id, Arrays.asList(candidateListData)));
+    @PostMapping("/{id}/candidates2")
+    public DistrictRepresentation addCandidateList(@PathVariable Long id, @Valid @RequestBody CandidateListData candidateListData) {
+        return new DistrictRepresentation(districtService.addCandidateList(id, candidateListData.getCandidateListData()));
     }
 
     @DeleteMapping("/{id}/candidates")
@@ -79,13 +75,13 @@ public class DistrictController {
         districtService.deleteCandidateList(id);
     }
 
-    @PostMapping(value = "/{id}/candidates/upload", consumes = "multipart/form-data")
+    @PostMapping(value = "/{id}/candidates", consumes = "multipart/form-data")
     public DistrictRepresentation handleFileUpload(@PathVariable Long id, @RequestParam(name = "file") MultipartFile file)
             throws IOException, CsvException {
-        String fileName = "district_" + id;
+        String fileName = String.format("district_%d.csv", id);
         storageService.store(fileName, file);
         Resource fileResource = storageService.loadAsResource(fileName);
-        List<CandidateData> candidateListData = (parsingService.parseDistrictCandidateDataList(fileResource.getFile()));
+        List<CandidateData> candidateListData = (parsingService.parseSingleMandateDistrictCandidateList(fileResource.getFile()));
         return new DistrictRepresentation(districtService.addCandidateList(id, candidateListData));
     }
 

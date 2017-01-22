@@ -32,16 +32,6 @@ public class FileSystemStorageService implements StorageService {
     @Value("${storage.rootLocation}")
     private Path rootLocation;
 
-//    @Autowired
-//    public FileSystemStorageService(StorageProperties properties) {
-//        this.rootLocation = Paths.get(properties.getLocation());
-//    }
-
-//    // TODO: rootLocation is hardcoded - need to push it to properties file or somewhere else
-//    public FileSystemStorageService() {
-//        this.rootLocation = Paths.get("uploaded-files");
-//    }
-
     @Override
     public void store(String fileName, MultipartFile file) {
         try {

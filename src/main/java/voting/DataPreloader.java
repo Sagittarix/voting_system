@@ -3,14 +3,19 @@ package voting;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-import voting.model.*;
+import voting.model.Candidate;
+import voting.model.County;
+import voting.model.District;
+import voting.model.Party;
 import voting.repository.CandidateRepository;
 import voting.repository.CountyRepRepository;
 import voting.repository.DistrictRepository;
 import voting.repository.PartyRepository;
 
-import java.util.*;
-import java.util.stream.IntStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 /**
  * Created by domas on 1/11/17.

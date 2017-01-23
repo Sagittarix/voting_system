@@ -1,8 +1,5 @@
 package voting.service;
 
-import com.opencsv.CSVReader;
-import com.opencsv.exceptions.CsvException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -11,17 +8,11 @@ import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 import voting.exception.StorageException;
 import voting.exception.StorageFileNotFoundException;
-import voting.dto.CandidateData;
 
-import java.io.FileReader;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Created by domas on 1/16/17.

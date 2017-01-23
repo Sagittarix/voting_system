@@ -1,5 +1,7 @@
 package voting.service;
 
+import voting.dto.CandidateData;
+import voting.model.District;
 import voting.model.Party;
 import voting.dto.PartyData;
 
@@ -12,11 +14,13 @@ public interface PartyService {
 
     Party addNewParty(PartyData partyData);
 
-//    Party updateParty(PartyData partyData);
-
     void deleteParty(Long id);
 
     Party getParty(Long id);
 
     List<Party> getParties();
+
+    Party addCandidateList(Long id, List<CandidateData> candidateListData);
+
+    void deleteCandidateList(Long id);
 }

@@ -1,13 +1,9 @@
 package voting.service;
 
-import com.opencsv.exceptions.CsvException;
 import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
-import voting.dto.CandidateData;
 
-import java.io.IOException;
 import java.nio.file.Path;
-import java.util.List;
 
 /**
  * Created by domas on 1/16/17.
@@ -21,7 +17,5 @@ public interface StorageService {
     Resource loadAsResource(String filename);
 
     void deleteAll();
-
-
 
 }

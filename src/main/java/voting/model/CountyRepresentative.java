@@ -1,7 +1,6 @@
 package voting.model;
 
 import javax.persistence.OneToOne;
-import java.util.Objects;
 
 /**
  * Created by domas on 1/21/17.

@@ -2,6 +2,7 @@ package voting.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import voting.dto.CandidateData;
 import voting.model.Candidate;
 import voting.model.Party;
 import voting.dto.PartyData;
@@ -59,5 +60,17 @@ public class PartyServiceImpl implements PartyService{
     @Override
     public List<Party> getParties() {
         return (List<Party>) partyRepository.findAll();
+    }
+
+    //TODO: implement
+    @Override
+    public Party addCandidateList(Long id, List<CandidateData> candidateListData) {
+        return null;
+    }
+
+    //TODO: implement
+    @Override
+    public void deleteCandidateList(Long id) {
+
     }
 }

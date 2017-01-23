@@ -5,7 +5,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import voting.dto.CandidateData;
 import voting.dto.DistrictData;
-import voting.model.*;
+import voting.model.Candidate;
+import voting.model.County;
+import voting.model.District;
 import voting.repository.DistrictRepository;
 
 import java.util.List;
@@ -65,7 +67,6 @@ public class DistrictServiceImpl implements DistrictService {
     public District addCandidateList(Long id, List<CandidateData> candidateListData) {
         District district = districtRepository.findOne(id);
         // TODO: add validation: jei kandidatas jau priskirtas kitam districtui, turi mesti errora
-        // TODO: add validation: kad nebutu kandidatas iskeltas partijos, o partijos sarase jo nera
         candidateListData.forEach(
                 candidateData -> {
                     Candidate candidate = candidateService.getCandidate(candidateData.getPersonId());

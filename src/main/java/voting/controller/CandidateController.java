@@ -2,9 +2,8 @@ package voting.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import voting.dto.CandidateRepresentation;
-import voting.model.Candidate;
 import voting.dto.CandidateData;
+import voting.dto.CandidateRepresentation;
 import voting.service.CandidateService;
 
 import javax.validation.Valid;

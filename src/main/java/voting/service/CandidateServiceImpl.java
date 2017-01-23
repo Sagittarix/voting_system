@@ -2,8 +2,8 @@ package voting.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import voting.model.Candidate;
 import voting.dto.CandidateData;
+import voting.model.Candidate;
 import voting.repository.CandidateRepository;
 
 import java.util.List;

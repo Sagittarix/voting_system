@@ -13,8 +13,6 @@ public interface DistrictService {
 
     District addNewDistrict(DistrictData districtData);
 
-//    District updateDistrict(DistrictData districtData);
-
     void deleteDistrict(Long id);
 
     District getDistrict(Long id);

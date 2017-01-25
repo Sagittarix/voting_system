@@ -85,6 +85,8 @@ public class DistrictController {
         return new DistrictRepresentation(districtService.addCandidateList(id, candidateListData));
     }
 
+    // TODO: ideti exceptionus notFound atveju
+
     @ExceptionHandler({CsvException.class, StorageException.class, IOException.class})
     protected ResponseEntity<Object> handleSomeException(Exception ex, WebRequest request) {
         HttpStatus status = null;

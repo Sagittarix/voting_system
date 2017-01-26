@@ -14,9 +14,14 @@ import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+
 /**
  * Created by domas on 1/16/17.
  */
+
+// TODO: uzdeti limita failo dydziui
+
 @Service
 public class FileSystemStorageService implements StorageService {
 
@@ -25,17 +30,12 @@ public class FileSystemStorageService implements StorageService {
 
     @Override
     public void store(String fileName, MultipartFile file) {
+        Path filePath = rootLocation.resolve(fileName);
         try {
-            if (file.isEmpty()) {
-                throw new StorageException("Empty file " + file.getOriginalFilename());
-            }
             if (!Files.exists(rootLocation)) {
                 Files.createDirectory(rootLocation);
             }
-            if (Files.exists(rootLocation.resolve(fileName))) {
-                Files.delete(rootLocation.resolve(fileName));
-            }
-            Files.copy(file.getInputStream(), this.rootLocation.resolve(fileName));
+            Files.copy(file.getInputStream(), filePath, REPLACE_EXISTING);
         } catch (IOException e) {
             throw new StorageException("Failed to store file " + file.getOriginalFilename(), e);
         }

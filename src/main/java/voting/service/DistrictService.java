@@ -22,4 +22,6 @@ public interface DistrictService {
     District addCandidateList(Long id, List<CandidateData> candidateListData);
 
     void deleteCandidateList(Long id);
+
+    boolean districtExists(Long id);
 }

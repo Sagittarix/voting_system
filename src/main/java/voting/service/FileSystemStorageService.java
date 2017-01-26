@@ -19,9 +19,6 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 /**
  * Created by domas on 1/16/17.
  */
-
-// TODO: uzdeti limita failo dydziui
-
 @Service
 public class FileSystemStorageService implements StorageService {
 

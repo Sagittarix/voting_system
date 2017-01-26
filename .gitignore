@@ -8,6 +8,7 @@
 target
 node_modules
 uploaded-files
+src/js
 
 .classpath
 .project

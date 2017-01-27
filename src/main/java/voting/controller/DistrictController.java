@@ -81,7 +81,7 @@ public class DistrictController {
         String fileName = String.format("district_%d.csv", id);
         storageService.store(fileName, file);
         Resource fileResource = storageService.loadAsResource(fileName);
-        List<CandidateData> candidateListData = (parsingService.parseSingleMandateDistrictCandidateList(fileResource.getFile()));
+        List<CandidateData> candidateListData = (parsingService.parseSingleMandateCandidateList(fileResource.getFile()));
         return new DistrictRepresentation(districtService.addCandidateList(id, candidateListData));
     }
 

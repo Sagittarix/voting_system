@@ -1,6 +1,9 @@
 package voting.service;
 
 import com.opencsv.CSVReader;
+import com.opencsv.bean.ColumnPositionMappingStrategy;
+import com.opencsv.bean.CsvToBean;
+import com.opencsv.bean.HeaderColumnNameTranslateMappingStrategy;
 import com.opencsv.exceptions.CsvConstraintViolationException;
 import com.opencsv.exceptions.CsvException;
 import org.springframework.stereotype.Service;
@@ -13,10 +16,7 @@ import javax.validation.ValidatorFactory;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by domas on 1/21/17.
@@ -24,39 +24,37 @@ import java.util.Set;
 @Service
 public class ParsingServiceImpl implements ParsingService {
 
-    // TODO: refactor - both methods are almost the same, maybe use Strategy DP
 
-    @Override
-    public List<CandidateData> parseSingleMandateDistrictCandidateList(File file) throws IOException, CsvException {
+    public List<CandidateData> parseCandidateList(CandidateParsingStrategy strategy, File file) throws CsvException, IOException {
 
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         Validator validator = factory.getValidator();
 
-        String header = "Vardas,Pavardė,Asmens_kodas,Partija";
+        String[] correctHeader = strategy.getHeader();
+        int columnCount = correctHeader.length;
         List<CandidateData> candidateDataList = new ArrayList<>();
-        int columnCount = header.split(",").length;
+
 
         try (CSVReader reader = new CSVReader(new FileReader(file))) {
-            String[] line;
-            line = reader.readNext();
+            String[] header = reader.readNext();
 
-            if (header.split(",").length != columnCount
-                    || !Arrays.equals(line, header.split(","))) {
-                throw (new CsvException("No header or header doesn't match"));
+            if (header.length != columnCount
+                    || !Arrays.equals(header, correctHeader)) {
+                throw (new CsvException("Incorrect or no header!"));
             }
 
-            int lineNumber = 2;
+            String[] line;
+            int lineNumber = 2; // line 1 was header
+
             while ((line = reader.readNext()) != null) {
                 if (line.length != columnCount) {
                     throw (new CsvException("Invalid data at line " + lineNumber));
                 }
+
                 //TODO: add proper validation / exception handling
+
                 try {
-                    CandidateData candidateData = new CandidateData();
-                    candidateData.setFirstName(line[0]);
-                    candidateData.setLastName(line[1]);
-                    candidateData.setPersonId(line[2]);
-                    candidateData.setPartyName(line[3]);
+                    CandidateData candidateData = strategy.createCandidateData(line);
                     candidateDataList.add(candidateData);
                     Set<ConstraintViolation<CandidateData>> violations = validator.validate(candidateData);
                     if (violations.size() > 0) {
@@ -76,50 +74,55 @@ public class ParsingServiceImpl implements ParsingService {
 
 
     @Override
-    public List<CandidateData> parsePartyCandidateList(File file) throws CsvException, IOException {
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        Validator validator = factory.getValidator();
+    public List<CandidateData> parseSingleMandateCandidateList(File file) throws IOException, CsvException {
+        CandidateParsingStrategy strategy = new SingleMandateCandidateParsingStrategy();
+        return parseCandidateList(strategy, file);
+    }
 
-        String header = "Numeris,Vardas,Pavardė,Asmens_kodas";
-        List<CandidateData> candidateDataList = new ArrayList<>();
-        int columnCount = header.split(",").length;
+    @Override
+    public List<CandidateData> parseMultiMandateCandidateList(File file) throws IOException, CsvException {
+        CandidateParsingStrategy strategy = new MultiMandateCandidateParsingStrategy();
+        return parseCandidateList(strategy, file);
+    }
 
-        try (CSVReader reader = new CSVReader(new FileReader(file))) {
-            String[] line;
-            line = reader.readNext();
 
-            if (header.split(",").length != columnCount
-                    || !Arrays.equals(line, header.split(","))) {
-                throw (new CsvException("No header or header doesn't match"));
-            }
+    private abstract class CandidateParsingStrategy {
+        private String[] header;
 
-            int lineNumber = 2;
-            while ((line = reader.readNext()) != null) {
-                if (line.length != columnCount) {
-                    throw (new CsvException("Invalid data at line " + lineNumber));
-                }
-                //TODO: add proper validation / exception handling
-                try {
-                    CandidateData candidateData = new CandidateData();
-                    candidateData.setPositionInPartyList(Long.parseLong(line[0]));
-                    candidateData.setFirstName(line[1]);
-                    candidateData.setLastName(line[2]);
-                    candidateData.setPersonId(line[3]);
-                    candidateDataList.add(candidateData);
-                    Set<ConstraintViolation<CandidateData>> violations = validator.validate(candidateData);
-                    if (violations.size() > 0) {
-                        throw (new CsvConstraintViolationException("Constaint violation at line " + lineNumber));
-                    }
-                    lineNumber++;
-                } catch (NumberFormatException ex) {
-                    throw (new CsvException("Invalid data at line " + lineNumber));
-                }
-            }
-        } catch (IOException e) {
-            throw (new IOException("error reading file"));
+        abstract CandidateData createCandidateData(String[] line);
+
+        String[] getHeader() {
+            return header;
         }
+    }
 
 
-        return candidateDataList;
+    private class SingleMandateCandidateParsingStrategy extends CandidateParsingStrategy {
+
+        private String[] header = "Vardas,Pavardė,Asmens_kodas,Partija".split(",");
+
+        @Override
+        public CandidateData createCandidateData(String[] line) {
+            CandidateData candidateData = new CandidateData();
+            candidateData.setFirstName(line[0]);
+            candidateData.setLastName(line[1]);
+            candidateData.setPersonId(line[2]);
+            candidateData.setPartyName(line[3]);
+            return candidateData;
+        }
+    }
+
+    private class MultiMandateCandidateParsingStrategy extends CandidateParsingStrategy {
+        private String[] header = "Numeris,Vardas,Pavardė,Asmens_kodas".split(",");
+
+        @Override
+        public CandidateData createCandidateData(String[] line) {
+            CandidateData candidateData = new CandidateData();
+            candidateData.setPositionInPartyList(Long.parseLong(line[0]));
+            candidateData.setFirstName(line[1]);
+            candidateData.setLastName(line[2]);
+            candidateData.setPersonId(line[3]);
+            return candidateData;
+        }
     }
 }

@@ -12,7 +12,7 @@ import java.util.List;
  */
 public interface ParsingService {
 
-    public List<CandidateData> parseSingleMandateDistrictCandidateList(File file) throws CsvException, IOException;
+    public List<CandidateData> parseSingleMandateCandidateList(File file) throws CsvException, IOException;
 
-    public List<CandidateData> parsePartyCandidateList(File file) throws CsvException, IOException;
+    public List<CandidateData> parseMultiMandateCandidateList(File file) throws CsvException, IOException;
 }

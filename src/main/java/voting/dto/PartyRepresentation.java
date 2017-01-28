@@ -16,7 +16,6 @@ public class PartyRepresentation {
 
     private Long id;
     private String name;
-    private String shortName;
     private List<CandidateRepresentation> candidates;
 
 
@@ -26,7 +25,6 @@ public class PartyRepresentation {
     public PartyRepresentation(Party party) {
         this.id = party.getId();
         this.name = party.getName();
-        this.shortName = party.getShortName();
         this.candidates = new ArrayList<>();
         if (party.getCandidates() != null) {
             party.getCandidates().forEach(c -> candidates.add(new CandidateRepresentation(c)));
@@ -50,14 +48,6 @@ public class PartyRepresentation {
         this.name = name;
     }
 
-    public String getShortName() {
-        return shortName;
-    }
-
-    public void setShortName(String shortName) {
-        this.shortName = shortName;
-    }
-
     public List<CandidateRepresentation> getCandidates() {
         return candidates;
     }
@@ -74,13 +64,12 @@ public class PartyRepresentation {
         PartyRepresentation that = (PartyRepresentation) o;
         return Objects.equals(id, that.id) &&
                 Objects.equals(name, that.name) &&
-                Objects.equals(shortName, that.shortName) &&
                 Objects.equals(candidates, that.candidates);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, shortName, candidates);
+        return Objects.hash(id, name, candidates);
     }
 
     @Override
@@ -88,7 +77,6 @@ public class PartyRepresentation {
         return "PartyRepresentation{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", shortName='" + shortName + '\'' +
                 ", candidates=" + candidates +
                 '}';
     }

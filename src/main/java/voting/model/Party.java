@@ -15,28 +15,30 @@ public class Party {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
-    private String shortName;
-    @OneToMany(mappedBy = "party", orphanRemoval = true)
+    @OneToMany(mappedBy = "party")
     private List<Candidate> candidates = new ArrayList<>();
 
     public Party() {
     }
 
-    public Party(String name, String shortName) {
+    public Party(String name) {
         this.name = name;
-        this.shortName = shortName;
     }
 
     public Long getId() {
         return id;
     }
 
-    public String getName() {
-        return name;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public String getShortName() {
-        return shortName;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public List<Candidate> getCandidates() {
@@ -48,6 +50,17 @@ public class Party {
         candidate.setParty(this);
     }
 
+    public void removeCandidate(Candidate candidate) {
+        candidates.remove(candidate);
+        candidate.setParty(null);
+    }
+
+    public void removeAllCandidates() {
+        candidates.forEach(c -> c.setParty(null));
+        candidates = new ArrayList<Candidate>();
+    }
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -55,13 +68,12 @@ public class Party {
         Party party = (Party) o;
         return Objects.equals(id, party.id) &&
                 Objects.equals(name, party.name) &&
-                Objects.equals(shortName, party.shortName) &&
                 Objects.equals(candidates, party.candidates);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, shortName, candidates);
+        return Objects.hash(id, name, candidates);
     }
 
     @Override
@@ -69,7 +81,6 @@ public class Party {
         return "Party{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", shortName='" + shortName + '\'' +
                 ", candidates=" + candidates +
                 '}';
     }

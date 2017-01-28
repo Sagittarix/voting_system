@@ -15,10 +15,7 @@ public class PartyData {
     private Long id;
     @NotNull
     private String name;
-    @NotNull
-    private String shortName;
     @Valid
-    @NotNull
     @JsonProperty("candidates")
     private List<CandidateData> candidatesData;
 
@@ -39,14 +36,6 @@ public class PartyData {
         this.name = name;
     }
 
-    public String getShortName() {
-        return shortName;
-    }
-
-    public void setShortName(String shortName) {
-        this.shortName = shortName;
-    }
-
     public List<CandidateData> getCandidatesData() {
         return candidatesData;
     }
@@ -62,13 +51,12 @@ public class PartyData {
         PartyData partyData = (PartyData) o;
         return Objects.equals(id, partyData.id) &&
                 Objects.equals(name, partyData.name) &&
-                Objects.equals(shortName, partyData.shortName) &&
                 Objects.equals(candidatesData, partyData.candidatesData);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, shortName, candidatesData);
+        return Objects.hash(id, name, candidatesData);
     }
 
     @Override
@@ -76,7 +64,6 @@ public class PartyData {
         return "PartyData{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", shortName='" + shortName + '\'' +
                 ", candidatesData=" + candidatesData +
                 '}';
     }

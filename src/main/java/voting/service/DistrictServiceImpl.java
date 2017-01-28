@@ -1,8 +1,11 @@
 package voting.service;
 
+import com.opencsv.exceptions.CsvException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import voting.dto.CandidateData;
 import voting.dto.DistrictData;
 import voting.exception.NotFoundException;
@@ -11,6 +14,7 @@ import voting.model.County;
 import voting.model.District;
 import voting.repository.DistrictRepository;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -21,11 +25,15 @@ public class DistrictServiceImpl implements DistrictService {
 
     private DistrictRepository districtRepository;
     private CandidateService candidateService;
+    private StorageService storageService;
+    private ParsingService parsingService;
 
     @Autowired
-    public DistrictServiceImpl(DistrictRepository districtRepository, CandidateService candidateService) {
+    public DistrictServiceImpl(DistrictRepository districtRepository, CandidateService candidateService, StorageService storageService, ParsingService parsingService) {
         this.districtRepository = districtRepository;
         this.candidateService = candidateService;
+        this.storageService = storageService;
+        this.parsingService = parsingService;
     }
 
 
@@ -67,8 +75,13 @@ public class DistrictServiceImpl implements DistrictService {
 
     @Transactional
     @Override
-    public District setCandidateList(Long id, List<CandidateData> candidateListData) {
+    public District setCandidateList(Long id, MultipartFile file) throws IOException, CsvException {
         District district = getDistrict(id);
+
+        String fileName = String.format("district_%d.csv", id);
+        storageService.store(fileName, file);
+        Resource fileResource = storageService.loadAsResource(fileName);
+        List<CandidateData> candidateListData = (parsingService.parseSingleMandateCandidateList(fileResource.getFile()));
 
         district.removeAllCandidates();
         candidateListData.forEach(

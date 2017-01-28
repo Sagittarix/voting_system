@@ -55,17 +55,15 @@ public class DistrictServiceImpl implements DistrictService {
     @Override
     public void deleteDistrict(Long id) {
         District district = getDistrict(id);
-        district.removeAllCandidates();
-        districtRepository.delete(id);
+        if (district != null) {
+            district.removeAllCandidates();
+            districtRepository.delete(id);
+        }
     }
 
     @Override
     public District getDistrict(Long id) {
-        District district = districtRepository.findOne(id);
-        if (district == null) {
-            throw (new NotFoundException("district with id " + id));
-        };
-        return district;
+        return districtRepository.findOne(id);
     }
 
     @Override
@@ -77,6 +75,9 @@ public class DistrictServiceImpl implements DistrictService {
     @Override
     public District setCandidateList(Long id, MultipartFile file) throws IOException, CsvException {
         District district = getDistrict(id);
+        if (district == null) {
+            throw (new NotFoundException("Couldn't find district with id " + id));
+        }
 
         String fileName = String.format("district_%d.csv", id);
         storageService.store(fileName, file);
@@ -102,8 +103,10 @@ public class DistrictServiceImpl implements DistrictService {
     @Override
     public void deleteCandidateList(Long id) {
         District district = getDistrict(id);
-        district.removeAllCandidates();
-        districtRepository.save(district);
+        if (district != null) {
+            district.removeAllCandidates();
+            districtRepository.save(district);
+        }
     }
 
 }

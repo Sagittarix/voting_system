@@ -7,15 +7,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import voting.dto.CandidateData;
+import voting.dto.PartyData;
 import voting.exception.NotFoundException;
 import voting.model.Candidate;
-import voting.model.District;
 import voting.model.Party;
-import voting.dto.PartyData;
-import voting.repository.CandidateRepository;
 import voting.repository.PartyRepository;
 
-import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 
@@ -23,7 +20,7 @@ import java.util.List;
  * Created by domas on 1/15/17.
  */
 @Service
-public class PartyServiceImpl implements PartyService{
+public class PartyServiceImpl implements PartyService {
 
     private PartyRepository partyRepository;
     private CandidateService candidateService;
@@ -36,6 +33,18 @@ public class PartyServiceImpl implements PartyService{
         this.candidateService = candidateService;
         this.storageService = storageService;
         this.parsingService = parsingService;
+    }
+
+
+    @Override
+    public Party getParty(Long id) {
+        Party party = partyRepository.findOne(id);
+        return party;
+    }
+
+    @Override
+    public List<Party> getParties() {
+        return (List<Party>) partyRepository.findAll();
     }
 
     //TODO: isspresti sia problema:
@@ -75,28 +84,11 @@ public class PartyServiceImpl implements PartyService{
 
     @Transactional
     @Override
-    public void deleteParty(Long id) {
-        partyRepository.delete(id);
-    }
-
-    @Override
-    public Party getParty(Long id) {
-        Party party = partyRepository.findOne(id);
-        if (party == null) {
-            throw (new NotFoundException("party with id " + id));
-        }
-        return party;
-    }
-
-    @Override
-    public List<Party> getParties() {
-        return (List<Party>) partyRepository.findAll();
-    }
-
-    @Transactional
-    @Override
     public Party setCandidateList(Long id, MultipartFile file) throws IOException, CsvException {
         Party party = getParty(id);
+        if (party == null) {
+            throw (new NotFoundException("couldn't find party with id " + id));
+        }
 
         String fileName = String.format("party_%d.csv", party.getId());
         storageService.store(fileName, file);
@@ -110,10 +102,15 @@ public class PartyServiceImpl implements PartyService{
                     Candidate candidate = candidateService.getCandidate(candidateData.getPersonId());
                     if (candidate == null) {
                         candidate = candidateService.addNewCandidate(candidateData);
+                    } else if (!candidate.getFirstName().equals(candidateData.getFirstName())
+                            || !candidate.getLastName().equals(candidateData.getLastName())) {
+                        throw (new IllegalArgumentException(
+                                String.format("Conflicting data on candidate pid " + candidate.getPersonId())));
                     } else if (candidate.getParty() != null && !candidate.getParty().equals(party)) {
-                        throw (new IllegalArgumentException(String.format("%s %s, pid %s is already in other party list (id:%d, name: %s)",
-                                candidate.getFirstName(), candidate.getLastName(), candidate.getPersonId(),
-                                candidate.getParty().getId(), candidate.getParty().getName())));
+                        throw (new IllegalArgumentException(
+                                String.format("%s %s, pid %s is already in other party list (id:%d, name: %s)",
+                                        candidate.getFirstName(), candidate.getLastName(), candidate.getPersonId(),
+                                        candidate.getParty().getId(), candidate.getParty().getName())));
                     }
                     party.addCandidate(candidate);
                 });
@@ -123,7 +120,19 @@ public class PartyServiceImpl implements PartyService{
     @Override
     public void deleteCandidateList(Long id) {
         Party party = getParty(id);
-        party.removeAllCandidates();
-        partyRepository.save(party);
+        if (party != null) {
+            party.removeAllCandidates();
+            partyRepository.save(party);
+        }
+    }
+
+    @Transactional
+    @Override
+    public void deleteParty(Long id) {
+        Party party = getParty(id);
+        if (party != null) {
+            party.removeAllCandidates();
+            partyRepository.delete(id);
+        }
     }
 }

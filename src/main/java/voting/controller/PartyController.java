@@ -1,12 +1,15 @@
 package voting.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.opencsv.exceptions.CsvException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import voting.dto.PartyData;
 import voting.dto.PartyRepresentation;
 import voting.service.PartyService;
 
-import javax.validation.Valid;
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,13 +37,30 @@ public class PartyController {
         return new PartyRepresentation(partyService.getParty(id));
     }
 
-    @PostMapping
-    public PartyRepresentation addNewParty(@Valid @RequestBody PartyData partyData) {
-        return new PartyRepresentation(partyService.addNewParty(partyData));
+    // TODO: add partyData validation
+
+    @PostMapping(consumes = "multipart/form-data")
+    public PartyRepresentation saveParty(@RequestParam(name = "party") String partyDataString, @RequestParam(name = "file") MultipartFile multipartFile)
+            throws IOException, CsvException {
+        ObjectMapper mapper = new ObjectMapper();
+        PartyData partyData = mapper.readValue(partyDataString, PartyData.class);
+        return new PartyRepresentation(partyService.saveParty(partyData, multipartFile));
     }
 
     @DeleteMapping("/{id}")
     public void deleteParty(@PathVariable Long id) {
         partyService.deleteParty(id);
     }
+
+    @PostMapping(value = "/{id}/candidates", consumes = "multipart/form-data")
+    public PartyRepresentation setCandidateList(@PathVariable Long id, @RequestParam(name = "file") MultipartFile multipartFile)
+            throws IOException, CsvException {
+        return new PartyRepresentation(partyService.setCandidateList(id, multipartFile));
+    }
+
+    @DeleteMapping("/{id}/candidates")
+    public void deleteCandidateList(@PathVariable Long id) {
+        partyService.deleteCandidateList(id);
+    }
+
 }

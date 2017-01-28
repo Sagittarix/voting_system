@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
 import voting.dto.CandidateData;
-import voting.dto.CandidateListData;
 import voting.dto.DistrictData;
 import voting.dto.DistrictRepresentation;
 import voting.exception.ErrorResponse;
+import voting.exception.NotFoundException;
 import voting.exception.StorageException;
 import voting.exception.StorageFileNotFoundException;
 import voting.service.DistrictService;
@@ -65,24 +65,19 @@ public class DistrictController {
         districtService.deleteDistrict(id);
     }
 
-    @PostMapping("/{id}/candidates2")
-    public DistrictRepresentation addCandidateList(@PathVariable Long id, @Valid @RequestBody CandidateListData candidateListData) {
-        return new DistrictRepresentation(districtService.addCandidateList(id, candidateListData.getCandidateListData()));
-    }
-
     @DeleteMapping("/{id}/candidates")
     public void deleteCandidateList(@PathVariable Long id) {
         districtService.deleteCandidateList(id);
     }
 
     @PostMapping(value = "/{id}/candidates", consumes = "multipart/form-data")
-    public DistrictRepresentation handleFileUpload(@PathVariable Long id, @RequestParam(name = "file") MultipartFile file)
+    public DistrictRepresentation setCandidateList(@PathVariable Long id, @RequestParam(name = "file") MultipartFile file)
             throws IOException, CsvException {
         String fileName = String.format("district_%d.csv", id);
         storageService.store(fileName, file);
         Resource fileResource = storageService.loadAsResource(fileName);
         List<CandidateData> candidateListData = (parsingService.parseSingleMandateCandidateList(fileResource.getFile()));
-        return new DistrictRepresentation(districtService.addCandidateList(id, candidateListData));
+        return new DistrictRepresentation(districtService.setCandidateList(id, candidateListData));
     }
 
     // TODO: ideti exceptionus notFound atveju
@@ -98,6 +93,10 @@ public class DistrictController {
             status = HttpStatus.INTERNAL_SERVER_ERROR;
         } else if (ex instanceof IOException) {
             status = HttpStatus.INTERNAL_SERVER_ERROR;
+        } else if (ex instanceof NotFoundException) {
+            status = HttpStatus.NOT_FOUND;
+        } else if (ex instanceof IllegalArgumentException) {
+            status = HttpStatus.CONFLICT;
         }
         ErrorResponse body = new ErrorResponse();
         body.setErrorCode(status.value());

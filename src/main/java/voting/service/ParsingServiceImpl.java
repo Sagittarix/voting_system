@@ -1,9 +1,6 @@
 package voting.service;
 
 import com.opencsv.CSVReader;
-import com.opencsv.bean.ColumnPositionMappingStrategy;
-import com.opencsv.bean.CsvToBean;
-import com.opencsv.bean.HeaderColumnNameTranslateMappingStrategy;
 import com.opencsv.exceptions.CsvConstraintViolationException;
 import com.opencsv.exceptions.CsvException;
 import org.springframework.stereotype.Service;
@@ -16,7 +13,10 @@ import javax.validation.ValidatorFactory;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by domas on 1/21/17.
@@ -25,7 +25,20 @@ import java.util.*;
 public class ParsingServiceImpl implements ParsingService {
 
 
-    public List<CandidateData> parseCandidateList(CandidateParsingStrategy strategy, File file) throws CsvException, IOException {
+    @Override
+    public List<CandidateData> parseSingleMandateCandidateList(File file) throws IOException, CsvException {
+        CandidateParsingStrategy strategy = new SingleMandateCandidateParsingStrategy();
+        return parseCandidateList(strategy, file);
+    }
+
+
+    @Override
+    public List<CandidateData> parseMultiMandateCandidateList(File file) throws IOException, CsvException {
+        CandidateParsingStrategy strategy = new MultiMandateCandidateParsingStrategy();
+        return parseCandidateList(strategy, file);
+    }
+
+    private List<CandidateData> parseCandidateList(CandidateParsingStrategy strategy, File file) throws CsvException, IOException {
 
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         Validator validator = factory.getValidator();
@@ -38,9 +51,10 @@ public class ParsingServiceImpl implements ParsingService {
         try (CSVReader reader = new CSVReader(new FileReader(file))) {
             String[] header = reader.readNext();
 
-            if (header.length != columnCount
+            if (header == null
+                    || header.length != columnCount
                     || !Arrays.equals(header, correctHeader)) {
-                throw (new CsvException("Incorrect or no header!"));
+                throw (new CsvException("Incorrect or no header! CSV header should be - " + String.join(",", correctHeader)));
             }
 
             String[] line;
@@ -73,31 +87,15 @@ public class ParsingServiceImpl implements ParsingService {
     }
 
 
-    @Override
-    public List<CandidateData> parseSingleMandateCandidateList(File file) throws IOException, CsvException {
-        CandidateParsingStrategy strategy = new SingleMandateCandidateParsingStrategy();
-        return parseCandidateList(strategy, file);
-    }
+    public interface CandidateParsingStrategy {
 
-    @Override
-    public List<CandidateData> parseMultiMandateCandidateList(File file) throws IOException, CsvException {
-        CandidateParsingStrategy strategy = new MultiMandateCandidateParsingStrategy();
-        return parseCandidateList(strategy, file);
+        CandidateData createCandidateData(String[] line);
+
+        String[] getHeader();
     }
 
 
-    private abstract class CandidateParsingStrategy {
-        private String[] header;
-
-        abstract CandidateData createCandidateData(String[] line);
-
-        String[] getHeader() {
-            return header;
-        }
-    }
-
-
-    private class SingleMandateCandidateParsingStrategy extends CandidateParsingStrategy {
+    public class SingleMandateCandidateParsingStrategy implements CandidateParsingStrategy {
 
         private String[] header = "Vardas,Pavardė,Asmens_kodas,Partija".split(",");
 
@@ -110,9 +108,14 @@ public class ParsingServiceImpl implements ParsingService {
             candidateData.setPartyName(line[3]);
             return candidateData;
         }
+
+        @Override
+        public String[] getHeader() {
+            return header;
+        }
     }
 
-    private class MultiMandateCandidateParsingStrategy extends CandidateParsingStrategy {
+    public class MultiMandateCandidateParsingStrategy implements CandidateParsingStrategy {
         private String[] header = "Numeris,Vardas,Pavardė,Asmens_kodas".split(",");
 
         @Override
@@ -123,6 +126,11 @@ public class ParsingServiceImpl implements ParsingService {
             candidateData.setLastName(line[2]);
             candidateData.setPersonId(line[3]);
             return candidateData;
+        }
+
+        @Override
+        public String[] getHeader() {
+            return header;
         }
     }
 }

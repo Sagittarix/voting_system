@@ -2,6 +2,7 @@ package voting.dto;
 
 import org.hibernate.validator.constraints.Length;
 import voting.model.Candidate;
+import voting.model.District;
 import voting.model.Party;
 
 import javax.validation.constraints.NotNull;
@@ -18,15 +19,14 @@ public class CandidateRepresentation {
     private String firstName;
     private String lastName;
 
-    // not sure ar situ reik, kolkas palieku
+    private Long districtId;
+    private String districtName;
     private Long partyId;
     private String partyName;
-    private String partyShortName;
     private Long positionInPartyList;
 
 
     public CandidateRepresentation() {
-
     }
 
     public CandidateRepresentation(Candidate candidate) {
@@ -34,16 +34,20 @@ public class CandidateRepresentation {
         this.personId = candidate.getPersonId();
         this.firstName = candidate.getFirstName();
         this.lastName = candidate.getLastName();
+        District district = candidate.getDistrict();
+        if (district != null) {
+            this.districtId = district.getId();
+            this.districtName = district.getName();
+        }
         Party party = candidate.getParty();
         if (party != null) {
             this.partyId = party.getId();
             this.partyName = party.getName();
-            this.partyShortName = party.getShortName();
         }
         this.positionInPartyList = candidate.getPositionInPartyList() != null ? candidate.getPositionInPartyList() : 0;
     }
 
-    
+
     public Long getId() {
         return id;
     }
@@ -76,6 +80,22 @@ public class CandidateRepresentation {
         this.lastName = lastName;
     }
 
+    public Long getDistrictId() {
+        return districtId;
+    }
+
+    public void setDistrictId(Long districtId) {
+        this.districtId = districtId;
+    }
+
+    public String getDistrictName() {
+        return districtName;
+    }
+
+    public void setDistrictName(String districtName) {
+        this.districtName = districtName;
+    }
+
     public Long getPartyId() {
         return partyId;
     }
@@ -90,14 +110,6 @@ public class CandidateRepresentation {
 
     public void setPartyName(String partyName) {
         this.partyName = partyName;
-    }
-
-    public String getPartyShortName() {
-        return partyShortName;
-    }
-
-    public void setPartyShortName(String partyShortName) {
-        this.partyShortName = partyShortName;
     }
 
     public Long getPositionInPartyList() {
@@ -118,15 +130,16 @@ public class CandidateRepresentation {
                 Objects.equals(personId, that.personId) &&
                 Objects.equals(firstName, that.firstName) &&
                 Objects.equals(lastName, that.lastName) &&
+                Objects.equals(districtId, that.districtId) &&
+                Objects.equals(districtName, that.districtName) &&
                 Objects.equals(partyId, that.partyId) &&
                 Objects.equals(partyName, that.partyName) &&
-                Objects.equals(partyShortName, that.partyShortName) &&
                 Objects.equals(positionInPartyList, that.positionInPartyList);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, personId, firstName, lastName, partyId, partyName, partyShortName, positionInPartyList);
+        return Objects.hash(id, personId, firstName, lastName, districtId, districtName, partyId, partyName, positionInPartyList);
     }
 
     @Override
@@ -136,9 +149,10 @@ public class CandidateRepresentation {
                 ", personId='" + personId + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
+                ", districtId=" + districtId +
+                ", districtName='" + districtName + '\'' +
                 ", partyId=" + partyId +
                 ", partyName='" + partyName + '\'' +
-                ", partyShortName='" + partyShortName + '\'' +
                 ", positionInPartyList=" + positionInPartyList +
                 '}';
     }

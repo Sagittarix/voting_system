@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import voting.dto.DistrictData;
 import voting.dto.DistrictRepresentation;
+import voting.exception.NotFoundException;
+import voting.model.District;
 import voting.service.DistrictService;
 
 import javax.validation.Valid;
@@ -36,7 +38,11 @@ public class DistrictController {
 
     @GetMapping("/{id}")
     public DistrictRepresentation getDistrict(@PathVariable Long id) {
-        return new DistrictRepresentation(districtService.getDistrict(id));
+        District district = districtService.getDistrict(id);
+        if (district == null) {
+            throw (new NotFoundException("Couldn't find district with id " + id));
+        }
+        return new DistrictRepresentation();
     }
 
     @PostMapping

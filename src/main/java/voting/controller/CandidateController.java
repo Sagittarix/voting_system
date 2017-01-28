@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import voting.dto.CandidateRepresentation;
+import voting.exception.NotFoundException;
+import voting.model.Candidate;
 import voting.service.CandidateService;
 
 import java.util.List;
@@ -33,7 +35,11 @@ public class CandidateController {
 
     @GetMapping("/{id}")
     public CandidateRepresentation getCandidate(@PathVariable Long id) {
-        return new CandidateRepresentation(candidateService.getCandidate(id));
+        Candidate candidate = candidateService.getCandidate(id);
+        if (candidate == null) {
+            throw (new NotFoundException("Couldn't find candidate with id " + id));
+        }
+        return new CandidateRepresentation(candidate);
     }
 
 }

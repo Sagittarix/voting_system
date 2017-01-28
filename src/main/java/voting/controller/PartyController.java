@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import voting.dto.PartyData;
 import voting.dto.PartyRepresentation;
+import voting.model.Party;
 import voting.service.PartyService;
 
 import java.io.IOException;
@@ -34,7 +35,11 @@ public class PartyController {
 
     @GetMapping("/{id}")
     public PartyRepresentation getParty(@PathVariable Long id) {
-        return new PartyRepresentation(partyService.getParty(id));
+        Party party = partyService.getParty(id);
+        if (party == null) {
+
+        }
+        return new PartyRepresentation(party);
     }
 
     // TODO: add partyData validation

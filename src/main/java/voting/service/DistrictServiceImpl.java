@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import voting.dto.CandidateData;
 import voting.dto.DistrictData;
+import voting.exception.NotFoundException;
 import voting.model.Candidate;
 import voting.model.County;
 import voting.model.District;
@@ -45,6 +46,7 @@ public class DistrictServiceImpl implements DistrictService {
     @Transactional
     @Override
     public void deleteDistrict(Long id) {
+        checkExistance(id);
         District district = districtRepository.findOne(id);
         if (district != null) {
             district.removeAllCandidates();
@@ -54,6 +56,7 @@ public class DistrictServiceImpl implements DistrictService {
 
     @Override
     public District getDistrict(Long id) {
+        checkExistance(id);
         return districtRepository.findOne(id);
     }
 
@@ -64,14 +67,20 @@ public class DistrictServiceImpl implements DistrictService {
 
     @Transactional
     @Override
-    public District addCandidateList(Long id, List<CandidateData> candidateListData) {
+    public District setCandidateList(Long id, List<CandidateData> candidateListData) {
+        checkExistance(id);
         District district = districtRepository.findOne(id);
-        // TODO: add validation: jei kandidatas jau priskirtas kitam districtui, turi mesti errora
+
+        district.removeAllCandidates();
         candidateListData.forEach(
                 candidateData -> {
                     Candidate candidate = candidateService.getCandidate(candidateData.getPersonId());
                     if (candidate == null) {
                         candidate = candidateService.addNewCandidate(candidateData);
+                    } else if (candidate.getDistrict() != null && !candidate.getDistrict().equals(district)) {
+                        throw (new IllegalArgumentException(String.format("%s %s, pid %s is already bound to other district (id:%d, name: %s)",
+                                candidate.getFirstName(), candidate.getLastName(), candidate.getPersonId(),
+                                candidate.getDistrict().getId(), candidate.getDistrict().getName())));
                     }
                     district.addCandidate(candidate);
                 });
@@ -80,14 +89,16 @@ public class DistrictServiceImpl implements DistrictService {
 
     @Override
     public void deleteCandidateList(Long id) {
+        checkExistance(id);
         District district = districtRepository.findOne(id);
         district.removeAllCandidates();
         districtRepository.save(district);
     }
 
-    @Override
-    public boolean districtExists(Long id) {
-        return districtRepository.exists(id);
+    public void checkExistance(Long id) {
+        if (!districtRepository.exists(id)) {
+            throw (new NotFoundException("district with id " + id));
+        };
     }
 
 }

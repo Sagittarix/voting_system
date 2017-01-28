@@ -79,8 +79,7 @@ public class DistrictController {
         List<CandidateData> candidateListData = (parsingService.parseSingleMandateCandidateList(fileResource.getFile()));
         return new DistrictRepresentation(districtService.setCandidateList(id, candidateListData));
     }
-
-    // TODO: ideti exceptionus notFound atveju
+    
 
     @ExceptionHandler({CsvException.class, StorageException.class, IOException.class})
     protected ResponseEntity<Object> handleSomeException(Exception ex, WebRequest request) {

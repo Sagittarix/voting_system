@@ -62,6 +62,11 @@ public class District {
         county.setDistrict(null);
     }
 
+    public void removeAllCounties() {
+        counties.forEach(c -> c.setDistrict(null));
+        counties = new ArrayList<County>();
+    }
+
     public void addCandidate(Candidate candidate) {
         candidates.add(candidate);
         candidate.setDistrict(this);

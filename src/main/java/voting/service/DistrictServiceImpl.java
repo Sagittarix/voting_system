@@ -46,18 +46,18 @@ public class DistrictServiceImpl implements DistrictService {
     @Transactional
     @Override
     public void deleteDistrict(Long id) {
-        checkExistance(id);
-        District district = districtRepository.findOne(id);
-        if (district != null) {
-            district.removeAllCandidates();
-            districtRepository.delete(id);
-        }
+        District district = getDistrict(id);
+        district.removeAllCandidates();
+        districtRepository.delete(id);
     }
 
     @Override
     public District getDistrict(Long id) {
-        checkExistance(id);
-        return districtRepository.findOne(id);
+        District district = districtRepository.findOne(id);
+        if (district == null) {
+            throw (new NotFoundException("district with id " + id));
+        };
+        return district;
     }
 
     @Override
@@ -68,8 +68,7 @@ public class DistrictServiceImpl implements DistrictService {
     @Transactional
     @Override
     public District setCandidateList(Long id, List<CandidateData> candidateListData) {
-        checkExistance(id);
-        District district = districtRepository.findOne(id);
+        District district = getDistrict(id);
 
         district.removeAllCandidates();
         candidateListData.forEach(
@@ -89,16 +88,9 @@ public class DistrictServiceImpl implements DistrictService {
 
     @Override
     public void deleteCandidateList(Long id) {
-        checkExistance(id);
-        District district = districtRepository.findOne(id);
+        District district = getDistrict(id);
         district.removeAllCandidates();
         districtRepository.save(district);
-    }
-
-    public void checkExistance(Long id) {
-        if (!districtRepository.exists(id)) {
-            throw (new NotFoundException("district with id " + id));
-        };
     }
 
 }

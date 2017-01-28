@@ -14,6 +14,7 @@ public class District {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    @Column(unique = true, nullable = false)
     private String name;
     @OneToMany(mappedBy = "district", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<County> counties = new ArrayList<>();
@@ -47,17 +48,9 @@ public class District {
         return counties;
     }
 
-//    public void setCounties(List<County> counties) {
-//        this.counties = counties;
-//    }
-
     public List<Candidate> getCandidates() {
         return candidates;
     }
-
-//    public void setCandidates(List<Candidate> candidates) {
-//        this.candidates = candidates;
-//    }
 
     public void addCounty(County county) {
         counties.add(county);

@@ -19,9 +19,8 @@ public interface DistrictService {
 
     List<District> getDistricts();
 
-    District addCandidateList(Long id, List<CandidateData> candidateListData);
+    District setCandidateList(Long id, List<CandidateData> candidateListData);
 
     void deleteCandidateList(Long id);
 
-    boolean districtExists(Long id);
 }

@@ -20,4 +20,11 @@ public class CountyRepository {
         em.persist(county);
         return county;
     }
+
+    public County findOne(Long id) {
+        return (County) em.createQuery("SELECT c FROM County c WHERE c.id = :id")
+                .setParameter("id", id)
+                .getSingleResult();
+    }
+
 }

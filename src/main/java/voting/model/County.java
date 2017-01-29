@@ -1,6 +1,7 @@
 package voting.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import voting.results.CountyResult;
 
 import javax.persistence.*;
 import java.util.List;
@@ -30,6 +31,7 @@ public class County {
             cascade = {}
     )
     @JoinColumn(name = "district_id", nullable = false)
+    @JsonIgnore
     private District district;
 
     public County() {

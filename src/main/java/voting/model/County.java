@@ -1,8 +1,10 @@
 package voting.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import voting.results.CountyResult;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -15,10 +17,22 @@ public class County {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
-    @JsonIgnore
-    @ManyToOne
-    private District district;
     private Long voterCount;
+
+    @OneToMany(
+            fetch = FetchType.LAZY,
+            cascade = {},
+            mappedBy = "county"
+    )
+    private List<CountyResult> countyResultList;
+
+    @ManyToOne(
+            fetch = FetchType.EAGER,
+            cascade = {}
+    )
+    @JoinColumn(name = "district_id", nullable = false)
+    @JsonIgnore
+    private District district;
 
     public County() {
     }
@@ -32,16 +46,16 @@ public class County {
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getName() {
         return name;
     }
 
-    public District getDistrict() {
-        return district;
-    }
-
-    public void setDistrict(District district) {
-        this.district = district;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Long getVoterCount() {
@@ -52,6 +66,21 @@ public class County {
         this.voterCount = voterCount;
     }
 
+    public List<CountyResult> getCountyResultList() {
+        return countyResultList;
+    }
+
+    public void setCountyResultList(List<CountyResult> countyResultList) {
+        this.countyResultList = countyResultList;
+    }
+
+    public District getDistrict() {
+        return district;
+    }
+
+    public void setDistrict(District district) {
+        this.district = district;
+    }
 
     @Override
     public boolean equals(Object o) {

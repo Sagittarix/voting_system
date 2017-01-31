@@ -15,6 +15,7 @@ public class CountyData {
     @Length(min=1, max=40)
     private String name;
     private Long voterCount;
+    private Long districtId;
 
 
     public Long getId() {
@@ -39,6 +40,14 @@ public class CountyData {
 
     public void setVoterCount(Long voterCount) {
         this.voterCount = voterCount;
+    }
+
+    public Long getDistrictId() {
+        return districtId;
+    }
+
+    public void setDistrictId(Long districtId) {
+        this.districtId = districtId;
     }
 
     @Override

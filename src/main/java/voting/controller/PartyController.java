@@ -49,6 +49,9 @@ public class PartyController {
     @PostMapping(consumes = "multipart/form-data")
     public PartyRepresentation saveParty(@RequestParam(name = "party") String partyDataString, @RequestParam(name = "file") MultipartFile multipartFile)
             throws IOException, CsvException {
+
+        String xxx = (String) partyDataString;
+        System.out.println(xxx);
         ObjectMapper mapper = new ObjectMapper();
         PartyData partyData = mapper.readValue(partyDataString, PartyData.class);
         return new PartyRepresentation(partyService.saveParty(partyData, multipartFile));

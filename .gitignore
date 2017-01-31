@@ -9,8 +9,7 @@ target
 node_modules
 uploaded-files
 
-**/bundle.js
-
+**/built/
 
 
 .classpath

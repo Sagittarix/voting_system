@@ -8,8 +8,6 @@
 target
 node_modules
 uploaded-files
-src/main/js
-
 
 src/main/resources/static/built/*
 

@@ -9,6 +9,9 @@ target
 node_modules
 uploaded-files
 
+**/built/
+
+
 .classpath
 .project
 .settings

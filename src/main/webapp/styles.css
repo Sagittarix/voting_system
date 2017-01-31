@@ -1,0 +1,368 @@
+body {
+    font-family: 'open sans';
+    overflow-x: hidden;
+}
+
+/* admin panel */
+
+#bootstrap-overrides-nav-tabs {
+    color: #5875db;
+    background-color: #f1eeeb;
+    width: 100%;
+    height: auto;
+}
+
+#bootstrap-overrides-nav-tabs .tab {
+    width: 20%;
+    height: 100%;
+    text-align: center;
+    display: table;
+    padding: 15px;
+    background-color: #CDEBF7;
+}
+
+#bootstrap-overrides-nav-tabs .tab a {
+    font-weight: bold;
+    font-size: 1.5em;
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.main-layout {
+    color: #5875db;
+    background-color: #f1eeeb;
+    width: 100%;
+    height: auto;
+}
+
+/* admin panel - units view */
+
+.row {
+    margin: 0;
+    height: 100vh;
+    background-color: #CDEBF7;
+}
+
+.container {
+    padding: 0;
+}
+
+.units-list-area {
+    padding-top: 2vh;
+    min-height: 100%;
+}
+
+.units-create-area {
+    padding-top: 2vh;
+    min-height: 100%;
+}
+
+.inline-add-county-form {
+    display: table;
+}
+
+.inline-add-county-form .form-group {
+    display: table-cell;
+    width: 30%;
+    float: left;
+    margin-bottom: 0;
+}
+
+.inline-add-county-form .form-group:last-child {
+    display: table-cell;
+}
+
+.inline-add-county-form .form-group:last-child button.btn.btn-sm {
+    display: table-cell;
+    margin-left: 10px
+}
+
+.unit {
+    padding: 5px 0;
+}
+
+.candidate.card {
+    height: auto;
+    width: 33%;
+    display: inline-block;
+}
+
+.glyphicon glyphicon-edit {
+    float: right;
+}
+
+.county-form-actions {
+    padding-bottom: 15px;
+}
+
+.county-add-button {
+    float: left;
+}
+
+.county-cancel-button {
+    margin-left: 10px;
+}
+
+form div.form-group.browse-button-area, form div.form-group.upload-button-area {
+    display: table-cell;
+}
+
+#inline-csv-form {
+    display: table;
+    width: auto;
+}
+
+div.list-group-item.remove-units {
+    display: table;
+    width: 100%;
+}
+
+.remove-units-element {
+    display: table-cell;
+}
+
+#unit-header {
+    display: table;
+    width: 100%;
+}
+
+.unit-actions-area {
+    display: table-cell;
+    float: right;
+}
+
+.unit-name-area {
+  display: table-cell;
+  float: left;
+}
+
+/* OSVALDO */
+
+.firstDivAfterHeader{
+    padding: 5px;
+    margin: 5px;
+}
+
+.navBarTitle{
+    background-color: #006b96;
+    color: white;
+    font-weight: bold;
+    font-size: large;
+    padding: 13px;
+}
+
+.navBarButton{
+    background-color: #006b96;
+    border-radius: 0px;
+    border: 1px #006b96;
+    color: white;
+    font-weight: bold;
+    padding: 13px;
+    font-size: large;
+}
+
+.navBarButton:hover{
+    background-color: white;
+    color: #006b96;
+}
+
+#homePageButton{
+    font-weight: bold;
+}
+
+#homePageButtonsRow{
+    width: 90%;
+    margin: 0 auto;
+}
+
+.NoUnderlineLink:hover{
+    text-decoration:none;
+}
+
+.innerButtonDiv{
+    font-size: 17px;
+    margin-top: 10px;
+}
+
+#homeButton{
+    background-color: #006b96;
+    border-radius: 0px;
+    border: 1px #006b96;
+    color: white;
+    font-weight: bold;
+    padding: 15px;
+}
+
+#homeButton:hover {
+    background-color: white;
+    color: #006b96;
+}
+
+.frontPageButton{
+    transition-duration: 0.3s;
+    font-size: 25px;
+    border-radius: 15px;
+    font-weight: 600;
+    margin: 0 auto;
+    display: block;
+    color: black;
+    width: 225px;
+    height: 100px;
+
+}
+
+#buttonElectionResults{
+    /*!*-webkit-transition-duration: 0.5s;*! for safari*/
+    background-color: white;
+    border: 3px solid green;
+    /*padding: 20px 40px;*/
+    /*padding-top: 23px;*/
+}
+
+#buttonElectionResults:hover {
+    background-color:  green;
+    color: white;
+}
+
+#buttonCountyRepresentatives{
+    background-color: white;
+    border: 3px solid steelblue;
+    /*padding: 20px 40px;*/
+    /*padding-top: 23px;*/
+}
+
+#buttonCountyRepresentatives:hover{
+    background-color: steelblue;
+    color: white;
+}
+
+#buttonAdministration{
+    background-color: white;
+    border: 3px solid darkred;
+    /*padding: 23px 40px;*/
+}
+
+#buttonAdministration:hover{
+    background-color: darkred;
+    color: white;
+}
+
+.HomePageRow
+{
+    margin: 0 auto;
+    display: table;
+    width: 80%; /*Optional*/
+    table-layout: fixed; /*Optional*/
+    border-spacing: 10px; /*Optional*/
+}
+.HomePageColumn
+{
+    display: table-cell;
+}
+
+
+
+
+@import url('https://fonts.googleapis.com/css?family=Lato:300,400');
+
+.navbar-default {
+    font-size: 1.15em;
+    font-weight: 400;
+    background-color: #006b96;
+    padding: 10px;
+    margin-bottom: 0;
+    border: 0px;
+    border-radius: 0px;
+}
+
+.navbar-default .navbar-nav>li>a {
+    color: white;
+}
+
+.navbar-default .navbar-nav>li>a:hover {
+    color: #cbf0ff;
+}
+
+.navbar-default .navbar-brand {
+    color: #ffffff;
+    font-weight: bold;
+}
+
+.navbar-default .navbar-brand:hover {
+    text-decoration: none;
+    color: #ffffff !important;
+    text-shadow: 1px -1px 8px #b3e9ff;
+}
+
+.navbar-default .navbar-nav>.open>a, .navbar-default .navbar-nav>.open>a:hover, .navbar-default .navbar-nav>.open>a:focus {
+    background-color: #004059;
+    color: white;
+}
+
+.navbar-default .navbar-toggle {
+    border: none;
+}
+
+.navbar-default .navbar-collapse, .navbar-default .navbar-form {
+    border: none;
+}
+
+.navbar-default .navbar-toggle:hover, .navbar-default .navbar-toggle:focus {
+    background-color: #002433;
+}
+
+.navbar-default .navbar-toggle .icon-bar {
+    background-color: #ffffff;
+}
+
+.dropdown-menu {
+    background-color: #004059;
+    color: white;
+    border: 0px;
+    border-radius: 2px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.dropdown-menu>li>a {
+    background-color: #004059;
+    color: white;
+}
+
+.dropdown-menu>li>a:hover, .dropdown-menu>li>a:focus {
+    background-color: #004059;
+    color:white;
+}
+
+.dropdown-menu .divider {
+    height: 1px;
+    margin: 9px 0;
+    overflow: hidden;
+    background-color: #003246;
+}
+
+.navbar-default .navbar-nav .open .dropdown-menu>li>a {
+    color: #ffffff;
+}
+
+@media (max-width: 767px) {
+    .dropdown-menu>li>a {
+        background-color: #006b96;
+        color: #ffffff;
+    }
+    .dropdown-menu>li>a:hover {
+        color: #ffffff;
+    }
+
+    .navbar-default .navbar-nav .open .dropdown-menu>li>a:focus, .navbar-default .navbar-nav .open .dropdown-menu>li>a:hover {
+        color: #ffffff;
+        background-color: transparent;
+    }
+
+    .dropdown-menu .divider {
+        height: 1px;
+        margin: 9px 0;
+        overflow: hidden;
+        background-color: #005577;
+    }
+} /* END Media Query */

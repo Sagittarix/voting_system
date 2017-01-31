@@ -9,7 +9,7 @@ target
 node_modules
 uploaded-files
 
-src/main/resources/static/built/*
+**/bundle.js
 
 
 

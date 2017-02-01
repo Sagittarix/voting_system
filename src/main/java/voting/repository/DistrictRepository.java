@@ -10,4 +10,6 @@ import voting.model.District;
 
 public interface DistrictRepository extends CrudRepository<District, Long>{
 
+    public District findByName(String name);
+
 }

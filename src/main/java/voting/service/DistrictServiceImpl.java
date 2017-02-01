@@ -36,6 +36,23 @@ public class DistrictServiceImpl implements DistrictService {
         this.parsingService = parsingService;
     }
 
+    @Override
+    public District getDistrict(Long id) {
+        District district = districtRepository.findOne(id);
+        if (district == null) {
+            throw (new NotFoundException("Couldn't find district with id " + id));
+        }
+        return district;
+    }
+
+    @Override
+    public District getDistrict(String name) {
+        District district = districtRepository.findByName(name);
+        if (district == null) {
+            throw (new NotFoundException("Couldn't find district with name " + name));
+        }
+        return district;
+    }
 
     @Transactional
     @Override
@@ -55,15 +72,8 @@ public class DistrictServiceImpl implements DistrictService {
     @Override
     public void deleteDistrict(Long id) {
         District district = getDistrict(id);
-        if (district != null) {
-            district.removeAllCandidates();
-            districtRepository.delete(id);
-        }
-    }
-
-    @Override
-    public District getDistrict(Long id) {
-        return districtRepository.findOne(id);
+        district.removeAllCandidates();
+        districtRepository.delete(id);
     }
 
     @Override
@@ -75,9 +85,6 @@ public class DistrictServiceImpl implements DistrictService {
     @Override
     public District setCandidateList(Long id, MultipartFile file) throws IOException, CsvException {
         District district = getDistrict(id);
-        if (district == null) {
-            throw (new NotFoundException("Couldn't find district with id " + id));
-        }
 
         String fileName = String.format("district_%d.csv", id);
         storageService.store(fileName, file);
@@ -85,17 +92,18 @@ public class DistrictServiceImpl implements DistrictService {
         List<CandidateData> candidateListData = (parsingService.parseSingleMandateCandidateList(fileResource.getFile()));
 
         district.removeAllCandidates();
+
         candidateListData.forEach(
                 candidateData -> {
-                    Candidate candidate = candidateService.getCandidate(candidateData.getPersonId());
-                    if (candidate == null) {
-                        candidate = candidateService.addNewCandidate(candidateData);
-                    } else if (candidate.getDistrict() != null && !candidate.getDistrict().equals(district)) {
-                        throw (new IllegalArgumentException(String.format("%s %s, pid %s is already bound to other district (id:%d, name: %s)",
-                                candidate.getFirstName(), candidate.getLastName(), candidate.getPersonId(),
-                                candidate.getDistrict().getId(), candidate.getDistrict().getName())));
+                    Candidate newCandidate;
+                    try {
+                        Candidate oldCandidate = candidateService.getCandidate(candidateData.getPersonId());
+                        CandidateService.checkCandidateIntegrity(candidateData, oldCandidate);
+                        newCandidate = oldCandidate;
+                    } catch (NotFoundException ex) {
+                        newCandidate = candidateService.addNewCandidate(candidateData);
                     }
-                    district.addCandidate(candidate);
+                    district.addCandidate(newCandidate);
                 });
         return districtRepository.save(district);
     }
@@ -103,10 +111,9 @@ public class DistrictServiceImpl implements DistrictService {
     @Override
     public void deleteCandidateList(Long id) {
         District district = getDistrict(id);
-        if (district != null) {
-            district.removeAllCandidates();
-            districtRepository.save(district);
-        }
+        district.removeAllCandidates();
+        districtRepository.save(district);
     }
+
 
 }

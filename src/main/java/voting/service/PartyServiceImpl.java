@@ -39,6 +39,18 @@ public class PartyServiceImpl implements PartyService {
     @Override
     public Party getParty(Long id) {
         Party party = partyRepository.findOne(id);
+        if (party == null) {
+            throw (new NotFoundException("Couldn't find party with id " + id));
+        }
+        return party;
+    }
+
+    @Override
+    public Party getParty(String name) {
+        Party party = partyRepository.findByName(name);
+        if (party == null) {
+            throw (new NotFoundException("Couldn't find party with name " + name));
+        }
         return party;
     }
 
@@ -46,6 +58,7 @@ public class PartyServiceImpl implements PartyService {
     public List<Party> getParties() {
         return (List<Party>) partyRepository.findAll();
     }
+
 
     //TODO: isspresti sia problema:
     /*dabar kai gaunam nauja partija su kandidatu failu, is pradziu issaugo partija, tik tada seivina sarasa.
@@ -86,9 +99,6 @@ public class PartyServiceImpl implements PartyService {
     @Override
     public Party setCandidateList(Long id, MultipartFile file) throws IOException, CsvException {
         Party party = getParty(id);
-        if (party == null) {
-            throw (new NotFoundException("couldn't find party with id " + id));
-        }
 
         String fileName = String.format("party_%d.csv", party.getId());
         storageService.store(fileName, file);
@@ -99,20 +109,15 @@ public class PartyServiceImpl implements PartyService {
 
         candidateListData.forEach(
                 candidateData -> {
-                    Candidate candidate = candidateService.getCandidate(candidateData.getPersonId());
-                    if (candidate == null) {
-                        candidate = candidateService.addNewCandidate(candidateData);
-                    } else if (!candidate.getFirstName().equals(candidateData.getFirstName())
-                            || !candidate.getLastName().equals(candidateData.getLastName())) {
-                        throw (new IllegalArgumentException(
-                                String.format("Conflicting data on candidate pid " + candidate.getPersonId())));
-                    } else if (candidate.getParty() != null && !candidate.getParty().equals(party)) {
-                        throw (new IllegalArgumentException(
-                                String.format("%s %s, pid %s is already in other party list (id:%d, name: %s)",
-                                        candidate.getFirstName(), candidate.getLastName(), candidate.getPersonId(),
-                                        candidate.getParty().getId(), candidate.getParty().getName())));
+                    Candidate newCandidate;
+                    try {
+                        Candidate oldCandidate = candidateService.getCandidate(candidateData.getPersonId());
+                        CandidateService.checkCandidateIntegrity(candidateData, oldCandidate);
+                        newCandidate = oldCandidate;
+                    } catch (NotFoundException ex) {
+                        newCandidate = candidateService.addNewCandidate(candidateData);
                     }
-                    party.addCandidate(candidate);
+                    party.addCandidate(newCandidate);
                 });
         return partyRepository.save(party);
     }
@@ -120,19 +125,15 @@ public class PartyServiceImpl implements PartyService {
     @Override
     public void deleteCandidateList(Long id) {
         Party party = getParty(id);
-        if (party != null) {
-            party.removeAllCandidates();
-            partyRepository.save(party);
-        }
+        party.removeAllCandidates();
+        partyRepository.save(party);
     }
 
     @Transactional
     @Override
     public void deleteParty(Long id) {
         Party party = getParty(id);
-        if (party != null) {
-            party.removeAllCandidates();
-            partyRepository.delete(id);
-        }
+        party.removeAllCandidates();
+        partyRepository.delete(id);
     }
 }

@@ -3,6 +3,7 @@ package voting.service;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvConstraintViolationException;
 import com.opencsv.exceptions.CsvException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import voting.dto.CandidateData;
 
@@ -24,13 +25,19 @@ import java.util.Set;
 @Service
 public class ParsingServiceImpl implements ParsingService {
 
+    ValidatorFactory factory;
+    Validator validator;
+
+    public ParsingServiceImpl() {
+        factory = Validation.buildDefaultValidatorFactory();
+        validator = factory.getValidator();
+    }
 
     @Override
     public List<CandidateData> parseSingleMandateCandidateList(File file) throws IOException, CsvException {
         CandidateParsingStrategy strategy = new SingleMandateCandidateParsingStrategy();
         return parseCandidateList(strategy, file);
     }
-
 
     @Override
     public List<CandidateData> parseMultiMandateCandidateList(File file) throws IOException, CsvException {
@@ -39,10 +46,6 @@ public class ParsingServiceImpl implements ParsingService {
     }
 
     private List<CandidateData> parseCandidateList(CandidateParsingStrategy strategy, File file) throws CsvException, IOException {
-
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        Validator validator = factory.getValidator();
-
         String[] correctHeader = strategy.getHeader();
         int columnCount = correctHeader.length;
         List<CandidateData> candidateDataList = new ArrayList<>();
@@ -87,17 +90,27 @@ public class ParsingServiceImpl implements ParsingService {
     }
 
 
-    public interface CandidateParsingStrategy {
+    private abstract class CandidateParsingStrategy {
 
-        CandidateData createCandidateData(String[] line);
+        private String[] header;
 
-        String[] getHeader();
+        public CandidateParsingStrategy(String[] header) {
+            this.header = header;
+        }
+
+        public String[] getHeader() {
+            return header;
+        }
+
+        abstract CandidateData createCandidateData(String[] line);
     }
 
 
-    public class SingleMandateCandidateParsingStrategy implements CandidateParsingStrategy {
+    private class SingleMandateCandidateParsingStrategy extends CandidateParsingStrategy {
 
-        private String[] header = "Vardas,Pavardė,Asmens_kodas,Partija".split(",");
+        public SingleMandateCandidateParsingStrategy() {
+            super("Vardas,Pavardė,Asmens_kodas,Partija".split(","));
+        }
 
         @Override
         public CandidateData createCandidateData(String[] line) {
@@ -108,15 +121,13 @@ public class ParsingServiceImpl implements ParsingService {
             candidateData.setPartyName(line[3]);
             return candidateData;
         }
-
-        @Override
-        public String[] getHeader() {
-            return header;
-        }
     }
 
-    public class MultiMandateCandidateParsingStrategy implements CandidateParsingStrategy {
-        private String[] header = "Numeris,Vardas,Pavardė,Asmens_kodas".split(",");
+    private class MultiMandateCandidateParsingStrategy extends CandidateParsingStrategy {
+
+        public MultiMandateCandidateParsingStrategy() {
+            super("Numeris,Vardas,Pavardė,Asmens_kodas".split(","));
+        }
 
         @Override
         public CandidateData createCandidateData(String[] line) {
@@ -126,11 +137,6 @@ public class ParsingServiceImpl implements ParsingService {
             candidateData.setLastName(line[2]);
             candidateData.setPersonId(line[3]);
             return candidateData;
-        }
-
-        @Override
-        public String[] getHeader() {
-            return header;
         }
     }
 }

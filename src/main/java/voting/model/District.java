@@ -100,11 +100,6 @@ public class District {
 
     @Override
     public String toString() {
-        return "District{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", counties=" + counties +
-                ", candidates=" + candidates +
-                '}';
+        return String.format("%s (id %d)", name, id);
     }
 }

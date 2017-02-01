@@ -78,10 +78,6 @@ public class Party {
 
     @Override
     public String toString() {
-        return "Party{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", candidates=" + candidates +
-                '}';
+        return String.format("%s (id %d)", name, id);
     }
 }

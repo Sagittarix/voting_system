@@ -2,7 +2,6 @@ package voting.service;
 
 import com.opencsv.exceptions.CsvException;
 import org.springframework.web.multipart.MultipartFile;
-import voting.dto.CandidateData;
 import voting.dto.DistrictData;
 import voting.model.District;
 
@@ -19,6 +18,8 @@ public interface DistrictService {
     void deleteDistrict(Long id);
 
     District getDistrict(Long id);
+
+    District getDistrict(String name);
 
     List<District> getDistricts();
 

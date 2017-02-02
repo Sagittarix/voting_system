@@ -35,6 +35,16 @@ body {
     height: auto;
 }
 
+/*admin panel buttons*/
+
+.adminPanelButton {
+    transition-duration: 0.15s;
+}
+
+adminPanelButton:hover{
+    transition-duration: 0.15s;
+}
+
 /* admin panel - units view */
 
 .row {

@@ -3,7 +3,6 @@ package voting.service;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvConstraintViolationException;
 import com.opencsv.exceptions.CsvException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import voting.dto.CandidateData;
 
@@ -54,30 +53,33 @@ public class ParsingServiceImpl implements ParsingService {
         try (CSVReader reader = new CSVReader(new FileReader(file))) {
             String[] header = reader.readNext();
 
-            if (header == null
-                    || header.length != columnCount
-                    || !Arrays.equals(header, correctHeader)) {
+            if (header == null || header.length != columnCount || !Arrays.equals(header, correctHeader)) {
                 throw (new CsvException("Incorrect or no header! CSV header should be - " + String.join(",", correctHeader)));
             }
 
-            String[] line;
+            String[] line = null;
             int lineNumber = 2; // line 1 was header
+            int expectedPositionInPartyList = 1;
 
             while ((line = reader.readNext()) != null) {
                 if (line.length != columnCount) {
                     throw (new CsvException("Invalid data at line " + lineNumber));
                 }
 
-                //TODO: add proper validation / exception handling
-
                 try {
                     CandidateData candidateData = strategy.createCandidateData(line);
                     candidateDataList.add(candidateData);
                     Set<ConstraintViolation<CandidateData>> violations = validator.validate(candidateData);
                     if (violations.size() > 0) {
-                        throw (new CsvConstraintViolationException("Constaint violation at line " + lineNumber));
+                        throw (new CsvConstraintViolationException(String.format("Invalid data at line %d: %d constraint(s) violated",
+                                lineNumber, violations.size())));
+                    }
+                    if (strategy instanceof MultiMandateCandidateParsingStrategy
+                            && Long.parseLong(line[0]) != expectedPositionInPartyList) {
+                        throw (new CsvException("Invalid data at line " + lineNumber + ": incontinuous position in party list"));
                     }
                     lineNumber++;
+                    expectedPositionInPartyList++;
                 } catch (NumberFormatException ex) {
                     throw (new CsvException("Invalid data at line " + lineNumber));
                 }

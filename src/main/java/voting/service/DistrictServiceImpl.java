@@ -96,9 +96,11 @@ public class DistrictServiceImpl implements DistrictService {
         candidateListData.forEach(
                 candidateData -> {
                     Candidate newCandidate;
+                    candidateData.setDistrctId(district.getId());
+                    candidateData.setDistrctName(district.getName());
                     try {
                         Candidate oldCandidate = candidateService.getCandidate(candidateData.getPersonId());
-                        CandidateService.checkCandidateIntegrity(candidateData, oldCandidate);
+                        candidateService.checkCandidateIntegrity(candidateData, oldCandidate);
                         newCandidate = oldCandidate;
                     } catch (NotFoundException ex) {
                         newCandidate = candidateService.addNewCandidate(candidateData);

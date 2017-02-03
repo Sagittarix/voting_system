@@ -2,7 +2,6 @@ package voting.service;
 
 import com.opencsv.exceptions.CsvException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,6 +12,7 @@ import voting.model.Candidate;
 import voting.model.Party;
 import voting.repository.PartyRepository;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -97,22 +97,26 @@ public class PartyServiceImpl implements PartyService {
 
     @Transactional
     @Override
-    public Party setCandidateList(Long id, MultipartFile file) throws IOException, CsvException {
+    public Party setCandidateList(Long id, MultipartFile multiPartFile) throws IOException, CsvException {
         Party party = getParty(id);
 
         String fileName = String.format("party_%d.csv", party.getId());
-        storageService.store(fileName, file);
-        Resource fileResource = storageService.loadAsResource(fileName);
-        List<CandidateData> candidateListData = parsingService.parseMultiMandateCandidateList(fileResource.getFile());
+        storageService.store(fileName, multiPartFile);
+        File file = storageService.load(fileName).toFile();
+        List<CandidateData> candidateListData = parsingService.parseMultiMandateCandidateList(file);
+//        Resource fileResource = storageService.loadAsResource(fileName);
+//        List<CandidateData> candidateListData = parsingService.parseMultiMandateCandidateList(fileResource.getFile());
 
         party.removeAllCandidates();
 
         candidateListData.forEach(
                 candidateData -> {
                     Candidate newCandidate;
+                    candidateData.setPartyId(party.getId());
+                    candidateData.setPartyName(party.getName());
                     try {
                         Candidate oldCandidate = candidateService.getCandidate(candidateData.getPersonId());
-                        CandidateService.checkCandidateIntegrity(candidateData, oldCandidate);
+                        candidateService.checkCandidateIntegrity(candidateData, oldCandidate);
                         newCandidate = oldCandidate;
                     } catch (NotFoundException ex) {
                         newCandidate = candidateService.addNewCandidate(candidateData);
@@ -122,6 +126,7 @@ public class PartyServiceImpl implements PartyService {
         return partyRepository.save(party);
     }
 
+    @Transactional
     @Override
     public void deleteCandidateList(Long id) {
         Party party = getParty(id);
@@ -136,4 +141,5 @@ public class PartyServiceImpl implements PartyService {
         party.removeAllCandidates();
         partyRepository.delete(id);
     }
+
 }

@@ -49,14 +49,14 @@ public class ParsingServiceTest {
             "3,Trecias,Pavarde3,33300033303"
     };
 
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
+
+
     @Before
     public void setup() {
         lines.clear();
     }
-
-
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
 
 
     @Test

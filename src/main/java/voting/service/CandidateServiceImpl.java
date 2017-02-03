@@ -59,4 +59,35 @@ public class CandidateServiceImpl implements CandidateService{
         return (List<Candidate>) candidateRepository.findAll();
     }
 
+
+    /**
+     * Checks whether there is no conflict between existing and updated candidate.
+     * Assumes both have same PersonID.
+     * Throws IllegalArgument if candidates have different names, belongs to different parties or districts
+     * @param newCandidateData - must have first/last name, personID, party and optionally district fields set
+     * @param oldCandidate - existing candidate
+     */
+    @Override
+    public void checkCandidateIntegrity(CandidateData newCandidateData, Candidate oldCandidate) {
+        if (!oldCandidate.getFirstName().equals(newCandidateData.getFirstName())
+                || !oldCandidate.getLastName().equals(newCandidateData.getLastName())) {
+            throw (new IllegalArgumentException(
+                    String.format("Name mismatch: candidate with pid %s already exists and his name is %s %s",
+                            oldCandidate.getPersonId(), oldCandidate.getFirstName(), oldCandidate.getFirstName())
+            ));
+        }
+        if (oldCandidate.getDistrict() != null && newCandidateData.getDistrctName() != null) {
+            throw (new IllegalArgumentException(
+                    String.format("Data mismatch: candidate %s is bound to another district - %s",
+                            oldCandidate, oldCandidate.getDistrict()
+                    )));
+        }
+        if (oldCandidate.getParty() != null && oldCandidate.getParty().getName() != newCandidateData.getPartyName()) {
+            throw (new IllegalArgumentException(
+                    String.format("Data mismatch: candidate %s is bound to another party - %s",
+                            oldCandidate, oldCandidate.getParty())
+            ));
+        }
+    }
+
 }

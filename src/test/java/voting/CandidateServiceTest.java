@@ -1,30 +1,17 @@
 package voting;
 
-import org.junit.Test;
+import org.junit.*;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.data.repository.core.EntityInformation;
-import org.springframework.data.repository.core.RepositoryInformation;
-import org.springframework.data.repository.core.RepositoryMetadata;
-import org.springframework.data.repository.core.support.RepositoryFactorySupport;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
+import voting.dto.CandidateData;
 import voting.exception.NotFoundException;
-import voting.exception.StorageException;
 import voting.model.Candidate;
+import voting.model.District;
+import voting.model.Party;
 import voting.repository.CandidateRepository;
 import voting.service.CandidateService;
 import voting.service.CandidateServiceImpl;
-
-import java.io.Serializable;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -38,18 +25,114 @@ public class CandidateServiceTest {
 
     CandidateRepository repo = mock(CandidateRepository.class);
 
-    CandidateService service = new CandidateServiceImpl(repo);
+    CandidateService sut = new CandidateServiceImpl(repo);
+
+    private static String personId = "55500055501";
+    private static String firstName = "Petras";
+    private static String lastName = "Petraitis";
+
+    private static Party party;
+    private static District district;
+    private static Candidate existingCandidate;
+
+    private CandidateData newCandidate;
+
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
+
+
+    @BeforeClass
+    public static void beforeClassSetup() {
+        party = new Party("Party 1");
+        district = new District("District 1");
+        existingCandidate = new Candidate(personId, firstName, lastName);
+    }
+
+    @Before
+    public void setup() {
+        party.removeAllCandidates();
+        district.removeAllCandidates();
+
+        newCandidate = new CandidateData();
+        newCandidate.setPersonId(personId);
+        newCandidate.setFirstName(firstName);
+        newCandidate.setLastName(lastName);
+    }
+
 
     @Test(expected = NotFoundException.class)
-    public void gettingCandidateWithNonExistingIdThrowsNotFound() {
+    public void gettingCandidateWithNonExistingIdShouldThrowNotFound() {
         when(repo.findOne(1L)).thenReturn(null);
-        service.getCandidate(1L);
+        sut.getCandidate(1L);
     }
 
     @Test(expected = NotFoundException.class)
-    public void gettingCandidateWithNonExistingPersonIdThrowsNotFound() {
-        when(repo.findByPersonId("111")).thenReturn(null);
-        service.getCandidate("111");
+    public void gettingCandidateWithNonExistingPersonIdShouldThrowNotFound() {
+        when(repo.findByPersonId("55500055501")).thenReturn(null);
+        sut.getCandidate("55500055501");
+    }
+
+    @Test
+    public void nonMatchingNameShouldThrowIllegalArgument() {
+        //Setup
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage("Name mismatch");
+
+        newCandidate.setFirstName("Jonas");
+        newCandidate.setLastName("Jonaitis");
+
+        //Exercise
+        sut.checkCandidateIntegrity(newCandidate, existingCandidate);
+    }
+
+    @Test
+    public void candidatesBoundToDifferentPartiesShouldThrowIllegalArgument() {
+        //Setup
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage("Data mismatch");
+        thrown.expectMessage("bound to another party");
+
+        party.addCandidate(existingCandidate);
+        newCandidate.setPartyName("Party XXX");
+//        newCandidate.setDistrctName("District XXX");
+
+        //Exercise
+        sut.checkCandidateIntegrity(newCandidate, existingCandidate);
+    }
+
+    @Test
+    public void candidatesBoundToDifferentDistrictsShouldThrowIllegalArgument() {
+        //Setup
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage("Data mismatch");
+        thrown.expectMessage("bound to another district");
+
+        district.addCandidate(existingCandidate);
+        party.addCandidate(existingCandidate);
+
+        newCandidate.setPartyName(party.getName());
+        newCandidate.setDistrctName("District XXX");
+
+        //Exercise
+        sut.checkCandidateIntegrity(newCandidate, existingCandidate);
+    }
+
+    @Test
+    public void existingCandidateNotBoundToADistrictAndNewCandidateBoundToADistrictShouldHaveNoConflict() {
+        //Setup
+        newCandidate.setDistrctName("District XXX");
+
+        //Exercise
+        sut.checkCandidateIntegrity(newCandidate, existingCandidate);
+    }
+
+    @Test
+    public void existingCandidateNotBoundToAPartyAndNewCandidateBoundToAPartyShouldHaveNoConflict() {
+        //Setup
+        newCandidate.setPartyName("Party XXX");
+
+        //Exercise
+        sut.checkCandidateIntegrity(newCandidate, existingCandidate);
     }
 
 }

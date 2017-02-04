@@ -28,10 +28,10 @@ public class Candidate {
     public Candidate() {
     }
 
-    public Candidate(String personId, String firstName, String lastName) {
-        this.personId = personId;
+    public Candidate(String firstName, String lastName, String personId) {
         this.firstName = firstName;
         this.lastName = lastName;
+        this.personId = personId;
     }
 
     public Long getId() {

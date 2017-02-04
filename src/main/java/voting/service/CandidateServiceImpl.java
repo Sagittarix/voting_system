@@ -43,8 +43,7 @@ public class CandidateServiceImpl implements CandidateService{
 
     @Override
     public Candidate addNewCandidate(CandidateData candidateData) {
-        Candidate candidate = new Candidate(candidateData.getPersonId(), candidateData.getFirstName(),
-                candidateData.getLastName());
+        Candidate candidate = new Candidate(candidateData.getFirstName(), candidateData.getLastName(), candidateData.getPersonId());
         return candidateRepository.save(candidate);
     }
 
@@ -61,31 +60,31 @@ public class CandidateServiceImpl implements CandidateService{
 
 
     /**
-     * Checks whether there is no conflict between existing and updated candidate.
+     * Checks for conflicts between existing and updated candidate.
      * Assumes both have same PersonID.
      * Throws IllegalArgument if candidates have different names, belongs to different parties or districts
      * @param newCandidateData - must have first/last name, personID, party and optionally district fields set
-     * @param oldCandidate - existing candidate
+     * @param existingCandidate - persisted candidate
      */
     @Override
-    public void checkCandidateIntegrity(CandidateData newCandidateData, Candidate oldCandidate) {
-        if (!oldCandidate.getFirstName().equals(newCandidateData.getFirstName())
-                || !oldCandidate.getLastName().equals(newCandidateData.getLastName())) {
+    public void checkCandidateIntegrity(CandidateData newCandidateData, Candidate existingCandidate) {
+        if (!existingCandidate.getFirstName().equals(newCandidateData.getFirstName())
+                || !existingCandidate.getLastName().equals(newCandidateData.getLastName())) {
             throw (new IllegalArgumentException(
                     String.format("Name mismatch: candidate with pid %s already exists and his name is %s %s",
-                            oldCandidate.getPersonId(), oldCandidate.getFirstName(), oldCandidate.getFirstName())
+                            existingCandidate.getPersonId(), existingCandidate.getFirstName(), existingCandidate.getFirstName())
             ));
         }
-        if (oldCandidate.getDistrict() != null && newCandidateData.getDistrctName() != null) {
+        if (existingCandidate.getDistrict() != null && newCandidateData.getDistrctName() != null) {
             throw (new IllegalArgumentException(
                     String.format("Data mismatch: candidate %s is bound to another district - %s",
-                            oldCandidate, oldCandidate.getDistrict()
+                            existingCandidate, existingCandidate.getDistrict()
                     )));
         }
-        if (oldCandidate.getParty() != null && oldCandidate.getParty().getName() != newCandidateData.getPartyName()) {
+        if (existingCandidate.getParty() != null && existingCandidate.getParty().getName() != newCandidateData.getPartyName()) {
             throw (new IllegalArgumentException(
                     String.format("Data mismatch: candidate %s is bound to another party - %s",
-                            oldCandidate, oldCandidate.getParty())
+                            existingCandidate, existingCandidate.getParty())
             ));
         }
     }

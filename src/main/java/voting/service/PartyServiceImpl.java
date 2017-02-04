@@ -82,7 +82,7 @@ public class PartyServiceImpl implements PartyService {
 
         try {
             party = setCandidateList(party.getId(), file);
-            if (newParty) {
+            if (!newParty) {
                 party.setName(partyData.getName());
             }
         } catch (IOException | CsvException ex) {

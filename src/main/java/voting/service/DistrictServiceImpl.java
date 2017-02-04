@@ -2,7 +2,6 @@ package voting.service;
 
 import com.opencsv.exceptions.CsvException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,6 +13,7 @@ import voting.model.County;
 import voting.model.District;
 import voting.repository.DistrictRepository;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -83,13 +83,12 @@ public class DistrictServiceImpl implements DistrictService {
 
     @Transactional
     @Override
-    public District setCandidateList(Long id, MultipartFile file) throws IOException, CsvException {
+    public District setCandidateList(Long id, MultipartFile multipartFile) throws IOException, CsvException {
         District district = getDistrict(id);
 
         String fileName = String.format("district_%d.csv", id);
-        storageService.store(fileName, file);
-        Resource fileResource = storageService.loadAsResource(fileName);
-        List<CandidateData> candidateListData = (parsingService.parseSingleMandateCandidateList(fileResource.getFile()));
+        File file = storageService.store(fileName, multipartFile).toFile();
+        List<CandidateData> candidateListData = (parsingService.parseSingleMandateCandidateList(file));
 
         district.removeAllCandidates();
 

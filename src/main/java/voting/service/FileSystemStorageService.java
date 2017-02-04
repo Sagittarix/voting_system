@@ -26,13 +26,14 @@ public class FileSystemStorageService implements StorageService {
     private Path rootLocation;
 
     @Override
-    public void store(String fileName, MultipartFile file) {
+    public Path store(String fileName, MultipartFile file) {
         Path filePath = rootLocation.resolve(fileName);
         try {
             if (!Files.exists(rootLocation)) {
                 Files.createDirectory(rootLocation);
             }
             Files.copy(file.getInputStream(), filePath, REPLACE_EXISTING);
+            return filePath;
         } catch (IOException e) {
             throw new StorageException("Failed to store file " + file.getOriginalFilename(), e);
         }
@@ -41,22 +42,6 @@ public class FileSystemStorageService implements StorageService {
     @Override
     public Path load(String filename) {
         return rootLocation.resolve(filename);
-    }
-
-    @Override
-    public Resource loadAsResource(String filename) {
-        try {
-            Path file = load(filename);
-            Resource resource = new UrlResource(file.toUri());
-            if(resource.exists() || resource.isReadable()) {
-                return resource;
-            }
-            else {
-                throw new StorageFileNotFoundException("Could not read file: " + filename);
-            }
-        } catch (MalformedURLException e) {
-            throw new StorageFileNotFoundException("Could not read file: " + filename, e);
-        }
     }
 
     @Override

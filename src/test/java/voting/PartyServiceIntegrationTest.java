@@ -71,7 +71,7 @@ public class PartyServiceIntegrationTest {
 
     @Before
     public void beforeTestSetup() throws IOException, CsvException {
-        when(storageService.load(any())).thenReturn(tmpFilePath);
+        when(storageService.store(any(), any())).thenReturn(tmpFilePath);
     }
 
 

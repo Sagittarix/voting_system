@@ -101,11 +101,8 @@ public class PartyServiceImpl implements PartyService {
         Party party = getParty(id);
 
         String fileName = String.format("party_%d.csv", party.getId());
-        storageService.store(fileName, multiPartFile);
-        File file = storageService.load(fileName).toFile();
+        File file = storageService.store(fileName, multiPartFile).toFile();
         List<CandidateData> candidateListData = parsingService.parseMultiMandateCandidateList(file);
-//        Resource fileResource = storageService.loadAsResource(fileName);
-//        List<CandidateData> candidateListData = parsingService.parseMultiMandateCandidateList(fileResource.getFile());
 
         party.removeAllCandidates();
 

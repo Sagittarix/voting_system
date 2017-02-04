@@ -45,7 +45,7 @@ public class CandidateServiceTest {
     public static void beforeClassSetup() {
         party = new Party("Party 1");
         district = new District("District 1");
-        existingCandidate = new Candidate(personId, firstName, lastName);
+        existingCandidate = new Candidate(firstName, lastName, personId);
     }
 
     @Before

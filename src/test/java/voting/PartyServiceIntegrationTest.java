@@ -43,6 +43,11 @@ import static org.mockito.Mockito.when;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class PartyServiceIntegrationTest {
 
+    private static Path tmpFilePath;
+    private static CandidateData candidate1;
+    private static CandidateData candidate2;
+    private static CandidateData candidate3;
+
     @MockBean
     private ParsingService parsingService;
     @MockBean
@@ -58,8 +63,6 @@ public class PartyServiceIntegrationTest {
     private List<CandidateData> candidateDataList;
     private MockMultipartFile multiPartFile = new MockMultipartFile("file.csv", new byte[] {});
 
-    private static Path tmpFilePath;
-
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
@@ -67,23 +70,33 @@ public class PartyServiceIntegrationTest {
     @BeforeClass
     public static void beforeClassSetup() throws IOException {
         tmpFilePath = Files.createTempFile("file", "tmp");
+        candidate1 = createCandidateData("Petras", "Petraitis", "55500055501", 1L);
+        candidate2 = createCandidateData("Jonas", "Jonaitis", "55500055502", 2L);
+        candidate3 = createCandidateData("Trecias", "Treciasis", "55500055503", 1L);
     }
 
     @Before
     public void beforeTestSetup() throws IOException, CsvException {
         when(storageService.store(any(), any())).thenReturn(tmpFilePath);
+        when(storageService.storeTemporary(any())).thenReturn(tmpFilePath);
     }
 
 
     @Test(expected = NotFoundException.class)
     public void gettingNonExistingPartyByIdShouldThrowNotFound() {
+        //Sanity check
         assertThat(sut.getParties().size(), is(0));
+
+        //Verify
         sut.getParty(1L);
     }
 
     @Test(expected = NotFoundException.class)
     public void gettingNonExistingPartyByNameShouldThrowNotFound() {
+        //Sanity check
         assertThat(sut.getParties().size(), is(0));
+
+        //Verify
         sut.getParty("Party XXX");
     }
 
@@ -92,20 +105,19 @@ public class PartyServiceIntegrationTest {
     @Transactional
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     public void savesAndUpdatesPartyCorrectly() throws IOException, CsvException {
-        assertThat(sut.getParties().size(), is(0));
-        CandidateData cd1 = createCandidateData("Petras", "Petraitis", "55500055501", 1L);
-        CandidateData cd2 = createCandidateData("Jonas", "Jonaitis", "55500055502", 2L);
-        candidateDataList = Arrays.asList(cd1, cd2);
+
+        //Setup
+        candidateDataList = Arrays.asList(candidate1, candidate2);
         when(parsingService.parseMultiMandateCandidateList(any())).thenReturn(candidateDataList);
 
         PartyData partyData = new PartyData();
-        partyData.setName("Pirma Partija");
+        partyData.setName("XXX");
 
         //Exercise
         Party party = sut.saveParty(partyData, multiPartFile);
 
         //Verify
-        assertThat(party.getName(), is("Pirma Partija"));
+        assertThat(party.getName(), is("XXX"));
         assertThat(party.getCandidates().size(), is(2));
         assertThat(party.getCandidates().get(0).getPersonId(), is("55500055501"));
         assertThat(party.getCandidates().get(1).getPersonId(), is("55500055502"));
@@ -116,8 +128,7 @@ public class PartyServiceIntegrationTest {
         partyData.setId(party.getId());
         partyData.setName("UPDATED");
 
-        CandidateData cd3 = createCandidateData("Trecias", "Treciasis", "55500055503", 1L);
-        candidateDataList = Arrays.asList(cd3);
+        candidateDataList = Arrays.asList(candidate3);
         when(parsingService.parseMultiMandateCandidateList(any())).thenReturn(candidateDataList);
 
         //Exercise
@@ -127,26 +138,25 @@ public class PartyServiceIntegrationTest {
         assertThat(party.getName(), is("UPDATED"));
         assertThat(party.getCandidates().size(), is(1));
         assertThat(party.getCandidates().get(0).getPersonId(), is("55500055503"));
-
     }
 
 
     @Test
-    @Transactional
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     public void shouldntCreateNewPartyIfExceptionIsThrownWhileParsingCandidateList() throws IOException, CsvException {
-        assertThat(sut.getParties().size(), is(0));
+
         //Setup
+        int partyCount = sut.getParties().size();
         PartyData partyData = new PartyData();
         partyData.setName("Nauja Partija");
-        int partyCount = sut.getParties().size();
 
         when(parsingService.parseMultiMandateCandidateList(any())).thenThrow(CsvException.class);
 
         //Exercise
         try {
             Party party = sut.saveParty(partyData, multiPartFile);
-        } catch (Exception e) {
+        } catch (Exception ex) {
+            //Verify
             assertThat(sut.getParties().size(), is(partyCount));
             thrown.expect(NotFoundException.class);
             Party saved = sut.getParty("Nauja Partija");
@@ -155,47 +165,42 @@ public class PartyServiceIntegrationTest {
 
 
     @Test
-    @Transactional
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     public void shouldntUpdatePartyIfExceptionIsThrownWhileParsingCandidateList() throws IOException, CsvException {
-        assertThat(sut.getParties().size(), is(0));
-        CandidateData cd1 = createCandidateData("Petras", "Petraitis", "55500055501", 1L);
-        CandidateData cd2 = createCandidateData("Jonas", "Jonaitis", "55500055502", 2L);
-        candidateDataList = Arrays.asList(cd1, cd2);
+
+        //Setup
+        candidateDataList = Arrays.asList(candidate1, candidate2);
         when(parsingService.parseMultiMandateCandidateList(any())).thenReturn(candidateDataList);
 
         PartyData partyData = new PartyData();
         partyData.setName("Pirma Partija");
-
         Party savedParty = sut.saveParty(partyData, multiPartFile);
 
         partyData.setId(savedParty.getId());
         partyData.setName("UPDATED");
 
-        when(parsingService.parseMultiMandateCandidateList(any())).thenThrow(Exception.class);
+        when(parsingService.parseMultiMandateCandidateList(any())).thenThrow(CsvException.class);
 
         //Exercise
         try {
-            Party party2 = sut.saveParty(partyData, multiPartFile);
+            sut.saveParty(partyData, multiPartFile);
         } catch (Exception e) {
             Party updatedParty = sut.getParty(savedParty.getId());
+
+            //Verify
             assertThat(updatedParty.getName(), is("Pirma Partija"));
             assertThat(updatedParty.getCandidates().size(), is(2));
-
             thrown.expect(NotFoundException.class);
-            sut.getParty("Antra Partija");
+            sut.getParty("UPDATED");
         }
     }
 
     @Test
-    @Transactional
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     public void shouldSetCandidateListCorrectly() throws IOException, CsvException {
 
-        assertThat(sut.getParties().size(), is(0));
-        CandidateData cd1 = createCandidateData("Petras", "Petraitis", "55500055501", 1L);
-        CandidateData cd2 = createCandidateData("Jonas", "Jonaitis", "55500055502", 2L);
-        candidateDataList = Arrays.asList(cd1, cd2);
+        //Setup
+        candidateDataList = Arrays.asList(candidate1, candidate2);
         when(parsingService.parseMultiMandateCandidateList(any())).thenReturn(candidateDataList);
 
         PartyData partyData = new PartyData();
@@ -203,13 +208,13 @@ public class PartyServiceIntegrationTest {
 
         Party savedParty = sut.saveParty(partyData, multiPartFile);
 
-        CandidateData cd3 = createCandidateData("Trecias", "Treciasis", "55500055503", 1L);
-        candidateDataList = Arrays.asList(cd3);
+        candidateDataList = Arrays.asList(candidate3);
         when(parsingService.parseMultiMandateCandidateList(any())).thenReturn(candidateDataList);
 
         //Exercise
         Party updatedParty = sut.setCandidateList(savedParty.getId(), multiPartFile);
 
+        //Verify
         assertThat(updatedParty.getCandidates().size(), is(1));
         assertThat(updatedParty.getCandidates().get(0).getPersonId(), is("55500055503"));
     }
@@ -217,14 +222,11 @@ public class PartyServiceIntegrationTest {
 
 
     @Test
-    @Transactional
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     public void deleteCandidateListWorksCorrectly() throws IOException, CsvException {
 
-        assertThat(sut.getParties().size(), is(0));
-        CandidateData cd1 = createCandidateData("Petras", "Petraitis", "55500055501", 1L);
-        CandidateData cd2 = createCandidateData("Jonas", "Jonaitis", "55500055502", 2L);
-        candidateDataList = Arrays.asList(cd1, cd2);
+        //Setup
+        candidateDataList = Arrays.asList(candidate1, candidate2);
         when(parsingService.parseMultiMandateCandidateList(any())).thenReturn(candidateDataList);
 
         PartyData partyData = new PartyData();
@@ -242,7 +244,7 @@ public class PartyServiceIntegrationTest {
     }
 
 
-    private CandidateData createCandidateData(String firstName, String lastName, String personId, Long position) {
+    private static CandidateData createCandidateData(String firstName, String lastName, String personId, Long position) {
         CandidateData cd = new CandidateData();
         cd.setFirstName(firstName);
         cd.setLastName(lastName);

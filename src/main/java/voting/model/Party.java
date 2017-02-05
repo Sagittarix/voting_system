@@ -15,7 +15,7 @@ public class Party {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
-    @OneToMany(mappedBy = "party")
+    @OneToMany(mappedBy = "party", fetch = FetchType.EAGER)
     private List<Candidate> candidates = new ArrayList<>();
 
     public Party() {

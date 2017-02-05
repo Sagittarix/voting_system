@@ -58,6 +58,16 @@ public class CandidateServiceImpl implements CandidateService{
         return (List<Candidate>) candidateRepository.findAll();
     }
 
+    @Override
+    public boolean exists(Long id) {
+        return candidateRepository.exists(id);
+    }
+
+    @Override
+    public boolean exists(String personId) {
+        return candidateRepository.existsByPersonId(personId);
+    }
+
 
     /**
      * Checks for conflicts between existing and updated candidate.

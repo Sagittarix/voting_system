@@ -20,6 +20,10 @@ public interface CandidateService {
 
     List<Candidate> getCandidates();
 
+    boolean exists(Long id);
+
+    boolean exists(String personId);
+
     void checkCandidateIntegrity(CandidateData newCandidateData, Candidate oldCandidate);
 
 }

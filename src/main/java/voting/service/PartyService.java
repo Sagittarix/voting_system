@@ -26,4 +26,8 @@ public interface PartyService {
     Party setCandidateList(Long id, MultipartFile file) throws IOException, CsvException;
 
     void deleteCandidateList(Long id);
+
+    boolean exists(Long id);
+
+    boolean exists(String name);
 }

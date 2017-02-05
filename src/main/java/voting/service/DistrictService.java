@@ -27,4 +27,8 @@ public interface DistrictService {
 
     void deleteCandidateList(Long id);
 
+    boolean exists(Long id);
+
+    boolean exists(String name);
+
 }

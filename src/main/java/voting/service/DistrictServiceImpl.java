@@ -116,5 +116,15 @@ public class DistrictServiceImpl implements DistrictService {
         districtRepository.save(district);
     }
 
+    @Override
+    public boolean exists(Long id) {
+        return districtRepository.exists(id);
+    }
+
+    @Override
+    public boolean exists(String name) {
+        return districtRepository.existsByName(name);
+    }
+
 
 }

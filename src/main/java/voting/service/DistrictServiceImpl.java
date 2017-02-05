@@ -13,8 +13,8 @@ import voting.model.County;
 import voting.model.District;
 import voting.repository.DistrictRepository;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 
 /**
@@ -81,32 +81,10 @@ public class DistrictServiceImpl implements DistrictService {
         return (List<District>) districtRepository.findAll();
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
-    public District setCandidateList(Long id, MultipartFile multipartFile) throws IOException, CsvException {
-        District district = getDistrict(id);
-
-        String fileName = String.format("district_%d.csv", id);
-        File file = storageService.store(fileName, multipartFile).toFile();
-        List<CandidateData> candidateListData = (parsingService.parseSingleMandateCandidateList(file));
-
-        district.removeAllCandidates();
-
-        candidateListData.forEach(
-                candidateData -> {
-                    Candidate newCandidate;
-                    candidateData.setDistrctId(district.getId());
-                    candidateData.setDistrctName(district.getName());
-                    try {
-                        Candidate oldCandidate = candidateService.getCandidate(candidateData.getPersonId());
-                        candidateService.checkCandidateIntegrity(candidateData, oldCandidate);
-                        newCandidate = oldCandidate;
-                    } catch (NotFoundException ex) {
-                        newCandidate = candidateService.addNewCandidate(candidateData);
-                    }
-                    district.addCandidate(newCandidate);
-                });
-        return districtRepository.save(district);
+    public District setCandidateList(Long id, MultipartFile file) throws IOException, CsvException {
+        return saveCandidateList(getDistrict(id), file);
     }
 
     @Override
@@ -126,5 +104,45 @@ public class DistrictServiceImpl implements DistrictService {
         return districtRepository.existsByName(name);
     }
 
+
+    @Transactional(rollbackFor = Exception.class)
+    private District saveCandidateList(District district, MultipartFile file) throws IOException, CsvException {
+
+        List<CandidateData> candidateListData = extractCandidateList(file);
+        district.removeAllCandidates();
+
+        candidateListData.forEach(
+                candidateData -> {
+                    Candidate newCandidate;
+                    candidateData.setDistrctId(district.getId());
+                    candidateData.setDistrctName(district.getName());
+                    if (candidateService.exists(candidateData.getPersonId())) {
+                        Candidate existingCandidate = candidateService.getCandidate(candidateData.getPersonId());
+                        candidateService.checkCandidateIntegrity(candidateData, existingCandidate);
+                        newCandidate = existingCandidate;
+                    } else {
+                        newCandidate = candidateService.addNewCandidate(candidateData);
+                    }
+                    district.addCandidate(newCandidate);
+                });
+        districtRepository.save(district);
+
+        String fileName = String.format("district_%d.csv", district.getId());
+        storageService.store(fileName, file);
+
+        return district;
+    }
+
+
+    private List<CandidateData> extractCandidateList(MultipartFile file) throws IOException, CsvException {
+        Path tempFile = storageService.storeTemporary(file);
+        List<CandidateData> candidateListData;
+        try {
+            candidateListData = parsingService.parseSingleMandateCandidateList(tempFile.toFile());
+        } finally {
+            storageService.delete(tempFile);
+        }
+        return candidateListData;
+    }
 
 }

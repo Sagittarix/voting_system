@@ -1,4 +1,4 @@
-package voting.handler;
+package voting.handlers;
 
 import com.opencsv.exceptions.CsvException;
 import org.springframework.http.HttpHeaders;

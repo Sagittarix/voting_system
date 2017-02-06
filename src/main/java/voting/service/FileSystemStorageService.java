@@ -34,7 +34,7 @@ public class FileSystemStorageService implements StorageService {
             }
             Files.copy(file.getInputStream(), filePath, REPLACE_EXISTING);
         } catch (IOException e) {
-            throw new StorageException("Failed to store file " + file.getOriginalFilename(), e);
+            throw new StorageException("Nepavyko išsaugoti failo " + file.getOriginalFilename(), e);
         }
     }
 
@@ -52,10 +52,10 @@ public class FileSystemStorageService implements StorageService {
                 return resource;
             }
             else {
-                throw new StorageFileNotFoundException("Could not read file: " + filename);
+                throw new StorageFileNotFoundException("Neįmanoma nuskaityti failo: " + filename);
             }
         } catch (MalformedURLException e) {
-            throw new StorageFileNotFoundException("Could not read file: " + filename, e);
+            throw new StorageFileNotFoundException("Neįmanoma nuskaityti failo: " + filename, e);
         }
     }
 

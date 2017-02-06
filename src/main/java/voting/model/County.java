@@ -1,9 +1,14 @@
 package voting.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.validator.constraints.Length;
 import voting.results.CountyResult;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.util.List;
 import java.util.Objects;
 
@@ -16,7 +21,15 @@ public class County {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    @Column(nullable = false)       // + buvo unique = true - REIKALINGAS? "Senamiescio" apylinke gali buti > 1 apygardoje
+    @NotNull(message = "Pavadinimas būtinas")
+    @Length(min=6, max=40, message = "Pavadinimas tarp 6 ir 40 simbolių")
+    //@Pattern(regexp = "/^([a-zA-ZąčęėįšųūžĄČĘĖĮŠŲŪŽ0-9\\s][^qQwWxX]*)$/", message = "Pavadinimas neatitinka formato")
     private String name;
+
+    @Min(value = 100, message = "Mažiausiai gyventojų - 100")
+    @Max(value = 3000000, message = "Daugiausiai gyventojų - 3_000_000")
     private Long voterCount;
 
     @OneToMany(
@@ -30,12 +43,13 @@ public class County {
             fetch = FetchType.EAGER,
             cascade = {}
     )
-    @JoinColumn(name = "district_id", nullable = false)
+    //@JoinColumn(name = "district_id", nullable = false)
+    @JoinColumn(name = "district_id", nullable = true)
+    @NotNull(message = "Negalima išsaugoti be apygardos")
     @JsonIgnore
     private District district;
 
-    public County() {
-    }
+    public County() { }
 
     public County(String name, Long voterCount) {
         this.name = name;

@@ -34,4 +34,12 @@ public class CountyService {
         county.setDistrict(districtRepository.findOne(countyData.getDistrictId()));
         return county;
     }
+
+    @Transactional
+    public County saveStandalone(CountyData countyData) {
+        County county = new County();
+        county.setName(countyData.getName());
+        county.setVoterCount(countyData.getVoterCount());
+        return countyRepository.save(county);
+    }
 }

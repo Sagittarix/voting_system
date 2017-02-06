@@ -5,14 +5,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ValidationUtils;
 import org.springframework.web.multipart.MultipartFile;
 import voting.dto.CandidateData;
 import voting.dto.PartyData;
+import voting.exception.InputDTOMultiErrorsException;
 import voting.exception.NotFoundException;
 import voting.model.Candidate;
 import voting.model.Party;
 import voting.repository.PartyRepository;
+import voting.validator.PartyValidator;
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 
@@ -22,19 +28,24 @@ import java.util.List;
 @Service
 public class PartyServiceImpl implements PartyService {
 
-    private PartyRepository partyRepository;
-    private CandidateService candidateService;
+    private final PartyRepository partyRepository;
+    private final CandidateService candidateService;
     private final StorageService storageService;
     private final ParsingService parsingService;
+    private final PartyValidator validator;
 
     @Autowired
-    public PartyServiceImpl(PartyRepository partyRepository, CandidateService candidateService, StorageService storageService, ParsingService parsingService) {
+    public PartyServiceImpl(PartyRepository partyRepository,
+                            CandidateService candidateService,
+                            StorageService storageService,
+                            ParsingService parsingService,
+                            PartyValidator validator) {
         this.partyRepository = partyRepository;
         this.candidateService = candidateService;
         this.storageService = storageService;
         this.parsingService = parsingService;
+        this.validator = validator;
     }
-
 
     @Override
     public Party getParty(Long id) {
@@ -55,7 +66,14 @@ public class PartyServiceImpl implements PartyService {
 
     @Transactional
     @Override
-    public Party saveParty(PartyData partyData, MultipartFile file) throws IOException, CsvException {
+    public Party saveParty(@Valid PartyData partyData, MultipartFile file) throws IOException, CsvException {
+
+        BeanPropertyBindingResult bpbr = new BeanPropertyBindingResult(partyData, "partyData");
+        ValidationUtils.invokeValidator(validator, partyData, bpbr);
+        List<FieldError> errors = bpbr.getFieldErrors();
+
+        if (!errors.isEmpty()) throw new InputDTOMultiErrorsException("All Party errors raised up to React", errors);
+
         boolean newParty;
         Party party;
         if (partyData.getId() != null) {
@@ -87,7 +105,7 @@ public class PartyServiceImpl implements PartyService {
     public Party setCandidateList(Long id, MultipartFile file) throws IOException, CsvException {
         Party party = getParty(id);
         if (party == null) {
-            throw (new NotFoundException("couldn't find party with id " + id));
+            throw (new NotFoundException("Negalima rasti atitinkamos partijos");
         }
 
         String fileName = String.format("party_%d.csv", party.getId());

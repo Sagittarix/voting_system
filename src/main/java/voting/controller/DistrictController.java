@@ -2,10 +2,13 @@ package voting.controller;
 
 import com.opencsv.exceptions.CsvException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import voting.dto.DistrictData;
 import voting.dto.DistrictRepresentation;
+import voting.exception.InputDTOMultiErrorsException;
 import voting.exception.NotFoundException;
 import voting.model.District;
 import voting.service.DistrictService;
@@ -46,7 +49,11 @@ public class DistrictController {
     }
 
     @PostMapping
-    public DistrictRepresentation addNewDistrict(@Valid @RequestBody DistrictData districtData) {
+    public DistrictRepresentation addNewDistrict(@Valid @RequestBody DistrictData districtData, BindingResult result) {
+        if (result.hasFieldErrors()) {
+            List<FieldError> errs = result.getFieldErrors();
+            throw new InputDTOMultiErrorsException("All District errors raised up to React", errs);
+        }
         return new DistrictRepresentation(districtService.addNewDistrict(districtData));
     }
 

@@ -36,7 +36,6 @@ public class DistrictServiceImpl implements DistrictService {
         this.parsingService = parsingService;
     }
 
-
     @Transactional
     @Override
     public District addNewDistrict(DistrictData districtData) {

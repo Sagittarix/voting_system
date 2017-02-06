@@ -2,7 +2,10 @@ package voting.dto;
 
 import org.hibernate.validator.constraints.Length;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.util.Objects;
 
 /**
@@ -10,13 +13,20 @@ import java.util.Objects;
  */
 public class CountyData {
 
+    // nebutinas.
     private Long id;
-    @NotNull
-    @Length(min=1, max=40)
-    private String name;
-    private Long voterCount;
-    private Long districtId;
 
+    @NotNull(message = "Pavadinimas būtinas")
+    @Length(min=6, max=40, message = "Pavadinimas tarp 6 ir 40 simbolių")
+    //@Pattern(regexp = "/^([a-zA-ZąčęėįšųūžĄČĘĖĮŠŲŪŽ0-9\\s][^qQwWxX]*)$/", message = "Pavadinimas neatitinka formato")
+    private String name;
+
+    @Min(value = 500, message = "Mažiausiai gyventojų - 500")
+    @Max(value = 3000000, message = "Daugiausiai gyventojų - 3_000_000")
+    private Long voterCount;
+
+    // nebutinas.
+    private Long districtId;
 
     public Long getId() {
         return id;

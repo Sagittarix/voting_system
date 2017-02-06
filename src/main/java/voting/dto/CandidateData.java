@@ -12,23 +12,24 @@ import java.util.Objects;
 public class CandidateData {
 
     private Long id;
-    @NotNull
-    @Pattern(regexp = "\\d{11}")
-    private String personId;
-    @NotNull
-    @Length(min = 1, max = 40)
-    private String firstName;
-    @NotNull
-    @Length(min = 1, max = 40)
-    private String lastName;
 
+    @NotNull
+    @Pattern(regexp = "\\d{11}", message = "Asmens kode vien skaitmenys")
+    private String personId;
+
+    @NotNull
+    @Length(min = 6, max = 40, message = "Vardo ilgis nuo 6 iki 40 simbolių")
+    private String firstName;
+
+    @NotNull
+    @Length(min = 6, max = 40, message = "Pavardės ilgis nuo 6 iki 40 simbolių")
+    private String lastName;
 
     // not sure ar situ reik, kolkas palieku
     private Long partyId;
     private String partyName;
     private String partyShortName;
     private Long positionInPartyList;
-
 
     public Long getId() {
         return id;

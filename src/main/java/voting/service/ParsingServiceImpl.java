@@ -51,10 +51,10 @@ public class ParsingServiceImpl implements ParsingService {
         try (CSVReader reader = new CSVReader(new FileReader(file))) {
             String[] header = reader.readNext();
 
-            if (header == null
-                    || header.length != columnCount
-                    || !Arrays.equals(header, correctHeader)) {
-                throw (new CsvException("Incorrect or no header! CSV header should be - " + String.join(",", correctHeader)));
+            if (header == null ||
+                header.length != columnCount ||
+                !Arrays.equals(header, correctHeader)) {
+                    throw (new CsvException("Neteisinga failo antraštė! Taisyklinga antraštė - " + String.join(",", correctHeader)));
             }
 
             String[] line;
@@ -62,7 +62,7 @@ public class ParsingServiceImpl implements ParsingService {
 
             while ((line = reader.readNext()) != null) {
                 if (line.length != columnCount) {
-                    throw (new CsvException("Invalid data at line " + lineNumber));
+                    throw (new CsvException("Duomenų klaida eilutėje " + lineNumber));
                 }
 
                 //TODO: add proper validation / exception handling

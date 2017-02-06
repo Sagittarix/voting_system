@@ -10,8 +10,12 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.stereotype.Component;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +37,7 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
@@ -65,6 +70,7 @@ public class PartyServiceIntegrationTest {
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
+
 
 
     @BeforeClass
@@ -251,5 +257,15 @@ public class PartyServiceIntegrationTest {
         cd.setPersonId(personId);
         cd.setPositionInPartyList(position);
         return cd;
+    }
+
+
+    @TestConfiguration
+    static class Config {
+        @Bean
+        @Primary
+        public DataPreloader dataPreloader() {
+            return mock(DataPreloader.class);
+        }
     }
 }

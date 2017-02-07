@@ -22,7 +22,7 @@ public class CountyResultController {
         this.countyResultService = countyResultService;
     }
 
-    @GetMapping
+    /*@GetMapping
     public List<CountyResult> getAll() {
         return countyResultRepository.findAll();
     }
@@ -50,5 +50,7 @@ public class CountyResultController {
     @PostMapping
     public CountyResult create(@RequestBody CountyResultDataModel crdm) {
         return countyResultService.save(crdm);
-    }
+    }*/
+
+    // TODO perdaryti kai nelieka boolean fieldo
 }

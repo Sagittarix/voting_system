@@ -39,6 +39,20 @@ public class County {
     )
     private List<CountyResult> countyResultList;
 
+    @OneToOne(
+            fetch = FetchType.LAZY,
+            cascade = {},
+            mappedBy = "county"
+    )
+    private List<CountyResult> singleMandateResult;
+
+    @OneToOne(
+            fetch = FetchType.LAZY,
+            cascade = {},
+            mappedBy = "county"
+    )
+    private List<CountyResult> multiMandateResult;
+
     @ManyToOne(
             fetch = FetchType.EAGER,
             cascade = {}

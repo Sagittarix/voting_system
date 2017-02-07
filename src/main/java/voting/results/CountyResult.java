@@ -17,7 +17,6 @@ public class CountyResult {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private int spoiledBallots;
-    private boolean singleMandateSystem;
     private Date createdOn;
 
     @OneToMany(
@@ -27,7 +26,7 @@ public class CountyResult {
     )
     private List<CandidateVotes> candidateVotesList;
 
-    @ManyToOne(
+    @OneToOne(
             fetch = FetchType.EAGER,
             cascade = {}
     )
@@ -48,14 +47,6 @@ public class CountyResult {
 
     public void setSpoiledBallots(int spoiledBallots) {
         this.spoiledBallots = spoiledBallots;
-    }
-
-    public boolean isSingleMandateSystem() {
-        return singleMandateSystem;
-    }
-
-    public void setSingleMandateSystem(boolean singleMandateSystem) {
-        this.singleMandateSystem = singleMandateSystem;
     }
 
     public List<CandidateVotes> getCandidateVotesList() {

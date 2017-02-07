@@ -32,13 +32,6 @@ public class County {
     @Max(value = 3000000, message = "Daugiausiai gyventojų - 3_000_000")
     private Long voterCount;
 
-    @OneToMany(
-            fetch = FetchType.LAZY,
-            cascade = {},
-            mappedBy = "county"
-    )
-    private List<CountyResult> countyResultList;
-
     @OneToOne(
             fetch = FetchType.LAZY,
             cascade = {},
@@ -94,12 +87,20 @@ public class County {
         this.voterCount = voterCount;
     }
 
-    public List<CountyResult> getCountyResultList() {
-        return countyResultList;
+    public List<CountyResult> getSingleMandateResult() {
+        return singleMandateResult;
     }
 
-    public void setCountyResultList(List<CountyResult> countyResultList) {
-        this.countyResultList = countyResultList;
+    public void setSingleMandateResult(List<CountyResult> singleMandateResult) {
+        this.singleMandateResult = singleMandateResult;
+    }
+
+    public List<CountyResult> getMultiMandateResult() {
+        return multiMandateResult;
+    }
+
+    public void setMultiMandateResult(List<CountyResult> multiMandateResult) {
+        this.multiMandateResult = multiMandateResult;
     }
 
     public District getDistrict() {

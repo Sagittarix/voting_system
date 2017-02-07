@@ -105,7 +105,7 @@ public class PartyServiceImpl implements PartyService {
     public Party setCandidateList(Long id, MultipartFile file) throws IOException, CsvException {
         Party party = getParty(id);
         if (party == null) {
-            throw (new NotFoundException("Negalima rasti atitinkamos partijos");
+            throw (new NotFoundException("Negalima rasti atitinkamos partijos"));
         }
 
         String fileName = String.format("party_%d.csv", party.getId());

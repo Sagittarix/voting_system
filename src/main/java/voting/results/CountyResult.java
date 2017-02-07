@@ -49,6 +49,14 @@ public class CountyResult {
         this.spoiledBallots = spoiledBallots;
     }
 
+    public Date getCreatedOn() {
+        return createdOn;
+    }
+
+    public void setCreatedOn(Date createdOn) {
+        this.createdOn = createdOn;
+    }
+
     public List<CandidateVotes> getCandidateVotesList() {
         return candidateVotesList;
     }
@@ -63,13 +71,5 @@ public class CountyResult {
 
     public void setCounty(County county) {
         this.county = county;
-    }
-
-    public Date getCreatedOn() {
-        return createdOn;
-    }
-
-    public void setCreatedOn(Date createdOn) {
-        this.createdOn = createdOn;
     }
 }

@@ -44,7 +44,6 @@ public class County {
     )
     //@JoinColumn(name = "district_id", nullable = false) // atstatyti before production
     @JoinColumn(name = "district_id", nullable = true) // comment-out before production
-
     @NotNull(message = "Negalima išsaugoti be apygardos")
     @JsonIgnore
     private District district;

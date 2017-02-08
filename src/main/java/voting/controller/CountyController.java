@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+import voting.dto.CandidateRepresentation;
 import voting.dto.CountyData;
 import voting.exception.DTOMultiFieldsErrorsException;
 import voting.model.County;
@@ -31,6 +32,11 @@ public class CountyController {
             throw new DTOMultiFieldsErrorsException("All County errors raised up to React", errs);
         }
         return countyService.saveWithDistrict(countyData);
+    }
+
+    @GetMapping(path = "{id}/candidates")
+    public List<CandidateRepresentation> getSingleMandataCandidatesForCounty(@PathVariable Long id) {
+        return countyService.getAllSingleMandateCandidatesForCounty(id);
     }
 
 }

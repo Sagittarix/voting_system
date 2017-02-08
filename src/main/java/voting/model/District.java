@@ -33,8 +33,7 @@ public class District {
     @OneToMany(mappedBy = "district")
     private List<Candidate> candidates = new ArrayList<>();
 
-    public District() {
-    }
+    public District() { }
 
     public District(String name) {
         this.name = name;

@@ -1,24 +1,24 @@
-package voting.handlers;
+package voting.handler;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import voting.exception.InputDTOMultiErrorsException;
-import voting.exception.InputDTOMultiErrorsResponse;
+import voting.exception.DTOMultiFieldsErrorsException;
+import voting.exception.error_response.DTOMultiFieldsErrorsResponse;
 
 /**
  * Created by andrius on 2/3/17.
  */
 
 @ControllerAdvice
-public class InputDTOMultiExceptionsHandler {
+public class DTOMultiFieldsExceptionsHandler {
 
-    @ExceptionHandler(InputDTOMultiErrorsException.class)
-    public ResponseEntity<Object> catchAllFieldExceptions(InputDTOMultiErrorsException ex) {
+    @ExceptionHandler(DTOMultiFieldsErrorsException.class)
+    public ResponseEntity<Object> catchAllFieldExceptions(DTOMultiFieldsErrorsException ex) {
         HttpStatus status = HttpStatus.BAD_REQUEST;
-        InputDTOMultiErrorsResponse mer = new InputDTOMultiErrorsResponse(status.value(), ex.getErrors());
+        DTOMultiFieldsErrorsResponse mer = new DTOMultiFieldsErrorsResponse(status.value(), ex.getErrors());
         return new ResponseEntity<Object>(mer, new HttpHeaders(), status);
     }
 }

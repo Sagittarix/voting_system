@@ -7,17 +7,13 @@ import java.util.List;
 /**
  * Created by andrius on 2/3/17.
  */
-public class InputDTOMultiErrorsException extends RuntimeException {
+
+public class DTOMultiFieldsErrorsException extends RuntimeException {
 
     private List<FieldError> errors;
 
-    public InputDTOMultiErrorsException(String message, List<FieldError> errors) {
+    public DTOMultiFieldsErrorsException(String message, List<FieldError> errors) {
         super(message);
-        this.errors = errors;
-    }
-
-    public InputDTOMultiErrorsException(String message, Throwable cause, List<FieldError> errors) {
-        super(message, cause);
         this.errors = errors;
     }
 

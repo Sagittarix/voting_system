@@ -1,4 +1,4 @@
-package voting.exception;
+package voting.exception.error_response;
 
 /**
  * Created by domas on 1/17/17.

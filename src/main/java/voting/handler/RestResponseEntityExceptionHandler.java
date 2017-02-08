@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
-import voting.exception.ErrorResponse;
+import voting.exception.error_response.ErrorResponse;
 import voting.exception.NotFoundException;
 import voting.exception.StorageException;
 import voting.exception.StorageFileNotFoundException;

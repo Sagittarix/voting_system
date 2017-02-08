@@ -1,4 +1,4 @@
-package voting.handlers;
+package voting.handler;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import voting.exception.CandidateMultiErrorsException;
-import voting.exception.CandidateMultiErrorsResponse;
+import voting.exception.error_response.CandidateMultiErrorsResponse;
 
 /**
  * Created by andrius on 2/6/17.

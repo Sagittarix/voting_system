@@ -1,5 +1,6 @@
 package voting.validator;
 
+import com.opencsv.CSVReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -11,9 +12,9 @@ import org.springframework.web.multipart.MultipartFile;
 import voting.dto.PartyData;
 import voting.service.ParsingServiceImpl;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
@@ -40,50 +41,47 @@ public class CsvFileValidator implements Validator {
 
     @Override
     public boolean supports(Class<?> aClass) {
-        return File.class.isAssignableFrom(aClass);
+        return MultipartFile.class.isAssignableFrom(aClass);
     }
 
     @Override
     public void validate(Object target, Errors errors) {
-        File file = (File) target;
-        int columnCount = 4;        // HARDCODED - change if headers length changes OR headers become NON EQUALS in LENGTH
+        MultipartFile file = (MultipartFile) target;
+        int columnCount = 4;                                // HARDCODED - change if headers length changes OR headers become NON EQUALS in LENGTH
+        List<String[]> lines = null;
 
-        List<String> lines = null;
-        try {
-            lines = Files.readAllLines(Paths.get(file.toURI()));
+        if (!file.getContentType().contains("text/csv")) {
+            errors.reject(HttpStatus.NOT_ACCEPTABLE.toString(),
+                    "Spring - Failas turi CSV formato");
+            return;
+        }
+
+        try (CSVReader reader = new CSVReader(new InputStreamReader(file.getInputStream()))) {
+            lines = reader.readAll();
         } catch (IOException e) {
-            errors.rejectValue(null,
-                    HttpStatus.NOT_FOUND.toString(),
-                    "Spring - Klaida validuojant failą");
+            errors.reject(HttpStatus.NOT_FOUND.toString(),
+                    "Spring - Klaida nuskaitant failą");
             return;                                                 // method terminator
         }
 
-        if (!file.getName().contains("csv")) {
-            errors.rejectValue(null,
-                    HttpStatus.NOT_ACCEPTABLE.toString(),
-                    "Spring - Failo plėtinys turi būti *.csv");
-        }
-
         if (lines.isEmpty()) {
-            errors.rejectValue(null,
-                    HttpStatus.NOT_ACCEPTABLE.toString(),
+            errors.reject(HttpStatus.NOT_ACCEPTABLE.toString(),
                     "Spring - Failas tuščias");
             return;                                                 // method terminator
         }
 
-        if (!Arrays.equals(lines.get(0).split(","), singleMandateCandidateParsingStrategy.getHeader()) &&
-            !Arrays.equals(lines.get(0).split(","), multiMandateCandidateParsingStrategy.getHeader())) {
+        if (!Arrays.equals(lines.get(0), singleMandateCandidateParsingStrategy.getHeader()) &&
+            !Arrays.equals(lines.get(0), multiMandateCandidateParsingStrategy.getHeader())) {
             errors.rejectValue(null,
                     HttpStatus.NOT_ACCEPTABLE.toString(),
                     "Spring - Netaisyklinga antraštė.");
             return;                                                 // method terminator
         } else {
-            final List<String> finalLines = lines;
+            final List<String[]> finalLines = lines;
             IntStream.range(1, lines.size())
-                     .filter(i -> finalLines.get(i).split(",").length != columnCount)
+                     .filter(i -> finalLines.get(i).length != columnCount)
                      .forEach(i -> {
-                         errors.rejectValue(null,
-                                 HttpStatus.EXPECTATION_FAILED.toString(),
+                         errors.reject(HttpStatus.EXPECTATION_FAILED.toString(),
                                  "Spring - Duomenų klaida eilutėje " + i);
                      });
         }

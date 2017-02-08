@@ -3,8 +3,14 @@ package voting.service;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvConstraintViolationException;
 import com.opencsv.exceptions.CsvException;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.*;
 import voting.dto.CandidateData;
+import voting.exception.CsvMultiErrorsException;
+import voting.exception.DTOMultiFieldsErrorsException;
+import voting.exception.DTOMultiObjectsErrorsException;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -47,36 +53,54 @@ public class ParsingServiceImpl implements ParsingService {
     private List<CandidateData> parseCandidateList(CandidateParsingStrategy strategy, File file) throws CsvException, IOException {
 
         String[] expectedHeader = strategy.getHeader();
+
         int expectedColumnCount = expectedHeader.length;
         List<CandidateData> candidateDataList = new ArrayList<>();
+        Errors errors = null;
 
         try (CSVReader reader = new CSVReader(new FileReader(file))) {
             String[] header = reader.readNext();
 
             if (header == null || !Arrays.equals(header, expectedHeader)) {
-                throw (new CsvException("Incorrect or no header! CSV header should be - " + String.join(",", expectedHeader)));
+                throw new CsvMultiErrorsException(
+                        "CSV header error",
+                        new ArrayList<ObjectError>() {{ add(
+                                new ObjectError(
+                                        "file",
+                                        "Spring - Bloga failo vidinė antraštė. Turi būti - " +
+                                                String.join(",", expectedHeader)));
+                        }}
+                );
             }
 
             String[] line;
             int lineNumber = 2; // line 1 was header
+            errors = new BeanPropertyBindingResult(file, "file");
 
             while ((line = reader.readNext()) != null) {
                 if (line.length != expectedColumnCount) {
-                    throw (new CsvException("Invalid data at line " + lineNumber));
+                    errors.reject(HttpStatus.CONFLICT.toString(), "Spring - Duomenų klaida eilutėje - " + lineNumber);
                 }
                 try {
                     CandidateData candidateData = strategy.parseCandidateData(line);
                     strategy.validate(candidateData, lineNumber);
                     candidateDataList.add(candidateData);
-                    lineNumber++;
-                } catch (NumberFormatException ex) {
-                    throw (new CsvException("Invalid data at line " + lineNumber));
+                } catch (NumberFormatException | CsvException ex) {
+                    errors.reject(HttpStatus.CONFLICT.toString(), "Spring - Duomenų klaida eilutėje - " + lineNumber);
                 }
+                lineNumber++;
             }
         } catch (IOException e) {
-            throw (new IOException("error reading file"));
+            throw new CsvMultiErrorsException(
+                    "Cannot read CSV file",
+                    new ArrayList<ObjectError>() {{ add(
+                            new ObjectError(
+                                    "file",
+                                    "Spring - Klaida skaitant CSV failą"));
+                    }}
+            );
         }
-
+        if (errors.getAllErrors().size() > 0) throw new DTOMultiObjectsErrorsException("CSV file errors in multiple lines", errors.getAllErrors());
         return candidateDataList;
     }
 
@@ -98,8 +122,8 @@ public class ParsingServiceImpl implements ParsingService {
         abstract void validate(CandidateData candidateData, int lineNumber) throws CsvException;
     }
 
-
-    private class SingleMandateCandidateParsingStrategy extends CandidateParsingStrategy {
+    @Component
+    public class SingleMandateCandidateParsingStrategy extends CandidateParsingStrategy {
 
         public SingleMandateCandidateParsingStrategy() {
             super("Vardas,Pavardė,Asmens_kodas,Partija".split(","));
@@ -118,6 +142,8 @@ public class ParsingServiceImpl implements ParsingService {
         @Override
         void validate(CandidateData candidateData, int lineNumber) throws CsvException {
             Set<ConstraintViolation<CandidateData>> violations = validator.validate(candidateData);
+            violations.forEach(System.out::println);    // TODO
+
             if (violations.size() > 0) {
                 throw (new CsvConstraintViolationException(String.format("Invalid data at line %d: %d constraint(s) violated",
                         lineNumber, violations.size())));
@@ -125,7 +151,8 @@ public class ParsingServiceImpl implements ParsingService {
         }
     }
 
-    private class MultiMandateCandidateParsingStrategy extends CandidateParsingStrategy {
+    @Component
+    public class MultiMandateCandidateParsingStrategy extends CandidateParsingStrategy {
 
         public MultiMandateCandidateParsingStrategy() {
             super("Numeris,Vardas,Pavardė,Asmens_kodas".split(","));

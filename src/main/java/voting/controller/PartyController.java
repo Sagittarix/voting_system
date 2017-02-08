@@ -43,12 +43,10 @@ public class PartyController {
     public PartyRepresentation getParty(@PathVariable Long id) {
         Party party = partyService.getParty(id);
         if (party == null) {
-
+            // TODO skyle
         }
         return new PartyRepresentation(party);
     }
-
-    // TODO: add partyData validation
 
     @PostMapping(consumes = "multipart/form-data")
     public PartyRepresentation saveParty(@RequestParam(name = "party") String partyDataString, @RequestParam(name = "file") MultipartFile multipartFile)

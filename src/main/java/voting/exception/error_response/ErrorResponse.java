@@ -1,4 +1,4 @@
-package voting.exception;
+package voting.exception.error_response;
 
 import org.springframework.validation.FieldError;
 

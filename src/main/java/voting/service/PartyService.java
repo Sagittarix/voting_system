@@ -14,15 +14,21 @@ import java.util.List;
  */
 public interface PartyService {
 
+    Party getParty(Long id);
+
+    Party getParty(String name);
+
+    List<Party> getParties();
+
     Party saveParty(PartyData partyData, MultipartFile file) throws IOException, CsvException;
 
     void deleteParty(Long id);
 
-    Party getParty(Long id);
-
-    List<Party> getParties();
-
     Party setCandidateList(Long id, MultipartFile file) throws IOException, CsvException;
 
     void deleteCandidateList(Long id);
+
+    boolean exists(Long id);
+
+    boolean exists(String name);
 }

@@ -16,13 +16,12 @@ public class CountyData {
     // nebutinas.
     private Long id;
 
-    @NotNull(message = "Pavadinimas būtinas")
-    @Length(min=6, max=40, message = "Pavadinimas tarp 6 ir 40 simbolių")
-    //@Pattern(regexp = "/^([a-zA-ZąčęėįšųūžĄČĘĖĮŠŲŪŽ0-9\\s][^qQwWxX]*)$/", message = "Pavadinimas neatitinka formato")
+    @NotNull(message = "Spring - Pavadinimas būtinas")
+    @Length(min=6, max=40, message = "Spring - Pavadinimas tarp 6 ir 40 simbolių")
     private String name;
 
-    @Min(value = 500, message = "Mažiausiai gyventojų - 500")
-    @Max(value = 3000000, message = "Daugiausiai gyventojų - 3_000_000")
+    @Min(value = 500, message = "Spring - Mažiausiai gyventojų - 500")
+    @Max(value = 3000000, message = "Spring - Daugiausiai gyventojų - 3_000_000")
     private Long voterCount;
 
     // nebutinas.

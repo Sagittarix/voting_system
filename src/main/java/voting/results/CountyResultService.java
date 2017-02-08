@@ -26,7 +26,7 @@ public class CountyResultService {
         this.candidateVotesService = candidateVotesService;
     }
 
-    /*public List<CountyResult> getAllForSingleMandate() {
+    public List<CountyResult> getAllForSingleMandate() {
         return countyResultRepository.findAll().stream()
                                                .filter(cr -> cr.isSingleMandateSystem() == true)
                                                .collect(Collectors.toList());
@@ -60,8 +60,7 @@ public class CountyResultService {
         cr.setCandidateVotesList(votesList);
         cr.setCounty(countyRepository.findOne(crdm.getCounty_id()));
         return cr;
-
-    }*/
-
-
+    }
 }
+
+// TODO perdaryti kai nelieka boolean fieldo

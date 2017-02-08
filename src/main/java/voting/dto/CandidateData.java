@@ -13,22 +13,23 @@ public class CandidateData {
 
     private Long id;
 
-    @NotNull
-    @Pattern(regexp = "\\d{11}", message = "Asmens kode vien skaitmenys")
+    @NotNull(message = "AK negali būti tuščias")
+    @Pattern(regexp = "\\d{11}", message = "Spring - Asmens kode vien skaitmenys")
     private String personId;
 
-    @NotNull
-    @Length(min = 6, max = 40, message = "Vardo ilgis nuo 6 iki 40 simbolių")
+    @NotNull(message = "Vardas negali būti tuščias")
+    @Length(min = 3, max = 40, message = "Spring - Vardo ilgis nuo 3 iki 40 simbolių")
     private String firstName;
 
-    @NotNull
-    @Length(min = 6, max = 40, message = "Pavardės ilgis nuo 6 iki 40 simbolių")
+    @NotNull(message = "Pavardė negali būti tuščia")
+    @Length(min = 3, max = 40, message = "Spring - Pavardės ilgis nuo 3 iki 40 simbolių")
     private String lastName;
 
-    // not sure ar situ reik, kolkas palieku
+    // not sure kuriu reikia, kolkas palieku visus
+    private Long districtId;
+    private String districtName;
     private Long partyId;
     private String partyName;
-    private String partyShortName;
     private Long positionInPartyList;
 
     public Long getId() {
@@ -63,28 +64,28 @@ public class CandidateData {
         this.lastName = lastName;
     }
 
+    public Long getDistrictId() {
+        return districtId;
+    }
+
+    public void setDistrictId(Long districtId) {
+        this.districtId = districtId;
+    }
+
+    public String getDistrictName() {
+        return districtName;
+    }
+
+    public void setDistrictName(String districtName) {
+        this.districtName = districtName;
+    }
+
     public Long getPartyId() {
         return partyId;
     }
 
     public void setPartyId(Long partyId) {
         this.partyId = partyId;
-    }
-
-    public String getPartyShortName() {
-        return partyShortName;
-    }
-
-    public void setPartyShortName(String partyShortName) {
-        this.partyShortName = partyShortName;
-    }
-
-    public Long getPositionInPartyList() {
-        return positionInPartyList;
-    }
-
-    public void setPositionInPartyList(Long positionInPartyList) {
-        this.positionInPartyList = positionInPartyList;
     }
 
     public String getPartyName() {
@@ -95,9 +96,17 @@ public class CandidateData {
         this.partyName = partyName;
     }
 
+    public Long getPositionInPartyList() {
+        return positionInPartyList;
+    }
+
+    public void setPositionInPartyList(Long positionInPartyList) {
+        this.positionInPartyList = positionInPartyList;
+    }
 
     @Override
     public boolean equals(Object o) {
+
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CandidateData that = (CandidateData) o;
@@ -105,15 +114,16 @@ public class CandidateData {
                 Objects.equals(personId, that.personId) &&
                 Objects.equals(firstName, that.firstName) &&
                 Objects.equals(lastName, that.lastName) &&
+                Objects.equals(districtId, that.districtId) &&
+                Objects.equals(districtName, that.districtName) &&
                 Objects.equals(partyId, that.partyId) &&
                 Objects.equals(partyName, that.partyName) &&
-                Objects.equals(partyShortName, that.partyShortName) &&
                 Objects.equals(positionInPartyList, that.positionInPartyList);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, personId, firstName, lastName, partyId, partyName, partyShortName, positionInPartyList);
+        return Objects.hash(id, personId, firstName, lastName, districtId, districtName, partyId, partyName, positionInPartyList);
     }
 
     @Override
@@ -123,9 +133,10 @@ public class CandidateData {
                 ", personId='" + personId + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
+                ", districtId=" + districtId +
+                ", districtName='" + districtName + '\'' +
                 ", partyId=" + partyId +
                 ", partyName='" + partyName + '\'' +
-                ", partyShortName='" + partyShortName + '\'' +
                 ", positionInPartyList=" + positionInPartyList +
                 '}';
     }

@@ -21,7 +21,7 @@ public class District {
     private Long id;
 
     @Column(unique = true, nullable = false)
-    @Length(min = 3, max = 40)
+    @Length(min = 3, max = 40, message = "Pavadinimas tarp 6 ir 40 simbolių")
     //@Pattern(regexp = "/^([a-zA-ZąčęėįšųūžĄČĘĖĮŠŲŪŽ0-9\\s][^qQwWxX]*)$/", message = "Pavadinimas neatitinka formato")
     private String name;
 
@@ -44,16 +44,8 @@ public class District {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public List<County> getCounties() {
@@ -112,11 +104,6 @@ public class District {
 
     @Override
     public String toString() {
-        return "District{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", counties=" + counties +
-                ", candidates=" + candidates +
-                '}';
+        return String.format("%s (id %d)", name, id);
     }
 }

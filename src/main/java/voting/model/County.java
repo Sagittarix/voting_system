@@ -8,7 +8,6 @@ import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import java.util.List;
 import java.util.Objects;
 
@@ -22,7 +21,7 @@ public class County {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(nullable = false)       // + buvo unique = true - REIKALINGAS? "Senamiescio" apylinke gali buti > 1 apygardoje
+    @Column(nullable = false)       // + buvo unique = true - REIKALINGAS? "Senamiescio" apylinke gali buti > 1 apygardoje?
     @NotNull(message = "Pavadinimas būtinas")
     @Length(min=6, max=40, message = "Pavadinimas tarp 6 ir 40 simbolių")
     //@Pattern(regexp = "/^([a-zA-ZąčęėįšųūžĄČĘĖĮŠŲŪŽ0-9\\s][^qQwWxX]*)$/", message = "Pavadinimas neatitinka formato")
@@ -32,26 +31,20 @@ public class County {
     @Max(value = 3000000, message = "Daugiausiai gyventojų - 3_000_000")
     private Long voterCount;
 
-    @OneToOne(
+    @OneToMany(
             fetch = FetchType.LAZY,
             cascade = {},
             mappedBy = "county"
     )
-    private List<CountyResult> singleMandateResult;
-
-    @OneToOne(
-            fetch = FetchType.LAZY,
-            cascade = {},
-            mappedBy = "county"
-    )
-    private List<CountyResult> multiMandateResult;
+    private List<CountyResult> countyResultList;
 
     @ManyToOne(
             fetch = FetchType.EAGER,
             cascade = {}
     )
-    //@JoinColumn(name = "district_id", nullable = false)
-    @JoinColumn(name = "district_id", nullable = true)
+    //@JoinColumn(name = "district_id", nullable = false) // atstatyti before production
+    @JoinColumn(name = "district_id", nullable = true) // comment-out before production
+
     @NotNull(message = "Negalima išsaugoti be apygardos")
     @JsonIgnore
     private District district;
@@ -87,20 +80,12 @@ public class County {
         this.voterCount = voterCount;
     }
 
-    public List<CountyResult> getSingleMandateResult() {
-        return singleMandateResult;
+    public List<CountyResult> getCountyResultList() {
+        return countyResultList;
     }
 
-    public void setSingleMandateResult(List<CountyResult> singleMandateResult) {
-        this.singleMandateResult = singleMandateResult;
-    }
-
-    public List<CountyResult> getMultiMandateResult() {
-        return multiMandateResult;
-    }
-
-    public void setMultiMandateResult(List<CountyResult> multiMandateResult) {
-        this.multiMandateResult = multiMandateResult;
+    public void setCountyResultList(List<CountyResult> countyResultList) {
+        this.countyResultList = countyResultList;
     }
 
     public District getDistrict() {
@@ -129,11 +114,6 @@ public class County {
 
     @Override
     public String toString() {
-        return "County{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", district=" + district +
-                ", voterCount=" + voterCount +
-                '}';
+        return String.format("%s (id %d), voter count - ", name, id, voterCount);
     }
 }

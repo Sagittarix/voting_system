@@ -19,11 +19,11 @@ public class Party {
     private Long id;
 
     @NotNull
-    @Length(min = 6, max = 40, message = "Pavadinimas nuo 6 iki 40 simbolių")
+    @Length(min = 6, max = 40, message = "Spring - Pavadinimas nuo 6 iki 40 simbolių")
     //@Pattern(regexp = "/^([a-zA-ZąčęėįšųūžĄČĘĖĮŠŲŪŽ0-9\\s][^qQwWxX]*)$/", message = "Pavadinimas neatitinka formato")
     private String name;
 
-    @OneToMany(mappedBy = "party")
+    @OneToMany(mappedBy = "party", fetch = FetchType.EAGER)
     private List<Candidate> candidates = new ArrayList<>();
 
     public Party() { }
@@ -34,10 +34,6 @@ public class Party {
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public void setName(String name) {
@@ -85,10 +81,6 @@ public class Party {
 
     @Override
     public String toString() {
-        return "Party{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", candidates=" + candidates +
-                '}';
+        return String.format("%s (id %d)", name, id);
     }
 }

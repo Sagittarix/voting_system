@@ -3,10 +3,7 @@ package voting;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-import voting.model.Candidate;
-import voting.model.County;
-import voting.model.District;
-import voting.model.Party;
+import voting.model.*;
 import voting.repository.CandidateRepository;
 import voting.repository.CountyRepRepository;
 import voting.repository.DistrictRepository;
@@ -30,7 +27,10 @@ public class DataPreloader implements CommandLineRunner {
     private final CandidateRepository candidateRepository;
 
     @Autowired
-    public DataPreloader(CountyRepRepository countyRepRepository, DistrictRepository districtRepository, PartyRepository partyRepository, CandidateRepository candidateRepository) {
+    public DataPreloader(CountyRepRepository countyRepRepository,
+                         DistrictRepository districtRepository,
+                         PartyRepository partyRepository,
+                         CandidateRepository candidateRepository) {
         this.countyRepRepository = countyRepRepository;
         this.districtRepository = districtRepository;
         this.partyRepository = partyRepository;
@@ -101,6 +101,21 @@ public class DataPreloader implements CommandLineRunner {
             district2.addCandidate(c);
             candidateRepository.save(c);
         });
+
+        CountyRep cr1 = new CountyRep("CR1001first", "CR001last", county1);
+        CountyRep cr2 = new CountyRep("CR002first", "CR002last", county2);
+        CountyRep cr3 = new CountyRep("CR003first", "CR003last", county3);
+        CountyRep cr4 = new CountyRep("CR004first", "CR004last", county4);
+        CountyRep cr5 = new CountyRep("CR005first", "CR005last", county5);
+        List<CountyRep> crs = new ArrayList<CountyRep>() {{
+            add(cr1);
+            add(cr2);
+            add(cr3);
+            add(cr4);
+            add(cr5);
+        }};
+        countyRepRepository.save(crs);
+
     }
 
     public static String generateRandomPersonId() {

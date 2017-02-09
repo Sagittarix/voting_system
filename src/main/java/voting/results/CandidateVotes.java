@@ -13,7 +13,7 @@ public class CandidateVotes {
     @Id
     @GeneratedValue
     private Long id;
-    private Long count;
+    private Long votes;
 
     @ManyToOne(
             cascade = {},
@@ -37,12 +37,12 @@ public class CandidateVotes {
         this.id = id;
     }
 
-    public Long getCount() {
-        return count;
+    public Long getVotes() {
+        return votes;
     }
 
-    public void setCount(Long count) {
-        this.count = count;
+    public void setVotes(Long votes) {
+        this.votes = votes;
     }
 
     public CountyResult getCountyResult() {

@@ -1,37 +1,29 @@
 package voting.results;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
 /**
  * Created by andrius on 1/24/17.
  */
+
 public class CandidateVotesDataModel {
 
-    private Long id;
-    private Long count;
-    private CountyResult countyResult;
+    @NotNull(message = "Spring - Trūksta kandidato balsų skaičiaus")
+    @Min(value = 100, message = "Spring - Kandidato balsai. Negali būti < 100")
+    @Max(value = 500000, message = "Spring - Kandidato balsai. Negali būti tiek daug")
+    private Long votes;
+
+    @NotNull(message = "Spring - Kandidato identifikatorius privalomas")
     private Long candidateId;
 
-    public Long getId() {
-        return id;
+    public Long getVotes() {
+        return votes;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getCount() {
-        return count;
-    }
-
-    public void setCount(Long count) {
-        this.count = count;
-    }
-
-    public CountyResult getCountyResult() {
-        return countyResult;
-    }
-
-    public void setCountyResult(CountyResult countyResult) {
-        this.countyResult = countyResult;
+    public void setVotes(Long votes) {
+        this.votes = votes;
     }
 
     public Long getCandidateId() {

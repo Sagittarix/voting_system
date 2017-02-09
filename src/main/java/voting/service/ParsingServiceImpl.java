@@ -24,13 +24,19 @@ import java.util.Set;
 @Service
 public class ParsingServiceImpl implements ParsingService {
 
+    ValidatorFactory factory;
+    Validator validator;
+
+    public ParsingServiceImpl() {
+        factory = Validation.buildDefaultValidatorFactory();
+        validator = factory.getValidator();
+    }
 
     @Override
     public List<CandidateData> parseSingleMandateCandidateList(File file) throws IOException, CsvException {
         CandidateParsingStrategy strategy = new SingleMandateCandidateParsingStrategy();
         return parseCandidateList(strategy, file);
     }
-
 
     @Override
     public List<CandidateData> parseMultiMandateCandidateList(File file) throws IOException, CsvException {
@@ -40,40 +46,28 @@ public class ParsingServiceImpl implements ParsingService {
 
     private List<CandidateData> parseCandidateList(CandidateParsingStrategy strategy, File file) throws CsvException, IOException {
 
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        Validator validator = factory.getValidator();
-
-        String[] correctHeader = strategy.getHeader();
-        int columnCount = correctHeader.length;
+        String[] expectedHeader = strategy.getHeader();
+        int expectedColumnCount = expectedHeader.length;
         List<CandidateData> candidateDataList = new ArrayList<>();
-
 
         try (CSVReader reader = new CSVReader(new FileReader(file))) {
             String[] header = reader.readNext();
 
-            if (header == null
-                    || header.length != columnCount
-                    || !Arrays.equals(header, correctHeader)) {
-                throw (new CsvException("Incorrect or no header! CSV header should be - " + String.join(",", correctHeader)));
+            if (header == null || !Arrays.equals(header, expectedHeader)) {
+                throw (new CsvException("Incorrect or no header! CSV header should be - " + String.join(",", expectedHeader)));
             }
 
             String[] line;
             int lineNumber = 2; // line 1 was header
 
             while ((line = reader.readNext()) != null) {
-                if (line.length != columnCount) {
+                if (line.length != expectedColumnCount) {
                     throw (new CsvException("Invalid data at line " + lineNumber));
                 }
-
-                //TODO: add proper validation / exception handling
-
                 try {
-                    CandidateData candidateData = strategy.createCandidateData(line);
+                    CandidateData candidateData = strategy.parseCandidateData(line);
+                    strategy.validate(candidateData, lineNumber);
                     candidateDataList.add(candidateData);
-                    Set<ConstraintViolation<CandidateData>> violations = validator.validate(candidateData);
-                    if (violations.size() > 0) {
-                        throw (new CsvConstraintViolationException("Constaint violation at line " + lineNumber));
-                    }
                     lineNumber++;
                 } catch (NumberFormatException ex) {
                     throw (new CsvException("Invalid data at line " + lineNumber));
@@ -87,20 +81,32 @@ public class ParsingServiceImpl implements ParsingService {
     }
 
 
-    public interface CandidateParsingStrategy {
+    private abstract class CandidateParsingStrategy {
 
-        CandidateData createCandidateData(String[] line);
+        private String[] header;
 
-        String[] getHeader();
+        public CandidateParsingStrategy(String[] header) {
+            this.header = header;
+        }
+
+        public String[] getHeader() {
+            return header;
+        }
+
+        abstract CandidateData parseCandidateData(String[] line);
+
+        abstract void validate(CandidateData candidateData, int lineNumber) throws CsvException;
     }
 
 
-    public class SingleMandateCandidateParsingStrategy implements CandidateParsingStrategy {
+    private class SingleMandateCandidateParsingStrategy extends CandidateParsingStrategy {
 
-        private String[] header = "Vardas,Pavardė,Asmens_kodas,Partija".split(",");
+        public SingleMandateCandidateParsingStrategy() {
+            super("Vardas,Pavardė,Asmens_kodas,Partija".split(","));
+        }
 
         @Override
-        public CandidateData createCandidateData(String[] line) {
+        public CandidateData parseCandidateData(String[] line) {
             CandidateData candidateData = new CandidateData();
             candidateData.setFirstName(line[0]);
             candidateData.setLastName(line[1]);
@@ -110,16 +116,23 @@ public class ParsingServiceImpl implements ParsingService {
         }
 
         @Override
-        public String[] getHeader() {
-            return header;
+        void validate(CandidateData candidateData, int lineNumber) throws CsvException {
+            Set<ConstraintViolation<CandidateData>> violations = validator.validate(candidateData);
+            if (violations.size() > 0) {
+                throw (new CsvConstraintViolationException(String.format("Invalid data at line %d: %d constraint(s) violated",
+                        lineNumber, violations.size())));
+            }
         }
     }
 
-    public class MultiMandateCandidateParsingStrategy implements CandidateParsingStrategy {
-        private String[] header = "Numeris,Vardas,Pavardė,Asmens_kodas".split(",");
+    private class MultiMandateCandidateParsingStrategy extends CandidateParsingStrategy {
+
+        public MultiMandateCandidateParsingStrategy() {
+            super("Numeris,Vardas,Pavardė,Asmens_kodas".split(","));
+        }
 
         @Override
-        public CandidateData createCandidateData(String[] line) {
+        public CandidateData parseCandidateData(String[] line) {
             CandidateData candidateData = new CandidateData();
             candidateData.setPositionInPartyList(Long.parseLong(line[0]));
             candidateData.setFirstName(line[1]);
@@ -129,8 +142,16 @@ public class ParsingServiceImpl implements ParsingService {
         }
 
         @Override
-        public String[] getHeader() {
-            return header;
+        void validate(CandidateData candidateData, int lineNumber) throws CsvException {
+            Set<ConstraintViolation<CandidateData>> violations = validator.validate(candidateData);
+            if (violations.size() > 0) {
+                throw (new CsvConstraintViolationException(String.format("Invalid data at line %d: %d constraint(s) violated",
+                        lineNumber, violations.size())));
+            }
+            int expectedPositionInPartyList = lineNumber - 1;
+            if (candidateData.getPositionInPartyList() != expectedPositionInPartyList) {
+                throw (new CsvException("Invalid data at line " + lineNumber + ": incontinuous position in party list"));
+            }
         }
     }
 }

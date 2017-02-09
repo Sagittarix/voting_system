@@ -23,10 +23,11 @@ public class CandidateData {
     private String lastName;
 
 
-    // not sure ar situ reik, kolkas palieku
+    // not sure kuriu reikia, kolkas palieku visus
+    private Long distrctId;
+    private String distrctName;
     private Long partyId;
     private String partyName;
-    private String partyShortName;
     private Long positionInPartyList;
 
 
@@ -62,28 +63,28 @@ public class CandidateData {
         this.lastName = lastName;
     }
 
+    public Long getDistrctId() {
+        return distrctId;
+    }
+
+    public void setDistrctId(Long distrctId) {
+        this.distrctId = distrctId;
+    }
+
+    public String getDistrctName() {
+        return distrctName;
+    }
+
+    public void setDistrctName(String distrctName) {
+        this.distrctName = distrctName;
+    }
+
     public Long getPartyId() {
         return partyId;
     }
 
     public void setPartyId(Long partyId) {
         this.partyId = partyId;
-    }
-
-    public String getPartyShortName() {
-        return partyShortName;
-    }
-
-    public void setPartyShortName(String partyShortName) {
-        this.partyShortName = partyShortName;
-    }
-
-    public Long getPositionInPartyList() {
-        return positionInPartyList;
-    }
-
-    public void setPositionInPartyList(Long positionInPartyList) {
-        this.positionInPartyList = positionInPartyList;
     }
 
     public String getPartyName() {
@@ -94,9 +95,17 @@ public class CandidateData {
         this.partyName = partyName;
     }
 
+    public Long getPositionInPartyList() {
+        return positionInPartyList;
+    }
+
+    public void setPositionInPartyList(Long positionInPartyList) {
+        this.positionInPartyList = positionInPartyList;
+    }
 
     @Override
     public boolean equals(Object o) {
+
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CandidateData that = (CandidateData) o;
@@ -104,15 +113,16 @@ public class CandidateData {
                 Objects.equals(personId, that.personId) &&
                 Objects.equals(firstName, that.firstName) &&
                 Objects.equals(lastName, that.lastName) &&
+                Objects.equals(distrctId, that.distrctId) &&
+                Objects.equals(distrctName, that.distrctName) &&
                 Objects.equals(partyId, that.partyId) &&
                 Objects.equals(partyName, that.partyName) &&
-                Objects.equals(partyShortName, that.partyShortName) &&
                 Objects.equals(positionInPartyList, that.positionInPartyList);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, personId, firstName, lastName, partyId, partyName, partyShortName, positionInPartyList);
+        return Objects.hash(id, personId, firstName, lastName, distrctId, distrctName, partyId, partyName, positionInPartyList);
     }
 
     @Override
@@ -122,9 +132,10 @@ public class CandidateData {
                 ", personId='" + personId + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
+                ", distrctId=" + distrctId +
+                ", distrctName='" + distrctName + '\'' +
                 ", partyId=" + partyId +
                 ", partyName='" + partyName + '\'' +
-                ", partyShortName='" + partyShortName + '\'' +
                 ", positionInPartyList=" + positionInPartyList +
                 '}';
     }

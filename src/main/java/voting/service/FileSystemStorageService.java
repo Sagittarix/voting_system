@@ -1,16 +1,12 @@
 package voting.service;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 import voting.exception.StorageException;
-import voting.exception.StorageFileNotFoundException;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -26,16 +22,29 @@ public class FileSystemStorageService implements StorageService {
     private Path rootLocation;
 
     @Override
-    public void store(String fileName, MultipartFile file) {
+    public Path store(String fileName, MultipartFile file) {
         Path filePath = rootLocation.resolve(fileName);
         try {
             if (!Files.exists(rootLocation)) {
                 Files.createDirectory(rootLocation);
             }
             Files.copy(file.getInputStream(), filePath, REPLACE_EXISTING);
+            return filePath;
         } catch (IOException e) {
             throw new StorageException("Failed to store file " + file.getOriginalFilename(), e);
         }
+    }
+
+    @Override
+    public Path storeTemporary(MultipartFile file) {
+        Path filePath = null;
+        try {
+            filePath = Files.createTempFile("temp", "csv");
+            Files.copy(file.getInputStream(), filePath, REPLACE_EXISTING);
+        } catch (IOException e) {
+            throw new StorageException("Failed to store file", e);
+        }
+        return filePath;
     }
 
     @Override
@@ -44,19 +53,8 @@ public class FileSystemStorageService implements StorageService {
     }
 
     @Override
-    public Resource loadAsResource(String filename) {
-        try {
-            Path file = load(filename);
-            Resource resource = new UrlResource(file.toUri());
-            if(resource.exists() || resource.isReadable()) {
-                return resource;
-            }
-            else {
-                throw new StorageFileNotFoundException("Could not read file: " + filename);
-            }
-        } catch (MalformedURLException e) {
-            throw new StorageFileNotFoundException("Could not read file: " + filename, e);
-        }
+    public void delete(Path filePath) throws IOException {
+        Files.deleteIfExists(filePath);
     }
 
     @Override

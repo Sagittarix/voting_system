@@ -1,5 +1,6 @@
 package voting.repository;
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import voting.model.Party;
 
@@ -8,5 +9,8 @@ import voting.model.Party;
  */
 public interface PartyRepository extends CrudRepository<Party, Long> {
 
-    public Party findByName(String name);
+    Party findByName(String name);
+
+    @Query("select count(p)>0 from Party p where p.name = ?1")
+    boolean existsByName(String name);
 }

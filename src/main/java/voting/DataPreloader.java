@@ -40,7 +40,7 @@ public class DataPreloader implements CommandLineRunner {
 
     @Override
     public void run(String... strings) throws Exception {
-
+        
         District district1 = new District("Vilnius");
         District district2 = new District("Kaunas");
         District district3 = new District("Klaipėda");

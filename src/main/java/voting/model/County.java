@@ -100,11 +100,6 @@ public class County {
 
     @Override
     public String toString() {
-        return "County{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", district=" + district +
-                ", voterCount=" + voterCount +
-                '}';
+        return String.format("%s (id %d), voter count - ", name, id, voterCount);
     }
 }

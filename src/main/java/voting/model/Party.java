@@ -15,7 +15,7 @@ public class Party {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
-    @OneToMany(mappedBy = "party")
+    @OneToMany(mappedBy = "party", fetch = FetchType.EAGER)
     private List<Candidate> candidates = new ArrayList<>();
 
     public Party() {
@@ -27,10 +27,6 @@ public class Party {
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public void setName(String name) {
@@ -78,10 +74,6 @@ public class Party {
 
     @Override
     public String toString() {
-        return "Party{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", candidates=" + candidates +
-                '}';
+        return String.format("%s (id %d)", name, id);
     }
 }

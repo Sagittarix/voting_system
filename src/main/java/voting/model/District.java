@@ -32,16 +32,8 @@ public class District {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public List<County> getCounties() {
@@ -100,11 +92,6 @@ public class District {
 
     @Override
     public String toString() {
-        return "District{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", counties=" + counties +
-                ", candidates=" + candidates +
-                '}';
+        return String.format("%s (id %d)", name, id);
     }
 }

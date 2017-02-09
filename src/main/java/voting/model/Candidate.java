@@ -28,10 +28,10 @@ public class Candidate {
     public Candidate() {
     }
 
-    public Candidate(String personId, String firstName, String lastName) {
-        this.personId = personId;
+    public Candidate(String firstName, String lastName, String personId) {
         this.firstName = firstName;
         this.lastName = lastName;
+        this.personId = personId;
     }
 
     public Long getId() {
@@ -95,14 +95,6 @@ public class Candidate {
 
     @Override
     public String toString() {
-        return "Candidate{" +
-                "id=" + id +
-                ", personId='" + personId + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", district=" + district +
-                ", party=" + party +
-                ", positionInPartyList=" + positionInPartyList +
-                '}';
+        return String.format("%s %s (pid %s)", firstName, lastName, personId);
     }
 }

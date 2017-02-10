@@ -23,6 +23,7 @@ public class CountyData {
     @Min(value = 500, message = "Spring - Mažiausiai gyventojų - 500")
     @Max(value = 3000000, message = "Spring - Daugiausiai gyventojų - 3_000_000")
     private Long voterCount;
+    private Long districtId;
 
     // nebutinas.
     private Long districtId;

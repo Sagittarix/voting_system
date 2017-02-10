@@ -3,7 +3,6 @@ package voting.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.validator.constraints.Length;
 import voting.results.CountyResult;
-
 import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -26,7 +25,7 @@ public class County {
     @Length(min=6, max=40, message = "Pavadinimas tarp 6 ir 40 simbolių")
     //@Pattern(regexp = "/^([a-zA-ZąčęėįšųūžĄČĘĖĮŠŲŪŽ0-9\\s][^qQwWxX]*)$/", message = "Pavadinimas neatitinka formato")
     private String name;
-
+  
     @Min(value = 100, message = "Mažiausiai gyventojų - 100")
     @Max(value = 3000000, message = "Daugiausiai gyventojų - 3_000_000")
     private Long voterCount;
@@ -42,6 +41,7 @@ public class County {
             fetch = FetchType.EAGER,
             cascade = {}
     )
+
     //@JoinColumn(name = "district_id", nullable = false) // atstatyti before production
     @JoinColumn(name = "district_id", nullable = true) // comment-out before production
     @NotNull(message = "Negalima išsaugoti be apygardos")

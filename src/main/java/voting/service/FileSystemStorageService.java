@@ -31,7 +31,7 @@ public class FileSystemStorageService implements StorageService {
             Files.copy(file.getInputStream(), filePath, REPLACE_EXISTING);
             return filePath;
         } catch (IOException e) {
-            throw new StorageException("Failed to store file " + file.getOriginalFilename(), e);
+            throw new StorageException("Nepavyko išsaugoti failo " + file.getOriginalFilename(), e);
         }
     }
 

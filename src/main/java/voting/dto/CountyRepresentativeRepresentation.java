@@ -16,8 +16,7 @@ public class CountyRepresentativeRepresentation {
     private Long countyId;
 
 
-    public CountyRepresentativeRepresentation() {
-    }
+    public CountyRepresentativeRepresentation() { }
 
     public CountyRepresentativeRepresentation(CountyRepresentative countyRep) {
         this.id = countyRep.getId();

@@ -2,6 +2,8 @@ package voting.results;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import voting.factory.RepresentationFactory;
 import voting.model.County;
 import voting.repository.CountyRepository;
 
@@ -38,9 +40,11 @@ public class CountyResultService {
                                                .collect(Collectors.toList());
     }
 
-    public CountyResult save(CountyResultDataModel crdm) {
+    @Transactional
+    public CountyResultRepresentation save(CountyResultDataModel crdm) {
         CountyResult cr = mapDataWithCollectionToEntity(crdm);
-        return countyResultRepository.save(cr);
+        countyResultRepository.save(cr);
+        return RepresentationFactory.makeRepresentationOf(cr);
     }
 
     public List<CountyResult> getCountyResultsByMandate(Long county_id, boolean isSingleMandate) {
@@ -58,10 +62,7 @@ public class CountyResultService {
         cr.setSingleMandateSystem(crdm.isSingleMandateSystem());
         cr.setSpoiledBallots(crdm.getSpoiledBallots());
         cr.setCandidateVotesList(votesList);
-        cr.setCounty(countyRepository.findOne(crdm.getCounty_id()));
+        cr.setCounty(countyRepository.findOne(crdm.getCountyId()));
         return cr;
-
     }
-
-
 }

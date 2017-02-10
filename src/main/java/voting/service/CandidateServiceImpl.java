@@ -81,19 +81,19 @@ public class CandidateServiceImpl implements CandidateService{
         if (!existingCandidate.getFirstName().equals(newCandidateData.getFirstName())
                 || !existingCandidate.getLastName().equals(newCandidateData.getLastName())) {
             throw (new IllegalArgumentException(
-                    String.format("Name mismatch: candidate with pid %s already exists and his name is %s %s",
+                    String.format("Spring - Kandidatas (A.K. %s) jau yrašytas, kaip %s %s",
                             existingCandidate.getPersonId(), existingCandidate.getFirstName(), existingCandidate.getFirstName())
             ));
         }
-        if (existingCandidate.getDistrict() != null && newCandidateData.getDistrctName() != null) {
+        if (existingCandidate.getDistrict() != null && newCandidateData.getDistrictName() != null) {
             throw (new IllegalArgumentException(
-                    String.format("Data mismatch: candidate %s is bound to another district - %s",
+                    String.format("Spring - Kandidatas (%s) jau priskirtas kitai apygardai - %s",
                             existingCandidate, existingCandidate.getDistrict()
                     )));
         }
         if (existingCandidate.getParty() != null && existingCandidate.getParty().getName() != newCandidateData.getPartyName()) {
             throw (new IllegalArgumentException(
-                    String.format("Data mismatch: candidate %s is bound to another party - %s",
+                    String.format("Spring - Kandidatas (%s) jau priskirtas kitai partijai - %s",
                             existingCandidate, existingCandidate.getParty())
             ));
         }

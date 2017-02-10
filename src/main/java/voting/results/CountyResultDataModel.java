@@ -1,5 +1,12 @@
 package voting.results;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlEnumValue;
 import java.util.List;
 
 /**
@@ -7,19 +14,21 @@ import java.util.List;
  */
 public class CountyResultDataModel {
 
-    private Long id;
+    @NotNull(message = "Spring - Trūksta sugadintų biuletenių skaičiaus")
+    @Min(value = 100, message = "Spring - Sugadinti biuleteniai. Negali būti < 100")
+    @Max(value = 500000, message = "Spring - Sugadinti biuleteniai. Negali būti tiek daug")
     private int spoiledBallots;
+
+    @NotNull(message = "Spring - Mandato tipas nenurodytas")
     private boolean singleMandateSystem;
+
+    @Valid
+    @NotNull(message = "Spring - kandidatų balsų duomenys privalomi")
+    @JsonProperty("candidatesVotes")
     private List<CandidateVotesDataModel> candidateVotesDataModelsList;
-    private Long county_id;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
+    @NotNull(message = "Spring - Apylinkė privaloma")
+    private Long countyId;
 
     public int getSpoiledBallots() {
         return spoiledBallots;
@@ -45,11 +54,11 @@ public class CountyResultDataModel {
         this.candidateVotesDataModelsList = candidateVotesDataModelsList;
     }
 
-    public Long getCounty_id() {
-        return county_id;
+    public Long getCountyId() {
+        return countyId;
     }
 
-    public void setCounty_id(Long county_id) {
-        this.county_id = county_id;
+    public void setCountyId(Long countyId) {
+        this.countyId = countyId;
     }
 }

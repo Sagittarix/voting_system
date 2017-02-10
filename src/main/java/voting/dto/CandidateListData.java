@@ -16,9 +16,6 @@ public class CandidateListData {
     @JsonProperty("candidates")
     private List<CandidateData> candidateListData;
 
-    public CandidateListData() {
-    }
-
     public List<CandidateData> getCandidateListData() {
         return candidateListData;
     }

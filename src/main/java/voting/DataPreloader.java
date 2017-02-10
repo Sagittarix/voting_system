@@ -3,10 +3,7 @@ package voting;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-import voting.model.Candidate;
-import voting.model.County;
-import voting.model.District;
-import voting.model.Party;
+import voting.model.*;
 import voting.repository.CandidateRepository;
 import voting.repository.CountyRepRepository;
 import voting.repository.DistrictRepository;
@@ -30,7 +27,10 @@ public class DataPreloader implements CommandLineRunner {
     private final CandidateRepository candidateRepository;
 
     @Autowired
-    public DataPreloader(CountyRepRepository countyRepRepository, DistrictRepository districtRepository, PartyRepository partyRepository, CandidateRepository candidateRepository) {
+    public DataPreloader(CountyRepRepository countyRepRepository,
+                         DistrictRepository districtRepository,
+                         PartyRepository partyRepository,
+                         CandidateRepository candidateRepository) {
         this.countyRepRepository = countyRepRepository;
         this.districtRepository = districtRepository;
         this.partyRepository = partyRepository;
@@ -71,15 +71,15 @@ public class DataPreloader implements CommandLineRunner {
 
         partyRepository.save(Arrays.asList(party1, party2, party3));
 
-        Candidate cand1 = new Candidate("11122233301", "Jonas", "Joinaitis");
-        Candidate cand2 = new Candidate("11122233302", "Petras", "Petraitis");
-        Candidate cand3 = new Candidate("11122233303", "Jonas", "Kubilius");
-        Candidate cand4 = new Candidate("11122233304", "Jonas", "Adamkus");
-        Candidate cand5 = new Candidate("11122233305", "Jonas", "Grybas");
-        Candidate cand6 = new Candidate("11122233306", "Jonas", "Alekna");
-        Candidate cand7 = new Candidate("11122233307", "Jonas", "Juršėnas");
-        Candidate cand8 = new Candidate("11122233308", "Jonas", "Uspaskichas");
-        Candidate cand9 = new Candidate("11122233309", "Jonas", "Aparatas");
+        Candidate cand1 = new Candidate("Jonas", "Joinaitis", "11122233301");
+        Candidate cand2 = new Candidate("Petras", "Petraitis", "11122233302");
+        Candidate cand3 = new Candidate("Jonas", "Kubilius", "11122233303");
+        Candidate cand4 = new Candidate("Jonas", "Adamkus", "11122233304");
+        Candidate cand5 = new Candidate("Jonas", "Grybas", "11122233305");
+        Candidate cand6 = new Candidate("Jonas", "Alekna", "11122233306");
+        Candidate cand7 = new Candidate("Jonas", "Juršėnas", "11122233307");
+        Candidate cand8 = new Candidate("Jonas", "Uspaskichas", "11122233308");
+        Candidate cand9 = new Candidate("Jonas", "Aparatas", "11122233309");
 
         List<Candidate> candidateList1 = new ArrayList<Candidate>(Arrays.asList(cand1, cand2, cand3, cand4));
         List<Candidate> candidateList2 = new ArrayList<Candidate>(Arrays.asList(cand5, cand6, cand7));
@@ -101,6 +101,21 @@ public class DataPreloader implements CommandLineRunner {
             district2.addCandidate(c);
             candidateRepository.save(c);
         });
+
+        CountyRep cr1 = new CountyRep("CR1001first", "CR001last", county1);
+        CountyRep cr2 = new CountyRep("CR002first", "CR002last", county2);
+        CountyRep cr3 = new CountyRep("CR003first", "CR003last", county3);
+        CountyRep cr4 = new CountyRep("CR004first", "CR004last", county4);
+        CountyRep cr5 = new CountyRep("CR005first", "CR005last", county5);
+        List<CountyRep> crs = new ArrayList<CountyRep>() {{
+            add(cr1);
+            add(cr2);
+            add(cr3);
+            add(cr4);
+            add(cr5);
+        }};
+        countyRepRepository.save(crs);
+
     }
 
     public static String generateRandomPersonId() {

@@ -94,7 +94,7 @@ public class CandidateServiceTest {
 
         party.addCandidate(existingCandidate);
         newCandidate.setPartyName("Party XXX");
-//        newCandidate.setDistrctName("District XXX");
+//        newCandidate.setDistrictName("District XXX");
 
         //Exercise
         sut.checkCandidateIntegrity(newCandidate, existingCandidate);
@@ -111,7 +111,7 @@ public class CandidateServiceTest {
         party.addCandidate(existingCandidate);
 
         newCandidate.setPartyName(party.getName());
-        newCandidate.setDistrctName("District XXX");
+        newCandidate.setDistrictName("District XXX");
 
         //Exercise
         sut.checkCandidateIntegrity(newCandidate, existingCandidate);
@@ -120,7 +120,7 @@ public class CandidateServiceTest {
     @Test
     public void existingCandidateNotBoundToADistrictAndNewCandidateBoundToADistrictShouldHaveNoConflict() {
         //Setup
-        newCandidate.setDistrctName("District XXX");
+        newCandidate.setDistrictName("District XXX");
 
         //Exercise
         sut.checkCandidateIntegrity(newCandidate, existingCandidate);

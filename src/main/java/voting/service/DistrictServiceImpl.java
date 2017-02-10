@@ -4,17 +4,25 @@ import com.opencsv.exceptions.CsvException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.Errors;
+import org.springframework.validation.ObjectError;
+import org.springframework.validation.ValidationUtils;
 import org.springframework.web.multipart.MultipartFile;
 import voting.dto.CandidateData;
 import voting.dto.DistrictData;
+import voting.exception.CsvMultiErrorsException;
+import voting.exception.DTOMultiObjectsErrorsException;
 import voting.exception.NotFoundException;
 import voting.model.Candidate;
 import voting.model.County;
 import voting.model.District;
 import voting.repository.DistrictRepository;
+import voting.validator.CsvFileValidator;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,13 +35,19 @@ public class DistrictServiceImpl implements DistrictService {
     private CandidateService candidateService;
     private StorageService storageService;
     private ParsingService parsingService;
+    private final CsvFileValidator csvFileValidator;
 
     @Autowired
-    public DistrictServiceImpl(DistrictRepository districtRepository, CandidateService candidateService, StorageService storageService, ParsingService parsingService) {
+    public DistrictServiceImpl(DistrictRepository districtRepository,
+                               CandidateService candidateService,
+                               StorageService storageService,
+                               ParsingService parsingService,
+                               CsvFileValidator csvFileValidator) {
         this.districtRepository = districtRepository;
         this.candidateService = candidateService;
         this.storageService = storageService;
         this.parsingService = parsingService;
+        this.csvFileValidator = csvFileValidator;
     }
 
     @Override
@@ -108,23 +122,36 @@ public class DistrictServiceImpl implements DistrictService {
     @Transactional(rollbackFor = Exception.class)
     private District saveCandidateList(District district, MultipartFile file) throws IOException, CsvException {
 
+        Errors csvErrors = new BeanPropertyBindingResult(file, "file");
+        ValidationUtils.invokeValidator(csvFileValidator, file, csvErrors);
+
+        List<ObjectError> fileErrors = csvErrors.getAllErrors();
+        List<ObjectError> candidatesErrors = new ArrayList<>();
+
+        if (!fileErrors.isEmpty()) throw new CsvMultiErrorsException("CSV errors detected", fileErrors);
+
         List<CandidateData> candidateListData = extractCandidateList(file);
         district.removeAllCandidates();
 
         candidateListData.forEach(
                 candidateData -> {
                     Candidate newCandidate;
-                    candidateData.setDistrctId(district.getId());
-                    candidateData.setDistrctName(district.getName());
+                    candidateData.setDistrictId(district.getId());
+                    candidateData.setDistrictName(district.getName());
                     if (candidateService.exists(candidateData.getPersonId())) {
                         Candidate existingCandidate = candidateService.getCandidate(candidateData.getPersonId());
-                        candidateService.checkCandidateIntegrity(candidateData, existingCandidate);
+                        try {
+                            candidateService.checkCandidateIntegrity(candidateData, existingCandidate);
+                        } catch (IllegalArgumentException ia) {
+                            candidatesErrors.add(new ObjectError("candidateData", ia.getMessage()));
+                        }
                         newCandidate = existingCandidate;
                     } else {
                         newCandidate = candidateService.addNewCandidate(candidateData);
                     }
                     district.addCandidate(newCandidate);
                 });
+        if (candidatesErrors.size() > 0) throw new DTOMultiObjectsErrorsException("CSV errors detected", candidatesErrors);
         districtRepository.save(district);
 
         String fileName = String.format("district_%d.csv", district.getId());
@@ -133,9 +160,9 @@ public class DistrictServiceImpl implements DistrictService {
         return district;
     }
 
-
     private List<CandidateData> extractCandidateList(MultipartFile file) throws IOException, CsvException {
         Path tempFile = storageService.storeTemporary(file);
+
         List<CandidateData> candidateListData;
         try {
             candidateListData = parsingService.parseSingleMandateCandidateList(tempFile.toFile());

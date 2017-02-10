@@ -17,7 +17,6 @@ public class CountyRepresentation {
     private Long districtId;
     private String districtName;
 
-
     public CountyRepresentation() {
     }
 

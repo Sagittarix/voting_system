@@ -1,6 +1,11 @@
 package voting.model;
 
+import org.hibernate.validator.constraints.Length;
+
 import javax.persistence.*;
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Pattern;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -14,15 +19,21 @@ public class District {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
     @Column(unique = true, nullable = false)
+    @Length(min = 3, max = 40, message = "Pavadinimas tarp 6 ir 40 simbolių")
+    //@Pattern(regexp = "/^([a-zA-ZąčęėįšųūžĄČĘĖĮŠŲŪŽ0-9\\s][^qQwWxX]*)$/", message = "Pavadinimas neatitinka formato")
     private String name;
+
+    // nebutinas - not_null - galima sukurti ir be apylinkiu
+    @Valid
     @OneToMany(mappedBy = "district", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<County> counties = new ArrayList<>();
+
     @OneToMany(mappedBy = "district")
     private List<Candidate> candidates = new ArrayList<>();
 
-    public District() {
-    }
+    public District() { }
 
     public District(String name) {
         this.name = name;

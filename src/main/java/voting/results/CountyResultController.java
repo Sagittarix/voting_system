@@ -1,14 +1,18 @@
 package voting.results;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
-
+import voting.exception.CountyResultFieldsErrorsException;
+import javax.validation.Valid;
 import java.util.List;
 
 /**
  * Created by andrius on 1/24/17.
  */
 
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("api/county-results")
 public class CountyResultController {
@@ -43,12 +47,17 @@ public class CountyResultController {
     }
 
     @GetMapping(path = "{id}/multi-mandate")
-    public List<CountyResult> getAllMUltiMandateForCounty(@PathVariable Long county_id) {
+    public List<CountyResult> getAllMultiMandateForCounty(@PathVariable Long county_id) {
         return countyResultService.getCountyResultsByMandate(county_id, false);
     }
 
     @PostMapping
-    public CountyResult create(@RequestBody CountyResultDataModel crdm) {
+    public CountyResultRepresentation create(@Valid @RequestBody CountyResultDataModel crdm, BindingResult result) {
+        List<FieldError> errors = result.getFieldErrors();
+        if (errors.size() > 0)
+            throw new CountyResultFieldsErrorsException("CountyResult encountered validation errors", errors);
         return countyResultService.save(crdm);
     }
 }
+
+// TODO perdaryti kai nelieka boolean fieldo

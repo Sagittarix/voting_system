@@ -1,9 +1,11 @@
 package voting.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.validator.constraints.Length;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.util.List;
 import java.util.Objects;
 
@@ -13,14 +15,18 @@ import java.util.Objects;
 
 public class DistrictData {
 
+    // nebutinas.
     private Long id;
-    @NotNull
+
+    @NotNull(message = "Spring - Pavadinimas būtinas")
+    @Length(min= 6, max=40, message = "Spring - Pavadinimas tarp 6 ir 40 simbolių")
+    //@Pattern(regexp = "/^([a-zA-ZąčęėįšųūžĄČĘĖĮŠŲŪŽ0-9\\s][^qQwWxX]*)$/", message = "Pavadinimas neatitinka formato")
     private String name;
+
+    // nebutinas - not_null - galima sukurti ir be apylinkiu
     @Valid
-    @NotNull
     @JsonProperty("counties")
     private List<CountyData> countiesData;
-
 
     public Long getId() {
         return id;

@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
-import voting.exception.CountyResultFieldsErrorsException;
+
 import javax.validation.Valid;
 import java.util.List;
 

@@ -1,6 +1,5 @@
-package voting.exception.error_response;
+package voting.exception.response;
 
-import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 
 import java.util.List;

@@ -11,8 +11,6 @@ import org.springframework.validation.ValidationUtils;
 import org.springframework.web.multipart.MultipartFile;
 import voting.dto.CandidateData;
 import voting.dto.DistrictData;
-import voting.exception.CsvMultiErrorsException;
-import voting.exception.DTOMultiObjectsErrorsException;
 import voting.exception.NotFoundException;
 import voting.model.Candidate;
 import voting.model.County;

@@ -2,11 +2,10 @@ package voting.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import voting.dto.CandidateRepresentation;
 import voting.dto.CountyData;
-import voting.exception.DTOMultiFieldsErrorsException;
+import voting.exception.MultiErrorException;
 import voting.model.County;
 import voting.service.CountyService;
 
@@ -27,9 +26,8 @@ public class CountyController {
 
     @PostMapping
     public County create(@Valid @RequestBody CountyData countyData, BindingResult result) {
-        if (result.hasFieldErrors()) {
-            List<FieldError> errs = result.getFieldErrors();
-            throw new DTOMultiFieldsErrorsException("All County errors raised up to React", errs);
+        if (result.hasErrors()) {
+            throw new MultiErrorException("All County errors raised up to React", result.getAllErrors());
         }
         return countyService.saveWithDistrict(countyData);
     }

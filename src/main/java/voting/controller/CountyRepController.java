@@ -2,6 +2,7 @@ package voting.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import voting.dto.CountyRepresentativeRepresentation;
 import voting.model.CountyRep;
 import voting.service.CountyRepService;
 
@@ -30,7 +31,7 @@ public class CountyRepController {
     }
 
     @GetMapping("/{id}")
-    public CountyRep getAllCountyRep(@PathVariable Long id) {
+    public CountyRepresentativeRepresentation getCountyRep(@PathVariable Long id) {
         return countyRepService.getCountyRep(id);
     }
 

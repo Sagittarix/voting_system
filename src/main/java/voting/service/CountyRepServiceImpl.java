@@ -3,6 +3,7 @@ package voting.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import voting.dto.CountyRepresentativeRepresentation;
 import voting.model.CountyRep;
 import voting.repository.CountyRepRepository;
 
@@ -40,7 +41,7 @@ public class CountyRepServiceImpl implements CountyRepService {
     }
 
     @Override
-    public CountyRep getCountyRep(Long id) {
-        return countyRepRepository.findOne(id);
+    public CountyRepresentativeRepresentation getCountyRep(Long id) {
+        return new CountyRepresentativeRepresentation(countyRepRepository.findOne(id));
     }
 }

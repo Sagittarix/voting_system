@@ -17,7 +17,7 @@ public class CountyResultRepresentation {
     private boolean singleMandateSystem;
     private Date createdOn;
     private List<CandidateVotesRepresentation> candidateVotesList;
-    private CountyRepresentation county;
+    private Long countyId;
 
     public CountyResultRepresentation() { }
 
@@ -27,7 +27,7 @@ public class CountyResultRepresentation {
         this.singleMandateSystem = cr.isSingleMandateSystem();
         this.createdOn = cr.getCreatedOn();
         this.candidateVotesList = new ArrayList<>();
-        this.county = new CountyRepresentation(cr.getCounty());
+        this.countyId = (cr.getCounty().getId());
         cr.getCandidateVotesList().forEach(cv -> candidateVotesList.add(new CandidateVotesRepresentation(cv)));
     }
 
@@ -71,11 +71,11 @@ public class CountyResultRepresentation {
         this.candidateVotesList = candidateVotesList;
     }
 
-    public CountyRepresentation getCounty() {
-        return county;
+    public Long getCountyId() {
+        return countyId;
     }
 
-    public void setCounty(CountyRepresentation county) {
-        this.county = county;
+    public void setCountyId(Long countyId) {
+        this.countyId = countyId;
     }
 }

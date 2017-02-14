@@ -1,6 +1,7 @@
 package voting.dto;
 
-import voting.model.CountyRepresentative;
+import voting.factory.RepresentationFactory;
+import voting.model.CountyRep;
 
 import java.util.Objects;
 
@@ -13,21 +14,20 @@ public class CountyRepresentativeRepresentation {
     private String personalId;
     private String firstName;
     private String lastName;
-    private Long countyId;
+    private CountyRepresentation county;
 
 
     public CountyRepresentativeRepresentation() { }
 
-    public CountyRepresentativeRepresentation(CountyRepresentative countyRep) {
+    public CountyRepresentativeRepresentation(CountyRep countyRep) {
         this.id = countyRep.getId();
-        this.personalId = countyRep.getPersonalId();
+        this.personalId =
         this.firstName = countyRep.getFirstName();
         this.lastName = countyRep.getLastName();
-        this.countyId = countyRep.getCounty().getId();
+        this.county = new CountyRepresentation(countyRep.getCounty());
     }
 
     public Long getId() {
-
         return id;
     }
 
@@ -59,12 +59,12 @@ public class CountyRepresentativeRepresentation {
         this.lastName = lastName;
     }
 
-    public Long getCountyId() {
-        return countyId;
+    public CountyRepresentation getCounty() {
+        return county;
     }
 
-    public void setCountyId(Long countyId) {
-        this.countyId = countyId;
+    public void setCounty(CountyRepresentation county) {
+        this.county = county;
     }
 
     @Override
@@ -77,12 +77,12 @@ public class CountyRepresentativeRepresentation {
                 Objects.equals(personalId, that.personalId) &&
                 Objects.equals(firstName, that.firstName) &&
                 Objects.equals(lastName, that.lastName) &&
-                Objects.equals(countyId, that.countyId);
+                Objects.equals(county.getId(), that.county.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, personalId, firstName, lastName, countyId);
+        return Objects.hash(id, personalId, firstName, lastName, county.getId());
     }
 
     @Override
@@ -92,7 +92,7 @@ public class CountyRepresentativeRepresentation {
                 ", personalId='" + personalId + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
-                ", countyId=" + countyId +
+                ", countyId=" + county.getId() +
                 '}';
     }
 }

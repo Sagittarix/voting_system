@@ -24,10 +24,16 @@ public class RepresentationFactory {
         crr.setSpoiledBallots(cr.getSpoiledBallots());
         crr.setSingleMandateSystem(cr.isSingleMandateSystem());
         crr.setCreatedOn(cr.getCreatedOn());
-        crr.setCounty(new CountyRepresentation(cr.getCounty()));
+        crr.setCountyId(cr.getCounty().getId());
         crr.setCandidateVotesList(makeRepresentationOf(cr.getCandidateVotesList()));
 
         return crr;
+    }
+
+    public static List<CountyResultRepresentation> makeRepresentationOfCountyResultsList(List<CountyResult> list) {
+        List<CountyResultRepresentation> crrl = new ArrayList<>();
+        list.forEach(cr -> crrl.add(makeRepresentationOf(cr)));
+        return crrl;
     }
 
     public static List<CandidateVotesRepresentation> makeRepresentationOf(List<CandidateVotes> rawList) {
@@ -49,9 +55,3 @@ public class RepresentationFactory {
     }
 }
 
-
-/*
-this.candidates = new ArrayList<>();
-        if (party.getCandidates() != null) {
-        party.getCandidates().forEach(c -> candidates.add(new CandidateRepresentation(c)));
-        }*/

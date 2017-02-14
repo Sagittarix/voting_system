@@ -33,7 +33,7 @@ public class CountyResultRepository {
     }
 
     public List<CountyResult> findAll() {
-        return em.createQuery("SELECT cr FROM COuntyResult cr").getResultList();
+        return em.createQuery("SELECT cr FROM CountyResult cr").getResultList();
     }
 
     public long count() {

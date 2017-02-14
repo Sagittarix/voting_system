@@ -60,5 +60,3 @@ public class CountyResultController {
         return countyResultService.save(crdm);
     }
 }
-
-// TODO perdaryti kai nelieka boolean fieldo

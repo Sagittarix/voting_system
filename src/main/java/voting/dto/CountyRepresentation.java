@@ -1,8 +1,11 @@
 package voting.dto;
 
+import voting.factory.RepresentationFactory;
 import voting.model.County;
+import voting.results.CountyResultRepresentation;
 
 import javax.validation.constraints.NotNull;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -13,12 +16,11 @@ public class CountyRepresentation {
     private Long id;
     private String name;
     private Long voterCount;
-
     private Long districtId;
     private String districtName;
+    private List<CountyResultRepresentation> countyResults;
 
-    public CountyRepresentation() {
-    }
+    public CountyRepresentation() { }
 
     public CountyRepresentation(County county) {
         this.id = county.getId();
@@ -26,6 +28,7 @@ public class CountyRepresentation {
         this.voterCount = county.getVoterCount();
         this.districtId = county.getDistrict().getId();
         this.districtName = county.getDistrict().getName();
+        this.countyResults = RepresentationFactory.makeRepresentationOfCountyResultsList(county.getCountyResultList());
     }
 
 
@@ -67,6 +70,14 @@ public class CountyRepresentation {
 
     public void setDistrictName(String districtName) {
         this.districtName = districtName;
+    }
+
+    public List<CountyResultRepresentation> getCountyResults() {
+        return countyResults;
+    }
+
+    public void setCountyResults(List<CountyResultRepresentation> countyResults) {
+        this.countyResults = countyResults;
     }
 
     @Override

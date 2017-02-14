@@ -35,7 +35,7 @@ public class CountyController {
     }
 
     @GetMapping(path = "{id}/candidates")
-    public List<CandidateRepresentation> getSingleMandataCandidatesForCounty(@PathVariable Long id) {
+    public List<CandidateRepresentation> getSingleMandateCandidatesForCounty(@PathVariable Long id) {
         return countyService.getAllSingleMandateCandidatesForCounty(id);
     }
 

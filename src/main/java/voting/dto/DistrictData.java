@@ -15,15 +15,13 @@ import java.util.Objects;
 
 public class DistrictData {
 
-    // nebutinas.
     private Long id;
 
-    @NotNull(message = "Spring - Pavadinimas būtinas")
-    @Length(min= 6, max=40, message = "Spring - Pavadinimas tarp 6 ir 40 simbolių")
+    @NotNull(message = "Apygardos pavadinimas būtinas")
+    @Length(min= 6, max=40, message = "Apygardos pavadinimas tarp 6 ir 40 simbolių")
     //@Pattern(regexp = "/^([a-zA-ZąčęėįšųūžĄČĘĖĮŠŲŪŽ0-9\\s][^qQwWxX]*)$/", message = "Pavadinimas neatitinka formato")
     private String name;
 
-    // nebutinas - not_null - galima sukurti ir be apylinkiu
     @Valid
     @JsonProperty("counties")
     private List<CountyData> countiesData;

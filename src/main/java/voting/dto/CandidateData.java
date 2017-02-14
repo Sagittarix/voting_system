@@ -13,16 +13,16 @@ public class CandidateData {
 
     private Long id;
 
-    @NotNull(message = "AK negali būti tuščias")
-    @Pattern(regexp = "\\d{11}", message = "Spring - Asmens kode vien skaitmenys")
+    @NotNull(message = "Asmens kodas būtinas")
+    @Pattern(regexp = "\\d{11}", message = "Netinkamas asmens kodas")
     private String personId;
 
-    @NotNull(message = "Vardas negali būti tuščias")
-    @Length(min = 3, max = 40, message = "Spring - Vardo ilgis nuo 3 iki 40 simbolių")
+    @NotNull(message = "Vardas būtinas")
+    @Length(min = 3, max = 40, message = "Vardo ilgis nuo 3 iki 40 simbolių")
     private String firstName;
 
-    @NotNull(message = "Pavardė negali būti tuščia")
-    @Length(min = 3, max = 40, message = "Spring - Pavardės ilgis nuo 3 iki 40 simbolių")
+    @NotNull(message = "Pavardė būtina")
+    @Length(min = 3, max = 40, message = "Pavardės ilgis nuo 3 iki 40 simbolių")
     private String lastName;
 
     // not sure kuriu reikia, kolkas palieku visus

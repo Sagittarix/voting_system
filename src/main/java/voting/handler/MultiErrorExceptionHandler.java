@@ -45,9 +45,12 @@ public class MultiErrorExceptionHandler {
         } else if (ex instanceof IllegalArgumentException) {
             status = HttpStatus.CONFLICT;
         }
-        ErrorResponse body = new ErrorResponse();
-        body.setErrorCode(status.value());
-        body.setMessage(ex.getMessage());
+//        ErrorResponse body = new ErrorResponse();
+//        body.setErrorCode(status.value());
+//        body.setMessage(ex.getMessage());
+        MultiErrorResponse body = new MultiErrorResponse(status.value(), ex.getMessage());
+//        body.setErrorCode(status.value());
+//        body.setMessage(ex.getMessage());
         return new ResponseEntity(body, new HttpHeaders(), status);
     }
 

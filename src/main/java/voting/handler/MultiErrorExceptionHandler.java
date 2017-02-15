@@ -24,12 +24,14 @@ public class MultiErrorExceptionHandler {
 
     @ExceptionHandler(MultiErrorException.class)
     public ResponseEntity<Object> handleMultiErrorException(MultiErrorException ex) {
+        System.out.println("CAUGHT MULTI");
         HttpStatus status = HttpStatus.BAD_REQUEST;
         MultiErrorResponse response = new MultiErrorResponse(status.value(), ex.getErrors());
+        response.getErrorsMessages().stream().forEach(m -> System.out.println(m));
         return new ResponseEntity<Object>(response, new HttpHeaders(), status);
     }
 
-    @ExceptionHandler({CsvException.class, StorageException.class, IOException.class})
+    @ExceptionHandler({CsvException.class, StorageException.class, IOException.class, NotFoundException.class, IllegalArgumentException.class})
     protected ResponseEntity<Object> handleSomeException(Exception ex) {
         HttpStatus status = null;
         if (ex instanceof CsvException) {
@@ -45,6 +47,7 @@ public class MultiErrorExceptionHandler {
         } else if (ex instanceof IllegalArgumentException) {
             status = HttpStatus.CONFLICT;
         }
+        System.out.println("CAUGHT SIMPLE");
 //        ErrorResponse body = new ErrorResponse();
 //        body.setErrorCode(status.value());
 //        body.setMessage(ex.getMessage());
@@ -57,9 +60,11 @@ public class MultiErrorExceptionHandler {
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<Object> handleException(Exception ex) {
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-        ErrorResponse body = new ErrorResponse();
-        body.setErrorCode(status.value());
-        body.setMessage(ex.getLocalizedMessage());
+
+//        ErrorResponse body = new ErrorResponse();
+//        body.setErrorCode(status.value());
+//        body.setMessage(ex.getLocalizedMessage());
+        MultiErrorResponse body = new MultiErrorResponse(status.value(), ex.getMessage());
         return new ResponseEntity(body, new HttpHeaders(), status);
     }
 

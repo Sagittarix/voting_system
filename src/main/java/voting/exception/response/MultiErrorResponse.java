@@ -35,12 +35,11 @@ public class MultiErrorResponse {
         this.errorCode = errorCode;
     }
 
-    public List<String> getMessages() {
+    public List<String> getErrorsMessages() {
         return errorsMessages;
     }
 
-    public void setMessages(List<String> errorsMessages) {
+    public void setErrorsMessages(List<String> errorsMessages) {
         this.errorsMessages = errorsMessages;
     }
-
 }

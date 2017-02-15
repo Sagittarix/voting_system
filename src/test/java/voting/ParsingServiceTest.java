@@ -8,6 +8,7 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
 import voting.dto.CandidateData;
+import voting.exception.MultiErrorException;
 import voting.service.ParsingService;
 import voting.service.ParsingServiceImpl;
 
@@ -223,9 +224,9 @@ public class ParsingServiceTest {
     @Test
     public void incontinuousPartyPositionsInMultiMandateListShouldThrowCsvException() throws Exception {
         //Setup
-        thrown.expect(CsvException.class);
-        thrown.expectMessage("Invalid data at line");
-        thrown.expectMessage("incontinuous position in party list");
+        thrown.expect(MultiErrorException.class);
+        thrown.expectMessage("Duomenų klaida eilutėje - 2");
+//        thrown.expectMessage("incontinuous position in party list");
 
         String line1 = "2,Pirmas,Pavarde1,33300033301";
         String line2 = "1,Antras,Pavarde2,33300033302";
@@ -241,9 +242,9 @@ public class ParsingServiceTest {
     @Test
     public void duplicatingPartyPositionsInMultiMandateListShouldThrowCsvException() throws Exception {
         //Setup
-        thrown.expect(CsvException.class);
-        thrown.expectMessage("Invalid data at line");
-        thrown.expectMessage("incontinuous position in party list");
+        thrown.expect(MultiErrorException.class);
+        thrown.expectMessage("Duomenų klaida eilutėje - 3");
+//        thrown.expectMessage("incontinuous position in party list");
 
         String line1 = "1,Pirmas,Pavarde1,33300033301";
         String line2 = "1,Antras,Pavarde2,33300033302";
@@ -259,9 +260,9 @@ public class ParsingServiceTest {
     @Test
     public void shouldThrowCsvExceptionWhenCandidateDataContraintsAreViolated() throws Exception {
         //Setup
-        thrown.expect(CsvException.class);
-        thrown.expectMessage("Invalid data at line");
-        thrown.expectMessage("2 constraint(s) violated");
+        thrown.expect(MultiErrorException.class);
+        thrown.expectMessage("Duomenų klaida eilutėje - 2");
+//        thrown.expectMessage("2 constraint(s) violated");
 
         String line1 = "1,,Pavarde1,333"; // null lastName, invalid pid
         lines.add(multiMandateHeader);

@@ -3,9 +3,14 @@ package voting.service;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvConstraintViolationException;
 import com.opencsv.exceptions.CsvException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.Errors;
+import org.springframework.validation.beanvalidation.SpringValidatorAdapter;
 import voting.dto.CandidateData;
+import voting.exception.MultiErrorException;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -25,22 +30,12 @@ import java.util.Set;
 @Service
 public class ParsingServiceImpl implements ParsingService {
 
-    private final ValidatorFactory factory;
-    private final Validator validator;
+    private final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+    private final Validator javaxValidator = factory.getValidator();
+    private final SpringValidatorAdapter validator = new SpringValidatorAdapter(javaxValidator);
 
     public ParsingServiceImpl() {
-        factory = Validation.buildDefaultValidatorFactory();
-        validator = factory.getValidator();
     }
-
-
-//    Validator validator;
-//
-//    @Autowired
-//    public ParsingServiceImpl(Validator validator) {
-//        this.validator = validator;
-//    }
-
 
 
     @Override
@@ -58,10 +53,9 @@ public class ParsingServiceImpl implements ParsingService {
     private List<CandidateData> parseCandidateList(CandidateParsingStrategy strategy, File file) throws CsvException, IOException {
 
         String[] expectedHeader = strategy.getHeader();
-
         int expectedColumnCount = expectedHeader.length;
+
         List<CandidateData> candidateDataList = new ArrayList<>();
-//        Errors errors = null;
 
         try (CSVReader reader = new CSVReader(new FileReader(file))) {
             String[] header = reader.readNext();
@@ -72,12 +66,10 @@ public class ParsingServiceImpl implements ParsingService {
 
             String[] line;
             int lineNumber = 2; // line 1 was header
-//            errors = new BeanPropertyBindingResult(file, "file");
 
             while ((line = reader.readNext()) != null) {
                 if (line.length != expectedColumnCount) {
                     throw new CsvException("Duomenų klaida eilutėje - " + lineNumber);
-//                    errors.reject(HttpStatus.CONFLICT.toString(), "Spring - Duomenų klaida eilutėje - " + lineNumber);
                 }
                 try {
                     CandidateData candidateData = strategy.parseCandidateData(line);
@@ -85,14 +77,12 @@ public class ParsingServiceImpl implements ParsingService {
                     candidateDataList.add(candidateData);
                 } catch (NumberFormatException ex) {
                     throw new CsvException("Duomenų klaida eilutėje - " + lineNumber + " - netinkamas skaičiaus formatas");
-//                    errors.reject(HttpStatus.CONFLICT.toString(), "Spring - Duomenų klaida eilutėje - " + lineNumber);
                 }
                 lineNumber++;
             }
         } catch (IOException e) {
             throw (new IOException("Klaida skaitant CSV failą"));
         }
-//        if (errors.getAllErrors().size() > 0) throw new DTOMultiObjectsErrorsException("CSV file errors in multiple lines", errors.getAllErrors());
         return candidateDataList;
     }
 
@@ -133,19 +123,19 @@ public class ParsingServiceImpl implements ParsingService {
         @Override
         void validate(CandidateData candidateData, int lineNumber) throws CsvException {
 
-            Set<ConstraintViolation<CandidateData>> violations = validator.validate(candidateData);
-
-            if (!violations.isEmpty()) {
-                throw (new CsvConstraintViolationException(String.format("Invalid data at line %d: %d constraint(s) violated",
-                        lineNumber, violations.size())));
-            }
-
-//            Errors bindingResult = new BeanPropertyBindingResult(candidateData, "candidateData");
-//            validator.validate(candidateData, bindingResult);
+//            Set<ConstraintViolation<CandidateData>> violations = validator.validate(candidateData);
 //
-//            if (bindingResult.hasErrors()) {
-//                throw new MultiErrorException("CandidateData binding unsuccessful", bindingResult.getAllErrors());
+//            if (!violations.isEmpty()) {
+//                throw (new CsvConstraintViolationException(String.format("Invalid data at line %d: %d constraint(s) violated",
+//                        lineNumber, violations.size())));
 //            }
+
+            Errors bindingResult = new BeanPropertyBindingResult(candidateData, "candidateData");
+            validator.validate(candidateData, bindingResult);
+
+            if (bindingResult.hasErrors()) {
+                throw new MultiErrorException("Duomenų klaidą eilutėje - " + lineNumber, bindingResult.getAllErrors());
+            }
         }
     }
 
@@ -169,29 +159,29 @@ public class ParsingServiceImpl implements ParsingService {
         @Override
         void validate(CandidateData candidateData, int lineNumber) throws CsvException {
 
-            Set<ConstraintViolation<CandidateData>> violations = validator.validate(candidateData);
-
-            if (!violations.isEmpty()) {
-                throw (new CsvConstraintViolationException(String.format("Invalid data at line %d: %d constraint(s) violated",
-                        lineNumber, violations.size())));
-            }
-
-            int expectedPositionInPartyList = lineNumber - 1;
-            if (candidateData.getPositionInPartyList() != expectedPositionInPartyList) {
-                throw (new CsvException("Invalid data at line " + lineNumber + ": incontinuous position in party list"));
-            }
-
-//            Errors bindingResult = new BeanPropertyBindingResult(candidateData, "candidateData");
-//            validator.validate(candidateData, bindingResult);
+//            Set<ConstraintViolation<CandidateData>> violations = validator.validate(candidateData);
+//
+//            if (!violations.isEmpty()) {
+//                throw (new CsvConstraintViolationException(String.format("Invalid data at line %d: %d constraint(s) violated",
+//                        lineNumber, violations.size())));
+//            }
 //
 //            int expectedPositionInPartyList = lineNumber - 1;
 //            if (candidateData.getPositionInPartyList() != expectedPositionInPartyList) {
-//                bindingResult.rejectValue("positionInPartyList", HttpStatus.BAD_REQUEST.toString(), "Nepaeiliui einančios pozicijos sąraše");
+//                throw (new CsvException("Invalid data at line " + lineNumber + ": incontinuous position in party list"));
 //            }
-//
-//            if (bindingResult.hasErrors()) {
-//                throw new MultiErrorException("CandidateData binding unsuccessful", bindingResult.getAllErrors());
-//            }
+
+            Errors bindingResult = new BeanPropertyBindingResult(candidateData, "candidateData");
+            validator.validate(candidateData, bindingResult);
+
+            int expectedPositionInPartyList = lineNumber - 1;
+            if (candidateData.getPositionInPartyList() != expectedPositionInPartyList) {
+                bindingResult.rejectValue("positionInPartyList", HttpStatus.BAD_REQUEST.toString(), "Nepaeiliui einančios pozicijos sąraše");
+            }
+
+            if (bindingResult.hasErrors()) {
+                throw new MultiErrorException("Duomenų klaida eilutėje - " + lineNumber, bindingResult.getAllErrors());
+            }
         }
     }
 }

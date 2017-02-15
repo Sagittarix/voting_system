@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.opencsv.exceptions.CsvException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BeanPropertyBindingResult;
-import org.springframework.validation.DataBinder;
 import org.springframework.validation.Errors;
 import org.springframework.validation.beanvalidation.SpringValidatorAdapter;
 import org.springframework.web.bind.annotation.*;
@@ -35,6 +34,8 @@ public class PartyController {
 
     private final PartyService partyService;
     private final ObjectMapper mapper = new ObjectMapper();
+
+    // TODO: refactor - reiktu padaryti viena global validatoriu
     ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     Validator javaxValidator = factory.getValidator();
     SpringValidatorAdapter validator = new SpringValidatorAdapter(javaxValidator);
@@ -63,7 +64,7 @@ public class PartyController {
         try {
             partyData = mapper.readValue(partyDataString, PartyData.class);
         } catch (JsonMappingException ex) {
-            //TODO
+            //TODO: padaryti normalu message su detalesne info
             throw new IllegalArgumentException("Klaida registruojant partiją");
         }
 

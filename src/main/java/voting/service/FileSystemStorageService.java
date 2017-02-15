@@ -24,9 +24,7 @@ public class FileSystemStorageService implements StorageService {
     @Override
     public Path store(String fileName, MultipartFile file) {
         Path filePath = rootLocation.resolve(fileName);
-        if (file.isEmpty()) {
-            throw new StorageException("Tuščias failas!");
-        }
+        validate(file);
         try {
             if (!Files.exists(rootLocation)) {
                 Files.createDirectory(rootLocation);
@@ -41,6 +39,7 @@ public class FileSystemStorageService implements StorageService {
     @Override
     public Path storeTemporary(MultipartFile file) {
         Path filePath = null;
+        validate(file);
         try {
             filePath = Files.createTempFile("temp", "csv");
             Files.copy(file.getInputStream(), filePath, REPLACE_EXISTING);
@@ -65,5 +64,12 @@ public class FileSystemStorageService implements StorageService {
         FileSystemUtils.deleteRecursively(rootLocation.toFile());
     }
 
-
+    private void validate(MultipartFile file) {
+        if (file.isEmpty()) {
+            throw new StorageException("Tuščias failas!");
+        }
+        if (!file.getContentType().contains("text/csv")) {
+            throw new StorageException("Failas turi būti CSV formato");
+        }
+    }
 }

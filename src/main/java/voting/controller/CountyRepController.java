@@ -8,6 +8,7 @@ import voting.service.CountyRepService;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by domas on 1/10/17.
@@ -26,8 +27,11 @@ public class CountyRepController {
     }
 
     @GetMapping
-    public List<CountyRep> getCountyReps() {
-        return countyRepService.getCountyReps();
+    public List<CountyRepresentativeRepresentation> getCountyReps() {
+        return countyRepService.getCountyReps()
+                               .stream()
+                               .map(cr -> new CountyRepresentativeRepresentation(cr))
+                               .collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")

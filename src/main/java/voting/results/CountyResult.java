@@ -34,6 +34,8 @@ public class CountyResult {
     @JoinColumn(name = "county_id", nullable = false)
     private County county;
 
+
+
     public Long getId() {
         return id;
     }

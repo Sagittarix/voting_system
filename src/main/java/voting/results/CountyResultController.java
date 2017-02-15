@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+import voting.exception.MultiErrorException;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -53,9 +54,8 @@ public class CountyResultController {
 
     @PostMapping
     public CountyResultRepresentation create(@Valid @RequestBody CountyResultDataModel crdm, BindingResult result) {
-        List<FieldError> errors = result.getFieldErrors();
-        if (errors.size() > 0)
-            throw new CountyResultFieldsErrorsException("CountyResult encountered validation errors", errors);
+        if (result.hasErrors())
+            throw new MultiErrorException("CountyResult encountered validation errors", result.getAllErrors());
         return countyResultService.save(crdm);
     }
 }

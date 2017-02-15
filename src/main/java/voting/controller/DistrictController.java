@@ -46,7 +46,7 @@ public class DistrictController {
     @PostMapping
     public DistrictRepresentation addNewDistrict(@Valid @RequestBody DistrictData districtData, BindingResult result) {
         if (result.hasErrors()) {
-            throw new MultiErrorException("All District errors raised up to React", result.getAllErrors());
+            throw new MultiErrorException("Klaida registruojant apygardą " + districtData.getName(), result.getAllErrors());
         }
         return new DistrictRepresentation(districtService.addNewDistrict(districtData));
     }

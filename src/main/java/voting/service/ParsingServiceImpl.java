@@ -3,10 +3,8 @@ package voting.service;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvConstraintViolationException;
 import com.opencsv.exceptions.CsvException;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.*;
 import voting.dto.CandidateData;
 
 import javax.validation.ConstraintViolation;
@@ -27,13 +25,23 @@ import java.util.Set;
 @Service
 public class ParsingServiceImpl implements ParsingService {
 
-    ValidatorFactory factory;
-    Validator validator;
+    private final ValidatorFactory factory;
+    private final Validator validator;
 
     public ParsingServiceImpl() {
         factory = Validation.buildDefaultValidatorFactory();
         validator = factory.getValidator();
     }
+
+
+//    Validator validator;
+//
+//    @Autowired
+//    public ParsingServiceImpl(Validator validator) {
+//        this.validator = validator;
+//    }
+
+
 
     @Override
     public List<CandidateData> parseSingleMandateCandidateList(File file) throws IOException, CsvException {
@@ -53,51 +61,38 @@ public class ParsingServiceImpl implements ParsingService {
 
         int expectedColumnCount = expectedHeader.length;
         List<CandidateData> candidateDataList = new ArrayList<>();
-        Errors errors = null;
+//        Errors errors = null;
 
         try (CSVReader reader = new CSVReader(new FileReader(file))) {
             String[] header = reader.readNext();
 
             if (header == null || !Arrays.equals(header, expectedHeader)) {
-                throw new CsvMultiErrorsException(
-                        "CSV header error",
-                        new ArrayList<ObjectError>() {{ add(
-                                new ObjectError(
-                                        "file",
-                                        "Spring - Bloga failo vidinė antraštė. Turi būti - " +
-                                                String.join(",", expectedHeader)));
-                        }}
-                );
+                throw new CsvException("Bloga failo vidinė antraštė. Turi būti - " + String.join(",", expectedHeader));
             }
 
             String[] line;
             int lineNumber = 2; // line 1 was header
-            errors = new BeanPropertyBindingResult(file, "file");
+//            errors = new BeanPropertyBindingResult(file, "file");
 
             while ((line = reader.readNext()) != null) {
                 if (line.length != expectedColumnCount) {
-                    errors.reject(HttpStatus.CONFLICT.toString(), "Spring - Duomenų klaida eilutėje - " + lineNumber);
+                    throw new CsvException("Duomenų klaida eilutėje - " + lineNumber);
+//                    errors.reject(HttpStatus.CONFLICT.toString(), "Spring - Duomenų klaida eilutėje - " + lineNumber);
                 }
                 try {
                     CandidateData candidateData = strategy.parseCandidateData(line);
                     strategy.validate(candidateData, lineNumber);
                     candidateDataList.add(candidateData);
-                } catch (NumberFormatException | CsvException ex) {
-                    errors.reject(HttpStatus.CONFLICT.toString(), "Spring - Duomenų klaida eilutėje - " + lineNumber);
+                } catch (NumberFormatException ex) {
+                    throw new CsvException("Duomenų klaida eilutėje - " + lineNumber + " - netinkamas skaičiaus formatas");
+//                    errors.reject(HttpStatus.CONFLICT.toString(), "Spring - Duomenų klaida eilutėje - " + lineNumber);
                 }
                 lineNumber++;
             }
         } catch (IOException e) {
-            throw new CsvMultiErrorsException(
-                    "Cannot read CSV file",
-                    new ArrayList<ObjectError>() {{ add(
-                            new ObjectError(
-                                    "file",
-                                    "Spring - Klaida skaitant CSV failą"));
-                    }}
-            );
+            throw (new IOException("Klaida skaitant CSV failą"));
         }
-        if (errors.getAllErrors().size() > 0) throw new DTOMultiObjectsErrorsException("CSV file errors in multiple lines", errors.getAllErrors());
+//        if (errors.getAllErrors().size() > 0) throw new DTOMultiObjectsErrorsException("CSV file errors in multiple lines", errors.getAllErrors());
         return candidateDataList;
     }
 
@@ -119,10 +114,9 @@ public class ParsingServiceImpl implements ParsingService {
         abstract void validate(CandidateData candidateData, int lineNumber) throws CsvException;
     }
 
-    @Component
-    public class SingleMandateCandidateParsingStrategy extends CandidateParsingStrategy {
+    private class SingleMandateCandidateParsingStrategy extends CandidateParsingStrategy {
 
-        public SingleMandateCandidateParsingStrategy() {
+        private SingleMandateCandidateParsingStrategy() {
             super("Vardas,Pavardė,Asmens_kodas,Partija".split(","));
         }
 
@@ -138,20 +132,27 @@ public class ParsingServiceImpl implements ParsingService {
 
         @Override
         void validate(CandidateData candidateData, int lineNumber) throws CsvException {
-            Set<ConstraintViolation<CandidateData>> violations = validator.validate(candidateData);
-            violations.forEach(System.out::println);    // TODO
 
-            if (violations.size() > 0) {
+            Set<ConstraintViolation<CandidateData>> violations = validator.validate(candidateData);
+
+            if (!violations.isEmpty()) {
                 throw (new CsvConstraintViolationException(String.format("Invalid data at line %d: %d constraint(s) violated",
                         lineNumber, violations.size())));
             }
+
+//            Errors bindingResult = new BeanPropertyBindingResult(candidateData, "candidateData");
+//            validator.validate(candidateData, bindingResult);
+//
+//            if (bindingResult.hasErrors()) {
+//                throw new MultiErrorException("CandidateData binding unsuccessful", bindingResult.getAllErrors());
+//            }
         }
     }
 
-    @Component
-    public class MultiMandateCandidateParsingStrategy extends CandidateParsingStrategy {
 
-        public MultiMandateCandidateParsingStrategy() {
+    private class MultiMandateCandidateParsingStrategy extends CandidateParsingStrategy {
+
+        private MultiMandateCandidateParsingStrategy() {
             super("Numeris,Vardas,Pavardė,Asmens_kodas".split(","));
         }
 
@@ -167,15 +168,30 @@ public class ParsingServiceImpl implements ParsingService {
 
         @Override
         void validate(CandidateData candidateData, int lineNumber) throws CsvException {
+
             Set<ConstraintViolation<CandidateData>> violations = validator.validate(candidateData);
-            if (violations.size() > 0) {
+
+            if (!violations.isEmpty()) {
                 throw (new CsvConstraintViolationException(String.format("Invalid data at line %d: %d constraint(s) violated",
                         lineNumber, violations.size())));
             }
+
             int expectedPositionInPartyList = lineNumber - 1;
             if (candidateData.getPositionInPartyList() != expectedPositionInPartyList) {
                 throw (new CsvException("Invalid data at line " + lineNumber + ": incontinuous position in party list"));
             }
+
+//            Errors bindingResult = new BeanPropertyBindingResult(candidateData, "candidateData");
+//            validator.validate(candidateData, bindingResult);
+//
+//            int expectedPositionInPartyList = lineNumber - 1;
+//            if (candidateData.getPositionInPartyList() != expectedPositionInPartyList) {
+//                bindingResult.rejectValue("positionInPartyList", HttpStatus.BAD_REQUEST.toString(), "Nepaeiliui einančios pozicijos sąraše");
+//            }
+//
+//            if (bindingResult.hasErrors()) {
+//                throw new MultiErrorException("CandidateData binding unsuccessful", bindingResult.getAllErrors());
+//            }
         }
     }
 }

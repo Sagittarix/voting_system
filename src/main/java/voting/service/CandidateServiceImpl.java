@@ -42,20 +42,31 @@ public class CandidateServiceImpl implements CandidateService{
     }
 
     @Override
+    public List<Candidate> getCandidates() {
+        return (List<Candidate>) candidateRepository.findAll();
+    }
+
+    @Override
     public Candidate addNewCandidate(CandidateData candidateData) {
         Candidate candidate = new Candidate(candidateData.getFirstName(), candidateData.getLastName(), candidateData.getPersonId());
         return candidateRepository.save(candidate);
     }
 
     @Override
-    public void deleteCandidate(Long id) {
-        Candidate candidate = getCandidate(id);
-        candidateRepository.delete(id);
+    public Candidate addNewOrGetIfExists(CandidateData candidateData) {
+        if (exists(candidateData.getPersonId())) {
+            Candidate existingCandidate = getCandidate(candidateData.getPersonId());
+            checkCandidateIntegrity(candidateData, existingCandidate);
+            return existingCandidate;
+        } else {
+            return addNewCandidate(candidateData);
+        }
     }
 
     @Override
-    public List<Candidate> getCandidates() {
-        return (List<Candidate>) candidateRepository.findAll();
+    public void deleteCandidate(Long id) {
+        Candidate candidate = getCandidate(id);
+        candidateRepository.delete(id);
     }
 
     @Override
@@ -81,19 +92,19 @@ public class CandidateServiceImpl implements CandidateService{
         if (!existingCandidate.getFirstName().equals(newCandidateData.getFirstName())
                 || !existingCandidate.getLastName().equals(newCandidateData.getLastName())) {
             throw (new IllegalArgumentException(
-                    String.format("Spring - Kandidatas (A.K. %s) jau yrašytas, kaip %s %s",
+                    String.format("Kandidatas (a.k. %s) jau įrašytas kaip %s %s",
                             existingCandidate.getPersonId(), existingCandidate.getFirstName(), existingCandidate.getFirstName())
             ));
         }
         if (existingCandidate.getDistrict() != null && newCandidateData.getDistrictName() != null) {
             throw (new IllegalArgumentException(
-                    String.format("Spring - Kandidatas (%s) jau priskirtas kitai apygardai - %s",
+                    String.format("Kandidatas %s jau priskirtas kitai apygardai - %s",
                             existingCandidate, existingCandidate.getDistrict()
                     )));
         }
         if (existingCandidate.getParty() != null && existingCandidate.getParty().getName() != newCandidateData.getPartyName()) {
             throw (new IllegalArgumentException(
-                    String.format("Spring - Kandidatas (%s) jau priskirtas kitai partijai - %s",
+                    String.format("Kandidatas %s jau priskirtas kitai partijai - %s",
                             existingCandidate, existingCandidate.getParty())
             ));
         }

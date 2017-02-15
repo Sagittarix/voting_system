@@ -27,7 +27,7 @@ public class CountyController {
     @PostMapping
     public County create(@Valid @RequestBody CountyData countyData, BindingResult result) {
         if (result.hasErrors()) {
-            throw new MultiErrorException("All County errors raised up to React", result.getAllErrors());
+            throw new MultiErrorException("Klaida registruojant apygardą " + countyData.getName(), result.getAllErrors());
         }
         return countyService.saveWithDistrict(countyData);
     }

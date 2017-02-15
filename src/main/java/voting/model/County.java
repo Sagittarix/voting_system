@@ -113,6 +113,6 @@ public class County {
 
     @Override
     public String toString() {
-        return String.format("%s (id %d), voter count - ", name, id, voterCount);
+        return String.format("%s (id %d), balsuotojų kiekis - ", name, id, voterCount);
     }
 }

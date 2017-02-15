@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.Validator;
 import voting.dto.CandidateData;
 import voting.dto.PartyData;
 import voting.exception.NotFoundException;
@@ -117,13 +118,13 @@ public class PartyServiceIntegrationTest {
         when(parsingService.parseMultiMandateCandidateList(any())).thenReturn(candidateDataList);
 
         PartyData partyData = new PartyData();
-        partyData.setName("XXX");
+        partyData.setName("Partija111");
 
         //Exercise
         Party party = sut.saveParty(partyData, multiPartFile);
 
         //Verify
-        assertThat(party.getName(), is("XXX"));
+        assertThat(party.getName(), is("Partija111"));
         assertThat(party.getCandidates().size(), is(2));
         assertThat(party.getCandidates().get(0).getPersonId(), is("55500055501"));
         assertThat(party.getCandidates().get(1).getPersonId(), is("55500055502"));

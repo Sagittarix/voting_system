@@ -76,7 +76,8 @@ public class CandidateServiceTest {
     public void nonMatchingNameShouldThrowIllegalArgument() {
         //Setup
         thrown.expect(IllegalArgumentException.class);
-        thrown.expectMessage("Name mismatch");
+//        thrown.expectMessage("Name mismatch");
+        thrown.expectMessage("jau įrašytas kaip");
 
         newCandidate.setFirstName("Jonas");
         newCandidate.setLastName("Jonaitis");
@@ -89,12 +90,10 @@ public class CandidateServiceTest {
     public void candidatesBoundToDifferentPartiesShouldThrowIllegalArgument() {
         //Setup
         thrown.expect(IllegalArgumentException.class);
-        thrown.expectMessage("Data mismatch");
-        thrown.expectMessage("bound to another party");
+        thrown.expectMessage("priskirtas kitai partijai");
 
         party.addCandidate(existingCandidate);
         newCandidate.setPartyName("Party XXX");
-//        newCandidate.setDistrictName("District XXX");
 
         //Exercise
         sut.checkCandidateIntegrity(newCandidate, existingCandidate);
@@ -104,8 +103,7 @@ public class CandidateServiceTest {
     public void candidatesBoundToDifferentDistrictsShouldThrowIllegalArgument() {
         //Setup
         thrown.expect(IllegalArgumentException.class);
-        thrown.expectMessage("Data mismatch");
-        thrown.expectMessage("bound to another district");
+        thrown.expectMessage("priskirtas kitai apygardai");
 
         district.addCandidate(existingCandidate);
         party.addCandidate(existingCandidate);

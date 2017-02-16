@@ -2,28 +2,20 @@ package voting.service;
 
 import com.opencsv.exceptions.CsvException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.*;
 import org.springframework.web.multipart.MultipartFile;
 import voting.dto.CandidateData;
 import voting.dto.PartyData;
-import voting.exception.CsvMultiErrorsException;
-import voting.exception.DTOMultiFieldsErrorsException;
-import voting.exception.DTOMultiObjectsErrorsException;
 import voting.exception.NotFoundException;
 import voting.model.Candidate;
 import voting.model.Party;
 import voting.repository.PartyRepository;
-import voting.validator.CsvFileValidator;
-import voting.validator.PartyValidator;
 
-import javax.validation.Valid;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * Created by domas on 1/15/17.
@@ -37,22 +29,16 @@ public class PartyServiceImpl implements PartyService {
     private final CandidateService candidateService;
     private final StorageService storageService;
     private final ParsingService parsingService;
-    private final PartyValidator partyValidator;
-    private final CsvFileValidator csvFileValidator;
 
     @Autowired
     public PartyServiceImpl(PartyRepository partyRepository,
                             CandidateService candidateService,
                             StorageService storageService,
-                            ParsingService parsingService,
-                            PartyValidator partyValidator,
-                            CsvFileValidator csvFileValidator) {
+                            ParsingService parsingService) {
         this.partyRepository = partyRepository;
         this.candidateService = candidateService;
         this.storageService = storageService;
         this.parsingService = parsingService;
-        this.partyValidator = partyValidator;
-        this.csvFileValidator = csvFileValidator;
     }
 
     @Override
@@ -81,46 +67,73 @@ public class PartyServiceImpl implements PartyService {
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public Party saveParty(@Valid PartyData partyData, MultipartFile file) throws IOException, CsvException {
+    public Party saveParty(PartyData partyData, MultipartFile file) throws IOException, CsvException {
 
-        Errors bindingResult = new BeanPropertyBindingResult(partyData, "partyData");
-        ValidationUtils.invokeValidator(partyValidator, partyData, bindingResult);
-        List<FieldError> errors = bindingResult.getFieldErrors();
-
-        if (errors.size() > 0) throw new DTOMultiFieldsErrorsException("PartyData binding unsuccessful", errors);
-
-        Party party = null;
+        Party party;
         if (partyData.getId() != null) {
-            try {
-                party = getParty(partyData.getId());
-            } catch(NotFoundException nf) {
-                bindingResult.rejectValue("id", HttpStatus.NOT_FOUND.toString(), "Spring - Partija pagal ID nerasta");
-                throw new DTOMultiFieldsErrorsException("Party not found by ID", bindingResult.getFieldErrors());
-            }
+            party = getParty(partyData.getId());
             party.setName(partyData.getName());
         } else if (partyRepository.existsByName(partyData.getName())) {
-            bindingResult.rejectValue("name", HttpStatus.CONFLICT.toString(), "Spring - Partija su tokiu pavadinimu jau yra");
-            if (!errors.isEmpty()) throw new DTOMultiFieldsErrorsException("Party already exists", bindingResult.getFieldErrors());
+            throw (new IllegalArgumentException(String.format("Partija \"%s\" jau egzistuoja", partyData.getName())));
         } else {
             party = new Party(partyData.getName());
             party = partyRepository.save(party);
         }
 
-        saveCandidateList(party, file);
+        setCandidateList(party, file);
+        return party;
+    }
+
+    /**
+     * Given party id and csv file with list of candidates, binds those candidates to a given party.
+     * Previous candidate list is unbound from a party.
+     * @param id - party id
+     * @param file - csv file with a list of candidates
+     * @return
+     * @throws IOException
+     * @throws CsvException
+     */
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public Party setCandidateList(Long id, MultipartFile file) throws IOException, CsvException {
+        return setCandidateList(getParty(id), file);
+    }
+
+    private Party setCandidateList(Party party, MultipartFile file) throws IOException, CsvException {
+        deleteCandidateList(party);
+        List<CandidateData> candidateListData = extractCandidateList(file);
+        party.removeAllCandidates();
+
+        candidateListData.forEach(
+                candidateData -> {
+                    candidateData.setPartyId(party.getId());
+                    candidateData.setPartyName(party.getName());
+                    Candidate candidate = candidateService.addNewOrGetIfExists(candidateData);
+                    party.addCandidate(candidate);
+                });
+        partyRepository.save(party);
+
+        String fileName = String.format("party_%d.csv", party.getId());
+        storageService.store(fileName, file);
 
         return party;
     }
 
-    @Override
-    public Party setCandidateList(Long id, MultipartFile file) throws IOException, CsvException {
-        return saveCandidateList(getParty(id), file);
-    }
-
+    /**
+     * Unbinds all candidates from party with given id.
+     * If candidate is no longer bound to any party or district after unbounding, he is deleted from db.
+     * @param id - party id
+     */
     @Transactional
     @Override
     public void deleteCandidateList(Long id) {
-        Party party = getParty(id);
+        deleteCandidateList(getParty(id));
+    }
+
+    private void deleteCandidateList(Party party) {
+        Stream<Candidate> orphanCandidates = party.getCandidates().stream().filter(c -> c.getDistrict() == null);
         party.removeAllCandidates();
+        orphanCandidates.forEach(c -> candidateService.deleteCandidate(c.getId()));
         partyRepository.save(party);
     }
 
@@ -128,7 +141,7 @@ public class PartyServiceImpl implements PartyService {
     @Override
     public void deleteParty(Long id) {
         Party party = getParty(id);
-        party.removeAllCandidates();
+        deleteCandidateList(party);
         partyRepository.delete(id);
     }
 
@@ -142,46 +155,6 @@ public class PartyServiceImpl implements PartyService {
         return partyRepository.existsByName(name);
     }
 
-    @Transactional(rollbackFor = Exception.class)
-    private Party saveCandidateList(Party party, MultipartFile file) throws IOException, CsvException {
-
-        Errors csvErrors = new BeanPropertyBindingResult(file, "file");
-        ValidationUtils.invokeValidator(csvFileValidator, file, csvErrors);
-
-        List<ObjectError> fileErrors = csvErrors.getAllErrors();
-        List<ObjectError> candidatesErrors = new ArrayList<>();
-
-        if (!fileErrors.isEmpty()) throw new CsvMultiErrorsException("CSV errors detected", fileErrors);
-
-        List<CandidateData> candidateListData = extractCandidateList(file);
-        party.removeAllCandidates();
-
-        candidateListData.forEach(
-                candidateData -> {
-                    Candidate newCandidate;
-                    candidateData.setPartyId(party.getId());
-                    candidateData.setPartyName(party.getName());
-                    if (candidateService.exists(candidateData.getPersonId())) {
-                        Candidate existingCandidate = candidateService.getCandidate(candidateData.getPersonId());
-                        try {
-                            candidateService.checkCandidateIntegrity(candidateData, existingCandidate);
-                        } catch (IllegalArgumentException ia) {
-                            candidatesErrors.add(new ObjectError("candidateData", ia.getMessage()));
-                        }
-                        newCandidate = existingCandidate;
-                    } else {
-                        newCandidate = candidateService.addNewCandidate(candidateData);
-                    }
-                    party.addCandidate(newCandidate);
-                });
-        if (candidatesErrors.size() > 0) throw new DTOMultiObjectsErrorsException("CSV errors detected", candidatesErrors);
-        partyRepository.save(party);
-
-        String fileName = String.format("party_%d.csv", party.getId());
-        storageService.store(fileName, file);
-
-        return party;
-    }
 
     private List<CandidateData> extractCandidateList(MultipartFile file) throws IOException, CsvException {
         Path tempFile = storageService.storeTemporary(file);

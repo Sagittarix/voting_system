@@ -95,6 +95,6 @@ public class Candidate {
 
     @Override
     public String toString() {
-        return String.format("%s %s (pid %s)", firstName, lastName, personId);
+        return String.format("%s %s (a.k. %s)", firstName, lastName, personId);
     }
 }

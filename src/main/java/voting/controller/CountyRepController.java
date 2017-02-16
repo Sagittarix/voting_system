@@ -1,11 +1,12 @@
 package voting.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import voting.dto.CountyRepresentativeRepresentation;
+import voting.exception.MultiErrorException;
 import voting.model.CountyRep;
 import voting.service.CountyRepService;
-
 import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,7 +41,11 @@ public class CountyRepController {
     }
 
     @PostMapping
-    public CountyRep addNewCountyRep(@Valid @RequestBody CountyRep countyRep) {
+    public CountyRep addNewCountyRep(@Valid @RequestBody CountyRep countyRep, BindingResult result) {
+        if (result.hasErrors()) {
+            throw new MultiErrorException("Klaida registruojant apygardos atstovą " + countyRep.getFirstName() + " "
+                    + countyRep.getLastName(), result.getAllErrors());
+        }
         return countyRepService.addNewCountyRep(countyRep);
     }
 

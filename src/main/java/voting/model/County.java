@@ -21,12 +21,12 @@ public class County {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(nullable = false)       // + buvo unique = true - REIKALINGAS? "Senamiescio" apylinke gali buti > 1 apygardoje?
+    @Column(nullable = false)
     @NotNull(message = "Pavadinimas būtinas")
     @Length(min=6, max=40, message = "Pavadinimas tarp 6 ir 40 simbolių")
     //@Pattern(regexp = "/^([a-zA-ZąčęėįšųūžĄČĘĖĮŠŲŪŽ0-9\\s][^qQwWxX]*)$/", message = "Pavadinimas neatitinka formato")
     private String name;
-
+  
     @Min(value = 100, message = "Mažiausiai gyventojų - 100")
     @Max(value = 3000000, message = "Daugiausiai gyventojų - 3_000_000")
     private Long voterCount;
@@ -48,11 +48,12 @@ public class County {
     private District district;
 
     @OneToOne(
-            fetch = FetchType.EAGER,
+            mappedBy = "county",
             cascade = {CascadeType.REMOVE},
-            mappedBy = "county"
+            fetch = FetchType.EAGER
     )
-    private CountyRep countyRepresentative;
+    @JsonIgnore
+    private CountyRep countyRep;
 
     public County() { }
 
@@ -63,10 +64,6 @@ public class County {
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -101,36 +98,36 @@ public class County {
         this.district = district;
     }
 
-    public CountyRep getCountyRepresentative() {
-        return countyRepresentative;
+    public CountyRep getCountyRep() {
+        return countyRep;
     }
 
-    public void setCountyRepresentative(CountyRep countyRepresentative) {
-        this.countyRepresentative = countyRepresentative;
-    }
-
-    public boolean removeResult(CountyResult result) {
-        return this.getCountyResultList().remove(result);
+    public void setCountyRep(CountyRep countyRep) {
+        countyRep.setCounty(this);
+        this.countyRep = countyRep;
     }
 
     @Override
     public boolean equals(Object o) {
+
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         County county = (County) o;
         return Objects.equals(id, county.id) &&
                 Objects.equals(name, county.name) &&
+                Objects.equals(voterCount, county.voterCount) &&
+                Objects.equals(countyResultList, county.countyResultList) &&
                 Objects.equals(district, county.district) &&
-                Objects.equals(voterCount, county.voterCount);
+                Objects.equals(countyRep, county.countyRep);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, district, voterCount);
+        return Objects.hash(id, name, voterCount, countyResultList, district, countyRep);
     }
 
     @Override
     public String toString() {
-        return String.format("%s (id %d), voter count - ", name, id, voterCount);
+        return String.format("%s (id %d), balsuotojų kiekis - ", name, id, voterCount);
     }
 }

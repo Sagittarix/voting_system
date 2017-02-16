@@ -15,8 +15,8 @@ public class PartyData {
 
     private Long id;
 
-    @NotNull(message = "Spring - Pavadinimas būtinas")
-    @Length(min = 6, max = 40, message = "Spring - Pavadinimas nuo 6 iki 40 simbolių")
+    @NotNull(message = "Partijos pavadinimas būtinas")
+    @Length(min = 6, max = 40, message = "Partijos pavadinimas nuo 6 iki 40 simbolių")
     //@Pattern(regexp = "/^([a-zA-ZąčęėįšųūžĄČĘĖĮŠŲŪŽ0-9\\s][^qQwWxX]*)$/", message = "Pavadinimas neatitinka formato")
     private String name;
 

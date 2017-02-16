@@ -13,27 +13,15 @@ import java.util.Objects;
  */
 public class CountyData {
 
-    // nebutinas.
-    private Long id;
-
-    @NotNull(message = "Spring - Pavadinimas būtinas")
-    @Length(min=6, max=40, message = "Spring - Pavadinimas tarp 6 ir 40 simbolių")
+    @NotNull(message = "Pavadinimas būtinas")
+    @Length(min=6, max=40, message = "Apylinkės pavadinimas tarp 6 ir 40 simbolių")
     private String name;
 
-    @Min(value = 500, message = "Spring - Mažiausiai gyventojų - 500")
-    @Max(value = 3000000, message = "Spring - Daugiausiai gyventojų - 3_000_000")
+    @Min(value = 500, message = "Mažiausiai balsuotojų - 500")
+    @Max(value = 3000000, message = "Daugiausiai balsuotojų - 3_000_000")
     private Long voterCount;
-
-    // nebutinas.
     private Long districtId;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;
@@ -64,22 +52,22 @@ public class CountyData {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CountyData that = (CountyData) o;
-        return Objects.equals(id, that.id) &&
-                Objects.equals(name, that.name) &&
-                Objects.equals(voterCount, that.voterCount);
+        return Objects.equals(name, that.name) &&
+                Objects.equals(voterCount, that.voterCount) &&
+                Objects.equals(districtId, that.districtId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, voterCount);
+        return Objects.hash(name, voterCount, districtId);
     }
 
     @Override
     public String toString() {
         return "CountyData{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
+                "name='" + name + '\'' +
                 ", voterCount=" + voterCount +
+                ", districtId=" + districtId +
                 '}';
     }
 }

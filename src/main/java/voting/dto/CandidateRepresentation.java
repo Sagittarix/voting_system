@@ -25,7 +25,6 @@ public class CandidateRepresentation {
     private String partyName;
     private Long positionInPartyList;
 
-
     public CandidateRepresentation() {
     }
 

@@ -3,13 +3,14 @@ body {
     overflow-x: hidden;
 }
 
-/* admin panel */
+/* dashboards */
 
 #bootstrap-overrides-nav-tabs {
     color: #5875db;
     background-color: #f1eeeb;
     width: 100%;
     height: auto;
+    text-align: center;
 }
 
 #bootstrap-overrides-nav-tabs .tab {
@@ -35,12 +36,27 @@ body {
     height: auto;
 }
 
+/*admin panel buttons*/
+
+.adminPanelButton {
+    transition-duration: 0.15s;
+}
+
+adminPanelButton:hover{
+    transition-duration: 0.15s;
+}
+
 /* admin panel - units view */
 
 .row {
     margin: 0;
     height: 100vh;
     background-color: #CDEBF7;
+}
+
+.row.narrowed {
+  height: auto;
+  background-color: white;
 }
 
 .container {
@@ -79,6 +95,10 @@ body {
 
 .unit {
     padding: 5px 0;
+}
+
+.unit.narrowed {
+    padding: 0;
 }
 
 .candidate.card {
@@ -134,6 +154,46 @@ div.list-group-item.remove-units {
 .unit-name-area {
   display: table-cell;
   float: left;
+}
+
+/* validations */
+
+#inline-form-errors {
+    disdplay: block;
+    width: 40%;
+}
+
+.alert.alert-danger.boostrap-custom {
+    margin-bottom: 5px;
+    padding: 5px;
+    text-align: center;
+    font-weight: bold;
+}
+
+/* COUNTY RESULTS */
+
+.county-results {
+    margin-bottom: 0;
+}
+
+.county-results .form-control.county-results-input {
+    display: inline-block;
+    width: auto;
+    height: auto;
+    margin-left: 10px;
+}
+
+.btn.btn-default.btn-sm.floaters-right {
+    float: right;
+    margin-right: 15px;
+}
+
+/* current-time */
+
+#current-time {
+    float: right;
+    margin-right: 15px;
+    display: table-cell;
 }
 
 /* OSVALDO */

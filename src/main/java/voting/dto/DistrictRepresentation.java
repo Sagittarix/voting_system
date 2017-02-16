@@ -20,8 +20,7 @@ public class DistrictRepresentation {
     private List<CountyRepresentation> counties;
     private List<CandidateRepresentation> candidates;
 
-    public DistrictRepresentation() {
-    }
+    public DistrictRepresentation() { }
 
     public DistrictRepresentation(District district) {
         this.id = district.getId();

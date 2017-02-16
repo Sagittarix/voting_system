@@ -26,4 +26,5 @@ public interface CandidateService {
 
     void checkCandidateIntegrity(CandidateData newCandidateData, Candidate oldCandidate);
 
+    Candidate addNewOrGetIfExists(CandidateData candidateData);
 }

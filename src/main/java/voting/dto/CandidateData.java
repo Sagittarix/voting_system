@@ -12,24 +12,25 @@ import java.util.Objects;
 public class CandidateData {
 
     private Long id;
-    @NotNull
-    @Pattern(regexp = "\\d{11}")
+
+    @NotNull(message = "Asmens kodas būtinas")
+    @Pattern(regexp = "\\d{11}", message = "Netinkamas asmens kodas")
     private String personId;
-    @NotNull
-    @Length(min = 1, max = 40)
+
+    @NotNull(message = "Vardas būtinas")
+    @Length(min = 3, max = 40, message = "Vardo ilgis nuo 3 iki 40 simbolių")
     private String firstName;
-    @NotNull
-    @Length(min = 1, max = 40)
+
+    @NotNull(message = "Pavardė būtina")
+    @Length(min = 3, max = 40, message = "Pavardės ilgis nuo 3 iki 40 simbolių")
     private String lastName;
 
-
     // not sure kuriu reikia, kolkas palieku visus
-    private Long distrctId;
-    private String distrctName;
+    private Long districtId;
+    private String districtName;
     private Long partyId;
     private String partyName;
     private Long positionInPartyList;
-
 
     public Long getId() {
         return id;
@@ -63,20 +64,20 @@ public class CandidateData {
         this.lastName = lastName;
     }
 
-    public Long getDistrctId() {
-        return distrctId;
+    public Long getDistrictId() {
+        return districtId;
     }
 
-    public void setDistrctId(Long distrctId) {
-        this.distrctId = distrctId;
+    public void setDistrictId(Long districtId) {
+        this.districtId = districtId;
     }
 
-    public String getDistrctName() {
-        return distrctName;
+    public String getDistrictName() {
+        return districtName;
     }
 
-    public void setDistrctName(String distrctName) {
-        this.distrctName = distrctName;
+    public void setDistrictName(String districtName) {
+        this.districtName = districtName;
     }
 
     public Long getPartyId() {
@@ -113,8 +114,8 @@ public class CandidateData {
                 Objects.equals(personId, that.personId) &&
                 Objects.equals(firstName, that.firstName) &&
                 Objects.equals(lastName, that.lastName) &&
-                Objects.equals(distrctId, that.distrctId) &&
-                Objects.equals(distrctName, that.distrctName) &&
+                Objects.equals(districtId, that.districtId) &&
+                Objects.equals(districtName, that.districtName) &&
                 Objects.equals(partyId, that.partyId) &&
                 Objects.equals(partyName, that.partyName) &&
                 Objects.equals(positionInPartyList, that.positionInPartyList);
@@ -122,7 +123,7 @@ public class CandidateData {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, personId, firstName, lastName, distrctId, distrctName, partyId, partyName, positionInPartyList);
+        return Objects.hash(id, personId, firstName, lastName, districtId, districtName, partyId, partyName, positionInPartyList);
     }
 
     @Override
@@ -132,8 +133,8 @@ public class CandidateData {
                 ", personId='" + personId + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
-                ", distrctId=" + distrctId +
-                ", distrctName='" + distrctName + '\'' +
+                ", districtId=" + districtId +
+                ", districtName='" + districtName + '\'' +
                 ", partyId=" + partyId +
                 ", partyName='" + partyName + '\'' +
                 ", positionInPartyList=" + positionInPartyList +

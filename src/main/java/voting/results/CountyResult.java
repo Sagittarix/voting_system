@@ -18,10 +18,12 @@ public class CountyResult {
     private Long id;
     private int spoiledBallots;
     private boolean singleMandateSystem;
+    private boolean confirmed;
     private Date createdOn;
+    private Date confirmedOn;
 
     @OneToMany(
-            cascade = {CascadeType.PERSIST},
+            cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
             fetch = FetchType.LAZY,
             mappedBy = "countyResult"
     )
@@ -80,5 +82,51 @@ public class CountyResult {
 
     public void setCreatedOn(Date createdOn) {
         this.createdOn = createdOn;
+    }
+
+    public boolean isConfirmed() {
+        return confirmed;
+    }
+
+    public void setConfirmed(boolean confirmed) {
+        this.confirmed = confirmed;
+    }
+
+    public Date getConfirmedOn() {
+        return confirmedOn;
+    }
+
+    public void setConfirmedOn(Date confirmedOn) {
+        this.confirmedOn = confirmedOn;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CountyResult that = (CountyResult) o;
+
+        if (spoiledBallots != that.spoiledBallots) return false;
+        if (singleMandateSystem != that.singleMandateSystem) return false;
+        if (confirmed != that.confirmed) return false;
+        if (!id.equals(that.id)) return false;
+        if (!createdOn.equals(that.createdOn)) return false;
+        if (!confirmedOn.equals(that.confirmedOn)) return false;
+        if (!candidateVotesList.equals(that.candidateVotesList)) return false;
+        return county.equals(that.county);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id.hashCode();
+        result = 31 * result + spoiledBallots;
+        result = 31 * result + (singleMandateSystem ? 1 : 0);
+        result = 31 * result + (confirmed ? 1 : 0);
+        result = 31 * result + createdOn.hashCode();
+        result = 31 * result + confirmedOn.hashCode();
+        result = 31 * result + candidateVotesList.hashCode();
+        result = 31 * result + county.hashCode();
+        return result;
     }
 }

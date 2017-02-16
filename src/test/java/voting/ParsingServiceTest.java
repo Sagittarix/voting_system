@@ -8,6 +8,7 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
 import voting.dto.CandidateData;
+import voting.exception.MultiErrorException;
 import voting.service.ParsingService;
 import voting.service.ParsingServiceImpl;
 
@@ -63,7 +64,7 @@ public class ParsingServiceTest {
     public void shouldThrowCsvExceptionWhenFileHasNoHeader() throws Exception {
         //Setup
         thrown.expect(CsvException.class);
-        thrown.expectMessage("Incorrect or no header");
+        thrown.expectMessage("Bloga failo vidinė antraštė");
 
         lines.addAll(Arrays.asList(singleMandateSampleData));
         File file = createNewFile("file", lines);
@@ -76,7 +77,7 @@ public class ParsingServiceTest {
     public void shouldThrowCsvExceptionWhenFileHasIncorrectHeader() throws Exception {
         //Setup
         thrown.expect(CsvException.class);
-        thrown.expectMessage("Incorrect or no header");
+        thrown.expectMessage("Bloga failo vidinė antraštė");
 
         String invalidHeader = "Vardas,Pavardė,Asmens_kodas,Partija,XXX";
         lines.add(invalidHeader);
@@ -91,7 +92,7 @@ public class ParsingServiceTest {
     public void shouldThrowCsvExceptionWhenFileHasIncorrectData() throws Exception {
         //Setup
         thrown.expect(CsvException.class);
-        thrown.expectMessage("Invalid data at line 3");
+        thrown.expectMessage("Duomenų klaida eilutėje - 3");
 
         String goodLine = "Vardas1,Pavarde1,33300033301,Partija 1";
         String badLine = "33300033302,Partija 1";
@@ -108,7 +109,7 @@ public class ParsingServiceTest {
     public void shouldThrowCsvExceptionWhenFileHasWrongFormatNumber() throws Exception {
         //Setup
         thrown.expect(CsvException.class);
-        thrown.expectMessage("Invalid data at line 3");
+        thrown.expectMessage("Duomenų klaida eilutėje - 3");
 
         String goodLine = "1,Pirmas,Pavarde1,33300033301";
         String badLine = "x,Antras,Pavarde2,33300033302";
@@ -223,9 +224,9 @@ public class ParsingServiceTest {
     @Test
     public void incontinuousPartyPositionsInMultiMandateListShouldThrowCsvException() throws Exception {
         //Setup
-        thrown.expect(CsvException.class);
-        thrown.expectMessage("Invalid data at line");
-        thrown.expectMessage("incontinuous position in party list");
+        thrown.expect(MultiErrorException.class);
+        thrown.expectMessage("Duomenų klaida eilutėje - 2");
+//        thrown.expectMessage("incontinuous position in party list");
 
         String line1 = "2,Pirmas,Pavarde1,33300033301";
         String line2 = "1,Antras,Pavarde2,33300033302";
@@ -241,9 +242,9 @@ public class ParsingServiceTest {
     @Test
     public void duplicatingPartyPositionsInMultiMandateListShouldThrowCsvException() throws Exception {
         //Setup
-        thrown.expect(CsvException.class);
-        thrown.expectMessage("Invalid data at line");
-        thrown.expectMessage("incontinuous position in party list");
+        thrown.expect(MultiErrorException.class);
+        thrown.expectMessage("Duomenų klaida eilutėje - 3");
+//        thrown.expectMessage("incontinuous position in party list");
 
         String line1 = "1,Pirmas,Pavarde1,33300033301";
         String line2 = "1,Antras,Pavarde2,33300033302";
@@ -259,9 +260,9 @@ public class ParsingServiceTest {
     @Test
     public void shouldThrowCsvExceptionWhenCandidateDataContraintsAreViolated() throws Exception {
         //Setup
-        thrown.expect(CsvException.class);
-        thrown.expectMessage("Invalid data at line");
-        thrown.expectMessage("2 constraint(s) violated");
+        thrown.expect(MultiErrorException.class);
+        thrown.expectMessage("Duomenų klaida eilutėje - 2");
+//        thrown.expectMessage("2 constraint(s) violated");
 
         String line1 = "1,,Pavarde1,333"; // null lastName, invalid pid
         lines.add(multiMandateHeader);

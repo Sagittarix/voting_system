@@ -21,7 +21,7 @@ public class CandidateVotesService {
         List<CandidateVotes> candidateVotesList = new ArrayList<CandidateVotes>();
         list.forEach(cvdm -> {
             CandidateVotes cv = new CandidateVotes();
-            cv.setCount(cvdm.getCount());
+            cv.setVotes(cvdm.getVotes());
             cv.setCountyResult(cr);
             cv.setCandidate(candidateRepository.findOne(cvdm.getCandidateId()));
             candidateVotesList.add(cv);

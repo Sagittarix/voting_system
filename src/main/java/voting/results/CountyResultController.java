@@ -4,9 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+import voting.dto.CountyRepresentation;
 import voting.exception.CountyResultFieldsErrorsException;
+import voting.model.County;
 
 import javax.validation.Valid;
+import javax.websocket.server.PathParam;
 import java.util.List;
 
 /**
@@ -58,5 +61,15 @@ public class CountyResultController {
         if (errors.size() > 0)
             throw new CountyResultFieldsErrorsException("CountyResult encountered validation errors", errors);
         return countyResultService.save(crdm);
+    }
+
+    @PostMapping(path = "confirm")
+    public CountyRepresentation confirmResultForCounty(@RequestParam Long countyId, @RequestParam boolean isSingleMandate) {
+        return countyResultService.confirmResultForCounty(countyId, isSingleMandate);
+    }
+
+    @DeleteMapping(path = "county")
+    public CountyRepresentation deleteResultForCounty(@RequestParam Long countyId, @RequestParam boolean isSingleMandate) {
+        return countyResultService.deleteResultForCounty(countyId, isSingleMandate);
     }
 }

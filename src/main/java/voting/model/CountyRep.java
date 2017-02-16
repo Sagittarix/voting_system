@@ -14,7 +14,11 @@ public class CountyRep {
     private Long id;
     private String firstName;
     private String lastName;
-    @OneToOne
+    @OneToOne(
+            fetch = FetchType.EAGER,
+            cascade = {}
+    )
+    @JoinColumn(name = "county_id", nullable = false)
     private County county;
 
     public CountyRep() {

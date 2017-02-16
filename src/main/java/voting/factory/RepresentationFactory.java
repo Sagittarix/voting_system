@@ -25,6 +25,8 @@ public class RepresentationFactory {
         crr.setSingleMandateSystem(cr.isSingleMandateSystem());
         crr.setCreatedOn(cr.getCreatedOn());
         crr.setCountyId(cr.getCounty().getId());
+        crr.setConfirmed(cr.isConfirmed());
+        crr.setConfirmedOn(cr.getConfirmedOn());
         crr.setCandidateVotesList(makeRepresentationOf(cr.getCandidateVotesList()));
 
         return crr;

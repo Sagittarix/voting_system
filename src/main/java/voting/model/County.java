@@ -33,7 +33,7 @@ public class County {
 
     @OneToMany(
             fetch = FetchType.LAZY,
-            cascade = {},
+            cascade = {CascadeType.REMOVE},
             mappedBy = "county"
     )
     private List<CountyResult> countyResultList;
@@ -42,11 +42,17 @@ public class County {
             fetch = FetchType.EAGER,
             cascade = {}
     )
-    //@JoinColumn(name = "district_id", nullable = false) // atstatyti before production
-    @JoinColumn(name = "district_id", nullable = true) // comment-out before production
+    @JoinColumn(name = "district_id", nullable = false)
     @NotNull(message = "Negalima išsaugoti be apygardos")
     @JsonIgnore
     private District district;
+
+    @OneToOne(
+            fetch = FetchType.EAGER,
+            cascade = {CascadeType.REMOVE},
+            mappedBy = "county"
+    )
+    private CountyRep countyRepresentative;
 
     public County() { }
 
@@ -93,6 +99,18 @@ public class County {
 
     public void setDistrict(District district) {
         this.district = district;
+    }
+
+    public CountyRep getCountyRepresentative() {
+        return countyRepresentative;
+    }
+
+    public void setCountyRepresentative(CountyRep countyRepresentative) {
+        this.countyRepresentative = countyRepresentative;
+    }
+
+    public boolean removeResult(CountyResult result) {
+        return this.getCountyResultList().remove(result);
     }
 
     @Override

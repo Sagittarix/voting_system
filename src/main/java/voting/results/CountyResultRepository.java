@@ -2,6 +2,8 @@ package voting.results;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
 import javax.persistence.EntityManager;
 import java.util.Date;
 import java.util.List;
@@ -40,12 +42,20 @@ public class CountyResultRepository {
         return findAll().size();
     }
 
+    public CountyResult update(CountyResult cr) {
+        cr.setConfirmedOn(new Date());
+        CountyResult merged = em.merge(cr);
+        em.persist(merged);
+        return merged;
+    }
+
     public int delete(Long id) {
         return em.createQuery("DELETE FROM CountyResult cr WHERE cr.id = :id")
                  .setParameter("id", id)
                  .executeUpdate();
     }
 
+    @Transactional
     public void delete(CountyResult countyResult) {
         em.remove(countyResult);
     }

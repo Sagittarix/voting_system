@@ -25,9 +25,9 @@ public class District {
     //@Pattern(regexp = "/^([a-zA-ZąčęėįšųūžĄČĘĖĮŠŲŪŽ0-9\\s][^qQwWxX]*)$/", message = "Pavadinimas neatitinka formato")
     private String name;
 
-    // nebutinas - not_null - galima sukurti ir be apylinkiu
+    // nebutinas not_null - galima sukurti ir be apylinkiu
     @Valid
-    @OneToMany(mappedBy = "district", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "district", cascade = CascadeType.ALL)
     private List<County> counties = new ArrayList<>();
 
     @OneToMany(mappedBy = "district")

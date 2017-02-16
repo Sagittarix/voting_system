@@ -11,11 +11,13 @@ import voting.exception.NotFoundException;
 import voting.model.Candidate;
 import voting.model.County;
 import voting.model.District;
+import voting.model.Party;
 import voting.repository.DistrictRepository;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * Created by domas on 1/10/17.
@@ -75,7 +77,7 @@ public class DistrictServiceImpl implements DistrictService {
     @Override
     public void deleteDistrict(Long id) {
         District district = getDistrict(id);
-        district.removeAllCandidates();
+        deleteCandidateList(district);
         districtRepository.delete(id);
     }
 
@@ -87,32 +89,14 @@ public class DistrictServiceImpl implements DistrictService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public District setCandidateList(Long id, MultipartFile file) throws IOException, CsvException {
-        return saveCandidateList(getDistrict(id), file);
+        return setCandidateList(getDistrict(id), file);
     }
-
-    @Override
-    public void deleteCandidateList(Long id) {
-        District district = getDistrict(id);
-        district.removeAllCandidates();
-        districtRepository.save(district);
-    }
-
-    @Override
-    public boolean exists(Long id) {
-        return districtRepository.exists(id);
-    }
-
-    @Override
-    public boolean exists(String name) {
-        return districtRepository.existsByName(name);
-    }
-
 
     @Transactional(rollbackFor = Exception.class)
-    private District saveCandidateList(District district, MultipartFile file) throws IOException, CsvException {
+    private District setCandidateList(District district, MultipartFile file) throws IOException, CsvException {
 
         List<CandidateData> candidateListData = extractCandidateList(file);
-        district.removeAllCandidates();
+        deleteCandidateList(district);
 
         candidateListData.forEach(
                 candidateData -> {
@@ -128,6 +112,35 @@ public class DistrictServiceImpl implements DistrictService {
 
         return district;
     }
+
+    /**
+     * Unbinds all candidates from district with given id.
+     * If candidate is no longer bound to any party or district after unbounding, he is deleted from db.
+     * @param id - district id
+     */
+    @Transactional
+    @Override
+    public void deleteCandidateList(Long id) {
+        deleteCandidateList(getDistrict(id));
+    }
+
+    private void deleteCandidateList(District district) {
+        Stream<Candidate> orphanCandidates = district.getCandidates().stream().filter(c -> c.getParty() == null);
+        district.removeAllCandidates();
+        orphanCandidates.forEach(c -> candidateService.deleteCandidate(c.getId()));
+        districtRepository.save(district);
+    }
+
+    @Override
+    public boolean exists(Long id) {
+        return districtRepository.exists(id);
+    }
+
+    @Override
+    public boolean exists(String name) {
+        return districtRepository.existsByName(name);
+    }
+
 
     private List<CandidateData> extractCandidateList(MultipartFile file) throws IOException, CsvException {
         Path tempFile = storageService.storeTemporary(file);

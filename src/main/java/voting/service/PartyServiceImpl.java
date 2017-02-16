@@ -21,6 +21,7 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * Created by domas on 1/15/17.
@@ -85,44 +86,18 @@ public class PartyServiceImpl implements PartyService {
             party = partyRepository.save(party);
         }
 
-        saveCandidateList(party, file);
+        setCandidateList(party, file);
         return party;
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public Party setCandidateList(Long id, MultipartFile file) throws IOException, CsvException {
-        return saveCandidateList(getParty(id), file);
+        return setCandidateList(getParty(id), file);
     }
 
-    @Transactional
-    @Override
-    public void deleteCandidateList(Long id) {
-        Party party = getParty(id);
-        party.removeAllCandidates();
-        partyRepository.save(party);
-    }
-
-    @Transactional
-    @Override
-    public void deleteParty(Long id) {
-        Party party = getParty(id);
-        party.removeAllCandidates();
-        partyRepository.delete(id);
-    }
-
-    @Override
-    public boolean exists(Long id) {
-        return partyRepository.exists(id);
-    }
-
-    @Override
-    public boolean exists(String name) {
-        return partyRepository.existsByName(name);
-    }
-
-    @Transactional(rollbackFor = Exception.class)
-    private Party saveCandidateList(Party party, MultipartFile file) throws IOException, CsvException {
-
+    private Party setCandidateList(Party party, MultipartFile file) throws IOException, CsvException {
+        deleteCandidateList(party);
         List<CandidateData> candidateListData = extractCandidateList(file);
         party.removeAllCandidates();
 
@@ -140,6 +115,43 @@ public class PartyServiceImpl implements PartyService {
 
         return party;
     }
+
+    /**
+     * Unbinds all candidates from party with given id.
+     * If candidate is no longer bound to any party or district after unbounding, he is deleted from db.
+     * @param id - party id
+     */
+    @Transactional
+    @Override
+    public void deleteCandidateList(Long id) {
+        deleteCandidateList(getParty(id));
+    }
+
+    private void deleteCandidateList(Party party) {
+        Stream<Candidate> orphanCandidates = party.getCandidates().stream().filter(c -> c.getDistrict() == null);
+        party.removeAllCandidates();
+        orphanCandidates.forEach(c -> candidateService.deleteCandidate(c.getId()));
+        partyRepository.save(party);
+    }
+
+    @Transactional
+    @Override
+    public void deleteParty(Long id) {
+        Party party = getParty(id);
+        deleteCandidateList(party);
+        partyRepository.delete(id);
+    }
+
+    @Override
+    public boolean exists(Long id) {
+        return partyRepository.exists(id);
+    }
+
+    @Override
+    public boolean exists(String name) {
+        return partyRepository.existsByName(name);
+    }
+
 
     private List<CandidateData> extractCandidateList(MultipartFile file) throws IOException, CsvException {
         Path tempFile = storageService.storeTemporary(file);

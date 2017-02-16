@@ -62,6 +62,10 @@ public class County {
         this.voterCount = voterCount;
     }
 
+    public boolean removeResult(CountyResult cr) {
+        return this.getCountyResultList().remove(cr);
+    }
+
     public Long getId() {
         return id;
     }

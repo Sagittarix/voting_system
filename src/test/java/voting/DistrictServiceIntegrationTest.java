@@ -21,10 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 import voting.dto.CandidateData;
 import voting.dto.CountyData;
 import voting.dto.DistrictData;
-import voting.dto.PartyData;
 import voting.exception.NotFoundException;
 import voting.model.District;
-import voting.model.Party;
 import voting.service.CandidateService;
 import voting.service.DistrictService;
 import voting.service.ParsingService;
@@ -38,7 +36,6 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsEqual.equalTo;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -138,6 +135,20 @@ public class DistrictServiceIntegrationTest {
         assertThat(district.getCounties().get(0).getDistrict().getId(), is(district.getId()));
         assertThat(district.getCounties().get(1).getName(), is("Apylinkė 2"));
         assertThat(district.getCounties().get(1).getDistrict().getId(), is(district.getId()));
+    }
+
+
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    public void savingDistrictWithDuplicatingNameThrowsIllegalArgument() {
+        //Setup
+        sut.addNewDistrict(districtData);
+
+        //Exercise
+        //Verify
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage("Apygarda \"APYGARDA\" jau egzistuoja");
+        District district2 = sut.addNewDistrict(districtData);
     }
 
 

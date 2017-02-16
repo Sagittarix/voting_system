@@ -4,11 +4,6 @@ import com.opencsv.exceptions.CsvException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.BeanPropertyBindingResult;
-import org.springframework.validation.Errors;
-import org.springframework.validation.ValidationUtils;
-import org.springframework.validation.Validator;
-import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.multipart.MultipartFile;
 import voting.dto.CandidateData;
 import voting.dto.PartyData;
@@ -17,7 +12,6 @@ import voting.model.Candidate;
 import voting.model.Party;
 import voting.repository.PartyRepository;
 
-import javax.validation.Valid;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
@@ -80,7 +74,7 @@ public class PartyServiceImpl implements PartyService {
             party = getParty(partyData.getId());
             party.setName(partyData.getName());
         } else if (partyRepository.existsByName(partyData.getName())) {
-            throw (new IllegalArgumentException("Partija su tokiu pavadinimu jau yra"));
+            throw (new IllegalArgumentException(String.format("Partija \"%s\" jau egzistuoja", partyData.getName())));
         } else {
             party = new Party(partyData.getName());
             party = partyRepository.save(party);
@@ -90,6 +84,15 @@ public class PartyServiceImpl implements PartyService {
         return party;
     }
 
+    /**
+     * Given party id and csv file with list of candidates, binds those candidates to a given party.
+     * Previous candidate list is unbound from a party.
+     * @param id - party id
+     * @param file - csv file with a list of candidates
+     * @return
+     * @throws IOException
+     * @throws CsvException
+     */
     @Transactional(rollbackFor = Exception.class)
     @Override
     public Party setCandidateList(Long id, MultipartFile file) throws IOException, CsvException {

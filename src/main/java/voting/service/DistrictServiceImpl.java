@@ -11,7 +11,6 @@ import voting.exception.NotFoundException;
 import voting.model.Candidate;
 import voting.model.County;
 import voting.model.District;
-import voting.model.Party;
 import voting.repository.DistrictRepository;
 
 import java.io.IOException;
@@ -62,7 +61,11 @@ public class DistrictServiceImpl implements DistrictService {
     @Transactional
     @Override
     public District addNewDistrict(DistrictData districtData) {
+        if (districtRepository.existsByName(districtData.getName())) {
+            throw new IllegalArgumentException(String.format("Apygarda \"%s\" jau egzistuoja", districtData.getName()));
+        }
         District district = new District(districtData.getName());
+
         if (districtData.getCountiesData() != null) {
             districtData.getCountiesData().forEach(
                     countyData -> {

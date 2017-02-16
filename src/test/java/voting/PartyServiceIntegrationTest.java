@@ -15,11 +15,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.stereotype.Component;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.Validator;
 import voting.dto.CandidateData;
 import voting.dto.PartyData;
 import voting.exception.NotFoundException;
@@ -152,6 +150,24 @@ public class PartyServiceIntegrationTest {
 
     }
 
+
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    public void savingPartyWithDuplicatingNameThrowsIllegalArgument() throws IOException, CsvException {
+
+        //Setup
+        candidateDataList = Arrays.asList(candidate1, candidate2);
+        when(parsingService.parseMultiMandateCandidateList(any())).thenReturn(candidateDataList);
+        sut.saveParty(partyData, multiPartFile);
+
+        //Exercise
+        //Verify
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage("jau egzistuoja");
+        when(parsingService.parseMultiMandateCandidateList(any())).thenReturn(candidateDataList);
+        sut.saveParty(partyData, multiPartFile);
+
+    }
 
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)

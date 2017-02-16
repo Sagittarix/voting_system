@@ -123,13 +123,6 @@ public class ParsingServiceImpl implements ParsingService {
         @Override
         void validate(CandidateData candidateData, int lineNumber) throws CsvException {
 
-//            Set<ConstraintViolation<CandidateData>> violations = validator.validate(candidateData);
-//
-//            if (!violations.isEmpty()) {
-//                throw (new CsvConstraintViolationException(String.format("Invalid data at line %d: %d constraint(s) violated",
-//                        lineNumber, violations.size())));
-//            }
-
             Errors bindingResult = new BeanPropertyBindingResult(candidateData, "candidateData");
             validator.validate(candidateData, bindingResult);
 
@@ -158,19 +151,6 @@ public class ParsingServiceImpl implements ParsingService {
 
         @Override
         void validate(CandidateData candidateData, int lineNumber) throws CsvException {
-
-//            Set<ConstraintViolation<CandidateData>> violations = validator.validate(candidateData);
-//
-//            if (!violations.isEmpty()) {
-//                throw (new CsvConstraintViolationException(String.format("Invalid data at line %d: %d constraint(s) violated",
-//                        lineNumber, violations.size())));
-//            }
-//
-//            int expectedPositionInPartyList = lineNumber - 1;
-//            if (candidateData.getPositionInPartyList() != expectedPositionInPartyList) {
-//                throw (new CsvException("Invalid data at line " + lineNumber + ": incontinuous position in party list"));
-//            }
-
             Errors bindingResult = new BeanPropertyBindingResult(candidateData, "candidateData");
             validator.validate(candidateData, bindingResult);
 

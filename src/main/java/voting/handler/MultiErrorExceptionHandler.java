@@ -6,12 +6,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.context.request.WebRequest;
 import voting.exception.MultiErrorException;
 import voting.exception.NotFoundException;
 import voting.exception.StorageException;
 import voting.exception.StorageFileNotFoundException;
-import voting.exception.response.ErrorResponse;
 import voting.exception.response.MultiErrorResponse;
 
 import java.io.IOException;
@@ -24,10 +22,8 @@ public class MultiErrorExceptionHandler {
 
     @ExceptionHandler(MultiErrorException.class)
     public ResponseEntity<Object> handleMultiErrorException(MultiErrorException ex) {
-        System.out.println("CAUGHT MULTI");
         HttpStatus status = HttpStatus.BAD_REQUEST;
-        MultiErrorResponse response = new MultiErrorResponse(status.value(), ex.getErrors());
-        response.getErrorsMessages().stream().forEach(m -> System.out.println(m));
+        MultiErrorResponse response = new MultiErrorResponse(status.value(), ex.getMessage(), ex.getErrors());
         return new ResponseEntity<Object>(response, new HttpHeaders(), status);
     }
 
@@ -47,23 +43,13 @@ public class MultiErrorExceptionHandler {
         } else if (ex instanceof IllegalArgumentException) {
             status = HttpStatus.CONFLICT;
         }
-        System.out.println("CAUGHT SIMPLE");
-//        ErrorResponse body = new ErrorResponse();
-//        body.setErrorCode(status.value());
-//        body.setMessage(ex.getMessage());
         MultiErrorResponse body = new MultiErrorResponse(status.value(), ex.getMessage());
-//        body.setErrorCode(status.value());
-//        body.setMessage(ex.getMessage());
         return new ResponseEntity(body, new HttpHeaders(), status);
     }
 
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<Object> handleException(Exception ex) {
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-
-//        ErrorResponse body = new ErrorResponse();
-//        body.setErrorCode(status.value());
-//        body.setMessage(ex.getLocalizedMessage());
         MultiErrorResponse body = new MultiErrorResponse(status.value(), ex.getMessage());
         return new ResponseEntity(body, new HttpHeaders(), status);
     }

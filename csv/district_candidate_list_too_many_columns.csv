@@ -1,4 +1,4 @@
 Vardas,Pavardė,Asmens_kodas,Partija
-Pirmasis,K1,11122233301,P1
-Antrasis,K2,,P1,xxx
-Treciasis,K3,11122233303,Išsikėlęs pats
+Pirmas,PirmaPavardė,11122233301,Partija1
+Antras,AntraPavardė,11122233302,Partija1,abc,cde,123
+Trecias,TrečiaPavardė,11122233303,Išsikėlęs pats

@@ -71,15 +71,15 @@ public class DataPreloader implements CommandLineRunner {
 
         partyRepository.save(Arrays.asList(party1, party2, party3));
 
-        Candidate cand1 = new Candidate("Jonas", "Joinaitis", "11122233301");
-        Candidate cand2 = new Candidate("Petras", "Petraitis", "11122233302");
-        Candidate cand3 = new Candidate("Jonas", "Kubilius", "11122233303");
-        Candidate cand4 = new Candidate("Jonas", "Adamkus", "11122233304");
-        Candidate cand5 = new Candidate("Jonas", "Grybas", "11122233305");
-        Candidate cand6 = new Candidate("Jonas", "Alekna", "11122233306");
-        Candidate cand7 = new Candidate("Jonas", "Juršėnas", "11122233307");
-        Candidate cand8 = new Candidate("Jonas", "Uspaskichas", "11122233308");
-        Candidate cand9 = new Candidate("Jonas", "Aparatas", "11122233309");
+        Candidate cand1 = new Candidate("Jonas", "Joinaitis", "55500055501");
+        Candidate cand2 = new Candidate("Petras", "Petraitis", "55500055502");
+        Candidate cand3 = new Candidate("Jonas", "Kubilius", "55500055503");
+        Candidate cand4 = new Candidate("Jonas", "Adamkus", "55500055504");
+        Candidate cand5 = new Candidate("Jonas", "Grybas", "55500055505");
+        Candidate cand6 = new Candidate("Jonas", "Alekna", "55500055506");
+        Candidate cand7 = new Candidate("Jonas", "Juršėnas", "55500055507");
+        Candidate cand8 = new Candidate("Jonas", "Uspaskichas", "55500055508");
+        Candidate cand9 = new Candidate("Jonas", "Aparatas", "55500055509");
 
         List<Candidate> candidateList1 = new ArrayList<Candidate>(Arrays.asList(cand1, cand2, cand3, cand4));
         List<Candidate> candidateList2 = new ArrayList<Candidate>(Arrays.asList(cand5, cand6, cand7));

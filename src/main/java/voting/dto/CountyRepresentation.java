@@ -82,6 +82,14 @@ public class CountyRepresentation {
         this.countyResults = countyResults;
     }
 
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
     @Override
     public boolean equals(Object o) {
 

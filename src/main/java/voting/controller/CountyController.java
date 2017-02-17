@@ -5,6 +5,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import voting.dto.CandidateRepresentation;
 import voting.dto.CountyData;
+import voting.dto.CountyRepresentation;
 import voting.exception.MultiErrorException;
 import voting.model.County;
 import voting.service.CountyService;
@@ -25,7 +26,7 @@ public class CountyController {
     private CountyService countyService;
 
     @PostMapping
-    public County create(@Valid @RequestBody CountyData countyData, BindingResult result) {
+    public CountyRepresentation create(@Valid @RequestBody CountyData countyData, BindingResult result) {
         if (result.hasErrors()) {
             throw new MultiErrorException("Klaida registruojant apylinkę " + countyData.getName(), result.getAllErrors());
         }
@@ -35,6 +36,11 @@ public class CountyController {
     @GetMapping(path = "{id}/candidates")
     public List<CandidateRepresentation> getSingleMandateCandidatesForCounty(@PathVariable Long id) {
         return countyService.getAllSingleMandateCandidatesForCounty(id);
+    }
+
+    @DeleteMapping
+    public void delete(@RequestParam Long id) {
+        countyService.delete(id);
     }
 
 }

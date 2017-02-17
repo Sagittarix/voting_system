@@ -5,8 +5,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import voting.dto.CandidateRepresentation;
 import voting.dto.CountyData;
+import voting.dto.CountyRepresentation;
 import voting.dto.DistrictRepresentation;
+import voting.model.CountyRep;
 import voting.model.District;
+import voting.repository.CountyRepRepository;
 import voting.repository.CountyRepository;
 import voting.repository.DistrictRepository;
 import voting.model.County;
@@ -20,16 +23,23 @@ import java.util.List;
 @Service
 public class CountyService {
 
-    @Autowired
-    private CountyRepository countyRepository;
+    private final CountyRepository countyRepository;
+    private final DistrictRepository districtRepository;
+    private final CountyRepRepository countyRepRepository;
 
     @Autowired
-    private DistrictRepository districtRepository;
+    public CountyService(CountyRepository countyRepository,
+                         DistrictRepository districtRepository,
+                         CountyRepRepository countyRepRepository) {
+        this.countyRepository = countyRepository;
+        this.districtRepository = districtRepository;
+        this.countyRepRepository = countyRepRepository;
+    }
 
     @Transactional
-    public County saveWithDistrict(CountyData countyData) {
+    public CountyRepresentation saveWithDistrict(CountyData countyData) {
         County county = mapDataToEntity(countyData);
-        return countyRepository.save(county);
+        return new CountyRepresentation(countyRepository.save(county));
     }
 
     private County mapDataToEntity(CountyData countyData) {
@@ -52,5 +62,13 @@ public class CountyService {
     public List<CandidateRepresentation> getAllSingleMandateCandidatesForCounty(Long id) {
         District district = countyRepository.findOne(id).getDistrict();
         return new DistrictRepresentation(district).getCandidates();
+    }
+
+    @Transactional
+    public void delete(Long id) {
+        County county = countyRepository.findOne(id);
+        CountyRep cr = county.getCountyRep();
+        if (cr != null) countyRepRepository.delete(cr);
+        countyRepository.delete(county);
     }
 }

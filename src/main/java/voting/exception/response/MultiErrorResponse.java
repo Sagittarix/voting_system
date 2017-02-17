@@ -22,13 +22,12 @@ public class MultiErrorResponse {
         this.errorsMessages = errors.stream()
                 .map(e -> e.getDefaultMessage())
                 .collect(Collectors.toList());
-        this.errorsMessages.add(0, rootMessage);
     }
 
     public MultiErrorResponse(int errorCode, String message) {
         this.errorCode = errorCode;
         this.rootMessage = message;
-        this.errorsMessages = new ArrayList<String>(Arrays.asList(message));
+        this.errorsMessages = new ArrayList<String>();
     }
 
     public int getErrorCode() {

@@ -27,7 +27,7 @@ public class CountyController {
     @PostMapping
     public County create(@Valid @RequestBody CountyData countyData, BindingResult result) {
         if (result.hasErrors()) {
-            throw new MultiErrorException("Klaida registruojant apygardą " + countyData.getName(), result.getAllErrors());
+            throw new MultiErrorException("Klaida registruojant apylinkę " + countyData.getName(), result.getAllErrors());
         }
         return countyService.saveWithDistrict(countyData);
     }

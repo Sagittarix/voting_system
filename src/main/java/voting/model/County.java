@@ -31,6 +31,10 @@ public class County {
     @Max(value = 3000000, message = "Daugiausiai gyventojų - 3_000_000")
     private Long voterCount;
 
+    @NotNull(message = "Adresas būtinas")
+    @Length(min = 6, message = "Adresas per trumpas (min. 6 simboliai)")
+    private String address;
+
     @OneToMany(
             fetch = FetchType.LAZY,
             cascade = {CascadeType.REMOVE},
@@ -57,9 +61,10 @@ public class County {
 
     public County() { }
 
-    public County(String name, Long voterCount) {
+    public County(String name, Long voterCount, String address) {
         this.name = name;
         this.voterCount = voterCount;
+        this.address = address;
     }
 
     public boolean removeResult(CountyResult cr) {
@@ -111,6 +116,14 @@ public class County {
         this.countyRep = countyRep;
     }
 
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
     @Override
     public boolean equals(Object o) {
 
@@ -122,16 +135,17 @@ public class County {
                 Objects.equals(voterCount, county.voterCount) &&
                 Objects.equals(countyResultList, county.countyResultList) &&
                 Objects.equals(district, county.district) &&
+                Objects.equals(address, county.address) &&
                 Objects.equals(countyRep, county.countyRep);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, voterCount, countyResultList, district, countyRep);
+        return Objects.hash(id, name, voterCount, countyResultList, district, countyRep, address);
     }
 
     @Override
     public String toString() {
-        return String.format("%s (id %d), balsuotojų kiekis - ", name, id, voterCount);
+        return String.format("%s (id %d), adresas - %s, balsuotojų kiekis - %d", name, id, voterCount, address);
     }
 }

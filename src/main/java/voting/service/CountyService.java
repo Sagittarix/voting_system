@@ -36,6 +36,7 @@ public class CountyService {
         County county = new County();
         county.setName(countyData.getName());
         county.setVoterCount(countyData.getVoterCount());
+        county.setAddress(countyData.getAddress());
         county.setDistrict(districtRepository.findOne(countyData.getDistrictId()));
         return county;
     }

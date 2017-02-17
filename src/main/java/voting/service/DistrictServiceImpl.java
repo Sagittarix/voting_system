@@ -69,7 +69,11 @@ public class DistrictServiceImpl implements DistrictService {
         if (districtData.getCountiesData() != null) {
             districtData.getCountiesData().forEach(
                     countyData -> {
-                        County county = new County(countyData.getName(), countyData.getVoterCount());
+                        County county = new County(
+                                                countyData.getName(),
+                                                countyData.getVoterCount(),
+                                                countyData.getAddress()
+                                            );
                         district.addCounty(county);
                     });
         }

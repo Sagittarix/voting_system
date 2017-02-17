@@ -1,5 +1,6 @@
 var React = require('react');
 var InlineCsvUploadForm = require('../../components/tiny_components/InlineCsvUploadForm');
+var ConfirmationWindow = require('../../components/tiny_components/ConfirmationWindow');
 
 function SingleMandateDistrictDisplayComponent(props) {
     var display; var actions; var candidates;
@@ -8,7 +9,20 @@ function SingleMandateDistrictDisplayComponent(props) {
         candidates = props.candidates;
     }
     if (props.district.candidates.length > 0) {
-        actions = <p onClick={props.deleteCandidates} className="remove-units-element" style={{ cursor: 'pointer' }}><span className="glyphicon glyphicon-remove-sign"></span> šalinti kandidatus</p>
+        actions =
+            <ConfirmationWindow
+                title="Ar tikrai norite pašalinti apygardos kandidatų sąrašą?"
+                body="Duomenų atstatymas neįmanomas."
+                onConfirm={props.deleteCandidates}
+            >
+                <p className="remove-units-element" style={{ cursor: 'pointer' }} >
+                    <span className="glyphicon glyphicon-remove-sign">
+                    </span>
+                    šalinti kandidatus
+                </p>
+            </ConfirmationWindow>
+
+
     } else {
         actions = <InlineCsvUploadForm
                       upload={props.upload}

@@ -12,5 +12,4 @@ import javax.persistence.Query;
  * Created by andrius on 1/21/17.
  */
 
-@Repository
 public interface CountyRepository extends CrudRepository<County, Long> { }

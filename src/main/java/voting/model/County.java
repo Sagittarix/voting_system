@@ -22,17 +22,9 @@ public class County {
     private Long id;
 
     @Column(nullable = false)
-    @NotNull(message = "Pavadinimas būtinas")
-    @Length(min=6, max=40, message = "Pavadinimas tarp 6 ir 40 simbolių")
-    //@Pattern(regexp = "/^([a-zA-ZąčęėįšųūžĄČĘĖĮŠŲŪŽ0-9\\s][^qQwWxX]*)$/", message = "Pavadinimas neatitinka formato")
     private String name;
   
-    @Min(value = 100, message = "Mažiausiai gyventojų - 100")
-    @Max(value = 3000000, message = "Daugiausiai gyventojų - 3_000_000")
     private Long voterCount;
-
-    @NotNull(message = "Adresas būtinas")
-    @Length(min = 6, message = "Adresas per trumpas (min. 6 simboliai)")
     private String address;
 
     @OneToMany(
@@ -47,7 +39,6 @@ public class County {
             cascade = {}
     )
     @JoinColumn(name = "district_id", nullable = false)
-    @NotNull(message = "Negalima išsaugoti be apygardos")
     @JsonIgnore
     private District district;
 

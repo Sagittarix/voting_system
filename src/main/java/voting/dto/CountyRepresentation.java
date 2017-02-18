@@ -16,6 +16,7 @@ public class CountyRepresentation {
     private Long id;
     private String name;
     private Long voterCount;
+    private String address;
     private Long districtId;
     private String districtName;
     private List<CountyResultRepresentation> countyResults;
@@ -26,6 +27,7 @@ public class CountyRepresentation {
         this.id = county.getId();
         this.name = county.getName();
         this.voterCount = county.getVoterCount();
+        this.address = county.getAddress();
         this.districtId = county.getDistrict().getId();
         this.districtName = county.getDistrict().getName();
         this.countyResults = RepresentationFactory.makeRepresentationOfCountyResultsList(county.getCountyResultList());
@@ -78,6 +80,14 @@ public class CountyRepresentation {
 
     public void setCountyResults(List<CountyResultRepresentation> countyResults) {
         this.countyResults = countyResults;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     @Override

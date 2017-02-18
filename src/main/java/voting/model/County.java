@@ -22,14 +22,10 @@ public class County {
     private Long id;
 
     @Column(nullable = false)
-    @NotNull(message = "Pavadinimas būtinas")
-    @Length(min=6, max=40, message = "Pavadinimas tarp 6 ir 40 simbolių")
-    //@Pattern(regexp = "/^([a-zA-ZąčęėįšųūžĄČĘĖĮŠŲŪŽ0-9\\s][^qQwWxX]*)$/", message = "Pavadinimas neatitinka formato")
     private String name;
   
-    @Min(value = 100, message = "Mažiausiai gyventojų - 100")
-    @Max(value = 3000000, message = "Daugiausiai gyventojų - 3_000_000")
     private Long voterCount;
+    private String address;
 
     @OneToMany(
             fetch = FetchType.LAZY,
@@ -43,7 +39,6 @@ public class County {
             cascade = {}
     )
     @JoinColumn(name = "district_id", nullable = false)
-    @NotNull(message = "Negalima išsaugoti be apygardos")
     @JsonIgnore
     private District district;
 
@@ -57,9 +52,10 @@ public class County {
 
     public County() { }
 
-    public County(String name, Long voterCount) {
+    public County(String name, Long voterCount, String address) {
         this.name = name;
         this.voterCount = voterCount;
+        this.address = address;
     }
 
     public boolean removeResult(CountyResult cr) {
@@ -111,6 +107,14 @@ public class County {
         this.countyRep = countyRep;
     }
 
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
     @Override
     public boolean equals(Object o) {
 
@@ -122,16 +126,17 @@ public class County {
                 Objects.equals(voterCount, county.voterCount) &&
                 Objects.equals(countyResultList, county.countyResultList) &&
                 Objects.equals(district, county.district) &&
+                Objects.equals(address, county.address) &&
                 Objects.equals(countyRep, county.countyRep);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, voterCount, countyResultList, district, countyRep);
+        return Objects.hash(id, name, voterCount, countyResultList, district, countyRep, address);
     }
 
     @Override
     public String toString() {
-        return String.format("%s (id %d), balsuotojų kiekis - ", name, id, voterCount);
+        return String.format("%s (id %d), adresas - %s, balsuotojų kiekis - %d", name, id, voterCount, address);
     }
 }

@@ -11,6 +11,7 @@ import java.util.Objects;
 /**
  * Created by domas on 1/12/17.
  */
+
 public class CountyData {
 
     @NotNull(message = "Pavadinimas būtinas")
@@ -20,6 +21,11 @@ public class CountyData {
     @Min(value = 500, message = "Mažiausiai balsuotojų - 500")
     @Max(value = 3000000, message = "Daugiausiai balsuotojų - 3_000_000")
     private Long voterCount;
+
+    @NotNull(message = "Adresas būtinas")
+    @Length(min = 6, message = "Adresas per trumpas (min. 6 simboliai)")
+    private String address;
+
     private Long districtId;
 
 
@@ -47,6 +53,14 @@ public class CountyData {
         this.districtId = districtId;
     }
 
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -54,12 +68,13 @@ public class CountyData {
         CountyData that = (CountyData) o;
         return Objects.equals(name, that.name) &&
                 Objects.equals(voterCount, that.voterCount) &&
-                Objects.equals(districtId, that.districtId);
+                Objects.equals(districtId, that.districtId) &&
+                Objects.equals(address, that.address);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, voterCount, districtId);
+        return Objects.hash(name, voterCount, districtId, address);
     }
 
     @Override
@@ -68,6 +83,7 @@ public class CountyData {
                 "name='" + name + '\'' +
                 ", voterCount=" + voterCount +
                 ", districtId=" + districtId +
+                ", address=" + address +
                 '}';
     }
 }

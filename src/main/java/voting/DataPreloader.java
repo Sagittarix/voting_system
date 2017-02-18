@@ -47,11 +47,11 @@ public class DataPreloader implements CommandLineRunner {
         District district4 = new District("District 4");
         District district5 = new District("District asd");
 
-        County county1 = new County("Senamiestis", 3000L);
-        County county2 = new County("Naujamiestis", 3000L);
-        County county3 = new County("Pašilaičiai", 3000L);
-        County county4 = new County("Senamiestis", 3000L);
-        County county5 = new County("Šilainiai", 3000L);
+        County county1 = new County("Senamiestis", 3000L, "Adresas 1");
+        County county2 = new County("Naujamiestis", 3000L, "Adresas 2");
+        County county3 = new County("Pašilaičiai", 3000L, "Adresas 3");
+        County county4 = new County("Senamiestis", 3000L, "Adresas 4");
+        County county5 = new County("Šilainiai", 3000L, "Adresas 5");
 
         List<County> countyList1 = new ArrayList<County>(Arrays.asList(county1, county2, county3));
         List<County> countyList2 = new ArrayList<County>(Arrays.asList(county4, county5));

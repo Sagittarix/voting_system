@@ -8,6 +8,8 @@ import voting.dto.CountyData;
 import voting.dto.CountyRepresentation;
 import voting.exception.MultiErrorException;
 import voting.model.County;
+import voting.repository.CountyRepRepository;
+import voting.repository.CountyRepository;
 import voting.service.CountyService;
 
 import javax.validation.Valid;
@@ -22,8 +24,14 @@ import java.util.List;
 @RequestMapping("/api/county")
 public class CountyController {
 
+    private final CountyService countyService;
+    private final CountyRepository countyRepository;
+
     @Autowired
-    private CountyService countyService;
+    public CountyController(CountyService countyService, CountyRepository countyRepository) {
+        this.countyService = countyService;
+        this.countyRepository = countyRepository;
+    }
 
     @PostMapping
     public CountyRepresentation create(@Valid @RequestBody CountyData countyData, BindingResult result) {
@@ -31,6 +39,11 @@ public class CountyController {
             throw new MultiErrorException("Klaida registruojant apylinkę " + countyData.getName(), result.getAllErrors());
         }
         return countyService.saveWithDistrict(countyData);
+    }
+
+    @GetMapping(path = "{id}")
+    public CountyRepresentation getCounty(@PathVariable Long id) {
+        return new CountyRepresentation(countyRepository.findOne(id));
     }
 
     @GetMapping(path = "{id}/candidates")

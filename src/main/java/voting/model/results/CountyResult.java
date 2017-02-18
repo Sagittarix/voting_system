@@ -1,4 +1,4 @@
-package voting.results;
+package voting.model.results;
 
 import voting.model.County;
 
@@ -27,7 +27,7 @@ public class CountyResult {
             fetch = FetchType.LAZY,
             mappedBy = "countyResult"
     )
-    private List<CandidateVotes> candidateVotesList;
+    private List<UnitVotes> unitVotesList;
 
     @ManyToOne(
             fetch = FetchType.EAGER,
@@ -60,20 +60,12 @@ public class CountyResult {
         this.singleMandateSystem = singleMandateSystem;
     }
 
-    public List<CandidateVotes> getCandidateVotesList() {
-        return candidateVotesList;
+    public boolean isConfirmed() {
+        return confirmed;
     }
 
-    public void setCandidateVotesList(List<CandidateVotes> candidateVotesList) {
-        this.candidateVotesList = candidateVotesList;
-    }
-
-    public County getCounty() {
-        return county;
-    }
-
-    public void setCounty(County county) {
-        this.county = county;
+    public void setConfirmed(boolean confirmed) {
+        this.confirmed = confirmed;
     }
 
     public Date getCreatedOn() {
@@ -84,20 +76,28 @@ public class CountyResult {
         this.createdOn = createdOn;
     }
 
-    public boolean isConfirmed() {
-        return confirmed;
-    }
-
-    public void setConfirmed(boolean confirmed) {
-        this.confirmed = confirmed;
-    }
-
     public Date getConfirmedOn() {
         return confirmedOn;
     }
 
     public void setConfirmedOn(Date confirmedOn) {
         this.confirmedOn = confirmedOn;
+    }
+
+    public List<UnitVotes> getUnitVotesList() {
+        return unitVotesList;
+    }
+
+    public void setUnitVotesList(List<UnitVotes> unitVotesList) {
+        this.unitVotesList = unitVotesList;
+    }
+
+    public County getCounty() {
+        return county;
+    }
+
+    public void setCounty(County county) {
+        this.county = county;
     }
 
     @Override
@@ -113,7 +113,7 @@ public class CountyResult {
         if (!id.equals(that.id)) return false;
         if (!createdOn.equals(that.createdOn)) return false;
         if (!confirmedOn.equals(that.confirmedOn)) return false;
-        if (!candidateVotesList.equals(that.candidateVotesList)) return false;
+        if (!unitVotesList.equals(that.unitVotesList)) return false;
         return county.equals(that.county);
     }
 
@@ -125,8 +125,22 @@ public class CountyResult {
         result = 31 * result + (confirmed ? 1 : 0);
         result = 31 * result + createdOn.hashCode();
         result = 31 * result + confirmedOn.hashCode();
-        result = 31 * result + candidateVotesList.hashCode();
+        result = 31 * result + unitVotesList.hashCode();
         result = 31 * result + county.hashCode();
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "CountyResult{" +
+                "id=" + id +
+                ", spoiledBallots=" + spoiledBallots +
+                ", singleMandateSystem=" + singleMandateSystem +
+                ", confirmed=" + confirmed +
+                ", createdOn=" + createdOn +
+                ", confirmedOn=" + confirmedOn +
+                ", unitVotesList=" + unitVotesList +
+                ", county=" + county +
+                '}';
     }
 }

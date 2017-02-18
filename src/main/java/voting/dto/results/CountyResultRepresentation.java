@@ -1,8 +1,8 @@
-package voting.results;
+package voting.dto.results;
 
-import voting.dto.CountyRepresentation;
+import voting.factory.RepresentationFactory;
+import voting.model.results.CountyResult;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -18,7 +18,7 @@ public class CountyResultRepresentation {
     private boolean confirmed;
     private Date createdOn;
     private Date confirmedOn;
-    private List<CandidateVotesRepresentation> candidateVotesList;
+    private List<UnitVotesRepresentation> unitVotesList;
     private Long countyId;
 
     public CountyResultRepresentation() { }
@@ -30,9 +30,8 @@ public class CountyResultRepresentation {
         this.setConfirmed(cr.isConfirmed());
         this.createdOn = cr.getCreatedOn();
         this.confirmedOn = cr.getConfirmedOn();
-        this.candidateVotesList = new ArrayList<>();
+        this.unitVotesList = RepresentationFactory.makeUnitsVotesListRepresentation(cr.getUnitVotesList());
         this.countyId = (cr.getCounty().getId());
-        cr.getCandidateVotesList().forEach(cv -> candidateVotesList.add(new CandidateVotesRepresentation(cv)));
     }
 
     public Long getId() {
@@ -75,12 +74,12 @@ public class CountyResultRepresentation {
         this.createdOn = createdOn;
     }
 
-    public List<CandidateVotesRepresentation> getCandidateVotesList() {
-        return candidateVotesList;
+    public List<UnitVotesRepresentation> getUnitVotesList() {
+        return unitVotesList;
     }
 
-    public void setCandidateVotesList(List<CandidateVotesRepresentation> candidateVotesList) {
-        this.candidateVotesList = candidateVotesList;
+    public void setUnitVotesList(List<UnitVotesRepresentation> unitVotesList) {
+        this.unitVotesList = unitVotesList;
     }
 
     public Long getCountyId() {

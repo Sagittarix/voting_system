@@ -2,9 +2,12 @@ package voting.results;
 
 import org.springframework.stereotype.Service;
 import voting.model.County;
+import voting.model.results.CountyResult;
 
 /**
  * Created by andrius on 2/18/17.
+ *
+ * INITIAL RESULTS PROCESSING SERVICE
  */
 
 @Service
@@ -12,7 +15,7 @@ public class ElectionResultsProcessingService {
 
     // get total votes count for particular CountyResult
     public Long getTotalVotesCountFromCountyResult(CountyResult cr) {
-        return cr.getCandidateVotesList()
+        return cr.getUnitVotesList()
                  .stream()
                  .mapToLong(cv -> cv.getVotes())
                  .sum();
@@ -36,10 +39,6 @@ public class ElectionResultsProcessingService {
                      .filter(cr -> !cr.isSingleMandateSystem())
                      .findFirst()
                      .get();
-    }
-
-    public Long getCountyVotersCount(County county) {
-        county.get
     }
 
 }

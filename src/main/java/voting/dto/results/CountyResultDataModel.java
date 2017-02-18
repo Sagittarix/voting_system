@@ -1,4 +1,4 @@
-package voting.results;
+package voting.dto.results;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -6,7 +6,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import javax.xml.bind.annotation.XmlEnumValue;
 import java.util.List;
 
 /**
@@ -23,9 +22,9 @@ public class CountyResultDataModel {
     private boolean singleMandateSystem;
 
     @Valid
-    @NotNull(message = "Spring - kandidatų balsų duomenys privalomi")
-    @JsonProperty("candidatesVotes")
-    private List<CandidateVotesDataModel> candidateVotesDataModelsList;
+    @NotNull(message = "Spring - balsavimo duomenys privalomi")
+    @JsonProperty("unitVotes")
+    private List<UnitVotesDataModel> unitVotesDataModelsList;
 
     @NotNull(message = "Spring - Apylinkė privaloma")
     private Long countyId;
@@ -46,12 +45,12 @@ public class CountyResultDataModel {
         this.singleMandateSystem = singleMandateSystem;
     }
 
-    public List<CandidateVotesDataModel> getCandidateVotesDataModelsList() {
-        return candidateVotesDataModelsList;
+    public List<UnitVotesDataModel> getUnitVotesDataModelsList() {
+        return unitVotesDataModelsList;
     }
 
-    public void setCandidateVotesDataModelsList(List<CandidateVotesDataModel> candidateVotesDataModelsList) {
-        this.candidateVotesDataModelsList = candidateVotesDataModelsList;
+    public void setUnitVotesDataModelsList(List<UnitVotesDataModel> unitVotesDataModelsList) {
+        this.unitVotesDataModelsList = unitVotesDataModelsList;
     }
 
     public Long getCountyId() {

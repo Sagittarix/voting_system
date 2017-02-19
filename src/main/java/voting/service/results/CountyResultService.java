@@ -1,12 +1,17 @@
-package voting.results;
+package voting.service.results;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import voting.dto.CountyRepresentation;
+import voting.dto.results.CountyResultDataModel;
+import voting.dto.results.CountyResultRepresentation;
 import voting.factory.RepresentationFactory;
 import voting.model.County;
+import voting.model.results.CountyResult;
+import voting.model.results.UnitVotes;
 import voting.repository.CountyRepository;
+import voting.repository.results.CountyResultRepository;
 
 import javax.persistence.EntityManager;
 import java.util.List;
@@ -21,17 +26,17 @@ public class CountyResultService {
 
     private CountyResultRepository countyResultRepository;
     private CountyRepository countyRepository;
-    private CandidateVotesService candidateVotesService;
+    private UnitVotesService unitVotesService;
     private EntityManager em;
 
     @Autowired
     public CountyResultService(CountyResultRepository countyResultRepository,
                                CountyRepository countyRepository,
-                               CandidateVotesService candidateVotesService,
+                               UnitVotesService unitVotesService,
                                EntityManager em) {
         this.countyResultRepository = countyResultRepository;
         this.countyRepository = countyRepository;
-        this.candidateVotesService = candidateVotesService;
+        this.unitVotesService = unitVotesService;
         this.em = em;
     }
 
@@ -63,12 +68,14 @@ public class CountyResultService {
     }
 
     public CountyResult mapDataWithCollectionToEntity(CountyResultDataModel crdm) {
-        CountyResult cr = new CountyResult();
-        List<CandidateVotes> votesList = candidateVotesService.mapCollectionDataToEntities(crdm.getCandidateVotesDataModelsList(), cr);
-
+        CountyResult cr = new CountyResult();;
+        List<UnitVotes> votesList = unitVotesService.mapCollectionDataToEntities(
+                crdm.getUnitVotesDataModelsList(),
+                crdm.isSingleMandateSystem(),
+                cr);
         cr.setSingleMandateSystem(crdm.isSingleMandateSystem());
         cr.setSpoiledBallots(crdm.getSpoiledBallots());
-        cr.setCandidateVotesList(votesList);
+        cr.setUnitVotesList(votesList);
         cr.setCounty(countyRepository.findOne(crdm.getCountyId()));
         return cr;
     }

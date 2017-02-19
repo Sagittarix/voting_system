@@ -1,10 +1,15 @@
-package voting.results;
+package voting.controller.results;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import voting.dto.CountyRepresentation;
+import voting.dto.results.CountyResultDataModel;
+import voting.dto.results.CountyResultRepresentation;
 import voting.exception.MultiErrorException;
+import voting.model.results.CountyResult;
+import voting.repository.results.CountyResultRepository;
+import voting.service.results.CountyResultService;
 
 import javax.validation.Valid;
 import java.util.List;

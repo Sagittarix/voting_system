@@ -1,15 +1,14 @@
-package voting.results;
+package voting.dto.results;
 
 import voting.dto.CandidateRepresentation;
+import voting.model.results.CandidateVotes;
 
 /**
  * Created by andrius on 2/9/17.
  */
 
-public class CandidateVotesRepresentation {
+public class CandidateVotesRepresentation extends UnitVotesRepresentation{
 
-    private Long id;
-    private Long votes;
     private CandidateRepresentation candidate;
 
     public CandidateVotesRepresentation() { }
@@ -18,22 +17,6 @@ public class CandidateVotesRepresentation {
         this.id = cv.getId();
         this.votes = cv.getVotes();
         this.candidate = new CandidateRepresentation(cv.getCandidate());
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getVotes() {
-        return votes;
-    }
-
-    public void setVotes(Long votes) {
-        this.votes = votes;
     }
 
     public CandidateRepresentation getCandidate() {

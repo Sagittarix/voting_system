@@ -2,9 +2,8 @@ package voting.dto;
 
 import voting.factory.RepresentationFactory;
 import voting.model.County;
-import voting.results.CountyResultRepresentation;
+import voting.dto.results.CountyResultRepresentation;
 
-import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Objects;
 

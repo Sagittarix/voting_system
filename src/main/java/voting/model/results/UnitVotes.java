@@ -1,14 +1,17 @@
-package voting.results;
+package voting.model.results;
 
-import voting.model.Candidate;
+import voting.model.results.CountyResult;
+
 import javax.persistence.*;
 
 /**
- * Created by andrius on 1/24/17.
+ * Created by andrius on 2/18/17.
  */
 
 @Entity
-public class CandidateVotes {
+@Table(name = "UNIT_VOTES")
+@Inheritance(strategy = InheritanceType.JOINED)
+public class UnitVotes {
 
     @Id
     @GeneratedValue
@@ -22,19 +25,8 @@ public class CandidateVotes {
     @JoinColumn(name = "county_result_id", nullable = false)
     private CountyResult countyResult;
 
-    @ManyToOne(
-            cascade = {},
-            fetch = FetchType.EAGER
-    )
-    @JoinColumn(name = "candidate_id", nullable = false)
-    private Candidate candidate;
-
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public Long getVotes() {
@@ -53,11 +45,4 @@ public class CandidateVotes {
         this.countyResult = countyResult;
     }
 
-    public Candidate getCandidate() {
-        return candidate;
-    }
-
-    public void setCandidate(Candidate candidate) {
-        this.candidate = candidate;
-    }
 }

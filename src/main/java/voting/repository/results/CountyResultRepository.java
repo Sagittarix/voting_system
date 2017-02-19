@@ -1,8 +1,9 @@
-package voting.results;
+package voting.repository.results;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import voting.model.results.CountyResult;
 
 import javax.persistence.EntityManager;
 import java.util.Date;

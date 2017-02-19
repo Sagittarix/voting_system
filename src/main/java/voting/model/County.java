@@ -2,7 +2,7 @@ package voting.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.validator.constraints.Length;
-import voting.results.CountyResult;
+import voting.model.results.CountyResult;
 
 import javax.persistence.*;
 import javax.validation.constraints.Max;

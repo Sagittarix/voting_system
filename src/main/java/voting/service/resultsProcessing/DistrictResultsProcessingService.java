@@ -46,7 +46,7 @@ public class DistrictResultsProcessingService {
         return votes / (double) population;
     }
 
-    public Map<Party, Long> mapPartiesWithVotes(District district) {
+    public Map<Party, Long> getPartiesWithVotes(District district) {
         Iterable<Party> parties = partyRepository.findAll();
         Map<Party, Long> mappedParties = StreamSupport.stream(parties.spliterator(), false)
                                                       .collect(Collectors.toMap(Function.identity(), v -> 0L));
@@ -64,7 +64,7 @@ public class DistrictResultsProcessingService {
     }
 
     public Long getPartyVotes(Party party, District district) {
-        return mapPartiesWithVotes(district).get(party);
+        return getPartiesWithVotes(district).get(party);
     }
 
     public double getPartyVotesOutOfTotalVotesInPercentage(Party party, District district) {

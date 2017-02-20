@@ -14,6 +14,7 @@ public class CountyRepresentativeRepresentation {
     private String personalId;
     private String firstName;
     private String lastName;
+    private String email;
     private CountyRepresentation county;
 
 
@@ -24,6 +25,7 @@ public class CountyRepresentativeRepresentation {
         this.personalId =
         this.firstName = countyRep.getFirstName();
         this.lastName = countyRep.getLastName();
+        this.email = countyRep.getEmail();
         this.county = new CountyRepresentation(countyRep.getCounty());
     }
 
@@ -59,6 +61,10 @@ public class CountyRepresentativeRepresentation {
         this.lastName = lastName;
     }
 
+    public String getEmail() { return email; }
+
+    public void setEmail(String email) { this.email = email; }
+
     public CountyRepresentation getCounty() {
         return county;
     }
@@ -77,12 +83,13 @@ public class CountyRepresentativeRepresentation {
                 Objects.equals(personalId, that.personalId) &&
                 Objects.equals(firstName, that.firstName) &&
                 Objects.equals(lastName, that.lastName) &&
+                Objects.equals(email, that.email) &&
                 Objects.equals(county.getId(), that.county.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, personalId, firstName, lastName, county.getId());
+        return Objects.hash(id, personalId, firstName, lastName, email, county.getId());
     }
 
     @Override
@@ -92,6 +99,7 @@ public class CountyRepresentativeRepresentation {
                 ", personalId='" + personalId + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
                 ", countyId=" + county.getId() +
                 '}';
     }

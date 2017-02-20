@@ -14,6 +14,7 @@ public class CountyRep {
     private Long id;
     private String firstName;
     private String lastName;
+    private String email;
     @OneToOne(
             fetch = FetchType.EAGER,
             cascade = {}
@@ -24,9 +25,10 @@ public class CountyRep {
     public CountyRep() {
     }
 
-    public CountyRep(String firstName, String lastName, County county) {
+    public CountyRep(String firstName, String lastName, String email, County county) {
         this.firstName = firstName;
         this.lastName = lastName;
+        this.email = email;
         this.county = county;
     }
 
@@ -42,6 +44,8 @@ public class CountyRep {
     public String getLastName() {
         return lastName;
     }
+
+    public String getEmail() { return email; }
 
     public County getCounty() {
         return county;
@@ -59,12 +63,13 @@ public class CountyRep {
         return Objects.equals(id, countyRep.id) &&
                 Objects.equals(firstName, countyRep.firstName) &&
                 Objects.equals(lastName, countyRep.lastName) &&
+                Objects.equals(email, countyRep.email) &&
                 Objects.equals(county, countyRep.county);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, firstName, lastName, county);
+        return Objects.hash(id, firstName, lastName, email, county);
     }
 
     @Override
@@ -73,6 +78,7 @@ public class CountyRep {
                 "id=" + id +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
                 ", county=" + county +
                 '}';
     }

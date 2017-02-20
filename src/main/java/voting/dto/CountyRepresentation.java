@@ -3,6 +3,7 @@ package voting.dto;
 import voting.factory.RepresentationFactory;
 import voting.model.County;
 import voting.dto.results.CountyResultRepresentation;
+import voting.model.results.CountyResult;
 
 import java.util.List;
 import java.util.Objects;
@@ -29,7 +30,9 @@ public class CountyRepresentation {
         this.address = county.getAddress();
         this.districtId = county.getDistrict().getId();
         this.districtName = county.getDistrict().getName();
-        this.countyResults = RepresentationFactory.makeRepresentationOfCountyResultsList(county.getCountyResultList());
+        List<CountyResult> results = county.getCountyResultList();
+        this.countyResults = (results != null) ?
+                RepresentationFactory.makeRepresentationOfCountyResultsList(results) : null;
     }
 
 

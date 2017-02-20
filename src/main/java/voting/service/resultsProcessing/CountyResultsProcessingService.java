@@ -23,20 +23,20 @@ public class CountyResultsProcessingService {
     // NoSuchElementException not caught
     public CountyResult getSMresult(County county) {
         return county.getCountyResultList()
-                .stream()
-                .filter(CountyResult::isSingleMandateSystem)
-                .findFirst()
-                .get();
+                     .stream()
+                     .filter(CountyResult::isSingleMandateSystem)
+                     .findFirst()
+                     .get();
     }
 
     // get single-mandate result from particular county
     // NoSuchElementException not caught
     public CountyResult getMMresult(County county) {
         return county.getCountyResultList()
-                .stream()
-                .filter(cr -> !cr.isSingleMandateSystem())
-                .findFirst()
-                .get();
+                     .stream()
+                     .filter(cr -> !cr.isSingleMandateSystem())
+                     .findFirst()
+                     .get();
     }
 
     // get votes count for particular CountyResult
@@ -67,7 +67,18 @@ public class CountyResultsProcessingService {
                                .forEach(pv -> {
                                     partiesMap.putIfAbsent(pv.getParty(), pv.getVotes());
                                });
+
         return partiesMap;
+    }
+
+    // get votes for individual Party
+    public Long getPartyVotes(Party party, County county) {
+        return getMMresult(county).getUnitVotesList().stream()
+                                                     .map(uv -> (PartyVotes)uv)
+                                                     .filter(uv -> uv.getParty().equals(party))
+                                                     .findFirst()
+                                                     .get()
+                                                     .getVotes();
     }
 
     // MM - percentage of party votes from voters-turnover
@@ -75,7 +86,8 @@ public class CountyResultsProcessingService {
         Map<Party, Long> partiesWithVotes = mapPartiesWithVotes(county);
         Long votes = partiesWithVotes.get(party);
         Long total = getVotersTurnout(county);
-        return votes / (double)total;
+
+        return votes / (double) total;
     }
 
     // MM - percentage of party votes from all valid bulletins
@@ -83,7 +95,8 @@ public class CountyResultsProcessingService {
         Map<Party, Long> partiesWithVotes = mapPartiesWithVotes(county);
         Long votes = partiesWithVotes.get(party);
         Long valid = getVotesFromCountyResult(getMMresult(county));
-        return votes / (double)valid;
+
+        return votes / (double) valid;
     }
 
     // map each Candidate with its votes
@@ -95,7 +108,12 @@ public class CountyResultsProcessingService {
                 .forEach(cv -> {
                     candidatesMap.putIfAbsent(cv.getCandidate(), cv.getVotes());
                 });
+
         return candidatesMap;
+    }
+
+    public Long getCandidateVotes(Candidate candidate, County county) {
+        return mapCandidatesWithVotes(county).get(candidate);
     }
 
     // get % of individual Candidate votes out of total votes (voter-turnout) in County
@@ -103,7 +121,8 @@ public class CountyResultsProcessingService {
         Map<Candidate, Long> candidatesWithVotes = mapCandidatesWithVotes(county);
         Long votes = candidatesWithVotes.get(candidate);
         Long total = getVotersTurnout(county);
-        return votes / (double)total;
+
+        return votes / (double) total;
     }
 
     // get % of individual Candidate votes out of valid votes (all County votes) in County
@@ -111,6 +130,7 @@ public class CountyResultsProcessingService {
         Map<Candidate, Long> candidatesWithVotes = mapCandidatesWithVotes(county);
         Long votes = candidatesWithVotes.get(candidate);
         Long valid = getVotesFromCountyResult(getSMresult(county));
-        return votes / (double)valid;
+
+        return votes / (double) valid;
     }
 }

@@ -59,7 +59,7 @@ public class CountyResultsProcessingService {
     }
 
     // map each Party with its votes
-    public Map<Party, Long> mapPartiesWithVotes(County county) {
+    public Map<Party, Long> getPartiesWithVotes(County county) {
         Map<Party, Long> partiesMap = new HashMap<>();
         CountyResult mmcr = getMMresult(county);
         mmcr.getUnitVotesList().stream()
@@ -83,7 +83,7 @@ public class CountyResultsProcessingService {
 
     // MM - percentage of party votes from voters-turnover
     public Double getPartyVotesOutOfTotalVotesInPercentage(Party party, County county) {
-        Map<Party, Long> partiesWithVotes = mapPartiesWithVotes(county);
+        Map<Party, Long> partiesWithVotes = getPartiesWithVotes(county);
         Long votes = partiesWithVotes.get(party);
         Long total = getVotersTurnout(county);
 
@@ -92,7 +92,7 @@ public class CountyResultsProcessingService {
 
     // MM - percentage of party votes from all valid bulletins
     public Double getPartyVotesOutOfValidVotesInPercentage(Party party, County county) {
-        Map<Party, Long> partiesWithVotes = mapPartiesWithVotes(county);
+        Map<Party, Long> partiesWithVotes = getPartiesWithVotes(county);
         Long votes = partiesWithVotes.get(party);
         Long valid = getVotesFromCountyResult(getMMresult(county));
 
@@ -100,7 +100,7 @@ public class CountyResultsProcessingService {
     }
 
     // map each Candidate with its votes
-    public Map<Candidate, Long> mapCandidatesWithVotes(County county) {
+    public Map<Candidate, Long> getCandidatesWithVotes(County county) {
         Map<Candidate, Long> candidatesMap = new HashMap<>();
         CountyResult smcr = getSMresult(county);
         smcr.getUnitVotesList().stream()
@@ -113,12 +113,12 @@ public class CountyResultsProcessingService {
     }
 
     public Long getCandidateVotes(Candidate candidate, County county) {
-        return mapCandidatesWithVotes(county).get(candidate);
+        return getCandidatesWithVotes(county).get(candidate);
     }
 
     // get % of individual Candidate votes out of total votes (voter-turnout) in County
     public Double getCandidateVotesOutOfTotalVotesInPercentage(Candidate candidate, County county) {
-        Map<Candidate, Long> candidatesWithVotes = mapCandidatesWithVotes(county);
+        Map<Candidate, Long> candidatesWithVotes = getCandidatesWithVotes(county);
         Long votes = candidatesWithVotes.get(candidate);
         Long total = getVotersTurnout(county);
 
@@ -127,7 +127,7 @@ public class CountyResultsProcessingService {
 
     // get % of individual Candidate votes out of valid votes (all County votes) in County
     public Double getCandidateVotesOutOfValidVotesInPercentage(Candidate candidate, County county) {
-        Map<Candidate, Long> candidatesWithVotes = mapCandidatesWithVotes(county);
+        Map<Candidate, Long> candidatesWithVotes = getCandidatesWithVotes(county);
         Long votes = candidatesWithVotes.get(candidate);
         Long valid = getVotesFromCountyResult(getSMresult(county));
 

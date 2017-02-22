@@ -60,7 +60,7 @@ public class CountyResultController {
     @PostMapping
     public CountyResultRepresentation create(@Valid @RequestBody CountyResultDataModel crdm, BindingResult result) {
         if (result.hasErrors())
-            throw new MultiErrorException("CountyResult encountered validation errors", result.getAllErrors());
+            throw new MultiErrorException("Klaida apylinkės rezultatuose!", result.getAllErrors());
         return countyResultService.save(crdm);
     }
 

@@ -5,6 +5,7 @@ import org.hibernate.validator.constraints.Length;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.util.List;
 import java.util.Objects;
 
@@ -17,7 +18,7 @@ public class PartyData {
 
     @NotNull(message = "Partijos pavadinimas būtinas")
     @Length(min = 6, max = 40, message = "Partijos pavadinimas nuo 6 iki 40 simbolių")
-    //@Pattern(regexp = "/^([a-zA-ZąčęėįšųūžĄČĘĖĮŠŲŪŽ0-9\\s][^qQwWxX]*)$/", message = "Pavadinimas neatitinka formato")
+    @Pattern(regexp = "^([a-zA-ZąčęėįšųūžĄČĘĖĮŠŲŪŽ\\s\\-][^qQwWxX0-9]*)$", message = "Netinkamas partijos pavadinimas")
     private String name;
 
     @JsonProperty("candidates")

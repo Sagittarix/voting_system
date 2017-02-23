@@ -15,15 +15,16 @@ import java.util.Objects;
 public class CountyData {
 
     @NotNull(message = "Pavadinimas būtinas")
-    @Length(min=6, max=40, message = "Apylinkės pavadinimas tarp 6 ir 40 simbolių")
+    @Length(min=6, max=40, message = "Apylinkės pavadinimas nuo 6 iki 40 simbolių")
+    @Pattern(regexp = "^([a-zA-ZąčęėįšųūžĄČĘĖĮŠŲŪŽ0-9\\s\\-][^qQwWxX]*)$", message = "Netinkamas apylinkės pavadinimas")
     private String name;
 
     @Min(value = 500, message = "Mažiausiai balsuotojų - 500")
-    @Max(value = 3000000, message = "Daugiausiai balsuotojų - 3_000_000")
+    @Max(value = 50000, message = "Daugiausiai balsuotojų - 50_000")
     private Long voterCount;
 
     @NotNull(message = "Adresas būtinas")
-    @Length(min = 6, message = "Adresas per trumpas (min. 6 simboliai)")
+    @Length(min = 6, message = "Adreso ilgis nuo 6 iki 40 simbolių")
     private String address;
 
     private Long districtId;

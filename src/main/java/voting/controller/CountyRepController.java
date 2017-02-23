@@ -3,6 +3,7 @@ package voting.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import voting.dto.CountyRepresentativeData;
 import voting.dto.CountyRepresentativeRepresentation;
 import voting.exception.MultiErrorException;
 import voting.model.CountyRep;
@@ -31,7 +32,7 @@ public class CountyRepController {
     public List<CountyRepresentativeRepresentation> getCountyReps() {
         return countyRepService.getCountyReps()
                                .stream()
-                               .map(cr -> new CountyRepresentativeRepresentation(cr))
+                               .map(CountyRepresentativeRepresentation::new)
                                .collect(Collectors.toList());
     }
 
@@ -40,13 +41,23 @@ public class CountyRepController {
         return countyRepService.getCountyRep(id);
     }
 
-    @PostMapping
+    /*@PostMapping
     public CountyRep addNewCountyRep(@Valid @RequestBody CountyRep countyRep, BindingResult result) {
         if (result.hasErrors()) {
             throw new MultiErrorException("Klaida registruojant apygardos atstovą " + countyRep.getFirstName() + " "
                     + countyRep.getLastName(), result.getAllErrors());
         }
         return countyRepService.addNewCountyRep(countyRep);
+    }*/
+
+
+    @PostMapping
+    public CountyRep addNewCountyRep(@Valid @RequestBody CountyRepresentativeData countyRepData, BindingResult result) {
+        if (result.hasErrors()) {
+            throw new MultiErrorException("Klaida registruojant apygardos atstovą " + countyRepData.getFirstName() + " "
+                    + countyRepData.getLastName(), result.getAllErrors());
+        }
+        return countyRepService.addNewCountyRep(countyRepData);
     }
 
     @DeleteMapping("/{id}")

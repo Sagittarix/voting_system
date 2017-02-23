@@ -1,4 +1,4 @@
-package voting.factory;
+package voting.utils;
 
 import org.springframework.stereotype.Component;
 import voting.dto.CandidateRepresentation;

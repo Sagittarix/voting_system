@@ -1,6 +1,6 @@
 package voting.dto;
 
-import voting.factory.RepresentationFactory;
+import voting.model.County;
 import voting.model.CountyRep;
 
 import java.util.Objects;
@@ -16,7 +16,7 @@ public class CountyRepresentativeRepresentation {
     private String lastName;
     private String email;
     private CountyRepresentation county;
-
+    private String districtName;
 
     public CountyRepresentativeRepresentation() { }
 
@@ -26,7 +26,11 @@ public class CountyRepresentativeRepresentation {
         this.firstName = countyRep.getFirstName();
         this.lastName = countyRep.getLastName();
         this.email = countyRep.getEmail();
-        this.county = new CountyRepresentation(countyRep.getCounty());
+
+        County county = countyRep.getCounty();
+        this.county = new CountyRepresentation(county);
+        this.districtName = county.getDistrict().getName();
+
     }
 
     public Long getId() {
@@ -71,6 +75,14 @@ public class CountyRepresentativeRepresentation {
 
     public void setCounty(CountyRepresentation county) {
         this.county = county;
+    }
+
+    public String getDistrictName() {
+        return districtName;
+    }
+
+    public void setDistrictName(String districtName) {
+        this.districtName = districtName;
     }
 
     @Override

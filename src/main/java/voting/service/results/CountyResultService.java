@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import voting.dto.CountyRepresentation;
 import voting.dto.results.CountyResultDataModel;
 import voting.dto.results.CountyResultRepresentation;
-import voting.factory.RepresentationFactory;
+import voting.utils.RepresentationFactory;
 import voting.model.County;
 import voting.model.results.CountyResult;
 import voting.model.results.UnitVotes;

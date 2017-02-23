@@ -1,5 +1,6 @@
 package voting.service;
 
+import voting.dto.CountyRepresentativeData;
 import voting.dto.CountyRepresentativeRepresentation;
 import voting.model.CountyRep;
 
@@ -10,7 +11,7 @@ import java.util.List;
  */
 public interface CountyRepService {
 
-    CountyRep addNewCountyRep(CountyRep countyRep);
+    CountyRep addNewCountyRep(CountyRepresentativeData countyRepData);
 
     void deleteCountyRep(Long id);
 

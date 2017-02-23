@@ -1,6 +1,6 @@
 package voting.dto;
 
-import voting.factory.RepresentationFactory;
+import voting.utils.RepresentationFactory;
 import voting.model.County;
 import voting.dto.results.CountyResultRepresentation;
 import voting.model.results.CountyResult;

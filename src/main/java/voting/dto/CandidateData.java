@@ -18,10 +18,12 @@ public class CandidateData {
     private String personId;
 
     @NotNull(message = "Vardas būtinas")
+    @Pattern(regexp = "^([a-zA-ZąčęėįšųūžĄČĘĖĮŠŲŪŽ\\s\\-][^qQwWxX0-9]*)$", message = "Netinkamas vardo formatas")
     @Length(min = 3, max = 40, message = "Vardo ilgis nuo 3 iki 40 simbolių")
     private String firstName;
 
     @NotNull(message = "Pavardė būtina")
+    @Pattern(regexp = "^([a-zA-ZąčęėįšųūžĄČĘĖĮŠŲŪŽ\\s\\-][^qQwWxX0-9]*)$", message = "Netinkamas pavardės formatas")
     @Length(min = 3, max = 40, message = "Pavardės ilgis nuo 3 iki 40 simbolių")
     private String lastName;
 

@@ -36,6 +36,10 @@ public class CountyService {
         this.countyRepRepository = countyRepRepository;
     }
 
+    public County findOne(Long id) {
+        return countyRepository.findOne(id);
+    }
+
     @Transactional
     public CountyRepresentation saveWithDistrict(CountyData countyData) {
         County county = mapDataToEntity(countyData);

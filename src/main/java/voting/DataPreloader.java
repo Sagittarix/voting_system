@@ -102,11 +102,11 @@ public class DataPreloader implements CommandLineRunner {
             candidateRepository.save(c);
         });
 
-        CountyRep cr1 = new CountyRep("CR1001first", "CR001last", "test1@test.lt", county1);
-        CountyRep cr2 = new CountyRep("CR002first", "CR002last", "test1@test.lt", county2);
-        CountyRep cr3 = new CountyRep("CR003first", "CR003last", "test1@test.lt", county3);
-        CountyRep cr4 = new CountyRep("CR004first", "CR004last", "test1@test.lt", county4);
-        CountyRep cr5 = new CountyRep("CR005first", "CR005last", "test1@test.lt", county5);
+        CountyRep cr1 = new CountyRep("CR1001first", "CR001last", "test1@test.lt", "password1", county1);
+        CountyRep cr2 = new CountyRep("CR002first", "CR002last", "test1@test.lt", "password2", county2);
+        CountyRep cr3 = new CountyRep("CR003first", "CR003last", "test1@test.lt", "password3", county3);
+        CountyRep cr4 = new CountyRep("CR004first", "CR004last", "test1@test.lt", "password4", county4);
+        CountyRep cr5 = new CountyRep("CR005first", "CR005last", "test1@test.lt", "password5", county5);
         List<CountyRep> crs = new ArrayList<CountyRep>() {{
             add(cr1);
             add(cr2);

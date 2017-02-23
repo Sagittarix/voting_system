@@ -1,11 +1,17 @@
 package voting.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import javax.persistence.*;
 import java.util.Objects;
+import java.util.Random;
 
 /**
  * Created by domas on 1/10/17.
  */
+
 @Entity
 public class CountyRep {
 
@@ -15,6 +21,8 @@ public class CountyRep {
     private String firstName;
     private String lastName;
     private String email;
+    private String password_digest;
+
     @OneToOne(
             fetch = FetchType.EAGER,
             cascade = {}
@@ -25,27 +33,45 @@ public class CountyRep {
     public CountyRep() {
     }
 
-    public CountyRep(String firstName, String lastName, String email, County county) {
+    public CountyRep(String firstName, String lastName, String email, String password, County county) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
+        this.password_digest = password;
         this.county = county;
     }
 
     public Long getId() {
-
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getFirstName() {
         return firstName;
     }
 
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
     public String getLastName() {
         return lastName;
     }
 
-    public String getEmail() { return email; }
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
     public County getCounty() {
         return county;
@@ -53,6 +79,15 @@ public class CountyRep {
 
     public void setCounty(County county) {
         this.county = county;
+    }
+
+    @JsonIgnore
+    public String getPassword_digest() {
+        return password_digest;
+    }
+
+    public void setPassword_digest(String password_digest) {
+        this.password_digest = BCrypt.hashpw(password_digest, BCrypt.gensalt());
     }
 
     @Override

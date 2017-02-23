@@ -1,6 +1,6 @@
 package voting.dto.results;
 
-import voting.factory.RepresentationFactory;
+import voting.utils.RepresentationFactory;
 import voting.model.results.CountyResult;
 
 import java.util.Date;

@@ -9,24 +9,27 @@ import java.util.Objects;
 /**
  * Created by domas on 1/12/17.
  */
+
 public class CountyRepresentativeData {
 
     private Long id;
-    @NotNull
-    @Pattern(regexp = "\\d{11}")
-    private String personalId;
-    @NotNull
-    @Length(min = 1, max = 40)
+
+    @NotNull(message = "Vardas būtinas")
+    @Length(min = 3, max = 40, message = "Vardo ilgis nuo 3 iki 40 simbolių")
+    @Pattern(regexp = "^([a-zA-ZąčęėįšųūžĄČĘĖĮŠŲŪŽ\\s\\-][^qQwWxX0-9]*)$", message = "Netinkamas vardo formatas")
     private String firstName;
-    @NotNull
-    @Length(min = 1, max = 40)
+
+    @NotNull(message = "Pavardė būtina")
+    @Length(min = 3, max = 40, message = "Pavardės ilgis nuo 3 iki 40 simbolių")
+    @Pattern(regexp = "^([a-zA-ZąčęėįšųūžĄČĘĖĮŠŲŪŽ\\s\\-][^qQwWxX0-9]*)$", message = "Netinkamas pavardės formatas")
     private String lastName;
-    @NotNull
+
+    @NotNull(message = "El. paštas būtinas")
+    @Pattern(regexp = "^(([^<>()\\[\\]\\\\.,;:\\s@\"]+(\\.[^<>()\\[\\]\\\\.,;:\\s@\"]+)*)|(\".+\"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$", message = "Netinkamas el. paštas")
+    private String email;
+
+    @NotNull(message = "Apylinkės identifikatorius būtinas")
     private Long countyId;
-    @NotNull
-    private String role;
-    @NotNull
-    private String password_digest;
 
 
     public Long getId() {
@@ -35,14 +38,6 @@ public class CountyRepresentativeData {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getPersonalId() {
-        return personalId;
-    }
-
-    public void setPersonalId(String personalId) {
-        this.personalId = personalId;
     }
 
     public String getFirstName() {
@@ -69,20 +64,12 @@ public class CountyRepresentativeData {
         this.countyId = countyId;
     }
 
-    public String getRole() {
-        return role;
+    public String getEmail() {
+        return email;
     }
 
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-    public String getPassword_digest() {
-        return password_digest;
-    }
-
-    public void setPassword_digest(String password_digest) {
-        this.password_digest = password_digest;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     @Override
@@ -92,29 +79,22 @@ public class CountyRepresentativeData {
         if (o == null || getClass() != o.getClass()) return false;
         CountyRepresentativeData that = (CountyRepresentativeData) o;
         return Objects.equals(id, that.id) &&
-                Objects.equals(personalId, that.personalId) &&
                 Objects.equals(firstName, that.firstName) &&
                 Objects.equals(lastName, that.lastName) &&
-                Objects.equals(countyId, that.countyId) &&
-                Objects.equals(role, that.role) &&
-                Objects.equals(password_digest, that.password_digest);
+                Objects.equals(countyId, that.countyId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, personalId, firstName, lastName, countyId, role, password_digest);
+        return Objects.hash(id, firstName, lastName, countyId);
     }
 
     @Override
     public String toString() {
         return "CountyRepresentativeData{" +
                 "id=" + id +
-                ", personalId='" + personalId + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
-                ", countyId=" + countyId +
-                ", role='" + role + '\'' +
-                ", password_digest='" + password_digest + '\'' +
-                '}';
+                ", countyId=" + countyId + '}';
     }
 }

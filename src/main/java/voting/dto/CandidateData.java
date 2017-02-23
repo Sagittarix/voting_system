@@ -27,6 +27,10 @@ public class CandidateData {
     @Length(min = 3, max = 40, message = "Pavardės ilgis nuo 3 iki 40 simbolių")
     private String lastName;
 
+    @NotNull(message = "Aprašymas būtina")
+    @Length(min = 20, max = 250, message = "Aprašymas nuo 20 iki 40 simbolių")
+    private String description;
+
     // not sure kuriu reikia, kolkas palieku visus
     private Long districtId;
     private String districtName;
@@ -104,6 +108,14 @@ public class CandidateData {
 
     public void setPositionInPartyList(Long positionInPartyList) {
         this.positionInPartyList = positionInPartyList;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override

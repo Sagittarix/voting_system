@@ -107,7 +107,7 @@ public class ParsingServiceImpl implements ParsingService {
     private class SingleMandateCandidateParsingStrategy extends CandidateParsingStrategy {
 
         private SingleMandateCandidateParsingStrategy() {
-            super("Vardas,Pavardė,Asmens_kodas,Partija".split(","));
+            super("Vardas,Pavardė,Asmens_kodas,Partija,Aprasymas".split(","));
         }
 
         @Override
@@ -117,6 +117,7 @@ public class ParsingServiceImpl implements ParsingService {
             candidateData.setLastName(line[1]);
             candidateData.setPersonId(line[2]);
             candidateData.setPartyName(line[3]);
+            candidateData.setDescription(line[4]);
             return candidateData;
         }
 
@@ -136,7 +137,7 @@ public class ParsingServiceImpl implements ParsingService {
     private class MultiMandateCandidateParsingStrategy extends CandidateParsingStrategy {
 
         private MultiMandateCandidateParsingStrategy() {
-            super("Numeris,Vardas,Pavardė,Asmens_kodas".split(","));
+            super("Numeris,Vardas,Pavardė,Asmens_kodas,Aprasymas".split(","));
         }
 
         @Override
@@ -146,6 +147,7 @@ public class ParsingServiceImpl implements ParsingService {
             candidateData.setFirstName(line[1]);
             candidateData.setLastName(line[2]);
             candidateData.setPersonId(line[3]);
+            candidateData.setDescription(line[4]);
             return candidateData;
         }
 

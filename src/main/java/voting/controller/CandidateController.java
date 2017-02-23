@@ -26,7 +26,7 @@ public class CandidateController {
 
     @GetMapping
     public List<CandidateRepresentation> getCandidates() {
-        return candidateService.getCandidates().stream().map(c -> new CandidateRepresentation(c)).collect(Collectors.toList());
+        return candidateService.getCandidates().stream().map(CandidateRepresentation::new).collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")

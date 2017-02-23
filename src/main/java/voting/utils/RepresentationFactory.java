@@ -69,32 +69,5 @@ public class RepresentationFactory {
         }
         return representations;
     }
-
-    /*public static UnitVotesRepresentation makeRepresentationOf(UnitVotes uv) {
-        if (CandidateVotes.class.isAssignableFrom(uv.getClass())) {
-            CandidateVotesRepresentation cvr = new CandidateVotesRepresentation();
-            cvr.setId(uv.getId());
-            cvr.setVotes(uv.getVotes());
-            cvr.setCandidate(new CandidateRepresentation(uv.getCandidate()));
-        }
-    }*/
-
-    /*public static UnitVotesRepresentation makeCandidateVotesListRepresentation(CandidateVotes list) {
-        CandidateVotesRepresentation cvr = new CandidateVotesRepresentation();
-        cvr.setId(cv.getId());
-        cvr.setVotes(cv.getVotes());
-        cvr.setParty(new CandidateRepresentation(cv.getCandidate()));
-
-        return cvr;
-    }*/
-
-    /*public static List<CandidateVotesRepresentation> makeRepresentationOf(List<CandidateVotes> rawList) {
-        List<CandidateVotesRepresentation> cvrl = new ArrayList<>();
-        rawList.forEach(cv -> {
-            cvrl.add(makeRepresentationOf(cv));
-        });
-
-        return cvrl;
-    }*/
 }
 

@@ -18,6 +18,7 @@ public class CandidateRepresentation {
     private String personId;
     private String firstName;
     private String lastName;
+    private String description;
 
     private Long districtId;
     private String districtName;
@@ -33,6 +34,7 @@ public class CandidateRepresentation {
         this.personId = candidate.getPersonId();
         this.firstName = candidate.getFirstName();
         this.lastName = candidate.getLastName();
+        this.description = candidate.getDescription();
         District district = candidate.getDistrict();
         if (district != null) {
             this.districtId = district.getId();
@@ -119,6 +121,14 @@ public class CandidateRepresentation {
         this.positionInPartyList = positionInPartyList;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     @Override
     public boolean equals(Object o) {
 
@@ -129,6 +139,7 @@ public class CandidateRepresentation {
                 Objects.equals(personId, that.personId) &&
                 Objects.equals(firstName, that.firstName) &&
                 Objects.equals(lastName, that.lastName) &&
+                Objects.equals(description, that.description) &&
                 Objects.equals(districtId, that.districtId) &&
                 Objects.equals(districtName, that.districtName) &&
                 Objects.equals(partyId, that.partyId) &&

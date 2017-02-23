@@ -17,16 +17,19 @@ public class Candidate {
     private String personId;
     private String firstName;
     private String lastName;
+
     @JsonIgnore
     @ManyToOne
     private District district;
+
     @JsonIgnore
     @ManyToOne
     private Party party;
-    private Long positionInPartyList;
 
-    public Candidate() {
-    }
+    private Long positionInPartyList;
+    private String description;
+
+    public Candidate() { }
 
     public Candidate(String firstName, String lastName, String personId) {
         this.firstName = firstName;
@@ -38,16 +41,32 @@ public class Candidate {
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getPersonId() {
         return personId;
+    }
+
+    public void setPersonId(String personId) {
+        this.personId = personId;
     }
 
     public String getFirstName() {
         return firstName;
     }
 
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
     public String getLastName() {
         return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public District getDistrict() {
@@ -72,6 +91,14 @@ public class Candidate {
 
     public void setPositionInPartyList(Long positionInPartyList) {
         this.positionInPartyList = positionInPartyList;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override

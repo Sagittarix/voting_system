@@ -4,6 +4,7 @@ import org.hibernate.validator.constraints.Length;
 import voting.model.Candidate;
 import voting.model.District;
 import voting.model.Party;
+import voting.utils.DateUtils;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -19,6 +20,7 @@ public class CandidateRepresentation {
     private String firstName;
     private String lastName;
     private String description;
+    private String birthDate;
 
     private Long districtId;
     private String districtName;
@@ -35,6 +37,7 @@ public class CandidateRepresentation {
         this.firstName = candidate.getFirstName();
         this.lastName = candidate.getLastName();
         this.description = candidate.getDescription();
+        this.birthDate = DateUtils.stringifyCalendar(candidate.getBirthDate(), "-");
         District district = candidate.getDistrict();
         if (district != null) {
             this.districtId = district.getId();
@@ -127,6 +130,14 @@ public class CandidateRepresentation {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(String birthDate) {
+        this.birthDate = birthDate;
     }
 
     @Override

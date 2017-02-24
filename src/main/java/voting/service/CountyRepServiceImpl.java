@@ -1,15 +1,13 @@
 package voting.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCrypt;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import voting.dto.CountyRepresentativeData;
 import voting.dto.CountyRepresentativeRepresentation;
 import voting.model.CountyRep;
 import voting.repository.CountyRepRepository;
-import voting.utils.BCryptHelper;
+import voting.utils.BCryptUtils;
 
 import java.util.List;
 
@@ -30,12 +28,6 @@ public class CountyRepServiceImpl implements CountyRepService {
         this.countyService = countyService;
     }
 
-    /*@Transactional
-    @Override
-    public CountyRep addNewCountyRep(CountyRep countyRep) {
-        return countyRepRepository.save(countyRep);
-    }*/
-
     @Transactional
     @Override
     public CountyRep addNewCountyRep(CountyRepresentativeData countyRepData) {
@@ -43,7 +35,7 @@ public class CountyRepServiceImpl implements CountyRepService {
         countyRep.setFirstName(countyRepData.getFirstName());
         countyRep.setLastName(countyRepData.getLastName());
         countyRep.setEmail(countyRepData.getEmail());
-        countyRep.setPassword_digest(BCryptHelper.generateRandomPassword(9));
+        countyRep.setPassword_digest(BCryptUtils.generateRandomPassword(9));
         countyRep.setCounty(countyService.findOne(countyRepData.getCountyId()));
         return countyRepRepository.save(countyRep);
     }

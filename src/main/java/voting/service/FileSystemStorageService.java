@@ -71,7 +71,6 @@ public class FileSystemStorageService implements StorageService {
         if (!file.getContentType().contains("text/csv")
            && !file.getOriginalFilename().split("\\.")[1].equals("csv")) {
                 throw new StorageException("Failas turi būti CSV formato");
-            }
         }
     }
 }

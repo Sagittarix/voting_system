@@ -35,12 +35,13 @@ public class CandidateData {
     @NotNull(message = "Nepavyko nustatyti gimimo datos")
     private Calendar birthDate;
 
+    private Long positionInPartyList;
+
     // not sure kuriu reikia, kolkas palieku visus
     private Long districtId;
     private String districtName;
     private Long partyId;
     private String partyName;
-    private Long positionInPartyList;
 
     public Long getId() {
         return id;

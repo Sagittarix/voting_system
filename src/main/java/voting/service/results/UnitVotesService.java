@@ -7,8 +7,8 @@ import voting.model.results.CandidateVotes;
 import voting.model.results.CountyResult;
 import voting.model.results.PartyVotes;
 import voting.model.results.UnitVotes;
-import voting.repository.CandidateRepository;
-import voting.repository.PartyRepository;
+import voting.service.CandidateService;
+import voting.service.PartyService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,13 +20,13 @@ import java.util.List;
 @Service
 public class UnitVotesService {
 
-    private final CandidateRepository candidateRepository;
-    private final PartyRepository partyRepository;
+    private final CandidateService candidateService;
+    private final PartyService partyService;
 
     @Autowired
-    public UnitVotesService(CandidateRepository candidateRepository, PartyRepository partyRepository) {
-        this.candidateRepository = candidateRepository;
-        this.partyRepository = partyRepository;
+    public UnitVotesService(CandidateService candidateService, PartyService partyService) {
+        this.candidateService = candidateService;
+        this.partyService = partyService;
     }
 
     public List<UnitVotes> mapCollectionDataToEntities(
@@ -39,7 +39,7 @@ public class UnitVotesService {
                 CandidateVotes cv = new CandidateVotes();
                 cv.setVotes(el.getVotes());
                 cv.setCountyResult(cr);
-                cv.setCandidate(candidateRepository.findOne(el.getUnitId()));
+                cv.setCandidate(candidateService.getCandidate(el.getUnitId()));
                 unitVotesList.add(cv);
             });
         } else {
@@ -47,7 +47,7 @@ public class UnitVotesService {
                 PartyVotes pv = new PartyVotes();
                 pv.setVotes(el.getVotes());
                 pv.setCountyResult(cr);
-                pv.setParty(partyRepository.findOne(el.getUnitId()));
+                pv.setParty(partyService.getParty(el.getUnitId()));
                 unitVotesList.add(pv);
             });
         }

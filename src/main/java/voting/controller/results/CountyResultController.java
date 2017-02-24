@@ -8,7 +8,6 @@ import voting.dto.results.CountyResultDataModel;
 import voting.dto.results.CountyResultRepresentation;
 import voting.exception.MultiErrorException;
 import voting.model.results.CountyResult;
-import voting.repository.results.CountyResultRepository;
 import voting.service.results.CountyResultService;
 
 import javax.validation.Valid;
@@ -23,18 +22,16 @@ import java.util.List;
 @RequestMapping("api/county-results")
 public class CountyResultController {
 
-    private CountyResultRepository countyResultRepository;
     private CountyResultService countyResultService;
 
     @Autowired
-    public CountyResultController(CountyResultRepository countyResultRepository, CountyResultService countyResultService) {
-        this.countyResultRepository = countyResultRepository;
+    public CountyResultController(CountyResultService countyResultService) {
         this.countyResultService = countyResultService;
     }
 
     @GetMapping
     public List<CountyResult> getAll() {
-        return countyResultRepository.findAll();
+        return countyResultService.getAllCountyResults();
     }
 
     @GetMapping(path = "single-mandate")

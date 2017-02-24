@@ -6,14 +6,13 @@ import org.springframework.transaction.annotation.Transactional;
 import voting.dto.CountyRepresentation;
 import voting.dto.results.CountyResultDataModel;
 import voting.dto.results.CountyResultRepresentation;
-import voting.utils.RepresentationFactory;
 import voting.model.County;
 import voting.model.results.CountyResult;
 import voting.model.results.UnitVotes;
 import voting.repository.CountyRepository;
 import voting.repository.results.CountyResultRepository;
+import voting.utils.RepresentationFactory;
 
-import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,17 +26,18 @@ public class CountyResultService {
     private CountyResultRepository countyResultRepository;
     private CountyRepository countyRepository;
     private UnitVotesService unitVotesService;
-    private EntityManager em;
 
     @Autowired
     public CountyResultService(CountyResultRepository countyResultRepository,
                                CountyRepository countyRepository,
-                               UnitVotesService unitVotesService,
-                               EntityManager em) {
+                               UnitVotesService unitVotesService) {
         this.countyResultRepository = countyResultRepository;
         this.countyRepository = countyRepository;
         this.unitVotesService = unitVotesService;
-        this.em = em;
+    }
+
+    public List<CountyResult> getAllCountyResults() {
+        return countyResultRepository.findAll();
     }
 
     public List<CountyResult> getAllForSingleMandate() {

@@ -3,6 +3,7 @@ package voting.service;
 import com.opencsv.exceptions.CsvException;
 import org.springframework.web.multipart.MultipartFile;
 import voting.dto.DistrictData;
+import voting.model.County;
 import voting.model.District;
 
 import java.io.IOException;
@@ -30,5 +31,7 @@ public interface DistrictService {
     boolean exists(Long id);
 
     boolean exists(String name);
+
+    County getCounty(Long id);
 
 }

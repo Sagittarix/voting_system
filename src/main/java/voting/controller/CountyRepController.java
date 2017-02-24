@@ -38,18 +38,8 @@ public class CountyRepController {
 
     @GetMapping("/{id}")
     public CountyRepresentativeRepresentation getCountyRep(@PathVariable Long id) {
-        return countyRepService.getCountyRep(id);
+        return new CountyRepresentativeRepresentation(countyRepService.getCountyRep(id));
     }
-
-    /*@PostMapping
-    public CountyRep addNewCountyRep(@Valid @RequestBody CountyRep countyRep, BindingResult result) {
-        if (result.hasErrors()) {
-            throw new MultiErrorException("Klaida registruojant apygardos atstovą " + countyRep.getFirstName() + " "
-                    + countyRep.getLastName(), result.getAllErrors());
-        }
-        return countyRepService.addNewCountyRep(countyRep);
-    }*/
-
 
     @PostMapping
     public CountyRep addNewCountyRep(@Valid @RequestBody CountyRepresentativeData countyRepData, BindingResult result) {

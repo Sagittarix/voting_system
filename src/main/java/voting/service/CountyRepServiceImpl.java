@@ -52,7 +52,7 @@ public class CountyRepServiceImpl implements CountyRepService {
     }
 
     @Override
-    public CountyRepresentativeRepresentation getCountyRep(Long id) {
-        return new CountyRepresentativeRepresentation(countyRepRepository.findOne(id));
+    public CountyRep getCountyRep(Long id) {
+        return countyRepRepository.findOne(id);
     }
 }

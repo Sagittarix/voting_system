@@ -11,6 +11,7 @@ import voting.exception.NotFoundException;
 import voting.model.Candidate;
 import voting.model.County;
 import voting.model.District;
+import voting.repository.CountyRepository;
 import voting.repository.DistrictRepository;
 
 import java.io.IOException;
@@ -25,16 +26,20 @@ import java.util.stream.Stream;
 public class DistrictServiceImpl implements DistrictService {
 
     private DistrictRepository districtRepository;
+    private CountyRepository countyRepository;
     private CandidateService candidateService;
     private StorageService storageService;
     private ParsingService parsingService;
 
+
     @Autowired
     public DistrictServiceImpl(DistrictRepository districtRepository,
+                               CountyRepository countyRepository,
                                CandidateService candidateService,
                                StorageService storageService,
                                ParsingService parsingService) {
         this.districtRepository = districtRepository;
+        this.countyRepository = countyRepository;
         this.candidateService = candidateService;
         this.storageService = storageService;
         this.parsingService = parsingService;
@@ -146,6 +151,15 @@ public class DistrictServiceImpl implements DistrictService {
     @Override
     public boolean exists(String name) {
         return districtRepository.existsByName(name);
+    }
+
+    @Override
+    public County getCounty(Long id) {
+        County county = countyRepository.findOne(id);
+        if (county == null) {
+            throw new NotFoundException("Nepavyko rasti apskrities su id " + id);
+        }
+        return county;
     }
 
 

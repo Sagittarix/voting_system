@@ -31,10 +31,11 @@ public class Candidate {
 
     public Candidate() { }
 
-    public Candidate(String firstName, String lastName, String personId) {
+    public Candidate(String firstName, String lastName, String personId, String description) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.personId = personId;
+        this.description = description;
     }
 
     public Long getId() {

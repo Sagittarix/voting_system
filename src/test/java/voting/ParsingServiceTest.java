@@ -2,6 +2,7 @@ package voting;
 
 import com.opencsv.exceptions.CsvException;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -30,8 +31,8 @@ import static org.hamcrest.core.Is.is;
 public class ParsingServiceTest {
 
 
-    private String singleMandateHeader = "Vardas,Pavardė,Asmens_kodas,Partija";
-    private String multiMandateHeader = "Numeris,Vardas,Pavardė,Asmens_kodas";
+    private String singleMandateHeader = "Vardas,Pavardė,Asmens_kodas,Partija,Aprasymas";
+    private String multiMandateHeader = "Numeris,Vardas,Pavardė,Asmens_kodas,Aprasymas";
 
     ParsingService sut = new ParsingServiceImpl();
 
@@ -39,15 +40,15 @@ public class ParsingServiceTest {
     List<String> lines = new ArrayList<String>();
 
     private String[] singleMandateSampleData = {
-            "Vardas1,Pavarde1,33300033301,Partija 1",
-            "Vardas2,Pavarde2,33300033302,Partija 2",
-            "Vardas3,Pavarde3,33300033303,Partija 3"
+            "Vardas1,Pavardė,33300033301,Partija 1,labai ilgas aprasymas",
+            "Vardas2,Pavardė,33300033302,Partija 2,labai ilgas aprasymas",
+            "Vardas3,Pavarde3,33300033303,Partija 3,labai ilgas aprasymas"
     };
 
     private String[] multiMandateSampleData = {
-            "1,Pirmas,Pavarde1,33300033301",
-            "2,Antras,Pavarde2,33300033302",
-            "3,Trecias,Pavarde3,33300033303"
+            "1,Pirmas,Pavardė,33300033301,labai ilgas aprasymas",
+            "2,Antras,Pavardė,33300033302,labai ilgas aprasymas",
+            "3,Trecias,Pavarde3,33300033303,labai ilgas aprasymas"
     };
 
     @Rule
@@ -94,8 +95,8 @@ public class ParsingServiceTest {
         thrown.expect(CsvException.class);
         thrown.expectMessage("Duomenų klaida eilutėje - 3");
 
-        String goodLine = "Vardas1,Pavarde1,33300033301,Partija 1";
-        String badLine = "33300033302,Partija 1";
+        String goodLine = "Vardas,Pavardė,33300033301,Partija,labai ilgas aprasymas";
+        String badLine = "33300033302,Partija";
         lines.add(singleMandateHeader);
         lines.add(goodLine);
         lines.add(badLine);
@@ -111,8 +112,8 @@ public class ParsingServiceTest {
         thrown.expect(CsvException.class);
         thrown.expectMessage("Duomenų klaida eilutėje - 3");
 
-        String goodLine = "1,Pirmas,Pavarde1,33300033301";
-        String badLine = "x,Antras,Pavarde2,33300033302";
+        String goodLine = "1,Pirmas,Pavardė,33300033301,labai ilgas aprasymas";
+        String badLine = "x,Antras,Pavardė,33300033302,labai ilgas aprasymas";
         lines.add(multiMandateHeader);
         lines.add(goodLine);
         lines.add(badLine);
@@ -125,12 +126,12 @@ public class ParsingServiceTest {
     @Test
     public void parsingWorksCorrectlyWithDoubleQuotedValues() throws Exception {
         //Setup
-        String line1 = "\"Pirmas\",\"Pavarde1\",33300033301,Partija 1";
+        String line1 = "\"Pirmas\",\"Pavardė\",33300033301,Partija 1,labai ilgas aprasymas";
         lines.add(singleMandateHeader);
         lines.add(line1);
         File file = createNewFile("file", lines);
 
-        CandidateData candidateData1 = createCandidateData("Pirmas", "Pavarde1", "33300033301", "Partija 1");
+        CandidateData candidateData1 = createCandidateData("Pirmas", "Pavardė", "33300033301", "Partija 1", "labai ilgas aprasymas");
 
         //Exercise
         List<CandidateData> candidateList = sut.parseSingleMandateCandidateList(file);
@@ -138,16 +139,17 @@ public class ParsingServiceTest {
         //Verify
         assertThat(candidateData1, is(candidateList.get(0)));
     }
+
 
     @Test
     public void parsingShouldTreatSingleQuotesAsNormalSymbols() throws Exception {
         //Setup
-        String line1 = "Pirmas,O'Brien,33300033301,Monty Python's Flying Circus";
+        String line1 = "Pirmas,Pavardė,33300033301,Partija,Monty Python's Flying Circus";
         lines.add(singleMandateHeader);
         lines.add(line1);
         File file = createNewFile("file", lines);
 
-        CandidateData candidateData1 = createCandidateData("Pirmas", "O'Brien", "33300033301", "Monty Python's Flying Circus");
+        CandidateData candidateData1 = createCandidateData("Pirmas", "Pavardė", "33300033301", "Partija", "Monty Python's Flying Circus");
 
         //Exercise
         List<CandidateData> candidateList = sut.parseSingleMandateCandidateList(file);
@@ -156,15 +158,16 @@ public class ParsingServiceTest {
         assertThat(candidateData1, is(candidateList.get(0)));
     }
 
+//    @Ignore
     @Test
     public void parsingWorksCorrectlyWithSeparatorSymbolInQuotedValue() throws Exception {
         //Setup
-        String line1 = "Pirmas,Pavarde1,33300033301,\"Partija, 1\"";
+        String line1 = "Pirmas,Pavardė,33300033301,Partija,\"labai, ilgas, aprasymas\"";
         lines.add(singleMandateHeader);
         lines.add(line1);
         File file = createNewFile("file", lines);
 
-        CandidateData candidateData1 = createCandidateData("Pirmas", "Pavarde1", "33300033301", "Partija, 1");
+        CandidateData candidateData1 = createCandidateData("Pirmas", "Pavardė", "33300033301", "Partija", "labai, ilgas, aprasymas");
 
         //Exercise
         List<CandidateData> candidateList = sut.parseSingleMandateCandidateList(file);
@@ -176,15 +179,15 @@ public class ParsingServiceTest {
     @Test
     public void parsingSingleMandateListWorksCorrectly() throws Exception {
         //Setup
-        String line1 = "Pirmas,Pavarde1,33300033301,Partija 1";
-        String line2 = "Antras,Pavarde2,33300033302,Partija 2";
+        String line1 = "Pirmas,Pavardė,33300033301,Partija 1,labai ilgas aprasymas";
+        String line2 = "Antras,Pavardė,33300033302,Partija 2,labai ilgas aprasymas";
         lines.add(singleMandateHeader);
         lines.add(line1);
         lines.add(line2);
         File file = createNewFile("file", lines);
 
-        CandidateData candidateData1 = createCandidateData("Pirmas", "Pavarde1", "33300033301", "Partija 1");
-        CandidateData candidateData2 = createCandidateData("Antras", "Pavarde2", "33300033302", "Partija 2");
+        CandidateData candidateData1 = createCandidateData("Pirmas", "Pavardė", "33300033301", "Partija 1", "labai ilgas aprasymas");
+        CandidateData candidateData2 = createCandidateData("Antras", "Pavardė", "33300033302", "Partija 2", "labai ilgas aprasymas");
 
         //Exercise
         List<CandidateData> candidateList = sut.parseSingleMandateCandidateList(file);
@@ -201,15 +204,15 @@ public class ParsingServiceTest {
     @Test
     public void parsingMultiMandateListWorksCorrectly() throws Exception {
         //Setup
-        String line1 = "1,Pirmas,Pavarde1,33300033301";
-        String line2 = "2,Antras,Pavarde2,33300033302";
+        String line1 = "1,Pirmas,Pavarde,33300033301,labai ilgas aprasymas";
+        String line2 = "2,Antras,Pavarde,33300033302,labai ilgas aprasymas";
         lines.add(multiMandateHeader);
         lines.add(line1);
         lines.add(line2);
         File file = createNewFile("file", lines);
 
-        CandidateData candidateData1 = createCandidateData(1L, "Pirmas", "Pavarde1", "33300033301");
-        CandidateData candidateData2 = createCandidateData(2L, "Antras", "Pavarde2", "33300033302");
+        CandidateData candidateData1 = createCandidateData(1L, "Pirmas", "Pavarde", "33300033301", "labai ilgas aprasymas");
+        CandidateData candidateData2 = createCandidateData(2L, "Antras", "Pavarde", "33300033302", "labai ilgas aprasymas");
 
         //Exercise
         List<CandidateData> candidateList = sut.parseMultiMandateCandidateList(file);
@@ -228,8 +231,8 @@ public class ParsingServiceTest {
         thrown.expectMessage("Duomenų klaida eilutėje - 2");
 //        thrown.expectMessage("incontinuous position in party list");
 
-        String line1 = "2,Pirmas,Pavarde1,33300033301";
-        String line2 = "1,Antras,Pavarde2,33300033302";
+        String line1 = "2,Pirmas,Pavardė,33300033301,labai ilgas aprasymas";
+        String line2 = "1,Antras,Pavardė,33300033302,labai ilgas aprasymas";
         lines.add(multiMandateHeader);
         lines.add(line1);
         lines.add(line2);
@@ -246,8 +249,8 @@ public class ParsingServiceTest {
         thrown.expectMessage("Duomenų klaida eilutėje - 3");
 //        thrown.expectMessage("incontinuous position in party list");
 
-        String line1 = "1,Pirmas,Pavarde1,33300033301";
-        String line2 = "1,Antras,Pavarde2,33300033302";
+        String line1 = "1,Pirmas,Pavardė,33300033301,labai ilgas aprasymas";
+        String line2 = "1,Antras,Pavardė,33300033302,labai ilgas aprasymas";
         lines.add(multiMandateHeader);
         lines.add(line1);
         lines.add(line2);
@@ -262,9 +265,8 @@ public class ParsingServiceTest {
         //Setup
         thrown.expect(MultiErrorException.class);
         thrown.expectMessage("Duomenų klaida eilutėje - 2");
-//        thrown.expectMessage("2 constraint(s) violated");
 
-        String line1 = "1,,Pavarde1,333"; // null lastName, invalid pid
+        String line1 = "1,,Pavardė,333,labai ilgas aprasymas"; // null lastName, invalid pid
         lines.add(multiMandateHeader);
         lines.add(line1);
         File file = createNewFile("file", lines);
@@ -284,21 +286,23 @@ public class ParsingServiceTest {
         return file;
     }
 
-    private CandidateData createCandidateData(Long position, String firstName, String lastName, String personId) {
+    private CandidateData createCandidateData(Long position, String firstName, String lastName, String personId, String description) {
         CandidateData cd = new CandidateData();
         cd.setPositionInPartyList(position);
         cd.setFirstName(firstName);
         cd.setLastName(lastName);
         cd.setPersonId(personId);
+        cd.setDescription(description);
         return cd;
     }
 
-    private CandidateData createCandidateData(String firstName, String lastName, String personId, String partyName) {
+    private CandidateData createCandidateData(String firstName, String lastName, String personId, String partyName, String description) {
         CandidateData cd = new CandidateData();
         cd.setFirstName(firstName);
         cd.setLastName(lastName);
         cd.setPersonId(personId);
         cd.setPartyName(partyName);
+        cd.setDescription(description);
         return cd;
     }
 

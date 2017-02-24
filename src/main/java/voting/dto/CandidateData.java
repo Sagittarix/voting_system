@@ -29,7 +29,7 @@ public class CandidateData {
     private String lastName;
 
     @NotNull(message = "Aprašymas būtina")
-    @Length(min = 20, max = 250, message = "Aprašymas nuo 20 iki 40 simbolių")
+    @Length(min = 20, max = 250, message = "Aprašymas nuo 20 iki 250 simbolių")
     private String description;
 
     @NotNull(message = "Nepavyko nustatyti gimimo datos")
@@ -144,7 +144,6 @@ public class CandidateData {
                 Objects.equals(districtName, that.districtName) &&
                 Objects.equals(partyId, that.partyId) &&
                 Objects.equals(partyName, that.partyName) &&
-                Objects.equals(birthDate, that.birthDate) &&
                 Objects.equals(positionInPartyList, that.positionInPartyList);
     }
 
@@ -160,6 +159,7 @@ public class CandidateData {
                 ", personId='" + personId + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
+                ", description='" + description + '\'' +
                 ", districtId=" + districtId +
                 ", districtName='" + districtName + '\'' +
                 ", partyId=" + partyId +

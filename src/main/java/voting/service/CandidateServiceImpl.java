@@ -89,25 +89,41 @@ public class CandidateServiceImpl implements CandidateService{
      */
     @Override
     public void checkCandidateIntegrity(CandidateData newCandidateData, Candidate existingCandidate) {
-        if (!existingCandidate.getFirstName().equals(newCandidateData.getFirstName())
-                || !existingCandidate.getLastName().equals(newCandidateData.getLastName())) {
-            throw (new IllegalArgumentException(
+        if (hasNameConflict(newCandidateData, existingCandidate)) {
+            throw new IllegalArgumentException(
                     String.format("Kandidatas (a.k. %s) jau įrašytas kaip %s %s",
-                            existingCandidate.getPersonId(), existingCandidate.getFirstName(), existingCandidate.getFirstName())
-            ));
+                            existingCandidate.getPersonId(), existingCandidate.getFirstName(), existingCandidate.getLastName())
+            );
         }
-        if (existingCandidate.getDistrict() != null && newCandidateData.getDistrictName() != null) {
-            throw (new IllegalArgumentException(
+        if (hasDistrictConflict(newCandidateData, existingCandidate)) {
+            throw new IllegalArgumentException(
                     String.format("Kandidatas %s jau priskirtas kitai apygardai - %s",
-                            existingCandidate, existingCandidate.getDistrict()
-                    )));
+                            existingCandidate, existingCandidate.getDistrict())
+            );
         }
-        if (existingCandidate.getParty() != null && existingCandidate.getParty().getName() != newCandidateData.getPartyName()) {
-            throw (new IllegalArgumentException(
+        if (hasPartyConflict(newCandidateData, existingCandidate)) {
+            throw new IllegalArgumentException(
                     String.format("Kandidatas %s jau priskirtas kitai partijai - %s",
                             existingCandidate, existingCandidate.getParty())
-            ));
+            );
         }
+    }
+
+    private boolean hasNameConflict(CandidateData newCandidateData, Candidate existingCandidate) {
+        return !existingCandidate.getFirstName().equals(newCandidateData.getFirstName())
+                || !existingCandidate.getLastName().equals(newCandidateData.getLastName());
+    }
+
+    private boolean hasDistrictConflict(CandidateData newCandidateData, Candidate existingCandidate) {
+        return existingCandidate.getDistrict() != null
+                && newCandidateData.getDistrictName() != null
+                && !newCandidateData.getDistrictName().equalsIgnoreCase(existingCandidate.getDistrict().getName());
+    }
+
+    private boolean hasPartyConflict(CandidateData newCandidateData, Candidate existingCandidate) {
+        return existingCandidate.getParty() != null
+                && newCandidateData.getPartyName() != null
+                && !newCandidateData.getPartyName().equalsIgnoreCase(existingCandidate.getParty().getName());
     }
 
 }

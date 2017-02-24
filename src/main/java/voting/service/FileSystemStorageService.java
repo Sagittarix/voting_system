@@ -69,7 +69,10 @@ public class FileSystemStorageService implements StorageService {
             throw new StorageException("Tuščias failas!");
         }
         if (!file.getContentType().contains("text/csv")) {
-            throw new StorageException("Failas turi būti CSV formato");
+            // fix for file upload from windows OS. front-end also checks to see if file extension is csv
+            if(!file.getOriginalFilename().split("\\.")[1].equals("csv")){
+                throw new StorageException("Failas turi būti CSV formato");
+            }
         }
     }
 }

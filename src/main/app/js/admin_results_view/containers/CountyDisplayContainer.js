@@ -6,24 +6,35 @@ var MM_PartyDisplayWithResultsComponent = require('../../counties_results/multim
 
 var CountyDisplayContainer = React.createClass({
     getInitialState: function() {
-        return ({ showResults: false,
-                  smDisplay: undefined,
-                  parties: [],
-                  county: this.props.county,
-                  resultsConfirmed: false });
+        return ({
+            showResults: false,
+            smDisplay: undefined,
+            parties: this.props.parties,
+            county: this.props.county,
+            smResultsConfirmed: false,
+            mmResultsConfirmed: false
+        });
     },
     componentWillReceiveProps: function(newProps) {
-        if (newProps.county != this.state.county) this.setState({ county: newProps.county });
+        if (newProps.county != this.state.county &&
+            newProps.parties != this.state.parties)
+            this.setState({ county: newProps.county, parties: newProps.parties });
+
+        if (newProps.county != this.state.county)
+            this.setState({ county: newProps.county });
+
+        if (newProps.parties != this.state.parties)
+            this.setState({ parties: newProps.parties });
     },
     componentDidMount: function() {
-        var _this = this;
-        axios.get('http://localhost:8080/api/party')
-            .then(function(resp) {
-                _this.setState({ parties: resp.data });
-            })
-            .catch(function(err) {
-                console.log(err);
-            });
+        var county = this.state.county;
+        var smResult = this.getResults(county, true);
+        var mmResult = this.getResults(county, false);
+
+        this.setState({
+            smResultsConfirmed: (smResult != undefined) ? smResult.confirmed : false,
+            mmResultsConfirmed: (mmResult != undefined) ? mmResult.confirmed : false
+        });
     },
     toggleShowResults: function() {
         this.setState({ showResults: !this.state.showResults });
@@ -43,17 +54,16 @@ var CountyDisplayContainer = React.createClass({
     },
     prepareSMresults: function() {
       var results = this.getResults(this.state.county, true);
-      if (results == undefined) {
-          return results;
-      }
       var preparedResults = [];
 
+      if (results == undefined) return results;
+
       preparedResults.push(
-          <div className="list-group-item" key={results.candidateVotesList.length}>
+          <div className="list-group-item" key={results.unitVotesList.length}>
               <p>Sugadinti biuleteniai: {results.spoiledBallots}</p>
           </div>
       );
-      results.candidateVotesList.forEach((cv, idx) => {
+      results.unitVotesList.forEach((cv, idx) => {
           var partyName = (cv.candidate.partyName) ? cv.candidate.partyName : "Išsikėlęs pats";
           preparedResults.push(
               <AdminViewCandidateComponent
@@ -70,71 +80,99 @@ var CountyDisplayContainer = React.createClass({
     prepareMMresults: function() {
         var results = this.getResults(this.state.county, false);
         var preparedResults = [];
-        var parties = this.state.parties;
 
         if (results == undefined) return results;
 
-        parties.forEach((p, idx) => {
+        preparedResults.push(
+            <div className="list-group-item" key={results.unitVotesList.length}>
+                <p>Sugadinti biuleteniai: {results.spoiledBallots}</p>
+            </div>
+        );
+        results.unitVotesList.forEach((uv, idx) => {
             preparedResults.push(
                 <MM_PartyDisplayWithResultsComponent
                     key={idx}
-                    party={p}
-                    results={results}
+                    party={uv.party}
+                    pVotes={uv}
                 />
             );
         });
-
-        return (
-            <div>
-                <div className="list-group-item" key={results.candidateVotesList.length}>
-                    <p>Sugadinti biuleteniai: {results.spoiledBallots}</p>
-                </div>
-                <div className="list-group-item">
-                    {preparedResults}
-                </div>
-            </div>
-        );
+        return preparedResults;
     },
     determineResults: function() {
-        var results = undefined;
-        if (this.state.smDisplay == undefined) {
-            return results;
-        } else if (this.state.smDisplay) {
-            results = this.prepareSMresults();
-        } else {
-            results = this.prepareMMresults();
-        }
-        return results;
+        if (this.state.smDisplay == undefined) return undefined;
+        return (this.state.smDisplay) ? this.prepareSMresults() : this.prepareMMresults();
     },
     determineConfirmButton: function() {
-        var confirmBtn;
-        if (this.state.resultsConfirmed) {
+        var confirmBtn = (
+            <button className="btn btn-default btn-sm floaters-right">
+                Patvirtinta &nbsp;
+                <span className="glyphicon glyphicon-ok-sign"></span>
+            </button>
+        );
+        var smDisplay = this.state.smDisplay;
+
+        if (smDisplay === undefined) return confirmBtn;
+
+        if (smDisplay && !this.state.smResultsConfirmed) {
             confirmBtn = (
-                <button className="btn btn-default btn-sm floaters-right">
-                    Patvirtinta &nbsp;
-                    <span className="glyphicon glyphicon-ok-sign"></span>
+                <button className="btn btn-default btn-sm floaters-right" onClick={this.confirmResults.bind(this, true)}>
+                    Patvirtinti rezultatus &nbsp;
+                    <span className="glyphicon glyphicon-exclamation-sign"></span>
                 </button>
             );
-        } else {
+        } else if (!smDisplay && !this.state.mmResultsConfirmed) {
             confirmBtn = (
-                <button className="btn btn-default btn-sm floaters-right">
+                <button className="btn btn-default btn-sm floaters-right" onClick={this.confirmResults.bind(this, false)}>
                     Patvirtinti rezultatus &nbsp;
                     <span className="glyphicon glyphicon-exclamation-sign"></span>
                 </button>
             );
         }
+
         return confirmBtn;
     },
-    handleResultsDelete: function() {
+    confirmResults: function(singleMandate) {
         var _this = this;
-        var delUrl = "http://localhost:8080/api/county-results/county/" + this.state.county.id + "";
-        axios.delete(delUrl)
+        var params = new URLSearchParams();
+        params.append('countyId', this.state.county.id);
+        params.append('isSingleMandate', singleMandate);
+
+        axios.post('http://localhost:8080/api/county-results/confirm', params)
             .then(function(resp) {
-                _this.setState({ smDisplay: undefined, resultsConfirmed: false, county: resp.data });
+                var stateVar = (singleMandate) ? 'smResultsConfirmed' : 'mmResultsConfirmed';
+                _this.setState({ county: resp.data, [stateVar]: true });
             })
             .catch(function(err) {
                 console.log(err);
             });
+    },
+    handleResultsDelete: function(singleMandate) {
+        var _this = this;
+
+        axios({
+            method: 'delete',
+            url: 'http://localhost:8080/api/county-results/county/',
+            params: {
+              countyId: this.state.county.id,
+              isSingleMandate: singleMandate
+            }
+        })
+        .then(function(resp) {
+            var updatedState = (singleMandate) ? 'smResultsConfirmed' : 'mmResultsConfirmed';
+            _this.setState({ smDisplay: undefined, [updatedState]: false, county: resp.data });
+        })
+        .catch(function(err) {
+            console.log("ERROR");
+        })
+    },
+    determineAllConfirmedButton: function() {
+        var btn = (
+            <span className="btn-sm confirmed-floaters">
+                Patvirtinta &nbsp; <span className="glyphicon glyphicon-flag"></span>
+            </span>
+        );
+        return (this.state.smResultsConfirmed && this.state.mmResultsConfirmed) ? btn : undefined;
     },
     render: function() {
         return (
@@ -149,6 +187,7 @@ var CountyDisplayContainer = React.createClass({
                 smDisplay={this.state.smDisplay}
                 confirmBtn={this.determineConfirmButton()}
                 delete={this.handleResultsDelete}
+                allConfirmedBtn={this.determineAllConfirmedButton()}
             />
         );
     }

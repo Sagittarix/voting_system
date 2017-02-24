@@ -1,7 +1,23 @@
 var React = require('react');
+var styles = {
+		"image": {width: 20, height: 20}
+}
 
 var Helpers = {
-    createdOn: function(millis) {
+    dateTimeFormatWithMessage: function(millis, message) {
+        if (millis == null) {
+            return (
+                <div>
+                    <div className="list-group-item active" style={{'marginTop': 10}}>
+                        {message}
+                    </div>
+                    <div className="list-group-item">
+                        <span>Nėra duomenų</span>
+                    </div>
+                </div>
+            );
+        }
+
         var timeStamp = new Date(millis);
         var month = timeStamp.getMonth() + 1;
         var date = timeStamp.getDate();
@@ -18,9 +34,10 @@ var Helpers = {
         return (
             <div>
                 <div className="list-group-item active" style={{'marginTop': 10}}>
-                    Rezultatų suvedimas:
+                    {message}
                 </div>
                 <div className="list-group-item">
+                    <img src="app/imgs/time.png" style={ styles.image }/> &nbsp;
                     <span>{timeStamp.getFullYear()}</span>
                     <span>/{month}</span>
                     <span>/{date} </span> &nbsp;
@@ -43,6 +60,7 @@ var Helpers = {
 
         return (
             <span id="current-time">
+                <img src="app/imgs/alarm_clock.png" style={ styles.image }/> &nbsp;
                 <span>{hours}</span>
                 <span>:{mins}</span>
                 <span>:{secs}</span>

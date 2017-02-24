@@ -77,11 +77,11 @@ var SM_CountyResultsContainer = React.createClass({
     prepareCandidatesWithResults: function() {
         var preparedCandidates = [];
         var candidates = this.state.candidates;
-        var candidateVotesList = this.state.SMresults.candidateVotesList;
+        var candidatesVotesList = this.state.SMresults.unitVotesList;
         var cVotes = {};
 
         candidates.forEach((c, idx) => {
-            candidateVotesList.forEach(cv => {
+            candidatesVotesList.forEach(cv => {
                 if (cv.candidate.id === c.id) cVotes = cv;
             });
             preparedCandidates.push(
@@ -117,6 +117,7 @@ var SM_CountyResultsContainer = React.createClass({
                     Prisijungęs kaip
                 </div>
                 <div className="list-group-item">
+                    <img src="app/imgs/representative.png" style={{ width: 20, height: 20 }}/> &nbsp;
                     <span>{this.state.representative.firstName}</span> &nbsp;
                     <span>{this.state.representative.lastName}</span>
                 </div>
@@ -132,44 +133,52 @@ var SM_CountyResultsContainer = React.createClass({
         this.setState({ dictionary: actualDict });
     },
     handleSubmitSMresults: function() {
-        //e.preventDefault();
         var _this = this;
         var map = this.state.dictionary;
         var candidatesVotes = [];
         for (var pair of map) {
-            candidatesVotes.push({ "candidateId": pair[0], "votes": pair[1] });
+            candidatesVotes.push({ "unitId": pair[0], "votes": pair[1] });
         }
         var body = {
             "spoiledBallots": this.state.spoiled,
             "countyId": this.state.activeCountyId,
             "singleMandateSystem": true,
-            "candidatesVotes": candidatesVotes
+            "unitVotes": candidatesVotes
         }
-        axios.post('http://localhost:8080/api/county-results/', body)
-            .then(function(resp) {
-                _this.setState({ springErrors: [],
-                                 dictionary: new Map(),
-                                 spoiled: undefined,
-                                 SMresults: resp.data });
-            })
-            .catch(function(err) {
-                console.log(err);
-                _this.setState({ springErrors: err.response.data.errorsMessages });
-            });
+        axios.post('http://localhost:8080/api/county-results/',
+                    body,
+                    { headers: { 'Content-Type': 'application/json' } }
+              )
+              .then(function(resp) {
+                  _this.setState({ springErrors: [],
+                                   dictionary: new Map(),
+                                   spoiled: undefined,
+                                   SMresults: resp.data });
+              })
+              .catch(function(err) {
+                  console.log(err);
+                  _this.setState({ springErrors: err.response.data.errorsMessages });
+              });
     },
     prepareSpringErrors: function() {
         var style={"marginTop": 10}
-        return Validations.prepareErrors(this.state.springErrors, style);
+        return Validations.prepareSpringErrors(this.state.springErrors, style);
     },
     render: function() {
-        console.log(Object.keys(this.state.SMresults));
         var formOrResults;
         if (Object.keys(this.state.SMresults).length > 0) {
             formOrResults = <SM_CountyResultsDisplayComponent
                                 representative={this.prepareRepresentative()}
                                 spoiled={this.state.SMresults.spoiledBallots}
                                 candidates={this.prepareCandidatesWithResults()}
-                                dateTime={Helpers.createdOn(this.state.SMresults.createdOn)}
+                                createdOn={Helpers.dateTimeFormatWithMessage(
+                                              this.state.SMresults.createdOn,
+                                              "Rezultatai pateikti"
+                                          )}
+                                confirmedOn={Helpers.dateTimeFormatWithMessage(
+                                              this.state.SMresults.confirmedOn,
+                                              "Rezultatai patvirtinti"
+                                          )}
                             />
         } else {
             formOrResults = <SM_CountyResultsComponent

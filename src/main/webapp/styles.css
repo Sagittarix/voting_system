@@ -24,9 +24,18 @@ body {
 
 #bootstrap-overrides-nav-tabs .tab a {
     font-weight: bold;
-    font-size: 1.5em;
-    display: table-cell;
+    font-size: 1.4em;
+    display: block;
     vertical-align: middle;
+}
+
+#bootstrap-overrides-nav-tabs .tab.centered {
+    width: 33.33%;
+    height: 100%;
+    text-align: center;
+    display: table;
+    padding: 15px;
+    background-color: #CDEBF7;
 }
 
 .main-layout {
@@ -75,22 +84,52 @@ adminPanelButton:hover{
 
 .inline-add-county-form {
     display: table;
+    margin-bottom: 7px;
+    width: 100%;
+    vertical-align: middle;
 }
 
 .inline-add-county-form .form-group {
     display: table-cell;
-    width: 30%;
+    width: 23%;
+    min-height: 35px;
     float: left;
+    margin: 0 3px;
     margin-bottom: 0;
 }
 
 .inline-add-county-form .form-group:last-child {
-    display: table-cell;
+    position: relative;
+    width: 27%;
 }
 
-.inline-add-county-form .form-group:last-child button.btn.btn-sm {
+.form-group.errors-area {
+    padding-top: 10px;
+}
+
+.form-group.county-aside {
+    margin-bottom: 5px;
+    margin-left: 15px;
+}
+
+.aside-county-form .form-control {
+    font-size: 1.2em;
+    height: auto;
+    padding: 2px 5px;
+    width: 80%;
+}
+
+#inline-create-btn, #inline-cancel-btn {
     display: table-cell;
-    margin-left: 10px
+    height: 80%;
+    width: 40%;
+    position: absolute;
+    top: 10%;
+    left: 15%;
+}
+
+#inline-cancel-btn {
+    left: 60%;
 }
 
 .unit {
@@ -111,12 +150,22 @@ adminPanelButton:hover{
     float: right;
 }
 
+.aside-county-form {
+    font-size: 0.9em;
+}
+
 .county-form-actions {
     padding-bottom: 15px;
+    padding-top: 7px;
+    margin-left: 15px;
 }
 
 .county-add-button {
     float: left;
+}
+
+.popoverCounty {
+    padding: 0 15px;
 }
 
 .county-cancel-button {
@@ -132,13 +181,20 @@ form div.form-group.browse-button-area, form div.form-group.upload-button-area {
     width: auto;
 }
 
-div.list-group-item.remove-units {
-    display: table;
-    width: 100%;
+/* representatives */
+
+.col-md-1 {
+    position: relative;
+    height: 100%;
 }
 
-.remove-units-element {
-    display: table-cell;
+.remove-representative {
+    position: absolute;
+    cursor: pointer;
+    width: 50%;
+    height: 50%;
+    left: 25%;
+    top: -25%;
 }
 
 #unit-header {
@@ -156,24 +212,59 @@ div.list-group-item.remove-units {
   float: left;
 }
 
+/* candidate-card */
+
+.candidate-card {
+    height: auto;
+    margin-bottom: 0;
+    display: inline-block;
+    width: 50%;
+    box-sizing: border-box;
+}
+
+.row.candidate-card-low {
+    width: 100%;
+    height: auto;
+    box-sizing: border-box;
+}
+
 /* validations */
 
 #inline-form-errors {
-    disdplay: block;
-    width: 40%;
+    display: block;
+    max-width: 50%;
+    margin-top: 10px;
 }
 
-.alert.alert-danger.boostrap-custom {
-    margin-bottom: 5px;
-    padding: 5px;
-    text-align: center;
+.alert.alert-danger.root-error, .alert.alert-danger.error {
+    padding: 3px;
+    padding-left: 15px;
+    text-align: left;
+    margin: 0;
+    border: none;
+    border-radius: 0;
+}
+
+.alert.alert-danger.root-error {
+    border-radius: 4px;
+}
+
+.alert.alert-danger.root-error .root-message {
     font-weight: bold;
+}
+
+/* confirmations */
+
+.confirmation-buttons {
+    cursor: pointer;
+    margin-top: 10px;
 }
 
 /* COUNTY RESULTS */
 
 .county-results {
     margin-bottom: 0;
+    margin-left: 30px;
 }
 
 .county-results .form-control.county-results-input {
@@ -181,11 +272,37 @@ div.list-group-item.remove-units {
     width: auto;
     height: auto;
     margin-left: 10px;
+    padding: inherit 0;
+}
+
+.candidate-votes-input {
+    text-align: right;
+    position: relative;
+    height: 150%;
+}
+
+.candidate-votes-input .form-control.county-results-input {
+    text-align: right;
+    position: absolute;
+    height: 100%;
+    top: -15%;
+    right: 8%;
 }
 
 .btn.btn-default.btn-sm.floaters-right {
     float: right;
     margin-right: 15px;
+}
+
+.btn-sm.confirmed-floaters {
+    float: right;
+    margin-right: 15px;
+    display: table-cell;
+    padding: 0;
+}
+
+.county-results-form-btns {
+    width: 50%;
 }
 
 /* current-time */
@@ -426,3 +543,8 @@ div.list-group-item.remove-units {
         background-color: #005577;
     }
 } /* END Media Query */
+
+.popover-content {
+    color: #5875DB;
+    font-weight: bold;
+}

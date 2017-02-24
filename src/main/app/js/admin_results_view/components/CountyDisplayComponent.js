@@ -1,24 +1,25 @@
 var React = require('react');
 
 function CountyDisplayComponent(props) {
+    var del = function() { props.delete(props.smDisplay) }
     var display = (!props.show) ? {display: 'none'} : {};
-
     var smBtn = 'btn btn-default btn-sm';
     var mmBtn = 'btn btn-default btn-sm';
+    var deleteBtn = undefined;
+    var results = (props.smDisplay == undefined) ? "PASIRINKITE MANDATO TIPĄ" : "REZULTATŲ NĖRA";
+    var confirmBtn = undefined;
+
     if (props.smDisplay == undefined) {
-        // do nothing
+        // btns remain the same
     } else if (props.smDisplay) {
         smBtn += ' active';
     } else {
         mmBtn += ' active';
     }
 
-    var deleteBtn = undefined;
-    var results = (props.smDisplay == undefined) ? "PASIRINKITE MANDATO TIPĄ" : "REZULTATŲ NĖRA";
-    var confirmBtn = undefined;
     if (props.results != undefined) {
         deleteBtn = (
-            <button className="btn btn-default btn-sm floaters-right" onClick={props.delete}>
+            <button className="btn btn-default btn-sm floaters-right" onClick={del}>
                 Pašalinti <span className="glyphicon glyphicon-remove"></span>
             </button>
         );
@@ -31,6 +32,7 @@ function CountyDisplayComponent(props) {
             <div className="list-group-item active">
                 <div onClick={props.toggleShow} style={{ cursor: 'pointer' }}>
                     <strong>{props.county.name}</strong> (Apygarda: {props.county.districtName})
+                    {props.allConfirmedBtn}
                 </div>
             </div>
             <div style={ display }>

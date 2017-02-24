@@ -10,9 +10,9 @@ var DistrictDisplayContainer = React.createClass({
         return ({ showCounties: false,
                   showInlineForm: false,
                   countyName: "",
+                  countyAddress: "",
                   voterCount: undefined,
                   counties: [],
-                  hoverState: false,
                   springErrors: [] });
     },
     componentDidMount: function() {
@@ -22,49 +22,77 @@ var DistrictDisplayContainer = React.createClass({
         this.setState({ showCounties: !this.state.showCounties });
     },
     prepareCounties: function() {
+        var stateCounties = this.state.counties;
         var counties = [];
-        this.state.counties.forEach((c, index) => {
-            counties.push(<CountyDisplayComponent
-                key={index}
-                name={c.name}
-            />);
+
+        stateCounties.forEach((c, index) => {
+            counties.push(
+                <CountyDisplayComponent
+                    key={index}
+                    index={index}
+                    county={c}
+                    delete={this.handleCountyDelete}
+                />
+            );
         });
         counties.push(
-            <div className="list-group-item">
+            <div className="list-group-item" key={stateCounties.length}>
                 {this.toggleInlineForm()}
             </div>
         );
         return counties;
     },
-    addCountyToState: function(nCounty) {
-        var counties = this.state.counties;
-        counties.push(nCounty);
-        this.setState({ counties: counties });
-    },
     toggleShowInlineState: function() {
         this.setState({
             showInlineForm: !this.state.showInlineForm,
             countyName: "",
-            voterCount: undefined
+            voterCount: undefined,
+            countyAddress: ""
         });
     },
     handleCountyCreate() {
-        //e.preventDefault();
         var _this = this;
         var body = {
             name: this.state.countyName,
             voterCount: this.state.voterCount,
+            address: this.state.countyAddress,
             districtId: this.props.district.id
         };
         axios.post('http://localhost:8080/api/county/', body)
             .then(function(resp) {
-                _this.setState({ showInlineForm: false, countyName: "", voterCount: undefined, countyBackendErrors: [] });
-                _this.addCountyToState(resp.data);
-                _this.setState({ springErrors: [] })
+                var counties = _this.state.counties;
+                counties.push(resp.data);
+
+                _this.setState({
+                    showInlineForm: false,
+                    countyName: "",
+                    voterCount: undefined,
+                    countyAddress: "",
+                    countyBackendErrors: [],
+                    springErrors: [],
+                    counties: counties
+                });
             })
             .catch(function(err) {
                 _this.setState({ springErrors: err.response.data.errorsMessages })
             });
+    },
+    handleCountyDelete: function(index) {
+        var _this = this;
+        var counties = this.state.counties;
+
+        axios({
+            method: 'delete',
+            url: 'http://localhost:8080/api/county/',
+            params: { id: counties[index].id }
+        })
+        .then(function(resp) {
+            counties.splice(index, 1);
+            _this.setState({ counties: counties });
+        })
+        .catch(function(err) {
+            console.log(err);
+        })
     },
     handleCountyCancel: function() {
         this.setState({ showInlineForm: !this.state.showInlineForm });
@@ -75,12 +103,16 @@ var DistrictDisplayContainer = React.createClass({
     handleVoterCount: function(e) {
         this.setState({ voterCount: e.target.value })
     },
-    handleDistrictDestroy(idx) {
+    handleAddressChange: function(e) {
+        this.setState({ countyAddress: e.target.value })
+    },
+    handleDistrictDestroy() {
         var _this = this;
         var deletePath = "http://localhost:8080/api/district/" + this.props.district.id + "";
         axios.delete(deletePath)
             .then(function(resp) {
-                _this.props.delete(idx);
+                _this.setState({ showCounties: false });
+                _this.props.remove(_this.props.index);
             })
             .catch(function(err) {
                 console.log(err);
@@ -93,8 +125,10 @@ var DistrictDisplayContainer = React.createClass({
                       submit={this.handleCountyCreate}
                       changeName={this.handleNameChange}
                       changeVoterCount={this.handleVoterCount}
+                      changeAddress={this.handleAddressChange}
                       name={this.state.countyName}
                       count={this.state.voterCount}
+                      address={this.state.countyAddress}
                       springErrors={this.state.springErrors}
                    />
         } else {
@@ -103,9 +137,6 @@ var DistrictDisplayContainer = React.createClass({
             />
         }
     },
-    toggleHoverState: function() {
-        this.setState({ hoverState: !this.state.hoverState });
-    },
     render: function() {
         return <DistrictDisplayComponent
                     name={this.props.district.name}
@@ -113,10 +144,6 @@ var DistrictDisplayContainer = React.createClass({
                     toggleCountiesList={this.toggleCountiesList}
                     show={this.state.showCounties}
                     delete={this.handleDistrictDestroy}
-                    index={this.props.index}
-                    showActions={this.state.hoverState}
-                    onMouseOver={this.toggleHoverState}
-                    onMouseOut={this.toggleHoverState}
                />
     }
 });

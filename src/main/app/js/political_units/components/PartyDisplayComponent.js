@@ -1,27 +1,26 @@
 var React = require('react');
 var InlineCsvUploadForm = require('../../components/tiny_components/InlineCsvUploadForm');
-var ConfirmationWindow = require('../../components/tiny_components/ConfirmationWindow');
+var ConfirmAction = require('../../components/tiny_components/ConfirmAction');
 
 function PartyDisplayComponent(props) {
     var del = function() { props.delete(props.index, props.party.id) };
     var delCandidates = function() { props.deleteCandidates(props.party.id) };
 
-    var display; var actions;
-
+    var display, actions;
     if (!props.show) display = {display: 'none'};
     if (props.candidates.length > 0) {
-        actions =
-            <ConfirmationWindow
+      actions =
+            <ConfirmAction
                 title="Ar tikrai norite pašalinti apygardos kandidatų sąrašą?"
                 body="Duomenų atstatymas neįmanomas."
                 onConfirm={delCandidates}
             >
-                <p className="remove-units-element" style={{ cursor: 'pointer' }}>
+                <p className="remove-units-element confirmation-buttons">
                     <span className="glyphicon glyphicon-remove-sign">
-                    </span>
+                    </span> &nbsp;
                     šalinti narius
                 </p>
-            </ConfirmationWindow>
+            </ConfirmAction>
     } else {
       actions = <InlineCsvUploadForm
                     upload={props.upload}
@@ -31,17 +30,17 @@ function PartyDisplayComponent(props) {
     }
 
     var confirmDeleteParty =
-        <ConfirmationWindow
+        <ConfirmAction
             title="Ar tikrai norite pašalinti partiją?"
             body="Duomenų atstatymas neįmanomas."
             onConfirm={del}
         >
-            <p style={{ cursor: 'pointer', paddingTop: 10 }}>
+            <p className="confirmation-buttons">
                 <span className="glyphicon glyphicon-remove-sign">
-                </span>
+                </span> &nbsp;
                 šalinti partiją
             </p>
-        </ConfirmationWindow>
+        </ConfirmAction>
 
     return (
         <div className="unit">

@@ -4,7 +4,8 @@ var Link = ReactRouter.Link;
 
 var styles = {
 		"active": {backgroundColor: '#006B96', color:"white"},
-		"passive": {backgroundColor: '#CDEBF7', color:"#006B96"}
+		"passive": {backgroundColor: '#CDEBF7', color:"#006B96"},
+		"image": {width: 60, height: 60, marginBottom: 10}
 }
 
 var AdminPanelComponent = React.createClass({
@@ -71,7 +72,8 @@ var AdminPanelComponent = React.createClass({
 																className="adminPanelButton"
 																id="location1"
 																style={this.state.tagIds.location1}>
-																Teritoriniai vienetai
+																<img src="app/imgs/planet-earth.png" style={ styles.image }/>
+																<p>Teritoriniai vienetai</p>
 														</Link>
 												</li>
 												<li className="tab">
@@ -80,7 +82,8 @@ var AdminPanelComponent = React.createClass({
 																className="adminPanelButton"
 																id="location2"
 																style={this.state.tagIds.location2}>
-																Apygardų kandidatai
+																<img src="app/imgs/SM_candidate.png" style={ styles.image }/>
+																<p>Apygardų kandidatai</p>
 														</Link>
 												</li>
 												<li className="tab">
@@ -89,7 +92,8 @@ var AdminPanelComponent = React.createClass({
 																className="adminPanelButton"
 																id="location3"
 																style={this.state.tagIds.location3}>
-																Apylinkių atstovai
+																<img src="app/imgs/representative.png" style={ styles.image }/>
+																<p>Apylinkių atstovai</p>
 														</Link>
 												</li>
 												<li className="tab">
@@ -98,7 +102,8 @@ var AdminPanelComponent = React.createClass({
 																className="adminPanelButton"
 																id="location4"
 																style={this.state.tagIds.location4}>
-																Politiniai vienetai
+																<img src="app/imgs/political_party.png" style={ styles.image }/>
+																<p>Politiniai vienetai</p>
 														</Link>
 												</li>
 												<li className="tab">
@@ -107,7 +112,8 @@ var AdminPanelComponent = React.createClass({
 																className="adminPanelButton"
 																id="location5"
 																style={this.state.tagIds.location5}>
-																Apylinkių rezultatai
+																<img src="app/imgs/results_chart.png" style={ styles.image }/>
+																<p>Apylinkių rezultatai</p>
 														</Link>
 												</li>
 										</ul>

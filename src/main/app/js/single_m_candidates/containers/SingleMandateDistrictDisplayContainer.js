@@ -27,7 +27,6 @@ var SingleMandateDistrictDisplayContainer = React.createClass({
         return cand;
     },
     uploadCandidates: function(fd, districtId) {
-        //e.preventDefault();
         var _this = this;
         var uploadPath = "http://localhost:8080/api/district/" + districtId + "/candidates";
         axios.post(uploadPath, fd, { headers: { 'Content-Type': 'multipart/form-data' } })

@@ -1,5 +1,6 @@
 var React = require('react');
 var ErrorWrapper = require('../components/tiny_components/ErrorWrapper');
+var RootErrorWrapper = require('../components/tiny_components/RootErrorWrapper');
 
 var Vars = {
     nameRegex: new RegExp(/^([a-zA-ZąčęėįšųūžĄČĘĖĮŠŲŪŽ0-9\s][^qQwWxX]*)$/),
@@ -12,8 +13,8 @@ var Validations = {
     checkErrorsPartyAsideForm: function(name, file) {
         var errors = [];
 
-        if (name.length < Vars.min) errors.push(Errors.nameToShort);
-        if (name.length > Vars.max) errors.push(Errors.nameToLong);
+        if (name.length < Vars.min) errors.push("Partijos pavadinimas " + Errors.toShort);
+        if (name.length > Vars.max) errors.push("Partijos pavadinimas " + Errors.toLong);
         if (!Vars.partyNameRegex.test(name)) errors.push(Errors.onlyAlphas);
 
         if (file == undefined) {
@@ -28,17 +29,17 @@ var Validations = {
     checkErrorsDistrictAsideForm: function(name) {
         var errors = [];
 
-        if (name.length < Vars.min) errors.push(Errors.nameToShort);
-        if (name.length > Vars.max) errors.push(Errors.nameToLong);
+        if (name.length < Vars.min) errors.push("Apygardos pavadinimas " + Errors.toShort);
+        if (name.length > Vars.max) errors.push("Apygardos pavadinimas " + Errors.toLong);
         if (!Vars.nameRegex.test(name)) errors.push(Errors.onlyAlphas);
 
         return errors;
     },
-    checkErrorsCountyForm: function(name, count) {
+    checkErrorsCountyForm: function(name, count, address) {
         var errors = [];
 
-        if (name.length < Vars.min) errors.push(Errors.nameToShort);
-        if (name.length > Vars.max) errors.push(Errors.nameToLong);
+        if (name.length < Vars.min) errors.push("Apylinkės pavadinimas " + Errors.toShort);
+        if (name.length > Vars.max) errors.push("Apylinkės pavadinimas " + Errors.toLong);
         if (!Vars.nameRegex.test(name)) errors.push(Errors.onlyAlphas);
 
         switch (true) {
@@ -53,20 +54,32 @@ var Validations = {
               break;
         }
 
+        if (address.length == 0) {
+            errors.push("Adresas - " + Errors.blankField);
+        } else {
+            if (address.length < Vars.min) errors.push("Adresas " + Errors.toShort);
+            if (address.length > Vars.max) errors.push("Adresas " + Errors.toLong);
+        }
+
         return errors;
     },
     checkErrorsSMform: function(dictionary, spoiled) {
         var errors = [];
         var emptyFields = 0;
 
-        if (spoiled === "") {
+        if (spoiled === "" || spoiled == undefined) {
             emptyFields += 1;
         } else if (isNaN(spoiled)) {
             errors.push(spoiled + " " + Errors.NaNerror);
         }
-        if (parseInt(spoiled) < 0) errors.push(spoiled + " " + Errors.negativeNumError);
+        if (parseInt(spoiled) < 0) {
+            errors.push(spoiled + " " + Errors.negativeNumError);
+        } else if (parseInt(spoiled) > 50000) {
+            errors.push(value + " " + Errors.positiveInfiniteNumError);
+        }
+
         dictionary.forEach(function(value) {
-            if (value == "") {
+            if (value == "" || value == undefined) {
                 emptyFields += 1;
             } else if (isNaN(value)) {
                 errors.push(value + " " + Errors.NaNerror);
@@ -109,19 +122,23 @@ var Validations = {
 
         return errors;
     },
-    checkErrorsMMform: function(dictionary, spoiled, mergedCount, partiesCount) {
+    checkErrorsMMform: function(dictionary, spoiled) {
         var errors = [];
         var emptyFields = 0;
 
-        if (spoiled == "") {
+        if (spoiled == "" || spoiled == undefined) {
             emptyFields += 1;
         } else if (isNaN(spoiled)) {
             errors.push(spoiled + " " + Errors.NaNerror);
         }
-        if (parseInt(spoiled) < 0) errors.push(spoiled + " " + Errors.negativeNumError);
+        if (parseInt(spoiled) < 0) {
+            errors.push(spoiled + " " + Errors.negativeNumError);
+        } else if (parseInt(spoiled) > 50000) {
+            errors.push(value + " " + Errors.positiveInfiniteNumError);
+        }
 
         dictionary.forEach(function(value) {
-            if (value == "") {
+            if (value == "" || value == undefined) {
                 emptyFields += 1;
             } else if (isNaN(value)) {
                 errors.push(value + " " + Errors.NaNerror);
@@ -133,11 +150,6 @@ var Validations = {
         });
         if (emptyFields > 0) errors.push(Errors.emptyFieldsError + "(" + emptyFields + ")");
 
-        if (mergedCount < partiesCount) errors.push(Errors.notAllResultsMergedError +
-                                                    " (" +
-                                                    mergedCount +
-                                                    " iš " +
-                                                    partiesCount + ")");
         if (emptyFields == dictionary.size + 1) {
             var emptyForm = new Array();
             emptyForm.push(Errors.emptyFormError);
@@ -158,18 +170,34 @@ var Validations = {
 
       return errors;
     },
-    prepareErrors: function(errors, style) {
+    prepareJSerrors: function(errors, root_message, style) {
         var preparedErrors = [];
-        errors.forEach((e, idx) => {
-            preparedErrors.push(<ErrorWrapper message={e} key={idx} inlineStyle={style}/>);
-        });
-        return preparedErrors;
+        for (var i = 0; i < errors.length; i++) {
+            preparedErrors.push(<ErrorWrapper message={errors[i]} key={i}/>);
+        }
+        return (
+            <RootErrorWrapper message={root_message} key={errors.length} inlineStyle={style}>
+                {preparedErrors}
+            </RootErrorWrapper>
+        );
+    },
+    prepareSpringErrors: function(errors, style) {
+        var preparedErrors = [];
+        for (var i = 1; i < errors.length; i++) {
+            preparedErrors.push(<ErrorWrapper message={errors[i]} key={i}/>);
+        }
+        return (
+            <RootErrorWrapper message={errors[0]} key={0} inlineStyle={style}>
+                {preparedErrors}
+            </RootErrorWrapper>
+        );
     },
 };
 
 var Errors = {
-    nameToShort: "REACT - Pavadinime ne mažiau " + Vars.min + " raidžių",
-    nameToLong: "REACT - Pavadinime ne daugiau " + Vars.max + " raidžių",
+    toShort: "per trumpas (min. " + Vars.min + " simbolių) - REACT",
+    toLong: "per ilgas (min. " + Vars.max + " simbolių) - REACT",
+    blankField: "tuščias laukas - REACT",
     onlyAlphas: "REACT - Pavadinimas neatitinka formato",
     popToLow: "REACT - Nerealiai mažai gyventojų - ",
     popToHigh: "REACT - Nerealiai daug gyventojų - ",
@@ -180,8 +208,7 @@ var Errors = {
     emptyValueError: "REACT - balsų įvedimo laukas liko tuščias",
     emptyFieldsError: "REACT - formoje liko tuščių laukų ",
     positiveInfiniteNumError: "nu kur tau matytas toks skaičius...",
-    emptyFormError: "React - forma tuščia",
-    notAllResultsMergedError: "React - Ne visų partijų rezultatai pateikti"
+    emptyFormError: "React - forma tuščia"
 };
 
 module.exports = Validations;

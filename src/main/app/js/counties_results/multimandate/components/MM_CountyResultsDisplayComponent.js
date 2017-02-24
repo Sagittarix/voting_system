@@ -7,7 +7,7 @@ var MM_CountyResultsDisplayComponent = React.createClass({
                 <div className="row">
                     <div className="col-md-8 units-list-area">
                         <div className="list-group-item active">
-                            <span>Apylinkės kandidatų rezultatai (DAUGIAMANDAČIAI)</span>
+                            <span>Apylinkės partijų rezultatai (DAUGIAMANDAČIAI)</span>
                         </div>
                         <div className="list-group-item">
                             <p className="county-results">
@@ -21,7 +21,8 @@ var MM_CountyResultsDisplayComponent = React.createClass({
                     <div className="col-md-4 units-create-area">
                         <div className="col-md-11">
                             {this.props.representative}
-                            {this.props.dateTime}
+                            {this.props.createdOn}
+                            {this.props.confirmedOn}
                         </div>
                     </div>
                 </div>

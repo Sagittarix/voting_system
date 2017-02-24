@@ -21,7 +21,8 @@ var SM_CountyResultsDisplayComponent = React.createClass({
                     <div className="col-md-4 units-create-area">
                         <div className="col-md-11">
                             {this.props.representative}
-                            {this.props.dateTime}
+                            {this.props.createdOn}
+                            {this.props.confirmedOn}
                         </div>
                     </div>
                 </div>

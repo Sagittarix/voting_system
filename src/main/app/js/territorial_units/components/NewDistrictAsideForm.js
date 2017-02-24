@@ -6,28 +6,35 @@ var NewDistrictAsideForm = React.createClass({
     getInitialState: function() {
         return ({ jsErrors: [] });
     },
-    reportErrors: function(errors) {
+    componentDidUpdate() {
+        $('.toggleInput').bootstrapToggle();
+    },
+    reportCountyErrors: function(errors, countyName) {
         if (errors.length == 0) {
             this.setState({ jsErrors: [] });
         } else {
-            var errors = Validations.prepareErrors(errors);
+            var errors = Validations.prepareJSerrors(errors, "Klaida registruojant apylinkę " + countyName);
             this.setState({ jsErrors: errors });
         }
     },
-    create: function() {
-        //e.preventDefault();
+    create: function(e) {
+        e.preventDefault();
         var errors = Validations.checkErrorsDistrictAsideForm(this.props.name);
         if (errors.length > 0) {
-            this.setState({ jsErrors: Validations.prepareErrors(errors) });
+            this.setState({ jsErrors: Validations.prepareJSerrors(errors, "Klaida registruojant apygardą " + this.props.name) });
         } else {
             this.setState({ jsErrors: [] });
             this.props.create();
         }
     },
     springErrors: function() {
-        return Validations.prepareErrors(this.props.springErrors);
+        return Validations.prepareSpringErrors(this.props.springErrors);
+    },
+    countiesHeader: function() {
+        return (this.props.counties.length == 0) ? <span></span> : <p>Apylinkės:</p>;
     },
     render: function() {
+        var springErrors = (this.props.springErrors.length > 0) ? this.springErrors() : [];
         return (
             <div>
                 <form>
@@ -35,16 +42,17 @@ var NewDistrictAsideForm = React.createClass({
                         <label htmlFor="inputDistrict">Apygardos pavadinimas</label>
                         <input type="text" className="form-control" id="inputDistrictName" value={this.props.name} onChange={this.props.changeName}/>
                     </div>
+                    {this.countiesHeader()}
                     {this.props.counties}
                     <NewCountyAsideFormContainer
                         addCounty={this.props.addCounty}
-                        reportErrors={this.reportErrors}
+                        reportCountyErrors={this.reportCountyErrors}
                     />
                     <button type="submit" className="btn btn-primary btn-md" style={{ marginTop: 10 }} onClick={this.create}>Sukurti</button>
                 </form>
                 <div className="form-group errors-area">
                     {this.state.jsErrors}
-                    {this.springErrors()}
+                    {springErrors}
                 </div>
             </div>
         )

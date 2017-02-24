@@ -69,7 +69,9 @@ var NavigationBarComponent = React.createClass ({
                                 </ul>
                             </li>
                         </ul>
-                        <CurrentTimeComponent/>
+                        <div style={{margin:"15px"}}>
+                            <CurrentTimeComponent/>
+                        </div>
                     </div>
                 </div>
             </nav>

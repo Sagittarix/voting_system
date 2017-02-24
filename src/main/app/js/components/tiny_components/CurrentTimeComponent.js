@@ -13,7 +13,7 @@ var CurrentTimeComponent = React.createClass({
 		},
 		render: function() {
 				return (
-						<span style={{color: 'white'}}>{this.state.time}</span>
+						<div style={{color: 'white'}}>{this.state.time}</div>
 				);
 		}
 });

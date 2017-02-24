@@ -1,43 +1,24 @@
 var React = require('react');
-//var CandidateDisplayComponent = require('../../shared/CandidateDisplayComponent');
 var CandidateWithResultsDisplayComponent = require('./CandidateWithResultsDisplayComponent');
 var Validations = require('../../../utils/Validations');
 
 var MM_PartyDisplayWithResultsComponent = React.createClass({
-    prepareCandidates: function() {
-        var preparedCandidates = [];
-        var candidates = this.props.party.candidates;
-        var candidateVotesList = this.props.results.candidateVotesList;
-        var cVotes = {};
-
-        candidates.forEach((c, idx) => {
-            candidateVotesList.forEach(cv => {
-                if (cv.candidate.id === c.id) cVotes = cv;
-            });
-            preparedCandidates.push(
-                <CandidateWithResultsDisplayComponent
-                    key={idx}
-                    candidate={c}
-                    cVotes={cVotes}
-                />
-            );
-        });
-
-        return preparedCandidates;
-    },
     render: function() {
         return (
-            <div className="unit">
-                <div className="list-group-item active">
-                    <div onClick={this.toggleShowCandidates} style={{ cursor: 'pointer' }}>
-                        {this.props.party.name}
+          <div className="unit">
+                <div className="list-group-item">
+                  <div>
+                    <div style={{height: "20px"}}>
+                      <div className="col-md-8">
+                          <img src="app/imgs/political_party.png" style={{ width: 20, height: 20 }}/> &nbsp;
+                          {this.props.party.name}
+                      </div>
+                      <div className="col-md-2" style={{ textAlign: 'right' }}><span>Balsai:</span></div>
+                      <div className="col-md-2">{this.props.pVotes.votes}</div>
                     </div>
+                  </div>
                 </div>
-                <div>
-                    {this.prepareCandidates()}
-                </div>
-
-            </div>
+          </div>
         );
     }
 });

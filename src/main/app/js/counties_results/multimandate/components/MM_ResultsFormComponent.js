@@ -9,7 +9,7 @@ function MM_ResultsFormComponent(props) {
                 changeSpoiled={props.changeSpoiled}
             />
             <div className="list-group-item active">
-                <span>Apylinkės kandidatų sąrašas (DAUGIAMANDAČIAI)</span>
+                <span>Partijų sąrašas (DAUGIAMANDAČIAI)</span>
             </div>
             <div className="list-group-item" style={{ height: 'auto' }}>
                 {props.parties}

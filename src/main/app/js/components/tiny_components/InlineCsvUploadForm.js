@@ -10,14 +10,13 @@ var InlineCsvUploadForm = React.createClass({
             this.setState({ springErrors: newProps.springErrors })
         }
     },
-    upload: function() {
-        //e.preventDefault();
+    upload: function(e) {
+        e.preventDefault();
         var file = this.refs.fileCSV.files[0];
         var errors = Validations.validateCsv(file);
 
         if (errors.length > 0) {
-            var style={ marginTop: 10 };
-            this.setState({ jsErrors: Validations.prepareErrors(errors, style), springErrors: [] });
+            this.setState({ jsErrors: Validations.prepareJSerrors(errors, "Failo klaida"), springErrors: [] });
         } else {
             var fd = new FormData();
             fd.append('file',file);
@@ -27,9 +26,10 @@ var InlineCsvUploadForm = React.createClass({
         }
     },
     springErrors: function() {
-        return Validations.prepareErrors(this.props.springErrors, {});
+        return Validations.prepareSpringErrors(this.props.springErrors, {marginBottom: 10});
     },
     render: function() {
+        var springErrors = (this.props.springErrors.length > 0) ? this.springErrors() : [];
         return (
             <div>
                 <form id="inline-csv-form">
@@ -42,7 +42,7 @@ var InlineCsvUploadForm = React.createClass({
                 </form>
                 <div id="inline-form-errors">
                     {this.state.jsErrors}
-                    {this.springErrors()}
+                    {springErrors}
                 </div>
             </div>
         )

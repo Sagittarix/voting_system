@@ -7,22 +7,31 @@ var AdminResultsViewContainer = React.createClass({
     getInitialState: function() {
         return ({ districts: [],
                   counties: [],
+                  parties: [],
                   activeDistrictId: undefined,
                   activeCountyId: undefined });
     },
     componentDidMount: function() {
         var _this = this;
-        axios.get('http://localhost:8080/api/district')
-            .then(function(resp) {
+
+        axios
+            .all([
+                axios.get('http://localhost:8080/api/district'),
+                axios.get('http://localhost:8080/api/party')
+            ])
+            .then(axios.spread(function(districts, parties) {
                 var counties = [];
-                resp.data.forEach(d => {
+                districts.data.forEach(d => {
                     d.counties.forEach(c => counties.push(c));
                 });
-                _this.setState({ districts: resp.data, counties: counties });
-            })
+                _this.setState({ districts: districts.data,
+                                 counties: counties,
+                                 parties: parties.data });
+            }))
             .catch(function(err) {
                 console.log(err);
-            });
+            })
+
     },
     setActiveDistrict: function(districtId) {
         this.setState({ activeDistrictId: districtId });
@@ -44,19 +53,40 @@ var AdminResultsViewContainer = React.createClass({
             if (this.state.activeCountyId != undefined) {
                 counties.forEach((c, idx) => {
                   if (this.state.activeCountyId == c.id) {
-                      preparedCounties.push(<CountyDisplayContainer key={idx} index={idx} county={c}/>);
+                      preparedCounties.push(
+                          <CountyDisplayContainer
+                              key={idx}
+                              index={idx}
+                              county={c}
+                              parties={this.state.parties}
+                          />
+                      );
                   }
                 });
             } else {
                 counties.forEach((c, idx) => {
                   if (this.state.activeDistrictId == c.districtId) {
-                      preparedCounties.push(<CountyDisplayContainer key={idx} index={idx} county={c}/>);
+                      preparedCounties.push(
+                          <CountyDisplayContainer
+                              key={idx}
+                              index={idx}
+                              county={c}
+                              parties={this.state.parties}
+                          />
+                      );
                   }
                 });
             }
         } else {
             counties.forEach((c, idx) => {
-                preparedCounties.push(<CountyDisplayContainer key={idx} index={idx} county={c}/>);
+                preparedCounties.push(
+                    <CountyDisplayContainer
+                        key={idx}
+                        index={idx}
+                        county={c}
+                        parties={this.state.parties}
+                    />
+                );
             });
         }
         return preparedCounties;

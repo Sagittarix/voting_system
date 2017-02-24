@@ -4,7 +4,8 @@ var Link = ReactRouter.Link;
 
 var styles = {
 		"active": {backgroundColor: '#006B96', color:"white"},
-		"passive": {backgroundColor: '#CDEBF7', color:"#006B96"}
+		"passive": {backgroundColor: '#CDEBF7', color:"#006B96"},
+		"image": {width: 60, height: 60, marginBottom: 10}
 }
 
 var RepresentativesPanelComponent = React.createClass({
@@ -58,7 +59,8 @@ var RepresentativesPanelComponent = React.createClass({
 																className="adminPanelButton"
 																id="location1"
 																style={this.state.tagIds.location1}>
-																Apylinkės rezultatai (1M)
+																<img src="app/imgs/results_chart.png" style={ styles.image }/>
+																<p>Apylinkės rezultatai (VIENMANDAČIAI)</p>
 														</Link>
 												</li>
 												<li className="tab centered">
@@ -67,7 +69,8 @@ var RepresentativesPanelComponent = React.createClass({
 																className="adminPanelButton"
 																id="location2"
 																style={this.state.tagIds.location2}>
-																Apylinkės rezultatai (MM)
+																<img src="app/imgs/results_chart.png" style={ styles.image }/>
+																<p>Apylinkės rezultatai (DAUGIMANDAČIAI)</p>
 														</Link>
 												</li>
 												<li className="tab centered">
@@ -76,7 +79,9 @@ var RepresentativesPanelComponent = React.createClass({
 																className="adminPanelButton"
 																id="location3"
 																style={this.state.tagIds.location5}>
-																Apylinkės atstovo profilis
+																<img src="app/imgs/user.png" style={ styles.image }/>
+																<p style={{ marginBottom: 0 }}>Atstovo</p>
+																<p>profilis</p>
 														</Link>
 												</li>
 										</ul>

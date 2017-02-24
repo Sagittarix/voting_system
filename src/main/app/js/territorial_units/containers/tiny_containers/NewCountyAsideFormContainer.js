@@ -5,28 +5,28 @@ var Validations = require('../../../utils/Validations');
 
 var  NewCountyAsideFormContainer = React.createClass({
     getInitialState: function() {
-        return ({ showAsideForm: false, countyName: "", voterCount: undefined });
+        return ({ showAsideForm: false, countyName: "", voterCount: undefined, countyAddress: "" });
     },
     handleSwitchState: function() {
         this.setState({ showAsideForm: !this.state.showAsideForm });
     },
     handleCountyCancel: function() {
-      this.setState({ showAsideForm: !this.state.showAsideForm, countyName: "", voterCount: undefined });
-      this.props.reportErrors([]);
+      this.setState({ showAsideForm: !this.state.showAsideForm, countyName: "", voterCount: undefined, countyAddress: "" });
+      this.props.reportCountyErrors([]);
     },
     handleCountyAdd() {
-        console.log(this.state.countyName);
-        var errors = Validations.checkErrorsCountyForm(this.state.countyName, this.state.voterCount);
+        var errors = Validations.checkErrorsCountyForm(this.state.countyName, this.state.voterCount, this.state.countyAddress);
         if (errors.length != 0) {
-            this.props.reportErrors(errors);
+            this.props.reportCountyErrors(errors, this.state.countyName);
         } else {
             var body = {
                 name: this.state.countyName,
-                voterCount: this.state.voterCount
+                voterCount: this.state.voterCount,
+                address: this.state.countyAddress
             };
             this.props.addCounty(body);
-            this.setState({ showAsideForm: false, countyName: "", voterCount: undefined });
-            this.props.reportErrors([]);
+            this.setState({ showAsideForm: false, countyName: "", voterCount: undefined, countyAddress: "" });
+            this.props.reportCountyErrors([]);
         }
     },
     handleNameChange: function(e) {
@@ -35,16 +35,21 @@ var  NewCountyAsideFormContainer = React.createClass({
     handleVoterCountChange: function(e) {
         this.setState({ voterCount: e.target.value});
     },
+    handleAddressChange: function(e) {
+        this.setState({ countyAddress: e.target.value});
+    },
     render: function() {
         if (this.state.showAsideForm) {
             return <NewCountyAsideFormComponent
-                cancel={this.handleCountyCancel}
-                add={this.handleCountyAdd}
-                changeName={this.handleNameChange}
-                changeCount={this.handleVoterCountChange}
-                name={this.state.countyName}
-                count={this.state.voterCount}
-            />
+                      cancel={this.handleCountyCancel}
+                      add={this.handleCountyAdd}
+                      changeName={this.handleNameChange}
+                      changeCount={this.handleVoterCountChange}
+                      changeAddress={this.handleAddressChange}
+                      name={this.state.countyName}
+                      count={this.state.voterCount}
+                      address={this.state.countyAddress}
+                   />
         } else {
             return <NewCountyFormButton
                 renderCountyForm={this.handleSwitchState}

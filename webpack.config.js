@@ -11,6 +11,6 @@ module.exports = {
     },
     output: {
         filename: 'bundle.js',
-        path: __dirname + '/src/main/webapp/static/built'
+        path: __dirname + '/src/main/webapp/built'
     },
 };

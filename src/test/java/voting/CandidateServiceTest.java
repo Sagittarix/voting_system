@@ -30,6 +30,7 @@ public class CandidateServiceTest {
     private static String personId = "55500055501";
     private static String firstName = "Petras";
     private static String lastName = "Petraitis";
+    private static String description = "Ilgas descriptionas kad butu ilgesnis nei 20 simboliu";
 
     private static Party party;
     private static District district;
@@ -45,7 +46,7 @@ public class CandidateServiceTest {
     public static void beforeClassSetup() {
         party = new Party("Party 1");
         district = new District("District 1");
-        existingCandidate = new Candidate(firstName, lastName, personId);
+        existingCandidate = new Candidate(firstName, lastName, personId, description);
     }
 
     @Before
@@ -57,6 +58,7 @@ public class CandidateServiceTest {
         newCandidate.setPersonId(personId);
         newCandidate.setFirstName(firstName);
         newCandidate.setLastName(lastName);
+        newCandidate.setDescription(description);
     }
 
 

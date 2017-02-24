@@ -11,6 +11,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.beanvalidation.SpringValidatorAdapter;
 import voting.dto.CandidateData;
 import voting.exception.MultiErrorException;
+import voting.utils.DateUtils;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -118,6 +119,7 @@ public class ParsingServiceImpl implements ParsingService {
             candidateData.setPersonId(line[2]);
             candidateData.setPartyName(line[3]);
             candidateData.setDescription(line[4]);
+            candidateData.setBirthDate(DateUtils.stringToCalendar(line[2]));
             return candidateData;
         }
 
@@ -148,6 +150,7 @@ public class ParsingServiceImpl implements ParsingService {
             candidateData.setLastName(line[2]);
             candidateData.setPersonId(line[3]);
             candidateData.setDescription(line[4]);
+            candidateData.setBirthDate(DateUtils.stringToCalendar(line[3]));
             return candidateData;
         }
 

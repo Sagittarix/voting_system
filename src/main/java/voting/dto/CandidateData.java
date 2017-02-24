@@ -4,6 +4,7 @@ import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import java.util.Calendar;
 import java.util.Objects;
 
 /**
@@ -30,6 +31,9 @@ public class CandidateData {
     @NotNull(message = "Aprašymas būtina")
     @Length(min = 20, max = 250, message = "Aprašymas nuo 20 iki 40 simbolių")
     private String description;
+
+    @NotNull(message = "Nepavyko nustatyti gimimo datos")
+    private Calendar birthDate;
 
     // not sure kuriu reikia, kolkas palieku visus
     private Long districtId;
@@ -118,6 +122,14 @@ public class CandidateData {
         this.description = description;
     }
 
+    public Calendar getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(Calendar birthDate) {
+        this.birthDate = birthDate;
+    }
+
     @Override
     public boolean equals(Object o) {
 
@@ -132,6 +144,7 @@ public class CandidateData {
                 Objects.equals(districtName, that.districtName) &&
                 Objects.equals(partyId, that.partyId) &&
                 Objects.equals(partyName, that.partyName) &&
+                Objects.equals(birthDate, that.birthDate) &&
                 Objects.equals(positionInPartyList, that.positionInPartyList);
     }
 

@@ -6,7 +6,7 @@ import java.util.Random;
  * Created by andrius on 2/23/17.
  */
 
-public class BCryptHelper {
+public class BCryptUtils {
 
     public static String generateRandomPassword(int length){
         Random randomizer = new Random();

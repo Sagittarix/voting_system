@@ -1,8 +1,10 @@
 package voting.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import voting.utils.DateUtils;
 
 import javax.persistence.*;
+import java.util.Calendar;
 import java.util.Objects;
 
 /**
@@ -28,6 +30,7 @@ public class Candidate {
 
     private Long positionInPartyList;
     private String description;
+    private Calendar birthDate;
 
     public Candidate() { }
 
@@ -36,6 +39,7 @@ public class Candidate {
         this.lastName = lastName;
         this.personId = personId;
         this.description = description;
+        this.birthDate = DateUtils.stringToCalendar(personId);
     }
 
     public Long getId() {
@@ -102,6 +106,14 @@ public class Candidate {
         this.description = description;
     }
 
+    public Calendar getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(Calendar birthDate) {
+        this.birthDate = birthDate;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -113,16 +125,17 @@ public class Candidate {
                 Objects.equals(lastName, candidate.lastName) &&
                 Objects.equals(district, candidate.district) &&
                 Objects.equals(party, candidate.party) &&
+                Objects.equals(birthDate, candidate.birthDate) &&
                 Objects.equals(positionInPartyList, candidate.positionInPartyList);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, personId, firstName, lastName, district, party, positionInPartyList);
+        return Objects.hash(id, personId, firstName, lastName, district, party, positionInPartyList, birthDate);
     }
 
     @Override
     public String toString() {
-        return String.format("%s %s (a.k. %s)", firstName, lastName, personId);
+        return String.format("%s %s (a.k. %s)", firstName, lastName, personId, DateUtils.stringifyCalendar(birthDate, "-"));
     }
 }

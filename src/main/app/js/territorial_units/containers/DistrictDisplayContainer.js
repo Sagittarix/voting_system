@@ -55,14 +55,11 @@ var DistrictDisplayContainer = React.createClass({
         var body = {
             name: this.state.countyName,
             voterCount: this.state.voterCount,
-            address: this.state.countyAddress,
-            districtId: this.props.district.id
+            address: this.state.countyAddress
         };
-        axios.post('http://localhost:8080/api/county/', body)
+        var postUrl = 'http://localhost:8080/api/district/' + this.props.district.id + '/add-county'
+        axios.post(postUrl, body)
             .then(function(resp) {
-                var counties = _this.state.counties;
-                counties.push(resp.data);
-
                 _this.setState({
                     showInlineForm: false,
                     countyName: "",
@@ -70,7 +67,7 @@ var DistrictDisplayContainer = React.createClass({
                     countyAddress: "",
                     countyBackendErrors: [],
                     springErrors: [],
-                    counties: counties
+                    counties: resp.data.counties
                 });
             })
             .catch(function(err) {
@@ -81,18 +78,14 @@ var DistrictDisplayContainer = React.createClass({
         var _this = this;
         var counties = this.state.counties;
 
-        axios({
-            method: 'delete',
-            url: 'http://localhost:8080/api/county/',
-            params: { id: counties[index].id }
-        })
-        .then(function(resp) {
-            counties.splice(index, 1);
-            _this.setState({ counties: counties });
-        })
-        .catch(function(err) {
-            console.log(err);
-        })
+        axios.delete('http://localhost:8080/api/district/county/' + counties[index].id)
+            .then(function(resp) {
+                counties.splice(index, 1);
+                _this.setState({ counties: counties });
+            })
+            .catch(function(err) {
+                console.log(err);
+            })
     },
     handleCountyCancel: function() {
         this.setState({ showInlineForm: !this.state.showInlineForm });

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import voting.dto.CountyRepresentativeData;
 import voting.dto.CountyRepresentativeRepresentation;
+import voting.model.County;
 import voting.model.CountyRep;
 import voting.repository.CountyRepRepository;
 import voting.utils.BCryptUtils;
@@ -19,24 +20,25 @@ import java.util.List;
 public class CountyRepServiceImpl implements CountyRepService {
 
     private CountyRepRepository countyRepRepository;
-    private CountyService countyService;
+    private DistrictService districtService;
 
     @Autowired
     public CountyRepServiceImpl(CountyRepRepository countyRepRepository,
-                                CountyService countyService) {
+                                DistrictService districtService) {
         this.countyRepRepository = countyRepRepository;
-        this.countyService = countyService;
+        this.districtService = districtService;
     }
 
     @Transactional
     @Override
     public CountyRep addNewCountyRep(CountyRepresentativeData countyRepData) {
+        County county = districtService.getCounty(countyRepData.getCountyId());
         CountyRep countyRep = new CountyRep();
         countyRep.setFirstName(countyRepData.getFirstName());
         countyRep.setLastName(countyRepData.getLastName());
         countyRep.setEmail(countyRepData.getEmail());
         countyRep.setPassword_digest(BCryptUtils.generateRandomPassword(9));
-        countyRep.setCounty(countyService.findOne(countyRepData.getCountyId()));
+        countyRep.setCounty(county);
         return countyRepRepository.save(countyRep);
     }
 

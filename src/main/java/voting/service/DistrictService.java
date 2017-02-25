@@ -2,7 +2,9 @@ package voting.service;
 
 import com.opencsv.exceptions.CsvException;
 import org.springframework.web.multipart.MultipartFile;
+import voting.dto.CountyData;
 import voting.dto.DistrictData;
+import voting.model.Candidate;
 import voting.model.County;
 import voting.model.District;
 
@@ -24,6 +26,8 @@ public interface DistrictService {
 
     List<District> getDistricts();
 
+    List<Candidate> getCandidateList(Long id);
+
     District setCandidateList(Long id, MultipartFile file) throws IOException, CsvException;
 
     void deleteCandidateList(Long id);
@@ -33,5 +37,9 @@ public interface DistrictService {
     boolean exists(String name);
 
     County getCounty(Long id);
+
+    District addCounty(Long districtId, CountyData countyData);
+
+    void deleteCounty(Long countyId);
 
 }

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import voting.dto.CandidateData;
+import voting.dto.CountyData;
 import voting.dto.DistrictData;
 import voting.exception.NotFoundException;
 import voting.model.Candidate;
@@ -98,6 +99,11 @@ public class DistrictServiceImpl implements DistrictService {
         return (List<District>) districtRepository.findAll();
     }
 
+    @Override
+    public List<Candidate> getCandidateList(Long id) {
+        return getDistrict(id).getCandidates();
+    }
+
     @Transactional(rollbackFor = Exception.class)
     @Override
     public District setCandidateList(Long id, MultipartFile file) throws IOException, CsvException {
@@ -160,6 +166,22 @@ public class DistrictServiceImpl implements DistrictService {
             throw new NotFoundException("Nepavyko rasti apskrities su id " + id);
         }
         return county;
+    }
+
+    @Override
+    public District addCounty(Long districtId, CountyData countyData) {
+        District district = getDistrict(districtId);
+        County county = new County(countyData.getName(), countyData.getVoterCount(), countyData.getAddress());
+        district.addCounty(county);
+        return districtRepository.save(district);
+    }
+
+    @Override
+    public void deleteCounty(Long countyId) {
+        County county = getCounty(countyId);
+        District district = county.getDistrict();
+        district.removeCounty(county);
+        districtRepository.save(district);
     }
 
 

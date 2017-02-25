@@ -45,7 +45,6 @@ import static org.mockito.Mockito.when;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class DistrictServiceIntegrationTest {
 
 
@@ -60,7 +59,7 @@ public class DistrictServiceIntegrationTest {
     private DistrictData districtData;
     private List<CountyData> countyDataList;
     private List<CandidateData> candidateDataList;
-    private MockMultipartFile multiPartFile = new MockMultipartFile("file.csv", new byte[] {});
+    private MockMultipartFile multiPartFile = new MockMultipartFile("file.csv", new byte[]{});
 
     @MockBean
     private ParsingService parsingService;
@@ -153,10 +152,7 @@ public class DistrictServiceIntegrationTest {
 
 
     @Test
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
-    public void shouldntSaveNewDistrictIfItHasCountiesWithDuplicatingNames(){
-
-        //TODO: fix, kad veiktu
+    public void shouldntSaveNewDistrictIfItHasCountiesWithDuplicatingNames() {
 
         //Setup
         countyDataList = Arrays.asList(county1, countyWithDuplicateName);
@@ -203,7 +199,6 @@ public class DistrictServiceIntegrationTest {
 
         assertThat(candidateService.exists("55500055501"), is(false));
         assertThat(candidateService.exists("55500055502"), is(false));
-//        assertThat(candidateService.getCandidate("55500055501").getDistrict(), is(equalTo(null)));
 
     }
 
@@ -280,7 +275,21 @@ public class DistrictServiceIntegrationTest {
         sut.getDistrict(savedDistrict.getId());
         assertThat(candidateService.exists("55500055501"), is(false));
         assertThat(candidateService.exists("55500055502"), is(false));
+    }
 
+
+    @Test
+    @Transactional
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    public void addCountyShouldThrowIllegalArgumentForDuplicateCountyName() throws IOException, CsvException {
+
+        //Setup
+        District district = sut.addNewDistrict(districtData);
+
+        //Exercise
+        //Verify
+        thrown.expect(IllegalArgumentException.class);
+        sut.addCounty(district.getId(), countyWithDuplicateName);
     }
 
 

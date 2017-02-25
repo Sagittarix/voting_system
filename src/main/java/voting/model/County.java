@@ -1,13 +1,9 @@
 package voting.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.validator.constraints.Length;
 import voting.model.results.CountyResult;
 
 import javax.persistence.*;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Objects;
 
@@ -15,6 +11,9 @@ import java.util.Objects;
  * Created by domas on 1/10/17.
  */
 @Entity
+@Table(
+        uniqueConstraints = @UniqueConstraint(columnNames = { "name", "district_id" })
+)
 public class County {
 
     @Id

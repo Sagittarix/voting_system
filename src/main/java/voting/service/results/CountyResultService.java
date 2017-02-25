@@ -9,8 +9,8 @@ import voting.dto.results.CountyResultRepresentation;
 import voting.model.County;
 import voting.model.results.CountyResult;
 import voting.model.results.UnitVotes;
-import voting.repository.CountyRepository;
 import voting.repository.results.CountyResultRepository;
+import voting.service.DistrictService;
 import voting.utils.RepresentationFactory;
 
 import java.util.List;
@@ -23,18 +23,17 @@ import java.util.stream.Collectors;
 @Service
 public class CountyResultService {
 
+    private DistrictService districtService;
     private CountyResultRepository countyResultRepository;
-    private CountyRepository countyRepository;
     private UnitVotesService unitVotesService;
 
     @Autowired
-    public CountyResultService(CountyResultRepository countyResultRepository,
-                               CountyRepository countyRepository,
-                               UnitVotesService unitVotesService) {
+    public CountyResultService(CountyResultRepository countyResultRepository, DistrictService districtService, UnitVotesService unitVotesService) {
         this.countyResultRepository = countyResultRepository;
-        this.countyRepository = countyRepository;
+        this.districtService = districtService;
         this.unitVotesService = unitVotesService;
     }
+
 
     public List<CountyResult> getAllCountyResults() {
         return countyResultRepository.findAll();
@@ -60,7 +59,7 @@ public class CountyResultService {
     }
 
     public List<CountyResult> getCountyResultsByMandate(Long county_id, boolean isSingleMandate) {
-        County county = countyRepository.findOne(county_id);
+        County county = districtService.getCounty(county_id);
         return countyResultRepository.findAll().stream()
                                                .filter(cr -> cr.getCounty().equals(county))
                                                .filter(cr -> cr.isSingleMandateSystem() == isSingleMandate)
@@ -76,13 +75,13 @@ public class CountyResultService {
         cr.setSingleMandateSystem(crdm.isSingleMandateSystem());
         cr.setSpoiledBallots(crdm.getSpoiledBallots());
         cr.setUnitVotesList(votesList);
-        cr.setCounty(countyRepository.findOne(crdm.getCountyId()));
+        cr.setCounty(districtService.getCounty(crdm.getCountyId()));
         return cr;
     }
 
     @Transactional
     public CountyRepresentation confirmResultForCounty(Long countyId, boolean isSingleMandate) {
-        County county = countyRepository.findOne(countyId);
+        County county = districtService.getCounty(countyId);
         CountyResult cResult = getResult(county, isSingleMandate);
         cResult.setConfirmed(true);
         countyResultRepository.update(cResult);
@@ -90,7 +89,7 @@ public class CountyResultService {
     }
 
     public CountyRepresentation deleteResultForCounty(Long countyId, boolean isSingleMandate) {
-        County county = countyRepository.findOne(countyId);
+        County county = districtService.getCounty(countyId);
         CountyResult cr = getResult(county, isSingleMandate);
         countyResultRepository.delete(cr);
         county.removeResult(cr);

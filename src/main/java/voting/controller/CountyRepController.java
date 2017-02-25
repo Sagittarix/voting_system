@@ -52,7 +52,7 @@ public class CountyRepController {
 
 
     @PostMapping
-    public CountyRep addNewCountyRep(@Valid @RequestBody CountyRepresentativeData countyRepData, BindingResult result) {
+    public CountyRepresentativeRepresentation addNewCountyRep(@Valid @RequestBody CountyRepresentativeData countyRepData, BindingResult result) {
         if (result.hasErrors()) {
             throw new MultiErrorException("Klaida registruojant apygardos atstovą " + countyRepData.getFirstName() + " "
                     + countyRepData.getLastName(), result.getAllErrors());

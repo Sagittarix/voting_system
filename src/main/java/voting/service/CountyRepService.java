@@ -11,7 +11,7 @@ import java.util.List;
  */
 public interface CountyRepService {
 
-    CountyRep addNewCountyRep(CountyRepresentativeData countyRepData);
+    CountyRepresentativeRepresentation addNewCountyRep(CountyRepresentativeData countyRepData);
 
     void deleteCountyRep(Long id);
 

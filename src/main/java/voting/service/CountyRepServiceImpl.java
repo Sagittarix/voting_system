@@ -30,14 +30,15 @@ public class CountyRepServiceImpl implements CountyRepService {
 
     @Transactional
     @Override
-    public CountyRep addNewCountyRep(CountyRepresentativeData countyRepData) {
+    public CountyRepresentativeRepresentation addNewCountyRep(CountyRepresentativeData countyRepData) {
         CountyRep countyRep = new CountyRep();
         countyRep.setFirstName(countyRepData.getFirstName());
         countyRep.setLastName(countyRepData.getLastName());
         countyRep.setEmail(countyRepData.getEmail());
         countyRep.setPassword_digest(BCryptUtils.generateRandomPassword(9));
         countyRep.setCounty(countyService.findOne(countyRepData.getCountyId()));
-        return countyRepRepository.save(countyRep);
+        countyRepRepository.save(countyRep);
+        return new CountyRepresentativeRepresentation(countyRep);
     }
 
     @Transactional

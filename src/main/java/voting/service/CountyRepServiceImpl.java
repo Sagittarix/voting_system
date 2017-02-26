@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import voting.dto.CountyRepresentativeData;
-import voting.dto.CountyRepresentativeRepresentation;
+import voting.exception.NotFoundException;
 import voting.model.County;
 import voting.model.CountyRep;
 import voting.repository.CountyRepRepository;
@@ -45,6 +45,7 @@ public class CountyRepServiceImpl implements CountyRepService {
     @Transactional
     @Override
     public void deleteCountyRep(Long id) {
+        getCountyRep(id);
         countyRepRepository.delete(id);
     }
 
@@ -55,6 +56,14 @@ public class CountyRepServiceImpl implements CountyRepService {
 
     @Override
     public CountyRep getCountyRep(Long id) {
-        return countyRepRepository.findOne(id);
+        CountyRep cr = countyRepRepository.findOne(id);
+        throwNotFoundIfNull(cr, "Nepavyko rasti apylinkės atstogo su id " + id);
+        return cr;
+    }
+
+    private void throwNotFoundIfNull(Object object, String message) {
+        if (object == null) {
+            throw new NotFoundException(message);
+        }
     }
 }

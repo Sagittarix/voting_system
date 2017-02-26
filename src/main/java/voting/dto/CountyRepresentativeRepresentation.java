@@ -15,7 +15,9 @@ public class CountyRepresentativeRepresentation {
     private String firstName;
     private String lastName;
     private String email;
-    private CountyRepresentation county;
+    private Long countyId;
+    private String countyName;
+    private Long districtId;
     private String districtName;
 
     public CountyRepresentativeRepresentation() { }
@@ -26,9 +28,10 @@ public class CountyRepresentativeRepresentation {
         this.firstName = countyRep.getFirstName();
         this.lastName = countyRep.getLastName();
         this.email = countyRep.getEmail();
-
         County county = countyRep.getCounty();
-        this.county = new CountyRepresentation(county);
+        this.countyId = county.getId();
+        this.countyName = county.getName();
+        this.districtId = county.getDistrict().getId();
         this.districtName = county.getDistrict().getName();
 
     }
@@ -65,16 +68,36 @@ public class CountyRepresentativeRepresentation {
         this.lastName = lastName;
     }
 
-    public String getEmail() { return email; }
-
-    public void setEmail(String email) { this.email = email; }
-
-    public CountyRepresentation getCounty() {
-        return county;
+    public String getEmail() {
+        return email;
     }
 
-    public void setCounty(CountyRepresentation county) {
-        this.county = county;
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public Long getCountyId() {
+        return countyId;
+    }
+
+    public void setCountyId(Long countyId) {
+        this.countyId = countyId;
+    }
+
+    public String getCountyName() {
+        return countyName;
+    }
+
+    public void setCountyName(String countyName) {
+        this.countyName = countyName;
+    }
+
+    public Long getDistrictId() {
+        return districtId;
+    }
+
+    public void setDistrictId(Long districtId) {
+        this.districtId = districtId;
     }
 
     public String getDistrictName() {
@@ -96,12 +119,15 @@ public class CountyRepresentativeRepresentation {
                 Objects.equals(firstName, that.firstName) &&
                 Objects.equals(lastName, that.lastName) &&
                 Objects.equals(email, that.email) &&
-                Objects.equals(county.getId(), that.county.getId());
+                Objects.equals(countyId, that.countyId) &&
+                Objects.equals(countyName, that.countyName) &&
+                Objects.equals(districtId, that.districtId) &&
+                Objects.equals(districtName, that.districtName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, personalId, firstName, lastName, email, county.getId());
+        return Objects.hash(id, personalId, firstName, lastName, email, countyId, countyName, districtId, districtName);
     }
 
     @Override
@@ -112,7 +138,10 @@ public class CountyRepresentativeRepresentation {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
-                ", countyId=" + county.getId() +
+                ", countyId=" + countyId +
+                ", countyName='" + countyName + '\'' +
+                ", districtId=" + districtId +
+                ", districtName='" + districtName + '\'' +
                 '}';
     }
 }

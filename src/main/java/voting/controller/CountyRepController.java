@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.*;
 import voting.dto.CountyRepresentativeData;
 import voting.dto.CountyRepresentativeRepresentation;
 import voting.exception.MultiErrorException;
-import voting.model.CountyRep;
 import voting.service.CountyRepService;
+
 import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,12 +42,14 @@ public class CountyRepController {
     }
 
     @PostMapping
-    public CountyRep addNewCountyRep(@Valid @RequestBody CountyRepresentativeData countyRepData, BindingResult result) {
+    public CountyRepresentativeRepresentation addNewCountyRep(@Valid @RequestBody CountyRepresentativeData countyRepData, BindingResult result) {
         if (result.hasErrors()) {
-            throw new MultiErrorException("Klaida registruojant apygardos atstovą " + countyRepData.getFirstName() + " "
-                    + countyRepData.getLastName(), result.getAllErrors());
+            throw new MultiErrorException(
+                    String.format("Klaida registruojant apygardos atstovą %s %s",
+                            countyRepData.getFirstName(), countyRepData.getLastName()),
+                    result.getAllErrors());
         }
-        return countyRepService.addNewCountyRep(countyRepData);
+        return new CountyRepresentativeRepresentation(countyRepService.addNewCountyRep(countyRepData));
     }
 
     @DeleteMapping("/{id}")

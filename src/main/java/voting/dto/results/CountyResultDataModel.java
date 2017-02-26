@@ -13,9 +13,9 @@ import java.util.List;
  */
 public class CountyResultDataModel {
 
-    @NotNull(message = "Spring - Trūksta sugadintų biuletenių skaičiaus")
-    @Min(value = 100, message = "Spring - Sugadinti biuleteniai. Negali būti < 100")
-    @Max(value = 500000, message = "Spring - Sugadinti biuleteniai. Negali būti tiek daug")
+    @NotNull(message = "Trūksta sugadintų biuletenių skaičiaus")
+    @Min(value = 0, message = "Sugadinti biuleteniai. Negali būti neigiamas skaičius")
+    @Max(value = 500000, message = "Sugadinti biuleteniai. Negali būti tiek daug")
     private int spoiledBallots;
 
     @NotNull(message = "Spring - Mandato tipas nenurodytas")

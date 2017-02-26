@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 public class UnitVotesDataModel {
 
     @NotNull(message = "Spring - Trūksta balsų skaičiaus")
-    @Min(value = 100, message = "Spring - Skirtų balsų negali būti < 100")
+    @Min(value = 0, message = "Spring - Balsu skaičius privalo būti teigiamas")
     @Max(value = 500000, message = "Spring - Skirtų balsų negali būti tiek daug")
     private Long votes;
 

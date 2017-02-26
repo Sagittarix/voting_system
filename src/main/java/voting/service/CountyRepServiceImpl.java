@@ -57,7 +57,7 @@ public class CountyRepServiceImpl implements CountyRepService {
     @Override
     public CountyRep getCountyRep(Long id) {
         CountyRep cr = countyRepRepository.findOne(id);
-        throwNotFoundIfNull(cr, "Nepavyko rasti apylinkės atstogo su id " + id);
+        throwNotFoundIfNull(cr, "Nepavyko rasti apylinkės atstovo su id " + id);
         return cr;
     }
 

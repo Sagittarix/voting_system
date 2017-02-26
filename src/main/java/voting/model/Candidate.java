@@ -42,6 +42,15 @@ public class Candidate {
         this.birthDate = DateUtils.stringToCalendar(personId);
     }
 
+    public Candidate(String firstName, String lastName, String personId, String description, Long positionInPartyList) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.personId = personId;
+        this.description = description;
+        this.birthDate = DateUtils.stringToCalendar(personId);
+        this.positionInPartyList = positionInPartyList;
+    }
+
     public Long getId() {
         return id;
     }

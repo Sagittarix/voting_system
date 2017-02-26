@@ -1,5 +1,6 @@
 package voting.controller;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +12,7 @@ import voting.service.CountyRepService;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
+
 
 /**
  * Created by domas on 1/10/17.

@@ -106,7 +106,7 @@ public class CountyRepresentativeRepresentation {
 
     @Override
     public String toString() {
-        return "CountyRepresentativeRepresentation{" +
+        return "CountyRepresentativeRepresentation {" +
                 "id=" + id +
                 ", personalId='" + personalId + '\'' +
                 ", firstName='" + firstName + '\'' +

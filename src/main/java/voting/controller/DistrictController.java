@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import voting.dto.CandidateRepresentation;
+import voting.dto.CountyData;
 import voting.dto.DistrictData;
 import voting.dto.DistrictRepresentation;
 import voting.exception.MultiErrorException;
@@ -67,5 +69,25 @@ public class DistrictController {
             throws IOException, CsvException {
         return new DistrictRepresentation(districtService.setCandidateList(id, file));
     }
-    
+
+    @GetMapping("/{id}/candidates")
+    public List<CandidateRepresentation> getCandidateList(@PathVariable Long id) {
+        return districtService.getCandidateList(id).stream()
+                .map(CandidateRepresentation::new)
+                .collect(Collectors.toList());
+    }
+
+    @PostMapping("/{id}/add-county")
+    public DistrictRepresentation addCounty(@PathVariable("id") Long districtId, @Valid @RequestBody CountyData countyData, BindingResult result) {
+        if (result.hasErrors()) {
+            throw new MultiErrorException("Klaida registruojant apylinkę " + countyData.getName(), result.getAllErrors());
+        }
+        return new DistrictRepresentation(districtService.addCounty(districtId, countyData));
+    }
+
+    @DeleteMapping("/county/{id}")
+    public void deleteCounty(@PathVariable Long id) {
+        districtService.deleteCounty(id);
+    }
+
 }

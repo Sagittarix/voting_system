@@ -45,7 +45,7 @@ var SM_CountyResultsContainer = React.createClass({
     },
     getCandidates: function() {
         var _this = this;
-        var getUrl = "http://localhost:8080/api/county/" + this.state.activeCountyId + "/candidates";
+        var getUrl = "http://localhost:8080/api/district/" + this.state.representative.county.districtId + "/candidates";
         axios.get(getUrl)
             .then(function(resp) {
               var initialDictionary = _this.formInitialDictionary(resp.data);

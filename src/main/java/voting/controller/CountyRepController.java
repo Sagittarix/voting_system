@@ -8,6 +8,7 @@ import voting.dto.CountyRepresentativeData;
 import voting.dto.CountyRepresentativeRepresentation;
 import voting.exception.MultiErrorException;
 import voting.service.CountyRepService;
+
 import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,7 +24,6 @@ import java.util.stream.Collectors;
 public class CountyRepController {
 
     private CountyRepService countyRepService;
-    private static final Logger logger = Logger.getLogger(CountyRepController.class);
 
     @Autowired
     public CountyRepController(CountyRepService countyRepService) {
@@ -32,28 +32,26 @@ public class CountyRepController {
 
     @GetMapping
     public List<CountyRepresentativeRepresentation> getCountyReps() {
-        List<CountyRepresentativeRepresentation> collection = countyRepService.getCountyReps()
-                                                                              .stream()
-                                                                              .map(CountyRepresentativeRepresentation::new)
-                                                                              .collect(Collectors.toList());
-        logger.debug("Collection extracted - " + collection);
-        return collection;
+        return countyRepService.getCountyReps()
+                               .stream()
+                               .map(CountyRepresentativeRepresentation::new)
+                               .collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
     public CountyRepresentativeRepresentation getCountyRep(@PathVariable Long id) {
-        CountyRepresentativeRepresentation crr = countyRepService.getCountyRep(id);
-        logger.debug("Entity extracted - " + crr.toString());
-        return crr;
+        return new CountyRepresentativeRepresentation(countyRepService.getCountyRep(id));
     }
 
     @PostMapping
     public CountyRepresentativeRepresentation addNewCountyRep(@Valid @RequestBody CountyRepresentativeData countyRepData, BindingResult result) {
         if (result.hasErrors()) {
-            throw new MultiErrorException("Klaida registruojant apygardos atstovą " + countyRepData.getFirstName() + " "
-                    + countyRepData.getLastName(), result.getAllErrors());
+            throw new MultiErrorException(
+                    String.format("Klaida registruojant apygardos atstovą %s %s",
+                            countyRepData.getFirstName(), countyRepData.getLastName()),
+                    result.getAllErrors());
         }
-        return countyRepService.addNewCountyRep(countyRepData);
+        return new CountyRepresentativeRepresentation(countyRepService.addNewCountyRep(countyRepData));
     }
 
     @DeleteMapping("/{id}")

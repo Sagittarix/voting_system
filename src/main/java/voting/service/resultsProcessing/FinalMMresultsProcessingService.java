@@ -3,8 +3,8 @@ package voting.service.resultsProcessing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import voting.model.Party;
-import voting.repository.DistrictRepository;
-import voting.repository.PartyRepository;
+import voting.service.DistrictService;
+import voting.service.PartyService;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -17,24 +17,24 @@ import java.util.stream.Collectors;
 public class FinalMMresultsProcessingService {
 
     private final DistrictResultsProcessingService DRPS;
-    private final DistrictRepository districtRepository;
-    private final PartyRepository partyRepository;
+    private final DistrictService districtService;
+    private final PartyService partyService;
 
     @Autowired
     public FinalMMresultsProcessingService(DistrictResultsProcessingService DRPS,
-                                           DistrictRepository districtRepository,
-                                           PartyRepository partyRepository) {
+                                           DistrictService districtService,
+                                           PartyService partyService) {
         this.DRPS = DRPS;
-        this.districtRepository = districtRepository;
-        this.partyRepository = partyRepository;
+        this.districtService = districtService;
+        this.partyService = partyService;
     }
 
     public Map<Party, Long> getFinalPartiesWithVotes() {
         Map<Party, Long> mappedParties = new HashMap<>();
         List<Map<Party, Long>> listOfMaps = new ArrayList<>();
 
-        partyRepository.findAll().spliterator().forEachRemaining(p -> mappedParties.put(p, 0L));
-        districtRepository.findAll().forEach(d -> listOfMaps.add(DRPS.getPartiesWithVotes(d)));
+        partyService.getParties().spliterator().forEachRemaining(p -> mappedParties.put(p, 0L));
+        districtService.getDistricts().forEach(d -> listOfMaps.add(DRPS.getPartiesWithVotes(d)));
 
         listOfMaps.forEach(map -> {
             map.forEach((k, v) -> mappedParties.put(k, (mappedParties.get(k) + v)));

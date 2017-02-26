@@ -1,11 +1,7 @@
 package voting.dto;
 
-import voting.utils.RepresentationFactory;
 import voting.model.County;
-import voting.dto.results.CountyResultRepresentation;
-import voting.model.results.CountyResult;
 
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -19,7 +15,6 @@ public class CountyRepresentation {
     private String address;
     private Long districtId;
     private String districtName;
-    private List<CountyResultRepresentation> countyResults;
 
     public CountyRepresentation() { }
 
@@ -30,9 +25,6 @@ public class CountyRepresentation {
         this.address = county.getAddress();
         this.districtId = county.getDistrict().getId();
         this.districtName = county.getDistrict().getName();
-        List<CountyResult> results = county.getCountyResultList();
-        this.countyResults = (results != null) ?
-                RepresentationFactory.makeRepresentationOfCountyResultsList(results) : null;
     }
 
 
@@ -74,14 +66,6 @@ public class CountyRepresentation {
 
     public void setDistrictName(String districtName) {
         this.districtName = districtName;
-    }
-
-    public List<CountyResultRepresentation> getCountyResults() {
-        return countyResults;
-    }
-
-    public void setCountyResults(List<CountyResultRepresentation> countyResults) {
-        this.countyResults = countyResults;
     }
 
     public String getAddress() {

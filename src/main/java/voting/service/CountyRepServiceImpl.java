@@ -4,7 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import voting.dto.CountyRepresentativeData;
-import voting.dto.CountyRepresentativeRepresentation;
+import voting.exception.NotFoundException;
+import voting.model.County;
 import voting.model.CountyRep;
 import voting.repository.CountyRepRepository;
 import voting.utils.BCryptUtils;
@@ -19,31 +20,32 @@ import java.util.List;
 public class CountyRepServiceImpl implements CountyRepService {
 
     private CountyRepRepository countyRepRepository;
-    private CountyService countyService;
+    private DistrictService districtService;
 
     @Autowired
     public CountyRepServiceImpl(CountyRepRepository countyRepRepository,
-                                CountyService countyService) {
+                                DistrictService districtService) {
         this.countyRepRepository = countyRepRepository;
-        this.countyService = countyService;
+        this.districtService = districtService;
     }
 
     @Transactional
     @Override
-    public CountyRepresentativeRepresentation addNewCountyRep(CountyRepresentativeData countyRepData) {
+    public CountyRep addNewCountyRep(CountyRepresentativeData countyRepData) {
+        County county = districtService.getCounty(countyRepData.getCountyId());
         CountyRep countyRep = new CountyRep();
         countyRep.setFirstName(countyRepData.getFirstName());
         countyRep.setLastName(countyRepData.getLastName());
         countyRep.setEmail(countyRepData.getEmail());
         countyRep.setPassword_digest(BCryptUtils.generateRandomPassword(9));
-        countyRep.setCounty(countyService.findOne(countyRepData.getCountyId()));
-        countyRepRepository.save(countyRep);
-        return new CountyRepresentativeRepresentation(countyRep);
+        countyRep.setCounty(county);
+        return countyRepRepository.save(countyRep);
     }
 
     @Transactional
     @Override
     public void deleteCountyRep(Long id) {
+        getCountyRep(id);
         countyRepRepository.delete(id);
     }
 
@@ -53,7 +55,15 @@ public class CountyRepServiceImpl implements CountyRepService {
     }
 
     @Override
-    public CountyRepresentativeRepresentation getCountyRep(Long id) {
-        return new CountyRepresentativeRepresentation(countyRepRepository.findOne(id));
+    public CountyRep getCountyRep(Long id) {
+        CountyRep cr = countyRepRepository.findOne(id);
+        throwNotFoundIfNull(cr, "Nepavyko rasti apylinkės atstovo su id " + id);
+        return cr;
+    }
+
+    private void throwNotFoundIfNull(Object object, String message) {
+        if (object == null) {
+            throw new NotFoundException(message);
+        }
     }
 }

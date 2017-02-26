@@ -2,15 +2,18 @@ package voting.service;
 
 import com.opencsv.exceptions.CsvException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import voting.dto.CandidateData;
+import voting.dto.CountyData;
 import voting.dto.DistrictData;
 import voting.exception.NotFoundException;
 import voting.model.Candidate;
 import voting.model.County;
 import voting.model.District;
+import voting.repository.CountyRepository;
 import voting.repository.DistrictRepository;
 
 import java.io.IOException;
@@ -25,16 +28,20 @@ import java.util.stream.Stream;
 public class DistrictServiceImpl implements DistrictService {
 
     private DistrictRepository districtRepository;
+    private CountyRepository countyRepository;
     private CandidateService candidateService;
     private StorageService storageService;
     private ParsingService parsingService;
 
+
     @Autowired
     public DistrictServiceImpl(DistrictRepository districtRepository,
+                               CountyRepository countyRepository,
                                CandidateService candidateService,
                                StorageService storageService,
                                ParsingService parsingService) {
         this.districtRepository = districtRepository;
+        this.countyRepository = countyRepository;
         this.candidateService = candidateService;
         this.storageService = storageService;
         this.parsingService = parsingService;
@@ -43,41 +50,39 @@ public class DistrictServiceImpl implements DistrictService {
     @Override
     public District getDistrict(Long id) {
         District district = districtRepository.findOne(id);
-        if (district == null) {
-            throw (new NotFoundException("Couldn't find district with id " + id));
-        }
+        throwNotFoundIfNull(district, "Nepavyko rasti apygardos su id " + id);
         return district;
     }
 
     @Override
     public District getDistrict(String name) {
         District district = districtRepository.findByName(name);
-        if (district == null) {
-            throw (new NotFoundException("Couldn't find district with name " + name));
-        }
+
+        throwNotFoundIfNull(district, String.format("Nepavyko rasti apygardos pavadinimu \"%s\"", name));
         return district;
     }
 
     @Transactional
     @Override
     public District addNewDistrict(DistrictData districtData) {
-        if (districtRepository.existsByName(districtData.getName())) {
+        if (exists(districtData.getName())) {
             throw new IllegalArgumentException(String.format("Apygarda \"%s\" jau egzistuoja", districtData.getName()));
         }
         District district = new District(districtData.getName());
 
         if (districtData.getCountiesData() != null) {
             districtData.getCountiesData().forEach(
-                    countyData -> {
-                        County county = new County(
-                                                countyData.getName(),
-                                                countyData.getVoterCount(),
-                                                countyData.getAddress()
-                                            );
-                        district.addCounty(county);
-                    });
+                    countyData -> district.addCounty(convertCountyDTOtoEntity(countyData)));
         }
-        return districtRepository.save(district);
+
+        // TODO: fix this temporary hack
+        District d;
+        try {
+            d = districtRepository.save(district);
+        } catch (DataIntegrityViolationException ex) {
+            throw new IllegalArgumentException("Apylinkių pavadinimai turi būti skirtingi");
+        }
+        return d;
     }
 
     @Transactional
@@ -91,6 +96,11 @@ public class DistrictServiceImpl implements DistrictService {
     @Override
     public List<District> getDistricts() {
         return (List<District>) districtRepository.findAll();
+    }
+
+    @Override
+    public List<Candidate> getCandidateList(Long id) {
+        return getDistrict(id).getCandidates();
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -148,6 +158,36 @@ public class DistrictServiceImpl implements DistrictService {
         return districtRepository.existsByName(name);
     }
 
+    @Override
+    public County getCounty(Long id) {
+        County county = countyRepository.findOne(id);
+        throwNotFoundIfNull(county, "Nepavyko rasti apskrities su id " + id);
+        return county;
+    }
+
+    @Override
+    public District addCounty(Long districtId, CountyData countyData) {
+        District district = getDistrict(districtId);
+        County county = convertCountyDTOtoEntity(countyData);
+        district.addCounty(county);
+
+        // TODO: fix this temporary hack
+        try {
+            district = districtRepository.save(district);
+        } catch (DataIntegrityViolationException ex) {
+            throw new IllegalArgumentException("Apylinkių pavadinimai turi būti skirtingi");
+        }
+        return district;
+    }
+
+    @Override
+    public void deleteCounty(Long countyId) {
+        County county = getCounty(countyId);
+        District district = county.getDistrict();
+        district.removeCounty(county);
+        districtRepository.save(district);
+    }
+
 
     private List<CandidateData> extractCandidateList(MultipartFile file) throws IOException, CsvException {
         Path tempFile = storageService.storeTemporary(file);
@@ -159,6 +199,17 @@ public class DistrictServiceImpl implements DistrictService {
             storageService.delete(tempFile);
         }
         return candidateListData;
+    }
+
+
+    private County convertCountyDTOtoEntity(CountyData cd) {
+        return new County(cd.getName(), cd.getVoterCount(), cd.getAddress());
+    }
+
+    private void throwNotFoundIfNull(Object object, String message) {
+        if (object == null) {
+            throw (new NotFoundException(message));
+        }
     }
 
 }

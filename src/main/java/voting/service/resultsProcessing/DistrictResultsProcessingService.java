@@ -7,7 +7,7 @@ import voting.model.County;
 import voting.model.District;
 import voting.model.Party;
 import voting.model.results.CountyResult;
-import voting.repository.PartyRepository;
+import voting.service.PartyService;
 
 import java.util.List;
 import java.util.Map;
@@ -23,13 +23,13 @@ import java.util.stream.StreamSupport;
 public class DistrictResultsProcessingService {
 
     private CountyResultsProcessingService CRPS;
-    private PartyRepository partyRepository;
+    private PartyService partyService;
 
     @Autowired
     public DistrictResultsProcessingService(CountyResultsProcessingService CRPS,
-                                            PartyRepository partyRepository) {
+                                            PartyService partyService) {
         this.CRPS = CRPS;
-        this.partyRepository = partyRepository;
+        this.partyService = partyService;
     }
 
     public Long getVotersTurnout(District district) {
@@ -47,7 +47,7 @@ public class DistrictResultsProcessingService {
     }
 
     public Map<Party, Long> getPartiesWithVotes(District district) {
-        Iterable<Party> parties = partyRepository.findAll();
+        List<Party> parties = partyService.getParties();
         Map<Party, Long> mappedParties = StreamSupport.stream(parties.spliterator(), false)
                                                       .collect(Collectors.toMap(Function.identity(), v -> 0L));
 

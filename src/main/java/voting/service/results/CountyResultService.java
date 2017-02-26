@@ -5,17 +5,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import voting.dto.CountyRepresentation;
 import voting.dto.results.CountyResultDataModel;
-import voting.dto.results.CountyResultRepresentation;
-import voting.utils.RepresentationFactory;
+import voting.exception.NotFoundException;
 import voting.model.County;
 import voting.model.results.CountyResult;
 import voting.model.results.UnitVotes;
-import voting.repository.CountyRepository;
 import voting.repository.results.CountyResultRepository;
+import voting.service.DistrictService;
 
-import javax.persistence.EntityManager;
+import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by andrius on 1/24/17.
@@ -24,48 +22,45 @@ import java.util.stream.Collectors;
 @Service
 public class CountyResultService {
 
+    private DistrictService districtService;
     private CountyResultRepository countyResultRepository;
-    private CountyRepository countyRepository;
     private UnitVotesService unitVotesService;
-    private EntityManager em;
 
     @Autowired
-    public CountyResultService(CountyResultRepository countyResultRepository,
-                               CountyRepository countyRepository,
-                               UnitVotesService unitVotesService,
-                               EntityManager em) {
+    public CountyResultService(CountyResultRepository countyResultRepository, DistrictService districtService, UnitVotesService unitVotesService) {
         this.countyResultRepository = countyResultRepository;
-        this.countyRepository = countyRepository;
+        this.districtService = districtService;
         this.unitVotesService = unitVotesService;
-        this.em = em;
     }
 
-    public List<CountyResult> getAllForSingleMandate() {
-        return countyResultRepository.findAll().stream()
-                                               .filter(cr -> cr.isSingleMandateSystem() == true)
-                                               .collect(Collectors.toList());
+
+    public List<CountyResult> getAllCountyResults() {
+        return (List<CountyResult>) countyResultRepository.findAll();
     }
 
-    public List<CountyResult> getAllForMultiMandate() {
-        return countyResultRepository.findAll().stream()
-                                               .filter(cr -> cr.isSingleMandateSystem() == false)
-                                               .collect(Collectors.toList());
+    public List<CountyResult> getAllSingleMandateResults() {
+        return (List<CountyResult>) countyResultRepository.findBySingleMandateSystemTrue();
+    }
+
+    public List<CountyResult> getAllMultiMandateResults() {
+        return (List<CountyResult>) countyResultRepository.findBySingleMandateSystemFalse();
     }
 
     @Transactional
-    public CountyResultRepresentation save(CountyResultDataModel crdm) {
-        CountyResult cr = mapDataWithCollectionToEntity(crdm);
-        countyResultRepository.save(cr);
-        return RepresentationFactory.makeRepresentationOf(cr);
+    public CountyResult save(CountyResultDataModel crdm) {
+        return countyResultRepository.save(mapDataWithCollectionToEntity(crdm));
     }
 
-    public List<CountyResult> getCountyResultsByMandate(Long county_id, boolean isSingleMandate) {
-        County county = countyRepository.findOne(county_id);
-        return countyResultRepository.findAll().stream()
-                                               .filter(cr -> cr.getCounty().equals(county))
-                                               .filter(cr -> cr.isSingleMandateSystem() == isSingleMandate)
-                                               .collect(Collectors.toList());
+    public CountyResult getSingleMandateResult(Long countyId) {
+        County county = districtService.getCounty(countyId);
+        return countyResultRepository.findOneByCountyAndSingleMandateSystemTrue(county);
     }
+
+    public CountyResult getMultiMandateResult(Long countyId) {
+        County county = districtService.getCounty(countyId);
+        return countyResultRepository.findOneByCountyAndSingleMandateSystemFalse(county);
+    }
+
 
     public CountyResult mapDataWithCollectionToEntity(CountyResultDataModel crdm) {
         CountyResult cr = new CountyResult();;
@@ -76,21 +71,22 @@ public class CountyResultService {
         cr.setSingleMandateSystem(crdm.isSingleMandateSystem());
         cr.setSpoiledBallots(crdm.getSpoiledBallots());
         cr.setUnitVotesList(votesList);
-        cr.setCounty(countyRepository.findOne(crdm.getCountyId()));
+        cr.setCounty(districtService.getCounty(crdm.getCountyId()));
         return cr;
     }
 
     @Transactional
-    public CountyRepresentation confirmResultForCounty(Long countyId, boolean isSingleMandate) {
-        County county = countyRepository.findOne(countyId);
+    public CountyResult confirmResultForCounty(Long countyId, boolean isSingleMandate) {
+        County county = districtService.getCounty(countyId);
         CountyResult cResult = getResult(county, isSingleMandate);
         cResult.setConfirmed(true);
-        countyResultRepository.update(cResult);
-        return new CountyRepresentation(county);
+        // TODO: temp hack
+        cResult.setConfirmedOn(new Date());
+        return countyResultRepository.save(cResult);
     }
 
     public CountyRepresentation deleteResultForCounty(Long countyId, boolean isSingleMandate) {
-        County county = countyRepository.findOne(countyId);
+        County county = districtService.getCounty(countyId);
         CountyResult cr = getResult(county, isSingleMandate);
         countyResultRepository.delete(cr);
         county.removeResult(cr);
@@ -103,5 +99,12 @@ public class CountyResultService {
                      .filter(cr -> cr.isSingleMandateSystem() == isSingleMandate)
                      .findFirst()
                      .get();
+    }
+
+
+    private void throwNotoundIfNull(Object object, String message) {
+        if (object == null) {
+            throw new NotFoundException(message);
+        }
     }
 }

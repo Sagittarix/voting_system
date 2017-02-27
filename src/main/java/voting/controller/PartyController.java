@@ -51,7 +51,7 @@ public class PartyController {
         return partyService.getParties().stream().map(p -> new PartyRepresentation(p)).collect(Collectors.toList());
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("{id}")
     public PartyRepresentation getParty(@PathVariable Long id) {
         Party party = partyService.getParty(id);
         return new PartyRepresentation(party);
@@ -77,18 +77,18 @@ public class PartyController {
         return new PartyRepresentation(partyService.saveParty(partyData, multipartFile));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("{id}")
     public void deleteParty(@PathVariable Long id) {
         partyService.deleteParty(id);
     }
 
-    @PostMapping(value = "/{id}/candidates", consumes = "multipart/form-data")
+    @PostMapping(value = "{id}/candidates", consumes = "multipart/form-data")
     public PartyRepresentation setCandidateList(@PathVariable Long id, @RequestParam(name = "file") MultipartFile multipartFile)
             throws IOException, CsvException {
         return new PartyRepresentation(partyService.setCandidateList(id, multipartFile));
     }
 
-    @DeleteMapping("/{id}/candidates")
+    @DeleteMapping("{id}/candidates")
     public void deleteCandidateList(@PathVariable Long id) {
         partyService.deleteCandidateList(id);
     }

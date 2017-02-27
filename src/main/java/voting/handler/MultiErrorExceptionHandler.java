@@ -1,6 +1,7 @@
 package voting.handler;
 
 import com.opencsv.exceptions.CsvException;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,14 +45,14 @@ public class MultiErrorExceptionHandler {
             status = HttpStatus.CONFLICT;
         }
         MultiErrorResponse body = new MultiErrorResponse(status.value(), ex.getMessage());
-        return new ResponseEntity(body, new HttpHeaders(), status);
+        return new ResponseEntity<>(body, new HttpHeaders(), status);
     }
 
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<Object> handleException(Exception ex) {
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
         MultiErrorResponse body = new MultiErrorResponse(status.value(), ex.getMessage());
-        return new ResponseEntity(body, new HttpHeaders(), status);
+        return new ResponseEntity<>(body, new HttpHeaders(), status);
     }
 
 }

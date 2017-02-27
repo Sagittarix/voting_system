@@ -11,6 +11,7 @@ import voting.model.results.UnitVotes;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 /**
  * Created by andrius on 2/18/17.
@@ -20,8 +21,7 @@ import java.util.Map;
 public class CountyResultsProcessingService {
 
     // get single-mandate result from particular county
-    // NoSuchElementException not caught
-    public CountyResult getSMresult(County county) {
+    public CountyResult getSMresult(County county) throws NoSuchElementException {
         return county.getCountyResultList()
                      .stream()
                      .filter(CountyResult::isSingleMandateSystem)
@@ -30,8 +30,7 @@ public class CountyResultsProcessingService {
     }
 
     // get single-mandate result from particular county
-    // NoSuchElementException not caught
-    public CountyResult getMMresult(County county) {
+    public CountyResult getMMresult(County county) throws NoSuchElementException {
         return county.getCountyResultList()
                      .stream()
                      .filter(cr -> !cr.isSingleMandateSystem())

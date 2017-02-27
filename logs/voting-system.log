@@ -1,2 +1,0 @@
-2017-02-26 13:22:16 DEBUG CountyRepController:46 - Entity extracted - CountyRepresentativeRepresentation {id=1, personalId='CR1001first', firstName='CR1001first', lastName='CR001last', email='test1@test.lt', countyId=1}
-2017-02-26 13:22:40 DEBUG CandidateController:35 - All candidates (Candidate) extracted

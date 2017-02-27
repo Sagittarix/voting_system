@@ -48,20 +48,11 @@ public class CandidateServiceImpl implements CandidateService{
 
     @Override
     public Candidate addNewCandidate(CandidateData candidateData) {
-        Candidate candidate;
-        if (candidateData.getPositionInPartyList() != null) {
-            candidate = new Candidate(candidateData.getFirstName(),
+        Candidate candidate = new Candidate(candidateData.getFirstName(),
                                       candidateData.getLastName(),
                                       candidateData.getPersonId(),
                                       candidateData.getDescription(),
-                                      candidateData.getPositionInPartyList()
-            );
-        } else {
-            candidate = new Candidate(candidateData.getFirstName(),
-                                      candidateData.getLastName(),
-                                      candidateData.getPersonId(),
-                                      candidateData.getDescription());
-        }
+                                      candidateData.getPositionInPartyList());
         return candidateRepository.save(candidate);
     }
 

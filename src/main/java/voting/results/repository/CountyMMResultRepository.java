@@ -1,4 +1,4 @@
-package voting.results;
+package voting.results.repository;
 
 import org.springframework.data.repository.CrudRepository;
 import voting.results.model.result.CountyMMResult;

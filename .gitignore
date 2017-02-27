@@ -8,8 +8,10 @@
 target
 node_modules
 uploaded-files
+logs
 
 **/built/
+
 
 
 .classpath
@@ -18,5 +20,6 @@ uploaded-files
 .eclipse
 .idea
 .metadata
+.log
 *.iml
 *.ipr

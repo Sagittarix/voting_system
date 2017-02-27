@@ -1,9 +1,9 @@
 package voting.model;
 
-import voting.model.results.DistrictResult;
+import voting.results.model.result.DistrictMMResult;
+import voting.results.model.result.DistrictSMResult;
 
 import javax.persistence.*;
-import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -27,12 +27,11 @@ public class District {
     @OneToMany(mappedBy = "district")
     private List<Candidate> candidates = new ArrayList<>();
 
-    @OneToMany(
-            fetch = FetchType.LAZY,
-            cascade = {CascadeType.REMOVE},
-            mappedBy = "district"
-    )
-    private List<DistrictResult> districtResultList;
+    @OneToOne(mappedBy = "district", cascade = CascadeType.ALL)
+    private DistrictMMResult mmResult;
+
+    @OneToOne(mappedBy = "district", cascade = CascadeType.ALL)
+    private DistrictSMResult smResult;
 
 
     public District() { }
@@ -88,12 +87,22 @@ public class District {
     }
 
 
-    public List<DistrictResult> getDistrictResultList() {
-        return districtResultList;
+    public DistrictMMResult getMmResult() {
+        return mmResult;
     }
 
-    public void setDistrictResultList(List<DistrictResult> districtResultList) {
-        this.districtResultList = districtResultList;
+    public void setMmResult(DistrictMMResult mmResult) {
+        this.mmResult = mmResult;
+        mmResult.setDistrict(this);
+    }
+
+    public DistrictSMResult getSmResult() {
+        return smResult;
+    }
+
+    public void setSmResult(DistrictSMResult smResult) {
+        this.smResult = smResult;
+        smResult.setDistrict(this);
     }
 
     @Override
@@ -102,9 +111,7 @@ public class District {
         if (o == null || getClass() != o.getClass()) return false;
         District district = (District) o;
         return Objects.equals(id, district.id) &&
-                Objects.equals(name, district.name) &&
-                Objects.equals(counties, district.counties) &&
-                Objects.equals(candidates, district.candidates);
+                Objects.equals(name, district.name);
     }
 
     @Override

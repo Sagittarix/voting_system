@@ -98,13 +98,12 @@ public class CountyRep {
         return Objects.equals(id, countyRep.id) &&
                 Objects.equals(firstName, countyRep.firstName) &&
                 Objects.equals(lastName, countyRep.lastName) &&
-                Objects.equals(email, countyRep.email) &&
-                Objects.equals(county, countyRep.county);
+                Objects.equals(email, countyRep.email);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, firstName, lastName, email, county);
+        return Objects.hash(id, firstName, lastName, email);
     }
 
     @Override

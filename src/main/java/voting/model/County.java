@@ -1,19 +1,17 @@
 package voting.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import voting.model.results.CountyResult;
+import voting.results.model.result.CountyMMResult;
+import voting.results.model.result.CountyResult;
+import voting.results.model.result.CountySMResult;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.Objects;
 
 /**
  * Created by domas on 1/10/17.
  */
 @Entity
-@Table(
-        uniqueConstraints = @UniqueConstraint(columnNames = { "name", "district_id" })
-)
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = { "name", "district_id" }))
 public class County {
 
     @Id
@@ -26,19 +24,21 @@ public class County {
     private Long voterCount;
     private String address;
 
-    @OneToMany(
-            fetch = FetchType.LAZY,
-            cascade = {CascadeType.REMOVE},
-            mappedBy = "county"
-    )
-    private List<CountyResult> countyResultList;
+
+
+    @OneToOne(mappedBy = "county", cascade = CascadeType.ALL)
+    private CountyMMResult mmResult;
+
+    @OneToOne(mappedBy = "county", cascade = CascadeType.ALL)
+    private CountySMResult smResult;
+
+
 
     @ManyToOne(
             fetch = FetchType.EAGER,
             cascade = {}
     )
     @JoinColumn(name = "district_id", nullable = false)
-    @JsonIgnore
     private District district;
 
     @OneToOne(
@@ -46,7 +46,6 @@ public class County {
             cascade = {CascadeType.REMOVE},
             fetch = FetchType.EAGER
     )
-    @JsonIgnore
     private CountyRep countyRep;
 
     public County() { }
@@ -55,10 +54,6 @@ public class County {
         this.name = name;
         this.voterCount = voterCount;
         this.address = address;
-    }
-
-    public boolean removeResult(CountyResult cr) {
-        return this.getCountyResultList().remove(cr);
     }
 
     public Long getId() {
@@ -81,12 +76,22 @@ public class County {
         this.voterCount = voterCount;
     }
 
-    public List<CountyResult> getCountyResultList() {
-        return countyResultList;
+    public CountyMMResult getMmResult() {
+        return mmResult;
     }
 
-    public void setCountyResultList(List<CountyResult> countyResultList) {
-        this.countyResultList = countyResultList;
+    public void setMmResult(CountyMMResult mmResult) {
+        this.mmResult = mmResult;
+        mmResult.setCounty(this);
+    }
+
+    public CountyResult getSmResult() {
+        return smResult;
+    }
+
+    public void setSmResult(CountySMResult smResult) {
+        this.smResult = smResult;
+        this.smResult.setCounty(this);
     }
 
     public District getDistrict() {
@@ -123,15 +128,12 @@ public class County {
         return Objects.equals(id, county.id) &&
                 Objects.equals(name, county.name) &&
                 Objects.equals(voterCount, county.voterCount) &&
-                Objects.equals(countyResultList, county.countyResultList) &&
-                Objects.equals(district, county.district) &&
-                Objects.equals(address, county.address) &&
-                Objects.equals(countyRep, county.countyRep);
+                Objects.equals(address, county.address);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, voterCount, countyResultList, district, countyRep, address);
+        return Objects.hash(id, name, voterCount, address);
     }
 
     @Override

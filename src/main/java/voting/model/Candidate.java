@@ -132,15 +132,13 @@ public class Candidate {
                 Objects.equals(personId, candidate.personId) &&
                 Objects.equals(firstName, candidate.firstName) &&
                 Objects.equals(lastName, candidate.lastName) &&
-                Objects.equals(district, candidate.district) &&
-                Objects.equals(party, candidate.party) &&
                 Objects.equals(birthDate, candidate.birthDate) &&
                 Objects.equals(positionInPartyList, candidate.positionInPartyList);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, personId, firstName, lastName, district, party, positionInPartyList, birthDate);
+        return Objects.hash(id, personId, firstName, lastName, positionInPartyList, birthDate);
     }
 
     @Override

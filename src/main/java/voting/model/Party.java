@@ -23,7 +23,7 @@ public class Party {
     //@Pattern(regexp = "/^([a-zA-ZąčęėįšųūžĄČĘĖĮŠŲŪŽ0-9\\s][^qQwWxX]*)$/", message = "Pavadinimas neatitinka formato")
     private String name;
 
-    @OneToMany(mappedBy = "party", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "party")
     private List<Candidate> candidates = new ArrayList<>();
 
     public Party() { }
@@ -70,8 +70,7 @@ public class Party {
         if (o == null || getClass() != o.getClass()) return false;
         Party party = (Party) o;
         return Objects.equals(id, party.id) &&
-                Objects.equals(name, party.name) &&
-                Objects.equals(candidates, party.candidates);
+                Objects.equals(name, party.name);
     }
 
     @Override

@@ -1,7 +1,6 @@
 package voting.dto.results;
 
 import voting.results.model.result.CountyMMResult;
-import voting.results.model.result.CountySMResult;
 
 import java.util.List;
 import java.util.stream.Collectors;

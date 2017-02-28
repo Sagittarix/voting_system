@@ -5,8 +5,6 @@ import voting.dto.results.CountyResultDTO;
 import voting.results.model.result.CountyMMResult;
 import voting.results.model.result.CountySMResult;
 
-import java.util.List;
-
 /**
  * Created by domas on 2/22/17.
  */

@@ -2,11 +2,9 @@ package voting.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.crypto.bcrypt.BCrypt;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.persistence.*;
 import java.util.Objects;
-import java.util.Random;
 
 /**
  * Created by domas on 1/10/17.

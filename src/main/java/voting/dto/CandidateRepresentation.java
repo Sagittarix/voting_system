@@ -1,13 +1,10 @@
 package voting.dto;
 
-import org.hibernate.validator.constraints.Length;
 import voting.model.Candidate;
 import voting.model.District;
 import voting.model.Party;
 import voting.utils.DateUtils;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import java.util.Objects;
 
 /**

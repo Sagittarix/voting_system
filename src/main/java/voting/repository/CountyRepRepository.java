@@ -1,7 +1,6 @@
 package voting.repository;
 
 import org.springframework.data.repository.CrudRepository;
-import voting.dto.CountyRepresentativeRepresentation;
 import voting.model.CountyRep;
 
 import java.util.Collection;

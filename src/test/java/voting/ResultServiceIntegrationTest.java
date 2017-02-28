@@ -21,6 +21,8 @@ import voting.dto.CandidateData;
 import voting.dto.CountyData;
 import voting.dto.DistrictData;
 import voting.dto.PartyData;
+import voting.dto.results.CountyResultDTO;
+import voting.dto.results.VoteDTO;
 import voting.model.Candidate;
 import voting.model.County;
 import voting.model.District;
@@ -28,14 +30,14 @@ import voting.model.Party;
 import voting.results.ResultService;
 import voting.results.model.result.CountyMMResult;
 import voting.results.model.result.CountySMResult;
-import voting.results.model.result.Result;
-import voting.results.model.votecount.CandidateVoteCount;
-import voting.results.model.votecount.PartyVoteCount;
+import voting.results.model.votecount.CandidateVote;
+import voting.results.model.votecount.PartyVote;
 import voting.service.*;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -67,6 +69,11 @@ public class ResultServiceIntegrationTest {
 
     private static PartyData partyData1;
     private static PartyData partyData2;
+
+    private static List<VoteDTO> voteList1;
+    private static List<VoteDTO> voteList2;
+    private static CountyResultDTO smResultDto;
+    private static CountyResultDTO mmResultDto;
 
     District district1;
     District district2;
@@ -132,6 +139,25 @@ public class ResultServiceIntegrationTest {
         partyData2 = new PartyData();
         partyData2.setName("Partija 2");
 
+        voteList1 = new ArrayList<>();
+        voteList1.add(new VoteDTO(1L, 100L));
+        voteList1.add(new VoteDTO(2L, 200L));
+        voteList1.add(new VoteDTO(3L, 300L));
+
+        smResultDto = new CountyResultDTO();
+        smResultDto.setCountyId(1L);
+        smResultDto.setSpoiledBallots(111L);
+        smResultDto.setVoteList(voteList1);
+
+        voteList2 = new ArrayList<>();
+        voteList2.add(new VoteDTO(1L, 1000L));
+        voteList2.add(new VoteDTO(2L, 2000L));
+
+        mmResultDto = new CountyResultDTO();
+        mmResultDto.setCountyId(1L);
+        mmResultDto.setSpoiledBallots(222L);
+        mmResultDto.setVoteList(voteList2);
+
     }
 
     @Before
@@ -155,7 +181,6 @@ public class ResultServiceIntegrationTest {
         when(parsingService.parseMultiMandateCandidateList(any())).thenReturn(candidateDataList);
         party2 = partyService.saveParty(partyData2, multiPartFile);
 
-
         county1 = districtService.getCounty(1L);
         county2 = districtService.getCounty(2L);
         county3 = districtService.getCounty(3L);
@@ -176,28 +201,18 @@ public class ResultServiceIntegrationTest {
     public void savesSMResultsCorrectly() {
 
         //Setup
-        CandidateVoteCount cvc1 = new CandidateVoteCount(candidate1, 150L);
-        CandidateVoteCount cvc2 = new CandidateVoteCount(candidate2, 200L);
-        CandidateVoteCount cvc3 = new CandidateVoteCount(candidate3, 250L);
-
-        CountySMResult smResult = new CountySMResult();
-        smResult.addVoteCount(cvc1);
-        smResult.addVoteCount(cvc2);
-        smResult.addVoteCount(cvc3);
-        smResult.setCounty(county1);
-
         //Exercise
-        CountySMResult result = resultService.addCountySMResult(smResult);
+        CountySMResult result = resultService.addCountySMResult(smResultDto);
 
         //Verify
-        List<CandidateVoteCount> votes = result.getVotes();
+        List<CandidateVote> votes = result.getVotes();
         assertThat(votes.size(), is(3));
         assertThat(votes.get(0).getCandidate(), is(candidate1));
-        assertThat(votes.get(0).getVotes(), is(150L));
+        assertThat(votes.get(0).getVoteCount(), is(100L));
         assertThat(votes.get(1).getCandidate(), is(candidate2));
-        assertThat(votes.get(1).getVotes(), is(200L));
+        assertThat(votes.get(1).getVoteCount(), is(200L));
         assertThat(votes.get(2).getCandidate(), is(candidate3));
-        assertThat(votes.get(2).getVotes(), is(250L));
+        assertThat(votes.get(2).getVoteCount(), is(300L));
 
     }
 
@@ -206,61 +221,66 @@ public class ResultServiceIntegrationTest {
     public void savesMMResultsCorrectly() {
 
         //Setup
-        PartyVoteCount pvc1 = new PartyVoteCount(party1, 1000L);
-        PartyVoteCount pvc2 = new PartyVoteCount(party2, 2000L);
-
-        CountyMMResult mmResult = new CountyMMResult();
-        mmResult.addVoteCount(pvc1);
-        mmResult.addVoteCount(pvc2);
-        mmResult.setCounty(county1);
-
         //Exercise
-        CountyMMResult result = resultService.addCountyMMResult(mmResult);
-        List<PartyVoteCount> votes = result.getVotes();
+        CountyMMResult result = resultService.addCountyMMResult(mmResultDto);
+        List<PartyVote> votes = result.getVotes();
+
         //Verify
         assertThat(votes.size(), is(2));
         assertThat(votes.get(0).getParty(), is(party1));
-        assertThat(votes.get(0).getVotes(), is(1000L));
+        assertThat(votes.get(0).getVoteCount(), is(1000L));
         assertThat(votes.get(1).getParty(), is(party2));
-        assertThat(votes.get(1).getVotes(), is(2000L));
+        assertThat(votes.get(1).getVoteCount(), is(2000L));
 
     }
 
 
     @Test
-    public void getsByTypeCorrectly() {
+    public void getsCountyResultsCorrectly() {
 
         //Setup
-        CandidateVoteCount cvc1 = new CandidateVoteCount(candidate1, 150L);
-        CandidateVoteCount cvc2 = new CandidateVoteCount(candidate2, 200L);
-        CandidateVoteCount cvc3 = new CandidateVoteCount(candidate3, 250L);
-        CountySMResult smResult = new CountySMResult();
-        smResult.addVoteCount(cvc1);
-        smResult.addVoteCount(cvc2);
-        smResult.addVoteCount(cvc3);
-        smResult.setCounty(county1);
-
-        Result result1= resultService.addCountySMResult(smResult);
-
-
-        PartyVoteCount pvc1 = new PartyVoteCount(party1, 1000L);
-        PartyVoteCount pvc2 = new PartyVoteCount(party2, 2000L);
-        CountyMMResult mmResult = new CountyMMResult();
-        mmResult.addVoteCount(pvc1);
-        mmResult.addVoteCount(pvc2);
-        mmResult.setCounty(county1);
-
-        Result result2 = resultService.addCountyMMResult(mmResult);
-
+        resultService.addCountySMResult(smResultDto);
+        resultService.addCountyMMResult(mmResultDto);
 
         //Exercise
-        CountySMResult result = resultService.getCountySMResult(county1.getId());
+        CountySMResult smResult = resultService.getCountySMResult(county1.getId());
+        CountyMMResult mmResult = resultService.getCountyMMResult(county1.getId());
 
-//        Verify
-        System.out.println(result);
-        assertThat(result.getVotes().size(), is(3));
+        //Verify
+        assertThat(smResult.getCounty(), is(county1));
+        assertThat(smResult.getVotes().size(), is(3));
+        assertThat(smResult.getVotes().get(0).getCandidate(), is(candidate1));
+        assertThat(smResult.getVotes().get(0).getVoteCount(), is(100L));
+        assertThat(smResult.getVotes().get(1).getCandidate(), is(candidate2));
+        assertThat(smResult.getVotes().get(1).getVoteCount(), is(200L));
+        assertThat(smResult.getVotes().get(2).getCandidate(), is(candidate3));
+        assertThat(smResult.getVotes().get(2).getVoteCount(), is(300L));
+        assertThat(mmResult.getCounty(), is(county1));
+        assertThat(mmResult.getVotes().size(), is(2));
+        assertThat(mmResult.getVotes().get(0).getParty(), is(party1));
+        assertThat(mmResult.getVotes().get(0).getVoteCount(), is(1000L));
+        assertThat(mmResult.getVotes().get(1).getParty(), is(party2));
+        assertThat(mmResult.getVotes().get(1).getVoteCount(), is(2000L));
 
     }
+
+
+    @Test
+    public void addingResultForCountyWhichAlreadyHasResultShouldThrowIllegalArgument() {
+        //Setup
+        resultService.addCountySMResult(smResultDto);
+        resultService.addCountyMMResult(mmResultDto);
+
+        //Exercise
+        //Verify
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage("jau užregistruotas");
+        resultService.addCountySMResult(smResultDto);
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage("jau užregistruotas");
+        resultService.addCountyMMResult(mmResultDto);
+    }
+
 
 
     private static CandidateData createCandidateData(String firstName, String lastName, String personId, String partyName, Long position) {
@@ -279,6 +299,7 @@ public class ResultServiceIntegrationTest {
         cd.setVoterCount(voterCount);
         return cd;
     }
+
 
 
     @TestConfiguration

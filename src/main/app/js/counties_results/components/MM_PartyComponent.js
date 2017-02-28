@@ -1,27 +1,21 @@
 var React = require('react');
-var styles = {
-		"image": {width: 20, height: 20}
-}
-var partyName;
+const styles = {"image": {width: 20, height: 20}};
 
-var CandidateDisplayComponent = React.createClass({
+
+var MM_PartyComponent = React.createClass({
     changeVotes: function(e) {
-        this.props.changeVotes(this.props.candidate.id, e.target.value);
+        this.props.changeVotes(this.props.party.id, e.target.value);
     },
     render: function() {
-        partyName = (this.props.candidate.partyName == undefined) ? "Išsikėlęs pats" : this.props.candidate.partyName;
+
         return (
             <div className="unit">
                   <div className="list-group-item">
                     <div>
                       <div style={{height: "20px"}}>
-                        <div className="col-md-4">
-                            <img src="app/imgs/boss.png" style={ styles.image }/> &nbsp;
-                            {this.props.candidate.firstName} &nbsp; {this.props.candidate.lastName}
-                        </div>
-                        <div className="col-md-4">
+                        <div className="col-md-8">
                             <img src="app/imgs/political_party.png" style={ styles.image }/> &nbsp;
-                            {partyName}
+                            {this.props.party.name}
                         </div>
                         <div className="col-md-2" style={{ textAlign: 'right' }}><span>Balsai:</span></div>
                         <div className="col-md-2 candidate-votes-input">
@@ -40,4 +34,4 @@ var CandidateDisplayComponent = React.createClass({
     }
 });
 
-module.exports = CandidateDisplayComponent;
+module.exports = MM_PartyComponent;

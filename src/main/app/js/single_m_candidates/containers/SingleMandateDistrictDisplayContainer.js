@@ -2,6 +2,8 @@ var React = require('react');
 var axios = require('axios');
 var SingleMandateDistrictDisplayComponent = require('../components/SingleMandateDistrictDisplayComponent');
 var CandidateCardComponent = require('../../components/CandidateCardComponent');
+var InlineCsvUploadForm = require('../../components/tiny_components/InlineCsvUploadForm');
+var ConfirmAction = require('../../components/tiny_components/ConfirmAction');
 
 var SingleMandateDistrictDisplayContainer = React.createClass({
     getInitialState: function() {
@@ -16,18 +18,21 @@ var SingleMandateDistrictDisplayContainer = React.createClass({
     },
     prepareCandidates: function() {
         var cand = [];
-        this.state.district.candidates.forEach((c, index) => {
-            cand.push(
-                  <CandidateCardComponent
-                      key={index}
-                      candidate={c}
-                  />
-            )
-        });
+        if (this.state.showCandidates) {
+            this.state.district.candidates.forEach((c, index) => {
+                cand.push(
+                      <CandidateCardComponent
+                          key={index}
+                          candidate={c}
+                      />
+                )
+            });
+        }
         return cand;
     },
     uploadCandidates: function(fd, districtId) {
         var _this = this;
+        var errors = [];
         var uploadPath = "http://localhost:8080/api/district/" + districtId + "/candidates";
         axios.post(uploadPath, fd, { headers: { 'Content-Type': 'multipart/form-data' } })
             .then(function(resp) {
@@ -35,7 +40,8 @@ var SingleMandateDistrictDisplayContainer = React.createClass({
             })
             .catch(function(err) {
                 console.log(err);
-                _this.setState({ springErrors: err.response.data.errorsMessages })
+                errors.push(err.response.data.rootMessage);
+                _this.setState({ springErrors: errors.concat(err.response.data.errorsMessages) });
             });
     },
     deleteCandidates: function() {
@@ -44,17 +50,43 @@ var SingleMandateDistrictDisplayContainer = React.createClass({
     toggleShowCandidates: function() {
         this.setState({ showCandidates: !this.state.showCandidates });
     },
+    determineActions: function() {
+        var actions;
+        if (this.state.district.candidates.length > 0) {
+            actions =
+                <ConfirmAction
+                    title="Ar tikrai norite pašalinti apygardos kandidatų sąrašą?"
+                    body="Duomenų atstatymas neįmanomas."
+                    onConfirm={this.deleteCandidates}
+                >
+                    <p className="remove-units-element">
+                        <span className="glyphicon glyphicon-remove-sign" >
+                        </span> &nbsp;
+                        <span>Šalinti kandidatus</span>
+                    </p>
+                </ConfirmAction>
+        } else {
+            actions = <InlineCsvUploadForm
+                          upload={this.uploadCandidates}
+                          associationId={this.state.district.id}
+                          springErrors={this.state.springErrors}
+                      />
+        }
+        return actions;
+    },
+    determineDisplay: function() {
+        var display;
+        if (!this.state.showCandidates) display = {display: 'none'};
+        return display;
+    },
     render: function() {
         return (
             <SingleMandateDistrictDisplayComponent
-                index={this.props.index}
-                show={this.state.showCandidates}
                 toggleShow={this.toggleShowCandidates}
-                deleteCandidates={this.deleteCandidates}
-                district={this.state.district}
-                upload={this.uploadCandidates}
+                name={this.state.district.username}
                 candidates={this.prepareCandidates()}
-                springErrors={this.state.springErrors}
+                actions={this.determineActions()}
+                display={this.determineDisplay()}
             />
         );
     }

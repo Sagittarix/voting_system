@@ -1,34 +1,41 @@
-var React = require('react');
+var React = require('react')
+var RepresentativeCard = require('./RepresentativeCard')
+var VoteListComponent = require('./VoteListComponent')
 
-var SM_CountyResultsDisplayComponent = React.createClass({
+var ResultsDisplayComponent = React.createClass({
+
     render: function() {
+        const { header, representative, results, createdOn, confirmedOn } = this.props
         return (
             <div className="container">
                 <div className="row">
+
                     <div className="col-md-8 units-list-area">
                         <div className="list-group-item active">
-                            <span>Apylinkės kandidatų rezultatai (VIENMANDAČIAI)</span>
+                            <span>{header}</span>
                         </div>
                         <div className="list-group-item">
                             <p className="county-results">
-                                Sugadintų biuletinių skaičius: &nbsp; {this.props.spoiled}
+                                Sugadintų biuletinių skaičius: &nbsp; {results.spoiledBallots}
                             </p>
                         </div>
                         <div className="list-group-item" style={{ height: 'auto' }}>
-                            {this.props.candidates}
+                            <VoteListComponent voteList={results.votes}/>
                         </div>
                     </div>
+
                     <div className="col-md-4 units-create-area">
                         <div className="col-md-11">
-                            {this.props.representative}
-                            {this.props.createdOn}
-                            {this.props.confirmedOn}
+                            <RepresentativeCard representative={representative} />
+                            {createdOn}
+                            {confirmedOn}
                         </div>
                     </div>
+
                 </div>
             </div>
         );
     }
 });
 
-module.exports = SM_CountyResultsDisplayComponent;
+module.exports = ResultsDisplayComponent;

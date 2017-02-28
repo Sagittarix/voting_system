@@ -2,7 +2,7 @@ var React = require('react');
 var axios = require('axios');
 var CountyDisplayComponent = require('../components/CountyDisplayComponent');
 var AdminViewCandidateComponent = require('../components/tiny_components/AdminViewCandidateComponent');
-var MM_PartyDisplayWithResultsComponent = require('../../counties_results/multimandate/components/MM_PartyDisplayWithResultsComponent');
+// var MM_PartyDisplayWithResultsComponent = require('../../counties_results/components/MM_PartyDisplayWithResultsComponent');
 
 var CountyDisplayContainer = React.createClass({
     getInitialState: function() {
@@ -16,20 +16,14 @@ var CountyDisplayContainer = React.createClass({
         });
     },
     componentWillReceiveProps: function(newProps) {
-        if (newProps.county != this.state.county &&
-            newProps.parties != this.state.parties)
+        if (newProps.county != this.state.county || newProps.parties != this.state.parties) {
             this.setState({ county: newProps.county, parties: newProps.parties });
-
-        if (newProps.county != this.state.county)
-            this.setState({ county: newProps.county });
-
-        if (newProps.parties != this.state.parties)
-            this.setState({ parties: newProps.parties });
+        }
     },
     componentDidMount: function() {
         var county = this.state.county;
-        var smResult = this.getResults(county, true);
-        var mmResult = this.getResults(county, false);
+        // var smResult = this.getResults(county, true);
+        // var mmResult = this.getResults(county, false);
 
         this.setState({
             smResultsConfirmed: (smResult != undefined) ? smResult.confirmed : false,
@@ -163,7 +157,7 @@ var CountyDisplayContainer = React.createClass({
             _this.setState({ smDisplay: undefined, [updatedState]: false, county: resp.data });
         })
         .catch(function(err) {
-            console.log("ERROR");
+            console.log(err);
         })
     },
     determineAllConfirmedButton: function() {

@@ -1,7 +1,7 @@
 var React = require('react');
-var SpoiledBallotsInputComponent = require('../../shared/SpoiledBallotsInputComponent');
+var SpoiledBallotsInputComponent = require('./SpoiledBallotsInputComponent');
 
-function SM_ResultsFormComponent(props) {
+function ResultsFormComponent(props) {
     return (
         <form>
             <SpoiledBallotsInputComponent
@@ -9,13 +9,13 @@ function SM_ResultsFormComponent(props) {
                 changeSpoiled={props.changeSpoiled}
             />
             <div className="list-group-item active">
-                <span>Apylinkės kandidatų sąrašas (VIENMANDAČIAI)</span>
+                <span>{props.header}</span>
             </div>
             <div className="list-group-item" style={{ height: 'auto' }}>
-                {props.candidates}
+                {props.votees}
             </div>
         </form>
     );
 }
 
-module.exports = SM_ResultsFormComponent;
+module.exports = ResultsFormComponent;

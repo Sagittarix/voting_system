@@ -12,11 +12,8 @@ var DistrictDisplayContainer = React.createClass({
                   countyName: "",
                   countyAddress: "",
                   voterCount: undefined,
-                  counties: [],
+                  counties: this.props.district.counties,
                   springErrors: [] });
-    },
-    componentDidMount: function() {
-        this.setState({ counties: this.props.district.counties });
     },
     toggleCountiesList: function() {
         this.setState({ showCounties: !this.state.showCounties });
@@ -52,6 +49,7 @@ var DistrictDisplayContainer = React.createClass({
     },
     handleCountyCreate() {
         var _this = this;
+        var errors = [];
         var body = {
             name: this.state.countyName,
             voterCount: this.state.voterCount,
@@ -60,6 +58,9 @@ var DistrictDisplayContainer = React.createClass({
         var postUrl = 'http://localhost:8080/api/district/' + this.props.district.id + '/add-county'
         axios.post(postUrl, body)
             .then(function(resp) {
+                var counties = _this.state.counties;
+                counties.push(resp.data);
+
                 _this.setState({
                     showInlineForm: false,
                     countyName: "",
@@ -71,7 +72,9 @@ var DistrictDisplayContainer = React.createClass({
                 });
             })
             .catch(function(err) {
-                _this.setState({ springErrors: err.response.data.errorsMessages })
+                console.log(err);
+                errors.push(err.response.data.rootMessage);
+                _this.setState({ springErrors: errors.concat(err.response.data.errorsMessages) });
             });
     },
     handleCountyDelete: function(index) {
@@ -79,13 +82,13 @@ var DistrictDisplayContainer = React.createClass({
         var counties = this.state.counties;
 
         axios.delete('http://localhost:8080/api/district/county/' + counties[index].id)
-            .then(function(resp) {
-                counties.splice(index, 1);
-                _this.setState({ counties: counties });
-            })
-            .catch(function(err) {
-                console.log(err);
-            })
+		    .then(function(resp) {
+		        counties.splice(index, 1);
+		        _this.setState({ counties: counties });
+		    })
+		    .catch(function(err) {
+		        console.log(err);
+		    })
     },
     handleCountyCancel: function() {
         this.setState({ showInlineForm: !this.state.showInlineForm });
@@ -96,8 +99,11 @@ var DistrictDisplayContainer = React.createClass({
     handleVoterCount: function(e) {
         this.setState({ voterCount: e.target.value })
     },
-    handleAddressChange: function(e) {
-        this.setState({ countyAddress: e.target.value })
+    handleAddressChange: function(value) {
+        this.setState({ countyAddress: value});
+    },
+    setSuggest: function(suggest) {
+        this.setState({ countyAddress: suggest.label });
     },
     handleDistrictDestroy() {
         var _this = this;
@@ -119,6 +125,7 @@ var DistrictDisplayContainer = React.createClass({
                       changeName={this.handleNameChange}
                       changeVoterCount={this.handleVoterCount}
                       changeAddress={this.handleAddressChange}
+                      setSuggest={this.setSuggest}
                       name={this.state.countyName}
                       count={this.state.voterCount}
                       address={this.state.countyAddress}
@@ -131,9 +138,10 @@ var DistrictDisplayContainer = React.createClass({
         }
     },
     render: function() {
+        var counties = (this.state.showCounties) ? this.prepareCounties() : [];
         return <DistrictDisplayComponent
-                    name={this.props.district.name}
-                    counties={this.prepareCounties()}
+                    name={this.props.district.username}
+                    counties={counties}
                     toggleCountiesList={this.toggleCountiesList}
                     show={this.state.showCounties}
                     delete={this.handleDistrictDestroy}

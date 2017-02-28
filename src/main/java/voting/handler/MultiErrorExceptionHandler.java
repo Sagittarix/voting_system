@@ -1,7 +1,6 @@
 package voting.handler;
 
 import com.opencsv.exceptions.CsvException;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

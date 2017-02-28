@@ -27,6 +27,7 @@ import voting.service.ParsingService;
 import voting.service.PartyService;
 import voting.service.StorageService;
 
+import javax.persistence.EntityManager;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -64,6 +65,9 @@ public class PartyServiceIntegrationTest {
     @InjectMocks
     @Autowired
     private PartyService sut;
+
+    @Autowired
+    private EntityManager em;
 
     private List<CandidateData> candidateDataList;
     private MockMultipartFile multiPartFile = new MockMultipartFile("file.csv", new byte[] {});
@@ -210,7 +214,12 @@ public class PartyServiceIntegrationTest {
         try {
             sut.saveParty(updatedPartyData, multiPartFile);
         } catch (Exception e) {
-            Party updatedParty = sut.getParty(savedParty.getId());
+
+            //            Party updatedParty = sut.getParty(savedParty.getId());
+            // LazyInitializationException workaround
+            Party updatedParty = (Party) em.createQuery("SELECT p FROM Party p JOIN FETCH p.candidates WHERE p.id = :id")
+                    .setParameter("id", savedParty.getId())
+                    .getSingleResult();
 
             //Verify
             assertThat(updatedParty.getName(), is("Pirma Partija"));
@@ -246,6 +255,7 @@ public class PartyServiceIntegrationTest {
 
 
     @Test
+    @Transactional
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     public void deleteCandidateListWorksCorrectly() throws IOException, CsvException {
 

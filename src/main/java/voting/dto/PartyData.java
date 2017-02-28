@@ -21,6 +21,7 @@ public class PartyData {
     @Pattern(regexp = "^([a-zA-ZąčęėįšųūžĄČĘĖĮŠŲŪŽ\\s\\-][^qQwWxX0-9]*)$", message = "Netinkamas partijos pavadinimas")
     private String name;
 
+    @Valid
     @JsonProperty("candidates")
     private List<CandidateData> candidatesData;
 

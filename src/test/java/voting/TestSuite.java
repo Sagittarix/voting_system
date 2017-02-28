@@ -11,7 +11,8 @@ import org.junit.runners.Suite;
         CandidateServiceTest.class,
         ParsingServiceTest.class,
         PartyServiceIntegrationTest.class,
-        DistrictServiceIntegrationTest.class
+        DistrictServiceIntegrationTest.class,
+        ResultServiceIntegrationTest.class
 })
 
 public class TestSuite {

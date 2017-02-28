@@ -11,7 +11,6 @@ import voting.exception.NotFoundException;
 import voting.model.Candidate;
 import voting.model.Party;
 import voting.repository.PartyRepository;
-import voting.utils.Extractor;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -132,7 +131,7 @@ public class PartyServiceImpl implements PartyService {
     }
 
     private void deleteCandidateList(Party party) {
-        List<Candidate> orphanCandidates = Extractor.getOrphanCandidates(party.getCandidates());
+        Stream<Candidate> orphanCandidates = party.getCandidates().stream().filter(c -> c.getDistrict() == null);
         party.removeAllCandidates();
         orphanCandidates.forEach(c -> candidateService.deleteCandidate(c.getId()));
         partyRepository.save(party);

@@ -60,10 +60,10 @@ public class CountyRepServiceLoggingAspect {
 
     @AfterReturning(pointcut = "deleteCountyRep(id)", argNames = "jp,id")
     public void afterDeleteCountyRep(JoinPoint jp, Long id) {
-        CountyRep cr = countyRepService.getCountyRep(id);
-        logger.debug(String.format(
-                "County representative [id: %d] (In county [id: %d]) deleted : %s",
-                cr.getId(), cr.getCounty().getId(), jp.toLongString())
-        );
+//        CountyRep cr = countyRepService.getCountyRep(id);
+//        logger.debug(String.format(
+//                "County representative [id: %d] (In county [id: %d]) deleted : %s",
+//                cr.getId(), cr.getCounty().getId(), jp.toLongString())
+//        );
     }
 }

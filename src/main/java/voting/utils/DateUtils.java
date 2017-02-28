@@ -21,6 +21,10 @@ public class DateUtils {
     }
 
     public static Calendar stringToCalendar(String stringer) {
+        if (stringer == null || !stringer.matches("\\d{11}")) {
+            return null;
+        }
+
         String year = stringer.substring(1, 3);
         int month = Integer.parseInt(stringer.substring(3, 5));
         int day = Integer.parseInt(stringer.substring(5, 7));

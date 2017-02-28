@@ -15,11 +15,11 @@ import voting.model.County;
 import voting.model.District;
 import voting.repository.CountyRepository;
 import voting.repository.DistrictRepository;
-import voting.utils.Extractor;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * Created by domas on 1/10/17.
@@ -141,7 +141,7 @@ public class DistrictServiceImpl implements DistrictService {
     }
 
     private void deleteCandidateList(District district) {
-        List<Candidate> orphanCandidates = Extractor.getOrphanCandidates(district.getCandidates());
+        Stream<Candidate> orphanCandidates = district.getCandidates().stream().filter(c -> c.getParty() == null);
         district.removeAllCandidates();
         orphanCandidates.forEach(c -> candidateService.deleteCandidate(c.getId()));
         districtRepository.save(district);

@@ -20,11 +20,9 @@ public class Candidate {
     private String firstName;
     private String lastName;
 
-    @JsonIgnore
     @ManyToOne
     private District district;
 
-    @JsonIgnore
     @ManyToOne
     private Party party;
 
@@ -132,13 +130,12 @@ public class Candidate {
                 Objects.equals(personId, candidate.personId) &&
                 Objects.equals(firstName, candidate.firstName) &&
                 Objects.equals(lastName, candidate.lastName) &&
-                Objects.equals(birthDate, candidate.birthDate) &&
                 Objects.equals(positionInPartyList, candidate.positionInPartyList);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, personId, firstName, lastName, positionInPartyList, birthDate);
+        return Objects.hash(id, personId, firstName, lastName, positionInPartyList);
     }
 
     @Override

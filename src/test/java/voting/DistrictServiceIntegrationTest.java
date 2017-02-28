@@ -49,12 +49,18 @@ public class DistrictServiceIntegrationTest {
 
 
     private static Path tmpFilePath;
+    private static String personId1;
+    private static String personId2;
+    private static String personId3;
     private static CandidateData candidate1;
     private static CandidateData candidate2;
     private static CandidateData candidate3;
+    private static String county1name;
+    private static String county2name;
     private static CountyData county1;
     private static CountyData county2;
     private static CountyData countyWithDuplicateName;
+    private static String districtName;
 
     private DistrictData districtData;
     private List<CountyData> countyDataList;
@@ -81,18 +87,24 @@ public class DistrictServiceIntegrationTest {
     @BeforeClass
     public static void beforeClassSetup() throws IOException {
         tmpFilePath = Files.createTempFile("file", "tmp");
-        candidate1 = createCandidateData("Petras", "Petraitis", "55500055501", "Išsikėlęs pats");
-        candidate2 = createCandidateData("Jonas", "Jonaitis", "55500055502", "Partija 1");
-        candidate3 = createCandidateData("Trecias", "Treciasis", "55500055503", "Išsikėlęs pats");
-        county1 = createCountyData("Apylinkė 1", 3000L);
-        county2 = createCountyData("Apylinkė 2", 4000L);
-        countyWithDuplicateName = createCountyData("Apylinkė 1", 5000L);
+        personId1 = "55500055501";
+        personId2 = "55500055502";
+        personId3 = "55500055503";
+        candidate1 = createCandidateData("Petras", "Petraitis", personId1, "Išsikėlęs pats");
+        candidate2 = createCandidateData("Jonas", "Jonaitis", personId2, "Partija 1");
+        candidate3 = createCandidateData("Trecias", "Treciasis", personId3, "Išsikėlęs pats");
+        county1name = "Apylinkė 1";
+        county2name = "Apylinkė 2";
+        districtName = "APYGARDA";
+        county1 = createCountyData(county1name, 3000L);
+        county2 = createCountyData(county2name, 4000L);
+        countyWithDuplicateName = createCountyData(county1name, 5000L);
     }
 
     @Before
     public void beforeTestSetup() throws IOException, CsvException {
         districtData = new DistrictData();
-        districtData.setName("APYGARDA");
+        districtData.setName(districtName);
         districtData.setCountiesData(Arrays.asList(county1, county2));
 
         when(storageService.store(any(), any())).thenReturn(tmpFilePath);
@@ -128,11 +140,11 @@ public class DistrictServiceIntegrationTest {
         District district = sut.addNewDistrict(districtData);
 
         //Verify
-        assertThat(district.getName(), is("APYGARDA"));
+        assertThat(district.getName(), is(districtName));
         assertThat(district.getCounties().size(), is(2));
-        assertThat(district.getCounties().get(0).getName(), is("Apylinkė 1"));
+        assertThat(district.getCounties().get(0).getName(), is(county1name));
         assertThat(district.getCounties().get(0).getDistrict().getId(), is(district.getId()));
-        assertThat(district.getCounties().get(1).getName(), is("Apylinkė 2"));
+        assertThat(district.getCounties().get(1).getName(), is(county2name));
         assertThat(district.getCounties().get(1).getDistrict().getId(), is(district.getId()));
     }
 
@@ -162,7 +174,7 @@ public class DistrictServiceIntegrationTest {
         thrown.expect(IllegalArgumentException.class);
         District district = sut.addNewDistrict(districtData);
         thrown.expect(NotFoundException.class);
-        sut.getDistrict("APYGARDA");
+        sut.getDistrict(districtName);
     }
 
     @Test
@@ -180,10 +192,10 @@ public class DistrictServiceIntegrationTest {
 
         //Verify
         assertThat(savedDistrict.getCandidates().size(), is(2));
-        assertThat(savedDistrict.getCandidates().get(0).getPersonId(), is("55500055501"));
-        assertThat(savedDistrict.getCandidates().get(1).getPersonId(), is("55500055502"));
-        assertThat(candidateService.exists("55500055501"), is(true));
-        assertThat(candidateService.exists("55500055502"), is(true));
+        assertThat(savedDistrict.getCandidates().get(0).getPersonId(), is(personId1));
+        assertThat(savedDistrict.getCandidates().get(1).getPersonId(), is(personId2));
+        assertThat(candidateService.exists(personId1), is(true));
+        assertThat(candidateService.exists(personId2), is(true));
 
 
         //Setup
@@ -195,15 +207,14 @@ public class DistrictServiceIntegrationTest {
 
         //Verify
         assertThat(updatedDistrict.getCandidates().size(), is(1));
-        assertThat(updatedDistrict.getCandidates().get(0).getPersonId(), is("55500055503"));
+        assertThat(updatedDistrict.getCandidates().get(0).getPersonId(), is(personId3));
 
-        assertThat(candidateService.exists("55500055501"), is(false));
-        assertThat(candidateService.exists("55500055502"), is(false));
+        assertThat(candidateService.exists(personId1), is(false));
+        assertThat(candidateService.exists(personId2), is(false));
 
     }
 
     @Test
-    @Transactional
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     public void shouldDeleteCandidateListCorrectly() throws IOException, CsvException {
 
@@ -222,13 +233,12 @@ public class DistrictServiceIntegrationTest {
         District updatedDistrict = sut.getDistrict(savedDistrict.getId());
 
         //Verify
-        assertThat(candidateService.exists("55500055501"), is(false));
-        assertThat(candidateService.exists("55500055502"), is(false));
+        assertThat(candidateService.exists(personId1), is(false));
+        assertThat(candidateService.exists(personId2), is(false));
     }
 
 
     @Test
-    @Transactional
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     public void removingCandidateListShouldDeleteOrphanCandidates() throws IOException, CsvException {
 
@@ -240,13 +250,13 @@ public class DistrictServiceIntegrationTest {
         sut.setCandidateList(savedDistrict.getId(), multiPartFile);
 
         //sanity check
-        assertThat(candidateService.exists("55500055501"), is(true));
+        assertThat(candidateService.exists(personId1), is(true));
 
         //Exercise
         sut.deleteCandidateList(savedDistrict.getId());
 
         //Verify
-        assertThat(candidateService.exists("55500055501"), is(false));
+        assertThat(candidateService.exists(personId1), is(false));
     }
 
 
@@ -263,8 +273,8 @@ public class DistrictServiceIntegrationTest {
 
         //sanity check
         assertThat(savedDistrict.getCandidates().size(), is(2));
-        assertThat(candidateService.exists("55500055501"), is(true));
-        assertThat(candidateService.exists("55500055502"), is(true));
+        assertThat(candidateService.exists(personId1), is(true));
+        assertThat(candidateService.exists(personId2), is(true));
 
 
         //Exercise
@@ -273,8 +283,8 @@ public class DistrictServiceIntegrationTest {
         //Verify
         thrown.expect(NotFoundException.class);
         sut.getDistrict(savedDistrict.getId());
-        assertThat(candidateService.exists("55500055501"), is(false));
-        assertThat(candidateService.exists("55500055502"), is(false));
+        assertThat(candidateService.exists(personId1), is(false));
+        assertThat(candidateService.exists(personId2), is(false));
     }
 
 

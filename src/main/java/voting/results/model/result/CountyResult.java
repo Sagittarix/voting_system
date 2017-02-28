@@ -44,6 +44,8 @@ public abstract class CountyResult extends Result {
         this.confirmed = confirmed;
         if (confirmed) {
             this.confirmedOn = Date.from(Instant.now());
+        } else {
+            this.confirmedOn = null;
         }
     }
 
@@ -51,16 +53,8 @@ public abstract class CountyResult extends Result {
         return createdOn;
     }
 
-    public void setCreatedOn(Date createdOn) {
-        this.createdOn = createdOn;
-    }
-
     public Date getConfirmedOn() {
         return confirmedOn;
-    }
-
-    public void setConfirmedOn(Date confirmedOn) {
-        this.confirmedOn = confirmedOn;
     }
 
     @Override

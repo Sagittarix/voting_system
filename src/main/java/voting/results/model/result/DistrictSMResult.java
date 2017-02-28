@@ -1,7 +1,7 @@
 package voting.results.model.result;
 
 
-import voting.results.model.votecount.CandidateVoteCount;
+import voting.results.model.votecount.CandidateVote;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -15,8 +15,8 @@ import java.util.stream.Collectors;
 @DiscriminatorValue(value = "district_sm")
 public class DistrictSMResult extends DistrictResult {
 
-    public List<CandidateVoteCount> getVotes() {
-        return super.getVoteCounts().stream().map(vc -> (CandidateVoteCount) vc).collect(Collectors.toList());
+    public List<CandidateVote> getVotes() {
+        return super.getUnitVotes().stream().map(vc -> (CandidateVote) vc).collect(Collectors.toList());
     }
 
 }

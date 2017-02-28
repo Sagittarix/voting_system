@@ -4,11 +4,11 @@
 //import org.springframework.stereotype.Service;
 //import org.springframework.transaction.annotation.Transactional;
 //import voting.dto.CountyRepresentation;
-//import voting.dto.results.CountyResultDataModel;
+//import voting.dto.results.CountyResultDTO;
 //import voting.exception.NotFoundException;
 //import voting.model.County;
 //import voting.model.results.CountyResult;
-//import voting.model.results.UnitVotes;
+//import voting.model.results.Vote;
 //import voting.repository.results.CountyResultRepository;
 //import voting.service.DistrictService;
 //
@@ -47,7 +47,7 @@
 //    }
 //
 //    @Transactional
-//    public CountyResult save(CountyResultDataModel crdm) {
+//    public CountyResult save(CountyResultDTO crdm) {
 //        return countyResultRepository.save(mapDataWithCollectionToEntity(crdm));
 //    }
 //
@@ -62,9 +62,9 @@
 //    }
 //
 //
-//    public CountyResult mapDataWithCollectionToEntity(CountyResultDataModel crdm) {
+//    public CountyResult mapDataWithCollectionToEntity(CountyResultDTO crdm) {
 //        CountyResult cr = new CountyResult();;
-//        List<UnitVotes> votesList = unitVotesService.mapCollectionDataToEntities(
+//        List<Vote> votesList = unitVotesService.mapCollectionDataToEntities(
 //                crdm.getUnitVotesDataModelsList(),
 //                crdm.isSingleMandateSystem(),
 //                cr);

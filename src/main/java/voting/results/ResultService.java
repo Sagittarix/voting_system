@@ -1,6 +1,7 @@
 package voting.results;
 
 
+import voting.dto.results.CountyResultDTO;
 import voting.results.model.result.CountyMMResult;
 import voting.results.model.result.CountySMResult;
 
@@ -11,19 +12,17 @@ import java.util.List;
  */
 public interface ResultService {
 
-    public CountySMResult addCountySMResult(CountySMResult result);
+    public CountySMResult addCountySMResult(CountyResultDTO resultDTO);
 
-    public CountyMMResult addCountyMMResult(CountyMMResult result);
+    public CountyMMResult addCountyMMResult(CountyResultDTO resultDTO);
 
     public CountySMResult getCountySMResult(Long countyId);
 
-//    public CountyMMResult getCountyMMResult(Long countyId);
-//
-//    List<CountySMResult> getAllCountySMResults();
-//
-    public void confirmResult(Long id);
+    public CountyMMResult getCountyMMResult(Long countyId);
 
-    public void deleteResult(Long id);
+    public void confirmCountyResult(Long resultId);
+
+    public void deleteCountyResult(Long resultId);
 
 
 }

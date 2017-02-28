@@ -1,7 +1,7 @@
 package voting.results.model.result;
 
 
-import voting.results.model.votecount.VoteCount;
+import voting.results.model.votecount.Vote;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -19,18 +19,18 @@ public abstract class Result {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private int spoiledBallots;
+    private Long spoiledBallots;
 
     @OneToMany(mappedBy="result", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<VoteCount> voteCounts = new ArrayList<>();
+    private List<Vote> unitVotes = new ArrayList<>();
 
-    public void addVoteCount(VoteCount voteCount) {
-        voteCounts.add(voteCount);
-        voteCount.setResult(this);
+    public void addVote(Vote vote) {
+        this.unitVotes.add(vote);
+        vote.setResult(this);
     }
 
     public Result() {
-        this.spoiledBallots = 0;
+        this.spoiledBallots = 0L;
     }
 
 
@@ -42,20 +42,20 @@ public abstract class Result {
         this.id = id;
     }
 
-    public int getSpoiledBallots() {
+    public Long getSpoiledBallots() {
         return spoiledBallots;
     }
 
-    public void setSpoiledBallots(int spoiledBallots) {
+    public void setSpoiledBallots(Long spoiledBallots) {
         this.spoiledBallots = spoiledBallots;
     }
 
-    public List<VoteCount> getVoteCounts() {
-        return voteCounts;
+    public List<Vote> getUnitVotes() {
+        return unitVotes;
     }
 
-    public void setVoteCounts(List<VoteCount> voteCounts) {
-        this.voteCounts = voteCounts;
+    public void setUnitVotes(List<Vote> unitVotes) {
+        this.unitVotes = unitVotes;
     }
 
 

@@ -1,5 +1,6 @@
 package voting.results.repository;
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import voting.model.County;
 import voting.results.model.result.CountySMResult;
@@ -10,4 +11,7 @@ import voting.results.model.result.CountySMResult;
 public interface CountySMResultRepository extends CrudRepository<CountySMResult, Long> {
 
     public CountySMResult findOneByCounty(County county);
+
+    @Query("select count(r)>0 from CountySMResult r where r.county = ?1")
+    boolean existsByCounty(County county);
 }

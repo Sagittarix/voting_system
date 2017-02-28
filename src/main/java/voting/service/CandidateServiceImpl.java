@@ -69,6 +69,7 @@ public class CandidateServiceImpl implements CandidateService{
 
     @Override
     public void deleteCandidate(Long id) {
+        Candidate candidate = getCandidate(id);
         candidateRepository.delete(id);
     }
 

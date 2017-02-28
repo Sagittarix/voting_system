@@ -3,10 +3,10 @@
 //import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.stereotype.Service;
 //import voting.dto.results.UnitVotesDataModel;
-//import voting.model.results.CandidateVotes;
+//import voting.model.results.CandidateVote;
 //import voting.model.results.CountyResult;
-//import voting.model.results.PartyVotes;
-//import voting.model.results.UnitVotes;
+//import voting.model.results.PartyVote;
+//import voting.model.results.Vote;
 //import voting.service.CandidateService;
 //import voting.service.PartyService;
 //
@@ -29,23 +29,23 @@
 //        this.partyService = partyService;
 //    }
 //
-//    public List<UnitVotes> mapCollectionDataToEntities(
+//    public List<Vote> mapCollectionDataToEntities(
 //            List<UnitVotesDataModel> list,
 //            boolean isSingleMandate,
 //            CountyResult cr) {
-//        List<UnitVotes> unitVotesList = new ArrayList<>();
+//        List<Vote> unitVotesList = new ArrayList<>();
 //        if (isSingleMandate) {
 //            list.forEach(el -> {
-//                CandidateVotes cv = new CandidateVotes();
-//                cv.setVotes(el.getVotes());
+//                CandidateVote cv = new CandidateVote();
+//                cv.setVoteCount(el.getVoteCount());
 //                cv.setCountyResult(cr);
 //                cv.setCandidate(candidateService.getCandidate(el.getUnitId()));
 //                unitVotesList.add(cv);
 //            });
 //        } else {
 //            list.forEach(el -> {
-//                PartyVotes pv = new PartyVotes();
-//                pv.setVotes(el.getVotes());
+//                PartyVote pv = new PartyVote();
+//                pv.setVoteCount(el.getVoteCount());
 //                pv.setCountyResult(cr);
 //                pv.setParty(partyService.getParty(el.getUnitId()));
 //                unitVotesList.add(pv);

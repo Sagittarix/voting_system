@@ -34,10 +34,13 @@ public class CountyRepServiceImpl implements CountyRepService {
     public CountyRep addNewCountyRep(CountyRepresentativeData countyRepData) {
         County county = districtService.getCounty(countyRepData.getCountyId());
         CountyRep countyRep = new CountyRep();
+        //TODO: JavaMail password
+        String randomPassword = BCryptUtils.generateRandomPassword(9);
+
         countyRep.setFirstName(countyRepData.getFirstName());
         countyRep.setLastName(countyRepData.getLastName());
         countyRep.setEmail(countyRepData.getEmail());
-        countyRep.setPassword_digest(BCryptUtils.generateRandomPassword(9));
+        countyRep.setPassword_digest(randomPassword);
         countyRep.setCounty(county);
         return countyRepRepository.save(countyRep);
     }

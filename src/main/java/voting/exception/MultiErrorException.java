@@ -7,6 +7,7 @@ import java.util.List;
 /**
  * Created by domas on 2/14/17.
  */
+
 public class MultiErrorException extends RuntimeException {
 
     private List<ObjectError> errors;

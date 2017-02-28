@@ -44,7 +44,7 @@ public class FileSystemStorageService implements StorageService {
             filePath = Files.createTempFile("temp", "csv");
             Files.copy(file.getInputStream(), filePath, REPLACE_EXISTING);
         } catch (IOException e) {
-            throw new StorageException("Nepavyko išsaugoti failo", e);
+            throw new StorageException("Nepavyko išsaugoti tarpinio failo", e);
         }
         return filePath;
     }

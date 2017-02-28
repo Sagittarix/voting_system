@@ -3,14 +3,9 @@
 //import org.springframework.stereotype.Component;
 //import voting.dto.CandidateRepresentation;
 //import voting.dto.PartyRepresentation;
-//import voting.dto.results.CandidateVotesRepresentation;
-//import voting.dto.results.CountyResultRepresentation;
-//import voting.dto.results.PartyVotesRepresentation;
-//import voting.dto.results.UnitVotesRepresentation;
-//import voting.model.results.CandidateVotes;
-//import voting.model.results.CountyResult;
-//import voting.model.results.PartyVotes;
-//import voting.model.results.UnitVotes;
+//import voting.dto.results.CandidateVoteRepresentation;
+//import voting.dto.results.PartyVoteRepresentation;
+//import voting.dto.results.UnitVoteRepresentation;
 //
 //import java.util.ArrayList;
 //import java.util.List;
@@ -41,30 +36,30 @@
 //        return crrl;
 //    }
 //
-//    public static CandidateVotesRepresentation makeRepresentationOf(CandidateVotes cv) {
-//        CandidateVotesRepresentation cvr = new CandidateVotesRepresentation();
+//    public static CandidateVoteRepresentation makeRepresentationOf(CandidateVote cv) {
+//        CandidateVoteRepresentation cvr = new CandidateVoteRepresentation();
 //        cvr.setId(cv.getId());
-//        cvr.setVotes(cv.getVotes());
+//        cvr.setVoteCount(cv.getVoteCount());
 //        cvr.setCandidate(new CandidateRepresentation(cv.getCandidate()));
 //
 //        return cvr;
 //    }
 //
-//    public static PartyVotesRepresentation makeRepresentationOf(PartyVotes cv) {
-//        PartyVotesRepresentation pvr = new PartyVotesRepresentation();
+//    public static PartyVoteRepresentation makeRepresentationOf(PartyVote cv) {
+//        PartyVoteRepresentation pvr = new PartyVoteRepresentation();
 //        pvr.setId(cv.getId());
-//        pvr.setVotes(cv.getVotes());
+//        pvr.setVoteCount(cv.getVoteCount());
 //        pvr.setParty(new PartyRepresentation(cv.getParty()));
 //        return pvr;
 //    }
 //
-//    public static List<UnitVotesRepresentation> makeUnitsVotesListRepresentation(List<UnitVotes> unitVotesList) {
-//        List<UnitVotesRepresentation> representations = new ArrayList<>();
-//        if (CandidateVotes.class.isAssignableFrom(unitVotesList.get(0).getClass())) {
-//            unitVotesList.forEach(uv -> representations.add(makeRepresentationOf((CandidateVotes)uv)));
+//    public static List<UnitVoteRepresentation> makeUnitsVotesListRepresentation(List<Vote> unitVotesList) {
+//        List<UnitVoteRepresentation> representations = new ArrayList<>();
+//        if (CandidateVote.class.isAssignableFrom(unitVotesList.get(0).getClass())) {
+//            unitVotesList.forEach(uv -> representations.add(makeRepresentationOf((CandidateVote)uv)));
 //        } else {
 //            unitVotesList.forEach(uv -> {
-//               representations.add(makeRepresentationOf((PartyVotes)uv));
+//               representations.add(makeRepresentationOf((PartyVote)uv));
 //            });
 //        }
 //        return representations;

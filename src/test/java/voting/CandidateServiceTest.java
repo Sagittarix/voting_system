@@ -74,11 +74,16 @@ public class CandidateServiceTest {
         sut.getCandidate("55500055501");
     }
 
+    @Test(expected = NotFoundException.class)
+    public void deletingCandidateWithNonExistingIdShouldThrowNotFound() {
+        when(repo.exists(1L)).thenReturn(false);
+        sut.deleteCandidate(1L);
+    }
+
     @Test
     public void nonMatchingNameShouldThrowIllegalArgument() {
         //Setup
         thrown.expect(IllegalArgumentException.class);
-//        thrown.expectMessage("Name mismatch");
         thrown.expectMessage("jau įrašytas kaip");
 
         newCandidate.setFirstName("Jonas");

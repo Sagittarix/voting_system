@@ -26,18 +26,14 @@ public class CandidateServiceImpl implements CandidateService{
     @Override
     public Candidate getCandidate(Long id) {
         Candidate candidate = candidateRepository.findOne(id);
-        if (candidate == null) {
-            throw (new NotFoundException("Couldn't find candidate with id " + id));
-        }
+        throwNotFoundIfNull(candidate, "Nepavyko rasti kandidato su id " + id);
         return candidate;
     }
 
     @Override
     public Candidate getCandidate(String personId) {
         Candidate candidate = candidateRepository.findByPersonId(personId);
-        if (candidate == null) {
-            throw (new NotFoundException("Couldn't find candidate with personId " + personId));
-        }
+        throwNotFoundIfNull(candidate, "Nepavyko rasti kandidato su a.k. " + personId);
         return candidate;
     }
 
@@ -69,7 +65,7 @@ public class CandidateServiceImpl implements CandidateService{
 
     @Override
     public void deleteCandidate(Long id) {
-        Candidate candidate = getCandidate(id);
+        throwNotFoundIfDoesntExist(id, "Nepavyko rasti kandidato su id " + id);
         candidateRepository.delete(id);
     }
 
@@ -129,5 +125,19 @@ public class CandidateServiceImpl implements CandidateService{
                 && newCandidateData.getPartyName() != null
                 && !newCandidateData.getPartyName().equalsIgnoreCase(existingCandidate.getParty().getName());
     }
+
+
+    private void throwNotFoundIfNull(Object obj, String message) {
+        if (obj == null) {
+            throw new NotFoundException(message);
+        }
+    }
+
+    private void throwNotFoundIfDoesntExist(Long id, String message) {
+        if (!exists(id)) {
+            throw new NotFoundException(message);
+        }
+    }
+
 
 }

@@ -1,6 +1,5 @@
 package voting.controller;
 
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import voting.dto.CandidateRepresentation;
@@ -19,7 +18,6 @@ import java.util.stream.Collectors;
 public class CandidateController {
 
     private CandidateService candidateService;
-    private static final Logger logger = Logger.getLogger(CandidateController.class);
 
     @Autowired
     public CandidateController(CandidateService candidateService) {
@@ -28,19 +26,14 @@ public class CandidateController {
 
     @GetMapping
     public List<CandidateRepresentation> getCandidates() {
-        List<CandidateRepresentation> all =
-                candidateService.getCandidates().stream()
-                                                .map(CandidateRepresentation::new)
-                                                .collect(Collectors.toList());
-        logger.debug("All candidates (Candidate) extracted");
-        return all;
+        return candidateService.getCandidates().stream()
+                                               .map(CandidateRepresentation::new)
+                                               .collect(Collectors.toList());
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("{id}")
     public CandidateRepresentation getCandidate(@PathVariable Long id) {
-        CandidateRepresentation cr = new CandidateRepresentation(candidateService.getCandidate(id));
-        logger.debug("Candidate (Candidate) extracted - " + cr);
-        return cr;
+        return new CandidateRepresentation(candidateService.getCandidate(id));
     }
 
 }

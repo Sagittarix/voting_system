@@ -1,4 +1,4 @@
-package voting;
+package voting.config;
 
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -9,6 +9,6 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
  */
 
 @Configuration
-@ComponentScan("voting.aspects")
+@ComponentScan("voting.aspect")
 @EnableAspectJAutoProxy
-public class AspectsConfiguration { }
+public class AspectConfiguration { }

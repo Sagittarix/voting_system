@@ -1,4 +1,4 @@
-package voting.downloads;
+package voting.download;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,7 +32,6 @@ public class TestResultsDownloadController {
 
         response.setContentType("text/csv;charset=utf-8");
         response.setHeader(headerKey, headerValue);
-        response.setHeader("fileName", csvFileName);
 
         County county1 = new County("Senamiestis", 3000L, "Adresas 1");
         County county2 = new County("Naujamiestis", 3000L, "Adresas 2");

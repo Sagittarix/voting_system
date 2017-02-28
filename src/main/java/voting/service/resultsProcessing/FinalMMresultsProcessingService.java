@@ -6,6 +6,7 @@
 //import voting.service.DistrictService;
 //import voting.service.PartyService;
 //
+//import java.math.BigDecimal;
 //import java.util.*;
 //import java.util.stream.Collectors;
 //
@@ -29,7 +30,7 @@
 //        this.partyService = partyService;
 //    }
 //
-//    public Map<Party, Long> getFinalPartiesWithVotes() {
+//    public Map<Party, Long> getAllPartiesWithVotes() {
 //        Map<Party, Long> mappedParties = new HashMap<>();
 //        List<Map<Party, Long>> listOfMaps = new ArrayList<>();
 //
@@ -43,26 +44,56 @@
 //        return mappedParties;
 //    }
 //
-//    public Map<Party, Double> getFinalPartiesWithSharePercentage() {
-//        Map<Party, Long> finalPartiesWithVotes = getFinalPartiesWithVotes();
-//        Long grandTotalVotes = finalPartiesWithVotes.entrySet().stream()
+//    public Map<Party, Double> getAllPartiesWithSharePercentage() {
+//        Map<Party, Long> allPartiesWithVotes = getAllPartiesWithVotes();
+//        Long grandTotalVotes = allPartiesWithVotes.entrySet().stream()
 //                .mapToLong(Map.Entry::getValue)
 //                .sum();
 //
-//        return finalPartiesWithVotes
-//                .entrySet()
-//                .stream()
-//                .map(e -> new AbstractMap.SimpleEntry<Party, Double>(e.getKey(), e.getValue() / (double) grandTotalVotes))
+//        return allPartiesWithVotes.entrySet().stream()
+//                .map(es -> new AbstractMap.SimpleEntry<Party, Double>(es.getKey(), es.getValue() / (double) grandTotalVotes))
 //                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 //    }
 //
-//    public Map<Party, Double> getFinalPartiesWithWonMandates() {
+//    // filter parties (with votes) that pass 5% of total MM votes
+//    public Map<Party, Long> getPartiesWithVotes() {
+//        List<Party> _5percentParties = getFilteredParties();
+//        return getAllPartiesWithVotes().entrySet().stream()
+//                .filter(es -> _5percentParties.contains(es.getKey()))
+//                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+//    }
+//
+//    // filter parties (with percentage) that pass 5% of total MM votes
+//    public Map<Party, Double> getPartiesWithSharePercentage() {
+//        Map<Party, Long> filteredPartiesWithVotes = getPartiesWithVotes();
+//        Long filteredGrandTotalVotes = filteredPartiesWithVotes.entrySet().stream()
+//                .mapToLong(Map.Entry::getValue)
+//                .sum();
+//
+//        return filteredPartiesWithVotes.entrySet().stream()
+//                .map(es -> new AbstractMap.SimpleEntry<Party, Double>(es.getKey(), es.getValue() / (double) filteredGrandTotalVotes))
+//                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+//    }
+//
+//    //TODO skaiciuoja apytikslius mandatus
+//    // parties with approx (double value) won mandates
+//    public Map<Party, Double> getPartiesWithWonMandates() {
 //        Long blackHoles = 141L;
-//        return getFinalPartiesWithSharePercentage()
+//        return getPartiesWithSharePercentage().entrySet().stream()
+//                .map(es -> new AbstractMap.SimpleEntry<Party, Double>(es.getKey(), blackHoles / es.getValue()))
+//                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+//    }
+//
+//    // filter parties to List that pass 5% of total MM votes
+//    private List<Party> getFilteredParties() {
+//        return getAllPartiesWithSharePercentage()
 //                .entrySet()
 //                .stream()
-//                .filter(e -> e.getValue() > 0.05)
-//                .map(e -> new AbstractMap.SimpleEntry<Party, Double>(e.getKey(), blackHoles / e.getValue()))
-//                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+//                .filter(es -> {
+//                    int compareVal = new BigDecimal(es.getValue()).compareTo(new BigDecimal(0.05));
+//                    return compareVal == 0 || compareVal == 1;
+//                })
+//                .map(Map.Entry::getKey)
+//                .collect(Collectors.toList());
 //    }
 //}

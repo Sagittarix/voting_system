@@ -37,13 +37,13 @@ public class DistrictController {
 
     @GetMapping
     public List<DistrictRepresentation> getDistricts() {
-        return districtService.getDistricts().stream().map(d -> new DistrictRepresentation(d)).collect(Collectors.toList());
+        return districtService.getDistricts().stream().map(DistrictRepresentation::new).collect(Collectors.toList());
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("{id}")
     public DistrictRepresentation getDistrict(@PathVariable Long id) {
         District district = districtService.getDistrict(id);
-        return new DistrictRepresentation();
+        return new DistrictRepresentation(district);
     }
 
     @PostMapping
@@ -54,17 +54,17 @@ public class DistrictController {
         return new DistrictRepresentation(districtService.addNewDistrict(districtData));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("{id}")
     public void deleteDistrict(@PathVariable Long id) {
         districtService.deleteDistrict(id);
     }
 
-    @DeleteMapping("/{id}/candidates")
+    @DeleteMapping("{id}/candidates")
     public void deleteCandidateList(@PathVariable Long id) {
         districtService.deleteCandidateList(id);
     }
 
-    @PostMapping(value = "/{id}/candidates", consumes = "multipart/form-data")
+    @PostMapping(value = "{id}/candidates", consumes = "multipart/form-data")
     public DistrictRepresentation setCandidateList(@PathVariable Long id, @RequestParam(name = "file") MultipartFile file)
             throws IOException, CsvException {
         return new DistrictRepresentation(districtService.setCandidateList(id, file));

@@ -37,13 +37,15 @@ public class CountyRepController {
                                .collect(Collectors.toList());
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("{id}")
     public CountyRepresentativeRepresentation getCountyRep(@PathVariable Long id) {
         return new CountyRepresentativeRepresentation(countyRepService.getCountyRep(id));
     }
 
     @PostMapping
-    public CountyRepresentativeRepresentation addNewCountyRep(@Valid @RequestBody CountyRepresentativeData countyRepData, BindingResult result) {
+    public CountyRepresentativeRepresentation addNewCountyRep(
+            @Valid @RequestBody CountyRepresentativeData countyRepData,
+            BindingResult result) {
         if (result.hasErrors()) {
             throw new MultiErrorException(
                     String.format("Klaida registruojant apygardos atstovą %s %s",
@@ -53,7 +55,7 @@ public class CountyRepController {
         return new CountyRepresentativeRepresentation(countyRepService.addNewCountyRep(countyRepData));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("{id}")
     public void deleteCountyRep(@PathVariable Long id) {
         countyRepService.deleteCountyRep(id);
     }

@@ -15,11 +15,11 @@ import voting.model.County;
 import voting.model.District;
 import voting.repository.CountyRepository;
 import voting.repository.DistrictRepository;
+import voting.utils.Extractor;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.stream.Stream;
 
 /**
  * Created by domas on 1/10/17.
@@ -57,7 +57,6 @@ public class DistrictServiceImpl implements DistrictService {
     @Override
     public District getDistrict(String name) {
         District district = districtRepository.findByName(name);
-
         throwNotFoundIfNull(district, String.format("Nepavyko rasti apygardos pavadinimu \"%s\"", name));
         return district;
     }
@@ -80,7 +79,7 @@ public class DistrictServiceImpl implements DistrictService {
         try {
             d = districtRepository.save(district);
         } catch (DataIntegrityViolationException ex) {
-            throw new IllegalArgumentException("Apylinkių pavadinimai turi būti skirtingi");
+            throw new IllegalArgumentException("Apylinkių pavadinimai turi būti skirtingi", ex);
         }
         return d;
     }
@@ -142,7 +141,7 @@ public class DistrictServiceImpl implements DistrictService {
     }
 
     private void deleteCandidateList(District district) {
-        Stream<Candidate> orphanCandidates = district.getCandidates().stream().filter(c -> c.getParty() == null);
+        List<Candidate> orphanCandidates = Extractor.getOrphanCandidates(district.getCandidates());
         district.removeAllCandidates();
         orphanCandidates.forEach(c -> candidateService.deleteCandidate(c.getId()));
         districtRepository.save(district);
@@ -175,7 +174,7 @@ public class DistrictServiceImpl implements DistrictService {
         try {
             district = districtRepository.save(district);
         } catch (DataIntegrityViolationException ex) {
-            throw new IllegalArgumentException("Apylinkių pavadinimai turi būti skirtingi");
+            throw new IllegalArgumentException("Apylinkių pavadinimai turi būti skirtingi", ex);
         }
         return district;
     }
@@ -188,7 +187,6 @@ public class DistrictServiceImpl implements DistrictService {
         districtRepository.save(district);
     }
 
-
     private List<CandidateData> extractCandidateList(MultipartFile file) throws IOException, CsvException {
         Path tempFile = storageService.storeTemporary(file);
 
@@ -200,7 +198,6 @@ public class DistrictServiceImpl implements DistrictService {
         }
         return candidateListData;
     }
-
 
     private County convertCountyDTOtoEntity(CountyData cd) {
         return new County(cd.getName(), cd.getVoterCount(), cd.getAddress());

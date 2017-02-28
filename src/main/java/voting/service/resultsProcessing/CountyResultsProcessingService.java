@@ -4,13 +4,14 @@
 //import voting.model.Candidate;
 //import voting.model.County;
 //import voting.model.Party;
-//import voting.model.results.CandidateVote;
+//import voting.model.results.CandidateVotes;
 //import voting.model.results.CountyResult;
-//import voting.model.results.PartyVote;
-//import voting.model.results.Vote;
+//import voting.model.results.PartyVotes;
+//import voting.model.results.UnitVotes;
 //
 //import java.util.HashMap;
 //import java.util.Map;
+//import java.util.NoSuchElementException;
 //
 ///**
 // * Created by andrius on 2/18/17.
@@ -20,31 +21,29 @@
 //public class CountyResultsProcessingService {
 //
 //    // get single-mandate result from particular county
-//    // NoSuchElementException not caught
-//    public CountyResult getSMresult(County county) {
+//    public CountyResult getSMresult(County county) throws NoSuchElementException {
 //        return county.getCountyResultList()
-//                     .stream()
-//                     .filter(CountyResult::isSingleMandateSystem)
-//                     .findFirst()
-//                     .get();
+//                .stream()
+//                .filter(CountyResult::isSingleMandateSystem)
+//                .findFirst()
+//                .get();
 //    }
 //
 //    // get single-mandate result from particular county
-//    // NoSuchElementException not caught
-//    public CountyResult getMMresult(County county) {
+//    public CountyResult getMMresult(County county) throws NoSuchElementException {
 //        return county.getCountyResultList()
-//                     .stream()
-//                     .filter(cr -> !cr.isSingleMandateSystem())
-//                     .findFirst()
-//                     .get();
+//                .stream()
+//                .filter(cr -> !cr.isSingleMandateSystem())
+//                .findFirst()
+//                .get();
 //    }
 //
 //    // get votes count for particular CountyResult
 //    public Long getVotesFromCountyResult(CountyResult cr) {
 //        return cr.getUnitVotesList()
-//                 .stream()
-//                 .mapToLong(Vote::getVoteCount)
-//                 .sum();
+//                .stream()
+//                .mapToLong(UnitVotes::getVotes)
+//                .sum();
 //    }
 //
 //    // get voter-turnout in particular county
@@ -63,10 +62,10 @@
 //        Map<Party, Long> partiesMap = new HashMap<>();
 //        CountyResult mmcr = getMMresult(county);
 //        mmcr.getUnitVotesList().stream()
-//                               .map(uv -> (PartyVote)(uv))
-//                               .forEach(pv -> {
-//                                    partiesMap.putIfAbsent(pv.getParty(), pv.getVoteCount());
-//                               });
+//                .map(uv -> (PartyVotes)(uv))
+//                .forEach(pv -> {
+//                    partiesMap.putIfAbsent(pv.getParty(), pv.getVotes());
+//                });
 //
 //        return partiesMap;
 //    }
@@ -74,11 +73,11 @@
 //    // get votes for individual Party
 //    public Long getPartyVotes(Party party, County county) {
 //        return getMMresult(county).getUnitVotesList().stream()
-//                                                     .map(uv -> (PartyVote)uv)
-//                                                     .filter(uv -> uv.getParty().equals(party))
-//                                                     .findFirst()
-//                                                     .get()
-//                                                     .getVoteCount();
+//                .map(uv -> (PartyVotes)uv)
+//                .filter(uv -> uv.getParty().equals(party))
+//                .findFirst()
+//                .get()
+//                .getVotes();
 //    }
 //
 //    // MM - percentage of party votes from voters-turnover
@@ -104,9 +103,9 @@
 //        Map<Candidate, Long> candidatesMap = new HashMap<>();
 //        CountyResult smcr = getSMresult(county);
 //        smcr.getUnitVotesList().stream()
-//                .map(uv -> (CandidateVote)(uv))
+//                .map(uv -> (CandidateVotes)(uv))
 //                .forEach(cv -> {
-//                    candidatesMap.putIfAbsent(cv.getCandidate(), cv.getVoteCount());
+//                    candidatesMap.putIfAbsent(cv.getCandidate(), cv.getVotes());
 //                });
 //
 //        return candidatesMap;

@@ -48,7 +48,7 @@ public class CountyRepServiceImpl implements CountyRepService {
     @Transactional
     @Override
     public void deleteCountyRep(Long id) {
-        getCountyRep(id);
+        throwNotFoundIfDoesntExist(id, "Nepavyko rasti apylinkės atstovo su id " + id);
         countyRepRepository.delete(id);
     }
 
@@ -64,9 +64,16 @@ public class CountyRepServiceImpl implements CountyRepService {
         return cr;
     }
 
-    private void throwNotFoundIfNull(Object object, String message) {
-        if (object == null) {
+    private void throwNotFoundIfNull(Object obj, String message) {
+        if (obj == null) {
             throw new NotFoundException(message);
         }
     }
+
+    private void throwNotFoundIfDoesntExist(Long id, String message) {
+        if (!countyRepRepository.exists(id)) {
+            throw new NotFoundException(message);
+        }
+    }
+
 }

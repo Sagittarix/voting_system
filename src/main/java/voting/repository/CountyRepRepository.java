@@ -10,5 +10,4 @@ import java.util.Collection;
  */
 public interface CountyRepRepository extends CrudRepository<CountyRep, Long> {
 
-    Collection<CountyRep> findAll();
 }

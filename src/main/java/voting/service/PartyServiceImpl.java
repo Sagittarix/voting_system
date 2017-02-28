@@ -44,18 +44,14 @@ public class PartyServiceImpl implements PartyService {
     @Override
     public Party getParty(Long id) {
         Party party = partyRepository.findOne(id);
-        if (party == null) {
-            throw (new NotFoundException("Couldn't find party with id " + id));
-        }
+        throwNotFoundIfNull(party, "Nepavyko rasti partijos su id " + id);
         return party;
     }
 
     @Override
     public Party getParty(String name) {
         Party party = partyRepository.findByName(name);
-        if (party == null) {
-            throw (new NotFoundException("Couldn't find party with name " + name));
-        }
+        throwNotFoundIfNull(party, String.format("Nepavyko rasti partijos su pavadinimu \"%s\" ", name));
         return party;
     }
 
@@ -86,7 +82,7 @@ public class PartyServiceImpl implements PartyService {
 
     /**
      * Given party id and csv file with list of candidates, binds those candidates to a given party.
-     * Previous candidate list is unbound from a party.
+     * Previously bound candidates are unbound from a party.
      * @param id - party id
      * @param file - csv file with a list of candidates
      * @return
@@ -168,4 +164,9 @@ public class PartyServiceImpl implements PartyService {
         return candidateListData;
     }
 
+    private void throwNotFoundIfNull(Object obj, String message) {
+        if (obj == null) {
+            throw (new NotFoundException(message));
+        }
+    }
 }

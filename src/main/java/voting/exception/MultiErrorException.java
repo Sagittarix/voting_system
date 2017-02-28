@@ -1,6 +1,5 @@
 package voting.exception;
 
-import org.springframework.stereotype.Component;
 import org.springframework.validation.ObjectError;
 
 import java.util.List;

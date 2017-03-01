@@ -104,7 +104,7 @@ var AdminResultsViewContainer = React.createClass({
 					value={d.id}
 					key={idx}
 					onClick={this.setActiveDistrict.bind(this, d.id)}>
-					{d.username}
+					{d.name}
 				</option>
 			);
 		});
@@ -136,7 +136,7 @@ var AdminResultsViewContainer = React.createClass({
 							value={c.id}
 							key={idx}
 							onClick={this.setActiveCounty.bind(this, c.id)}>
-							{c.username}
+							{c.name}
 						</option>
 					);
 				}

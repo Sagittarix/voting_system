@@ -19,9 +19,9 @@ var NewDistrictAsideForm = React.createClass({
     },
     create: function(e) {
         e.preventDefault();
-        var errors = Validations.checkErrorsDistrictAsideForm(this.props.username);
+        var errors = Validations.checkErrorsDistrictAsideForm(this.props.name);
         if (errors.length > 0) {
-            this.setState({ jsErrors: Validations.prepareJSerrors(errors, "Klaida registruojant apygardą " + this.props.username) });
+            this.setState({ jsErrors: Validations.prepareJSerrors(errors, "Klaida registruojant apygardą " + this.props.name) });
         } else {
             this.setState({ jsErrors: [] });
             this.props.create();
@@ -40,7 +40,7 @@ var NewDistrictAsideForm = React.createClass({
                 <form>
                     <div className="form-group">
                         <label htmlFor="inputDistrict">Apygardos pavadinimas</label>
-                        <input type="text" className="form-control" id="inputDistrictName" value={this.props.username} onChange={this.props.changeName}/>
+                        <input type="text" className="form-control" id="inputDistrictName" value={this.props.name} onChange={this.props.changeName}/>
                     </div>
                     {this.countiesHeader()}
                     {this.props.counties}

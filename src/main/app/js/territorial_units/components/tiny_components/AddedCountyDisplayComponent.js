@@ -9,7 +9,7 @@ function AddedCountyDisplayComponent(props) {
                 </span> &nbsp; Pašalinti
             </p>
             <p style={{ }}>
-                <span className="glyphicon glyphicon-list-alt"></span>&nbsp;{props.county.username}
+                <span className="glyphicon glyphicon-list-alt"></span>&nbsp;{props.county.name}
             </p>
             <p style={{ }}>
                 <span className="glyphicon glyphicon-user"></span>&nbsp;{props.county.voterCount}

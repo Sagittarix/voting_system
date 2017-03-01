@@ -14,7 +14,6 @@ var Tester = React.createClass({
              });
     },
     render: function() {
-        const self = this;
         return (
             <div>
                 <button

@@ -1,15 +1,15 @@
 var React = require('react');
 var styles = {
     "image": {width: 20, height: 20}
-};
+}
 
 var VoteListRow = React.createClass({
     propTypes: {
         vote: React.PropTypes.object.isRequired
     }, 
     render: function() {
-        let vote = this.props.vote;
-        let unitHtml;
+        let vote = this.props.vote
+        let unitHtml
         if (vote.candidate) {
             let candidate = vote.candidate
             let partyName = (candidate.partyName == undefined) ? "Išsikėlęs pats" : candidate.partyName;

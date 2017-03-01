@@ -140,7 +140,7 @@ var DistrictDisplayContainer = React.createClass({
     render: function() {
         var counties = (this.state.showCounties) ? this.prepareCounties() : [];
         return <DistrictDisplayComponent
-                    name={this.props.district.username}
+                    name={this.props.district.name}
                     counties={counties}
                     toggleCountiesList={this.toggleCountiesList}
                     show={this.state.showCounties}

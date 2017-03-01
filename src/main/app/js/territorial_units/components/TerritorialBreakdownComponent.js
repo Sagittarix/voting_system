@@ -21,7 +21,7 @@ function TerritorialBreakdownComponent(props) {
                             counties={props.counties}
                             addCounty={props.addCounty}
                             changeName={props.changeName}
-                            name={props.username}
+                            name={props.name}
                             create={props.create}
                             springErrors={props.springErrors}
                         />

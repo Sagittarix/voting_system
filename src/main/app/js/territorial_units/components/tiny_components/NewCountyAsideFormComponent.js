@@ -9,7 +9,7 @@ function NewCountyAsideForm(props) {
         <form className="aside-county-form">
             <div className="form-group county-aside">
                 <label htmlFor="inputCounty">Apylinkės pavadinimas</label>
-                <input type="text" className="form-control" value={props.username} onChange={props.changeName}/>
+                <input type="text" className="form-control" value={props.name} onChange={props.changeName}/>
             </div>
             <div className="form-group county-aside">
                 <label>Gyventojų skaičius</label>

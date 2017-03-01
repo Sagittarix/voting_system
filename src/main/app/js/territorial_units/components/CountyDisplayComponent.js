@@ -20,7 +20,7 @@ function CountyDisplayComponent(props) {
     return (
         <div className="list-group-item">
             <p style={{ display: 'inline-block', width: '30%' }} id={"county-title-" + props.index}>
-                <span className="glyphicon glyphicon-list-alt"></span>&nbsp;{props.county.username}
+                <span className="glyphicon glyphicon-list-alt"></span>&nbsp;{props.county.name}
             </p>
             <p style={{ display: 'inline-block', width: '15%' }} id={"county-voters-count-" + props.index}>
                 <span className="glyphicon glyphicon-user"></span>&nbsp;{props.county.voterCount}

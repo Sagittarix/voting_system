@@ -67,12 +67,12 @@ var NewRepresentativeSideFormComponent = React.createClass({
         var uniqueCombinationOfDistrictAndCounty = '';
         this.props.OnlyDistricts.map(function(district, index){
             currentDistrictObject = district;
-            currentDistrictName = district.username;
-            if(district.username == districtToLookFor){
+            currentDistrictName = district.name;
+            if(district.name == districtToLookFor){
                 matchFound = true;
                 onlyRequiredCounties = [];
                 district.counties.map(function (county, index) {
-                    currentCountyName = county.username;
+                    currentCountyName = county.name;
                     uniqueCombinationOfDistrictAndCounty = currentDistrictName.concat(currentCountyName);
                     if(!self.props.uniqueDistrictAndCountyNameCombinationArray.includes(uniqueCombinationOfDistrictAndCounty)){
                         onlyRequiredCounties.push(county);
@@ -88,7 +88,7 @@ var NewRepresentativeSideFormComponent = React.createClass({
     },
 
     onSubmit: function (event) {
-        var tempName = this.state.username.trim()[0].toUpperCase() + this.state.username.trim().substring(1).toLowerCase();
+        var tempName = this.state.name.trim()[0].toUpperCase() + this.state.name.trim().substring(1).toLowerCase();
         var tempSurname = this.state.surname.trim()[0].toUpperCase() + this.state.surname.trim().substring(1).toLowerCase();
         tempSurname[0].toUpperCase();
         var tempEmail = this.state.email.toLowerCase();
@@ -113,10 +113,10 @@ var NewRepresentativeSideFormComponent = React.createClass({
         DistrictNames = this.props.OnlyDistricts;
 
         MakeDistrictItem = function(X) {
-            return <option key={X.id}>{X.username}</option>;
+            return <option key={X.id}>{X.name}</option>;
         };
         MakeCountyItem = function(X) {
-            return <option key={X.id}>{X.username}</option>;
+            return <option key={X.id}>{X.name}</option>;
         };
 
         var springErrors = (this.props.springErrors.length > 0) ? this.springErrors() : [];
@@ -125,7 +125,7 @@ var NewRepresentativeSideFormComponent = React.createClass({
             <form>
                 <div className="form-group">
                     <label htmlFor="inputCounty">Atstovo vardas</label>
-                    <input type="text" className="form-control" value={this.state.username} onChange={this.handleNameChange}/>
+                    <input type="text" className="form-control" value={this.state.name} onChange={this.handleNameChange}/>
                     {this.state.nameErrors}
                     <label htmlFor="inputCounty">Atstovo pavardė</label>
                     <input type="text" className="form-control" value={this.state.surname} onChange={this.handleSurnameChange}/>
@@ -151,7 +151,7 @@ var NewRepresentativeSideFormComponent = React.createClass({
                         this.state.emailErrors.length > 0 ||
                         this.state.district == 'Pasirinkite apygardą' ||
                         this.state.county == 'Pasirinkite apylinkę' ||
-                        this.state.username == '' ||
+                        this.state.name == '' ||
                         this.state.surname == '' ||
                         this.state.email == ''
                     } className="btn btn-primary btn-md" onClick={this.onSubmit} style={{ marginTop: 10 }} >Sukurti</button>

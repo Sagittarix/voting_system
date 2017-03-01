@@ -5,7 +5,7 @@ function SingleMandateDistrictDisplayComponent(props) {
         <div className="unit">
             <div className="list-group-item list-group-item-success">
                 <div onClick={props.toggleShow} style={{ cursor: 'pointer' }}>
-                    {props.username}
+                    {props.name}
                 </div>
             </div>
             <div style={ props.display }>

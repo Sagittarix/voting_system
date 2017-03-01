@@ -7,7 +7,7 @@ var NewPartyAsideFormComponent = React.createClass({
                 <form>
                     <div className="form-group">
                         <label htmlFor="inputCounty">Partijos pavadinimas</label>
-                        <input type="text" className="form-control" id="inputCountyName" onChange={this.props.changeName} value={this.props.username}/>
+                        <input type="text" className="form-control" id="inputCountyName" onChange={this.props.changeName} value={this.props.name}/>
                     </div>
                     <div className="form-group">
                         <label htmlFor="exampleInputFile">Įkelti partijos sąrašą</label>

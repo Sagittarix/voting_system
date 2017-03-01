@@ -7,7 +7,7 @@ var NewCountyInlineForm = React.createClass({
         return ({ jsErrors: [] });
     },
     submit: function() {
-        var errors = Validations.checkErrorsCountyForm(this.props.username, this.props.count, this.props.address);
+        var errors = Validations.checkErrorsCountyForm(this.props.name, this.props.count, this.props.address);
         if (errors.length > 0) {
             this.setState({ jsErrors: errors });
         } else {
@@ -35,7 +35,7 @@ var NewCountyInlineForm = React.createClass({
                         <input type="text"
                             onChange={this.props.changeName}
                             className="form-control"
-                            value={this.props.username}
+                            value={this.props.name}
                             placeholder="Apylinkės pav."
                         />
                     </div>

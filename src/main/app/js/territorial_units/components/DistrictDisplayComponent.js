@@ -32,7 +32,7 @@ function DistrictDisplayComponent(props) {
                 onClick={props.toggleCountiesList}
                 style={{ cursor: 'pointer' }}
             >
-                <div className="unit-name-area">{props.username}</div>
+                <div className="unit-name-area">{props.name}</div>
             </div>
             {actions}
             {props.counties}

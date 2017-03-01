@@ -8,27 +8,21 @@ var AdminResultsViewContainer = React.createClass({
 	getInitialState: function() {
 		return ({ districts: [],
 				  counties: [],
-				  parties: [],
 				  activeDistrictId: 0,
 				  activeCountyId: 0 });
 	},
 	componentDidMount: function() {
 		var _this = this;
 
-		axios
-			.all([
-				axios.get(spring.localHost.concat('/api/district')),
-				axios.get(spring.localHost.concat('/api/party'))
-			])
-			.then(axios.spread(function(districts, parties) {
+		axios.get(spring.localHost.concat('/api/district'))
+			.then(function(response) {
 				var counties = [];
-				districts.data.forEach(d => {
+				response.data.forEach(d => {
 					d.counties.forEach(c => counties.push(c));
 				});
-				_this.setState({ districts: districts.data,
-								 counties: counties,
-								 parties: parties.data });
-			}))
+				_this.setState({ districts: response.data,
+								 counties: counties });
+			})
 			.catch(function(err) {
 				console.log(err);
 			})
@@ -53,7 +47,6 @@ var AdminResultsViewContainer = React.createClass({
 								key={idx}
 								index={idx}
 								county={c}
-								parties={this.state.parties}
 							/>
 						);
 					}
@@ -66,7 +59,6 @@ var AdminResultsViewContainer = React.createClass({
 								key={idx}
 								index={idx}
 								county={c}
-								parties={this.state.parties}
 							/>
 						);
 					}
@@ -79,7 +71,6 @@ var AdminResultsViewContainer = React.createClass({
 						key={idx}
 						index={idx}
 						county={c}
-						// parties={this.state.parties}
 					/>
 				);
 			});

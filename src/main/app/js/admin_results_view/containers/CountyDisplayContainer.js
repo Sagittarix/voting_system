@@ -27,8 +27,8 @@ var CountyDisplayContainer = React.createClass({
         var _this = this
         axios
             .all([
-                axios.get('http://localhost:8080/api/results/county/' + county.id + '/single-mandate'),
-                axios.get('http://localhost:8080/api/results/county/' + county.id + '/multi-mandate'),
+                axios.get(spring.localHost.concat('/api/results/county/' + county.id + '/single-mandate')),
+                axios.get(spring.localHost.concat('/api/results/county/' + county.id + '/multi-mandate')),
             ])
             .then(axios.spread(function(smResult, mmResult) {
                 _this.setState({

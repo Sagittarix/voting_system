@@ -12,7 +12,7 @@ function PartyDisplayComponent(props) {
                 <div className="list-group-item">
                     {props.actions}
                     <b style={props.displayLoadingIcon}>Prašome palaukti&nbsp;</b>
-                    <img style={props.displayLoadingIcon} src="app/imgs/axios-loader.gif" alt=""/>
+                    <img style={props.displayLoadingIcon} src="app/imgs/axios-loader.gif" alt="working-hard"/>
                     {props.confirmDeleteParty}
                 </div>
                 {props.candidates}

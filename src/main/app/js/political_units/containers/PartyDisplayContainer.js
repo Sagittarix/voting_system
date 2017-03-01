@@ -85,7 +85,6 @@ var PartyDisplayContainer = React.createClass({
                           openModal={this.props.openModal}
                       />
         }
-        console.log(actions);
         return actions;
     },
     determineDisplay: function() {

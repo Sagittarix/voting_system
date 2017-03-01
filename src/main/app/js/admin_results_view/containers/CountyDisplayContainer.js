@@ -20,7 +20,7 @@ var CountyDisplayContainer = React.createClass({
             this.setState({ county: newProps.county, parties: newProps.parties });
         }
     },
-    componentDidMount: function() {
+    /*componentDidMount: function() {
         var county = this.state.county;
         // var smResult = this.getResults(county, true);
         // var mmResult = this.getResults(county, false);
@@ -29,7 +29,7 @@ var CountyDisplayContainer = React.createClass({
             smResultsConfirmed: (smResult != undefined) ? smResult.confirmed : false,
             mmResultsConfirmed: (mmResult != undefined) ? mmResult.confirmed : false
         });
-    },
+    },*/
     toggleShowResults: function() {
         this.setState({ showResults: !this.state.showResults });
     },

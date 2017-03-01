@@ -125,8 +125,6 @@ var AdminResultsViewContainer = React.createClass({
 		var counties = this.state.counties;
 		var filteredCounties = [];
 
-
-
 		if (this.state.activeDistrictId == undefined) return undefined;
 		else {
 			counties.forEach((c, idx) => {

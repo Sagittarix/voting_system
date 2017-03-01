@@ -1,5 +1,5 @@
 var React = require('react');
-var styles = {"image": {width: 20, height: 20}}
+const styles = {"image": {width: 20, height: 20}};
 
 
 var MM_PartyComponent = React.createClass({
@@ -17,10 +17,6 @@ var MM_PartyComponent = React.createClass({
                             <img src="app/imgs/political_party.png" style={ styles.image }/> &nbsp;
                             {this.props.party.name}
                         </div>
-
-
-
-
                         <div className="col-md-2" style={{ textAlign: 'right' }}><span>Balsai:</span></div>
                         <div className="col-md-2 candidate-votes-input">
                             <input

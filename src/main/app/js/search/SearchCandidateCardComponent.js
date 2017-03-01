@@ -14,7 +14,7 @@ function SearchCandidateCardComponent(props) {
                             <h4 style={ styles.marginLeft }>
                                 <span>
                                     <span style={{color:'#1c9312', fontWeight:"bold"}}>
-                                        {props.candidate.firstName}&nbsp;{props.candidate.lastName}
+                                        {props.candidate.firstName} &nbsp; {props.candidate.lastName}
                                     </span>
                                 </span>
                                 <span

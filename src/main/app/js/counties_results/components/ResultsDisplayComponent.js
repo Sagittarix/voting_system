@@ -5,7 +5,7 @@ var VoteListComponent = require('./VoteListComponent')
 var ResultsDisplayComponent = React.createClass({
 
     render: function() {
-        const { header, representative, results, createdOn, confirmedOn } = this.props
+        const { header, representative, results, createdOn, confirmedOn } = this.props;
         return (
             <div className="container">
                 <div className="row">

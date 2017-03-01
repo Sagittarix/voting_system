@@ -39,7 +39,6 @@ var CountyResultsContainer = React.createClass({
         }
     },
     getResultsOrVotees: function(props) {
-        // console.log("GETTING RESULTS")
         let _this = this
         let resultsUrl = "http://localhost:8080/api/results/county/" + props.countyId + "/" + this.resultType
         axios
@@ -59,8 +58,6 @@ var CountyResultsContainer = React.createClass({
             });
     },
     getVotees(url) {
-        // console.log("GETTING VOTEES")
-        // console.log(url)
         let _this = this
         axios
             .get(url)
@@ -81,7 +78,6 @@ var CountyResultsContainer = React.createClass({
         return votees
     },
     prepareCandidates() {
-        // console.log("PREPARING CANDIDATES")
         let candidates = this.state.votees.map((votee, idx) => {
                             return <CandidateDisplayComponent
                                         key={idx}
@@ -93,7 +89,6 @@ var CountyResultsContainer = React.createClass({
         return candidates
     },
     prepareParties() {
-        // console.log("PREPARING PARTIES")
         let parties = this.state.votees.map((votee, idx) => {
                         return <MM_PartyComponent
                                     key={idx}
@@ -157,7 +152,6 @@ var CountyResultsContainer = React.createClass({
     render: function() {
         var formOrResults;
         if (this.state.results) {
-            // console.log("RENDER RESULTS")
             formOrResults = <ResultsDisplayComponent
                                 header={this.header}
                                 representative={this.props.representative}
@@ -172,7 +166,6 @@ var CountyResultsContainer = React.createClass({
                                           )}
                             />
         } else if (this.state.votees) {
-            // console.log("RENDER RESULT FORM")
             formOrResults = <CountyResultsComponent
                                 header={this.header}
                                 representative={this.props.representative}
@@ -186,7 +179,6 @@ var CountyResultsContainer = React.createClass({
                                 clearForm={this.clearForm}
                             />
         } else {
-            // console.log("RENDER EMPTY")
             return <div></div>
         }
         return formOrResults;

@@ -4,6 +4,7 @@
 var React = require ('react');
 var axios = require ('axios');
 var CountyRepresentativesDisplayComponent = require('../components/CountyRepresentativesDisplayComponent');
+var spring = require('../../config/SpringConfig');
 
 var CountyRepresentativesDisplayContainer = React.createClass({
 
@@ -24,8 +25,8 @@ var CountyRepresentativesDisplayContainer = React.createClass({
         var self = this;
         axios
             .all([
-                axios.get('http://localhost:8080/api/county-rep'),
-                axios.get('http://localhost:8080/api/district')
+                axios.get(spring.localHost.concat('/api/county-rep')),
+                axios.get(spring.localHost.concat('/api/district'))
             ])
             .then(axios.spread(function(countyReps, districts) {
                 self.setState({
@@ -40,7 +41,7 @@ var CountyRepresentativesDisplayContainer = React.createClass({
 
     handleDeleteRepresentative: function (repId, index) {
         var self = this;
-        var deleteUrl = 'http://localhost:8080/api/county-rep/' + repId;
+        var deleteUrl = spring.localHost.concat('/api/county-rep/') + repId;
         axios.delete(deleteUrl)
             .then(function(response){
                 var representatives = self.state.representatives;
@@ -60,7 +61,7 @@ var CountyRepresentativesDisplayContainer = React.createClass({
 
         var RequestBody = {"firstName": name, "lastName": surname, "email": email, "countyId": countyId};
 
-        axios.post('http://localhost:8080/api/county-rep', RequestBody)
+        axios.post(spring.localHost.concat('/api/county-rep'), RequestBody)
             .then(function(response){
                 var actualRepresentatives = self.state.representatives;
                 actualRepresentatives.push(response.data);

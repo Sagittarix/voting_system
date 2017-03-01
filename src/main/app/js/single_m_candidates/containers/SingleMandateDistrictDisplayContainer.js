@@ -4,6 +4,7 @@ var SingleMandateDistrictDisplayComponent = require('../components/SingleMandate
 var CandidateCardComponent = require('../../components/CandidateCardComponent');
 var InlineCsvUploadForm = require('../../components/tiny_components/InlineCsvUploadForm');
 var ConfirmAction = require('../../components/tiny_components/ConfirmAction');
+var spring = require('../../config/SpringConfig');
 
 var SingleMandateDistrictDisplayContainer = React.createClass({
     getInitialState: function() {
@@ -33,7 +34,7 @@ var SingleMandateDistrictDisplayContainer = React.createClass({
     uploadCandidates: function(fd, districtId) {
         var _this = this;
         var errors = [];
-        var uploadPath = "http://localhost:8080/api/district/" + districtId + "/candidates";
+        var uploadPath = spring.localHost.concat("/api/district/") + districtId + "/candidates";
         axios.post(uploadPath, fd, { headers: { 'Content-Type': 'multipart/form-data' } })
             .then(function(resp) {
                 _this.setState({ springErrors: [], district: resp.data });
@@ -50,6 +51,7 @@ var SingleMandateDistrictDisplayContainer = React.createClass({
     toggleShowCandidates: function() {
         this.setState({ showCandidates: !this.state.showCandidates });
     },
+    emptyFunction: function () {},
     determineActions: function() {
         var actions;
         if (this.state.district.candidates.length > 0) {
@@ -70,6 +72,7 @@ var SingleMandateDistrictDisplayContainer = React.createClass({
                           upload={this.uploadCandidates}
                           associationId={this.state.district.id}
                           springErrors={this.state.springErrors}
+                          openModal={this.emptyFunction}
                       />
         }
         return actions;

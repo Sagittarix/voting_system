@@ -4,6 +4,7 @@ var PartyDisplayComponent = require('../components/PartyDisplayComponent');
 var CandidateCardComponent = require('../../components/CandidateCardComponent');
 var ConfirmAction = require('../../components/tiny_components/ConfirmAction');
 var InlineCsvUploadForm = require('../../components/tiny_components/InlineCsvUploadForm');
+var spring = require('../../config/SpringConfig');
 
 var PartyDisplayContainer = React.createClass({
     getInitialState: function() {
@@ -26,7 +27,6 @@ var PartyDisplayContainer = React.createClass({
                       <CandidateCardComponent
                           key={index}
                           candidate={c}
-                          openModal={this.props.openModal}
                       />
                 );
             });
@@ -46,7 +46,7 @@ var PartyDisplayContainer = React.createClass({
     uploadCandidates: function(fd, partyID) {
         var _this = this;
         var errors = [];
-        var uploadUrl = "http://localhost:8080/api/party/" + partyID + "/candidates";
+        var uploadUrl = spring.localHost.concat("/api/party/") + partyID + "/candidates";
         this.setState({displayLoadingIcon: {display: "inline"}});
         axios.post(uploadUrl, fd, { headers: { 'Content-Type': 'multipart/form-data' } })
             .then(function(resp) {
@@ -97,7 +97,7 @@ var PartyDisplayContainer = React.createClass({
             <ConfirmAction
                 title="Ar tikrai norite pašalinti partiją?"
                 body="Duomenų atstatymas neįmanomas."
-                onConfirm={this.deleteParty.bind(this, this.props.index, this.state.party.id)}
+                onConfirm={this.deleteParty.bind(this, this.props.raktas, this.state.party.id)}
             >
                 <p className="remove-units-element confirmation-buttons">
                     <span className="glyphicon glyphicon-remove-sign">

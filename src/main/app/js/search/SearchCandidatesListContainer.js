@@ -5,6 +5,7 @@ var SearchBarComponent = require('./SearchBarComponent');
 var SearchCandidatesHeaderComponent = require('./SearchCandidatesHeaderComponent');
 var SearchCandidateCardComponent = require('./SearchCandidateCardComponent');
 var EmptySearchCandidateCardComponent = require('./EmptySearchCandidateCardComponent');
+var spring = require('../config/SpringConfig');
 
 var SearchCandidatesListContainer = React.createClass({
     getInitialState: function() {
@@ -12,7 +13,7 @@ var SearchCandidatesListContainer = React.createClass({
     },
     componentDidMount: function() {
         var _this = this;
-        axios.get('http://localhost:8080/api/candidate')
+        axios.get(spring.localHost.concat('/api/candidate'))
              .then(resp => {
                 _this.setState({ candidates: resp.data });
              })

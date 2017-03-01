@@ -19,7 +19,7 @@ var CountyRepresentativeListLineComponent = React.createClass ({
 
                         {/*<div className="col-md-2">{this.props.repData.firstName}</div>*/}
                         {/*<div className="col-md-2">{this.props.repData.lastName}</div>*/}
-                        <div className="col-md-4">{this.props.repData.countyName}&nbsp;({this.props.repData.districtName})</div>
+                        <div className="col-md-4">{this.props.repData.countyName} ({this.props.repData.districtName})</div>
 
                         <div className="col-md-3">{this.props.repData.email}</div>
                         <div className="col-md-1" style={{ textAlign: 'center' }}>

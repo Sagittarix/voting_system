@@ -14,7 +14,7 @@ function CandidateCardComponent(props) {
         <div className="well well-sm candidate-card">
                 <div className="row candidate-card-low">
                     <div className="col-sm-8 col-md-12">
-                        <h4 style={ styles.margLeft, styles.strong }>{props.candidate.firstName}&nbsp;{props.candidate.lastName}</h4><br />
+                        <h4 style={ styles.marginLeft, styles.strong }>{props.candidate.firstName}&nbsp;{props.candidate.lastName}</h4><br />
                         <p><cite><img src="app/imgs/political_party.png" style={ styles.image }/>&nbsp; {partyName}</cite></p>
                         <p>
                             <img src="app/imgs/fingerprint.png" style={ styles.image }/>&nbsp; {props.candidate.personId}

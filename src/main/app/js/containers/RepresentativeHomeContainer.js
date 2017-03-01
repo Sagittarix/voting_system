@@ -1,6 +1,7 @@
 var React = require('react');
 var RepresentativePanelComponent = require('../components/RepresentativePanelComponent');
 var axios = require('axios');
+var spring = require('../config/SpringConfig');
 
 var RepresentativeHomeContainer = React.createClass({
     propTypes: {
@@ -14,7 +15,7 @@ var RepresentativeHomeContainer = React.createClass({
         };
     },
     componentDidMount() {
-        const url = "http://localhost:8080/api/county-rep/" + this.props.params.id;
+        const url = spring.localHost.concat("/api/county-rep/") + this.props.params.id;
 
         axios.get(url)
             .then(function(response) {

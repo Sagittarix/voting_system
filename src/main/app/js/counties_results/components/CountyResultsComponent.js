@@ -1,6 +1,6 @@
 var React = require('react');
 var ResultsFormComponent = require('./ResultsFormComponent');
-var RepresentativeCardt = require('./RepresentativeCard');
+var RepresentativeCard = require('./RepresentativeCard');
 var Validations = require('../../utils/Validations');
 
 var CountyResultsComponent = React.createClass({

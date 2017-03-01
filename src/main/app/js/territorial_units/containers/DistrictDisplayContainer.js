@@ -4,6 +4,7 @@ var DistrictDisplayComponent = require('../components/DistrictDisplayComponent')
 var CountyDisplayComponent = require('../components/CountyDisplayComponent');
 var NewCountyInlineForm = require('../components/tiny_components/NewCountyInlineForm');
 var NewCountyFormButton = require('../components/tiny_components/NewCountyFormButton');
+var spring = require('../../config/SpringConfig');
 
 var DistrictDisplayContainer = React.createClass({
     getInitialState: function() {
@@ -55,7 +56,7 @@ var DistrictDisplayContainer = React.createClass({
             voterCount: this.state.voterCount,
             address: this.state.countyAddress
         };
-        var postUrl = 'http://localhost:8080/api/district/' + this.props.district.id + '/add-county'
+        var postUrl = spring.localHost.concat('/api/district/') + this.props.district.id + '/add-county'
         axios.post(postUrl, body)
             .then(function(resp) {
                 var counties = _this.state.counties;
@@ -81,7 +82,7 @@ var DistrictDisplayContainer = React.createClass({
         var _this = this;
         var counties = this.state.counties;
 
-        axios.delete('http://localhost:8080/api/district/county/' + counties[index].id)
+        axios.delete(spring.localHost.concat('/api/district/county/') + counties[index].id)
 		    .then(function(resp) {
 		        counties.splice(index, 1);
 		        _this.setState({ counties: counties });
@@ -107,7 +108,7 @@ var DistrictDisplayContainer = React.createClass({
     },
     handleDistrictDestroy() {
         var _this = this;
-        var deletePath = "http://localhost:8080/api/district/" + this.props.district.id + "";
+        var deletePath = spring.localHost.concat("/api/district/") + this.props.district.id + "";
         axios.delete(deletePath)
             .then(function(resp) {
                 _this.setState({ showCounties: false });

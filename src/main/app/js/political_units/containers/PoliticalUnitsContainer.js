@@ -4,6 +4,7 @@ var PoliticalUnitsComponent = require('../components/PoliticalUnitsComponent');
 var PartyDisplayContainer = require('./PartyDisplayContainer');
 var CandidateCardComponent = require('../../components/CandidateCardComponent');
 var PleaseWaitModal = require('../../components/tiny_components/PleaseWaitModal');
+var spring = require('../../config/SpringConfig');
 
 var PoliticalUnitsContainer = React.createClass({
     getInitialState: function() {
@@ -12,7 +13,7 @@ var PoliticalUnitsContainer = React.createClass({
     },
     componentDidMount: function() {
         var _this = this;
-        axios.get('http://localhost:8080/api/party')
+        axios.get(spring.localHost.concat('/api/party'))
             .then(function(resp) {
                 _this.setState({ parties: resp.data });
             })
@@ -27,6 +28,7 @@ var PoliticalUnitsContainer = React.createClass({
 
                 <PleaseWaitModal
                     key={idx}
+                    raktas={idx}
                     index={idx}
                     party={p}
                     delete={this.deleteParty}
@@ -49,7 +51,7 @@ var PoliticalUnitsContainer = React.createClass({
     },
     deleteCandidates: function(party_id) {
         var _this = this;
-        var deleteUrl = "http://localhost:8080/api/party/" + party_id + "/candidates";
+        var deleteUrl = spring.localHost.concat("/api/party/") + party_id + "/candidates";
         var stateParties = this.state.parties;
         axios.delete(deleteUrl)
             .then(function(resp) {
@@ -84,7 +86,7 @@ var PoliticalUnitsContainer = React.createClass({
         var parties = this.state.parties;
         var errors = [];
 
-        axios.post('http://localhost:8080/api/party', fd, { headers: { 'Content-Type': 'multipart/form-data' } })
+        axios.post(spring.localHost.concat('/api/party'), fd, { headers: { 'Content-Type': 'multipart/form-data' } })
             .then(function(resp) {
                 parties.push(resp.data);
                 _this.setState({ parties: parties, springErrors: [] });
@@ -97,7 +99,7 @@ var PoliticalUnitsContainer = React.createClass({
     },
     deleteParty(idx, party_id) {
         var _this = this;
-        var deleteURL = "http://localhost:8080/api/party/" + party_id + "";
+        var deleteURL = spring.localHost.concat("/api/party/") + party_id + "";
         axios.delete(deleteURL)
             .then(function(resp) {
                 var parties = _this.state.parties;

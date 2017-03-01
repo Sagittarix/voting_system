@@ -30,20 +30,22 @@ var VoteListRow = React.createClass({
                         </div>
         }
         return (
-            <div className="unit">
+            
                 <div className="list-group-item">
-                    <div>
-                        <div style={{height: 20}}>
-                            {unitHtml}
-                            <div className="col-md-2" style={{ textAlign: 'right' }}>
-                                <span>Balsai:</span>
-                            </div>
-                            <div className="col-md-2">{vote.voteCount}
+                    <div className="row narrowed">
+                        <div>
+                            <div style={{height: 20}}>
+                                {unitHtml}
+                                <div className="col-md-2" style={{ textAlign: 'right' }}>
+                                    <span>Balsai:</span>
+                                </div>
+                                <div className="col-md-2">{vote.voteCount}
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+
         );
     }
 });

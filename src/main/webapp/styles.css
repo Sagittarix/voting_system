@@ -98,6 +98,10 @@ adminPanelButton:hover{
     margin-bottom: 0;
 }
 
+.form-group.login {
+    text-align: center;
+}
+
 .inline-add-county-form .form-group:last-child {
     position: relative;
     width: 25%;

@@ -67,7 +67,7 @@ var PleaseWaitModal = React.createClass ({
         return (
             <div>
                 <PartyDisplayContainer
-                    key={this.props.key}
+                    raktas={this.props.raktas}
                     index={this.props.index}
                     party={this.props.party}
                     delete={this.props.delete}
@@ -85,7 +85,7 @@ var PleaseWaitModal = React.createClass ({
                 >
                 <div>
                     <div ref="subtitle">Prašome palaukti. Sunkiai dirbame...</div>
-                    <img src="app/imgs/idomu.jpg" alt="idomu"/>
+
                 </div>
                 </Modal>
             </div>

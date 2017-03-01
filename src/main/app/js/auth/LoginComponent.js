@@ -7,6 +7,7 @@ function LoginComponent(props) {
                 <h1>Login</h1>
                 <div className="col-md-4 col-md-offset-4">
                     <form className="" onSubmit={props.doLogin}>
+                        {props.loginError}
                         <div className="form-group">
                             <label>Vardas</label>
                             <input

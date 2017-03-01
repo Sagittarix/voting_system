@@ -6,6 +6,7 @@ var CandidateDisplayComponent = require('../components/CandidateDisplayComponent
 var MM_PartyComponent = require('../components/MM_PartyComponent')
 var Validations = require('../../utils/Validations');
 var Helpers = require('../../utils/Helpers');
+var spring = require('../../config/SpringConfig');
 
 var CountyResultsContainer = React.createClass({
     getInitialState: function() {
@@ -21,9 +22,8 @@ var CountyResultsContainer = React.createClass({
     },
     componentWillMount() {
         this.resultType = this.props.location.pathname.includes('vienmandaciai') ?
-                            'single-mandate' :
-                            'multi-mandate'
-        this.resultPostUrl =  'http://localhost:8080/api/results/county/' + this.resultType
+                            'single-mandate' : 'multi-mandate';
+        this.resultPostUrl =  spring.localHost.concat('/api/results/county/') + this.resultType;
         this.header = this.resultType === 'single-mandate' ?
                         "Apylinkės kandidatų rezultatai (VIENMANDAČIAI)" :
                         "Partijų sąrašas (DAUGIAMANDAČIAI)"
@@ -40,7 +40,7 @@ var CountyResultsContainer = React.createClass({
     },
     getResultsOrVotees: function(props) {
         let _this = this
-        let resultsUrl = "http://localhost:8080/api/results/county/" + props.countyId + "/" + this.resultType
+        let resultsUrl = spring.localHost.concat("/api/results/county/") + props.countyId + "/" + this.resultType;
         axios
             .get(resultsUrl)
             .then(function(response) {
@@ -48,9 +48,9 @@ var CountyResultsContainer = React.createClass({
                     _this.setState({ results: response.data })
                 } else {
                     let getUrl = _this.resultType === 'single-mandate' ?
-                                    'http://localhost:8080/api/district/' + props.districtId + '/candidates' :
-                                    'http://localhost:8080/api/party/'
-                    _this.getVotees(getUrl)
+                                    spring.localHost.concat('/api/district/') + props.districtId + '/candidates' :
+                                    spring.localHost.concat('/api/party/');
+                    _this.getVotees(getUrl);
                 }
             })
             .catch(function(err) {

@@ -87,7 +87,7 @@ public class County {
         }
     }
 
-    public CountyResult getSmResult() {
+    public CountySMResult getSmResult() {
         return smResult;
     }
 

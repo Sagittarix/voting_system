@@ -1,7 +1,8 @@
 package voting.dto.county;
 
 import voting.dto.district.DistrictShortDTO;
-import voting.dto.results.CountyResultShortDTO;
+import voting.dto.results.CountyMMResultDTO;
+import voting.dto.results.CountySMResultDTO;
 import voting.model.County;
 
 /**
@@ -14,8 +15,8 @@ public class CountyDTO {
     private Long voterCount;
     private String address;
     private DistrictShortDTO district;
-    private CountyResultShortDTO smResult;
-    private CountyResultShortDTO mmResult;
+    private CountySMResultDTO smResult;
+    private CountyMMResultDTO mmResult;
 
 
     public CountyDTO(County c) {
@@ -24,8 +25,8 @@ public class CountyDTO {
         this.voterCount = c.getVoterCount();
         this.address = c.getAddress();
         this.district = new DistrictShortDTO(c.getDistrict());
-        this.smResult = (c.getSmResult() == null) ? null : new CountyResultShortDTO(c.getSmResult());
-        this.mmResult = (c.getMmResult() == null) ? null : new CountyResultShortDTO(c.getMmResult());
+        this.smResult = (c.getSmResult() == null) ? null : new CountySMResultDTO(c.getSmResult());
+        this.mmResult = (c.getMmResult() == null) ? null : new CountyMMResultDTO(c.getMmResult());
     }
 
     public Long getId() {
@@ -48,11 +49,11 @@ public class CountyDTO {
         return district;
     }
 
-    public CountyResultShortDTO getSmResult() {
+    public CountySMResultDTO getSmResult() {
         return smResult;
     }
 
-    public CountyResultShortDTO getMmResult() {
+    public CountyMMResultDTO getMmResult() {
         return mmResult;
     }
 }

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.validation.beanvalidation.SpringValidatorAdapter;
-import voting.dto.CandidateData;
+import voting.dto.candidate.CandidateData;
 import voting.exception.MultiErrorException;
 import voting.utils.DateUtils;
 

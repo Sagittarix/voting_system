@@ -3,7 +3,7 @@
 //import org.springframework.stereotype.Service;
 //import voting.model.Candidate;
 //import voting.model.County;
-//import voting.model.Party;
+//import voting.model.party;
 //import voting.model.results.CandidateVotes;
 //import voting.model.results.CountyResult;
 //import voting.model.results.PartyVotes;
@@ -57,9 +57,9 @@
 //        return getVotersTurnout(county) / (double)county.getVoterCount();
 //    }
 //
-//    // map each Party with its votes
-//    public Map<Party, Long> getPartiesWithVotes(County county) {
-//        Map<Party, Long> partiesMap = new HashMap<>();
+//    // map each party with its votes
+//    public Map<party, Long> getPartiesWithVotes(County county) {
+//        Map<party, Long> partiesMap = new HashMap<>();
 //        CountyResult mmcr = getMMresult(county);
 //        mmcr.getUnitVotesList().stream()
 //                .map(uv -> (PartyVotes)(uv))
@@ -70,8 +70,8 @@
 //        return partiesMap;
 //    }
 //
-//    // get votes for individual Party
-//    public Long getPartyVotes(Party party, County county) {
+//    // get votes for individual party
+//    public Long getPartyVotes(party party, County county) {
 //        return getMMresult(county).getUnitVotesList().stream()
 //                .map(uv -> (PartyVotes)uv)
 //                .filter(uv -> uv.getParty().equals(party))
@@ -81,8 +81,8 @@
 //    }
 //
 //    // MM - percentage of party votes from voters-turnover
-//    public Double getPartyVotesOutOfTotalVotesInPercentage(Party party, County county) {
-//        Map<Party, Long> partiesWithVotes = getPartiesWithVotes(county);
+//    public Double getPartyVotesOutOfTotalVotesInPercentage(party party, County county) {
+//        Map<party, Long> partiesWithVotes = getPartiesWithVotes(county);
 //        Long votes = partiesWithVotes.get(party);
 //        Long total = getVotersTurnout(county);
 //
@@ -90,8 +90,8 @@
 //    }
 //
 //    // MM - percentage of party votes from all valid bulletins
-//    public Double getPartyVotesOutOfValidVotesInPercentage(Party party, County county) {
-//        Map<Party, Long> partiesWithVotes = getPartiesWithVotes(county);
+//    public Double getPartyVotesOutOfValidVotesInPercentage(party party, County county) {
+//        Map<party, Long> partiesWithVotes = getPartiesWithVotes(county);
 //        Long votes = partiesWithVotes.get(party);
 //        Long valid = getVotesFromCountyResult(getMMresult(county));
 //

@@ -1,4 +1,4 @@
-package voting.dto;
+package voting.dto.candidate;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

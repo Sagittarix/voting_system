@@ -1,4 +1,4 @@
-package voting.dto.results;
+package voting.dto.results.vote;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -8,20 +8,20 @@ import java.util.List;
  * Created by andrius on 1/24/17.
  */
 
-public class VoteListDTO {
+public class VoteListData {
 
     @Valid
     @NotNull
-    List<VoteDTO> voteList;
+    List<VoteData> voteList;
 
-    public VoteListDTO() {
+    public VoteListData() {
     }
 
-    public List<VoteDTO> getVoteList() {
+    public List<VoteData> getVoteList() {
         return voteList;
     }
 
-    public void setVoteList(List<VoteDTO> voteList) {
+    public void setVoteList(List<VoteData> voteList) {
         this.voteList = voteList;
     }
 }

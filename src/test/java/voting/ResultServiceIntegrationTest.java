@@ -17,12 +17,12 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
-import voting.dto.CandidateData;
-import voting.dto.CountyData;
-import voting.dto.DistrictData;
-import voting.dto.PartyData;
-import voting.dto.results.CountyResultDTO;
-import voting.dto.results.VoteDTO;
+import voting.dto.candidate.CandidateData;
+import voting.dto.county.CountyData;
+import voting.dto.district.DistrictData;
+import voting.dto.party.PartyData;
+import voting.dto.results.CountyResultData;
+import voting.dto.results.vote.VoteData;
 import voting.model.Candidate;
 import voting.model.County;
 import voting.model.District;
@@ -70,10 +70,10 @@ public class ResultServiceIntegrationTest {
     private static PartyData partyData1;
     private static PartyData partyData2;
 
-    private static List<VoteDTO> voteList1;
-    private static List<VoteDTO> voteList2;
-    private static CountyResultDTO smResultDto;
-    private static CountyResultDTO mmResultDto;
+    private static List<VoteData> voteList1;
+    private static List<VoteData> voteList2;
+    private static CountyResultData smResultDto;
+    private static CountyResultData mmResultDto;
 
     District district1;
     District district2;
@@ -140,20 +140,20 @@ public class ResultServiceIntegrationTest {
         partyData2.setName("Partija 2");
 
         voteList1 = new ArrayList<>();
-        voteList1.add(new VoteDTO(1L, 100L));
-        voteList1.add(new VoteDTO(2L, 200L));
-        voteList1.add(new VoteDTO(3L, 300L));
+        voteList1.add(new VoteData(1L, 100L));
+        voteList1.add(new VoteData(2L, 200L));
+        voteList1.add(new VoteData(3L, 300L));
 
-        smResultDto = new CountyResultDTO();
+        smResultDto = new CountyResultData();
         smResultDto.setCountyId(1L);
         smResultDto.setSpoiledBallots(111L);
         smResultDto.setVoteList(voteList1);
 
         voteList2 = new ArrayList<>();
-        voteList2.add(new VoteDTO(1L, 1000L));
-        voteList2.add(new VoteDTO(2L, 2000L));
+        voteList2.add(new VoteData(1L, 1000L));
+        voteList2.add(new VoteData(2L, 2000L));
 
-        mmResultDto = new CountyResultDTO();
+        mmResultDto = new CountyResultData();
         mmResultDto.setCountyId(1L);
         mmResultDto.setSpoiledBallots(222L);
         mmResultDto.setVoteList(voteList2);

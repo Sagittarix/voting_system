@@ -5,7 +5,7 @@
 //import voting.model.Candidate;
 //import voting.model.County;
 //import voting.model.District;
-//import voting.model.Party;
+//import voting.model.party;
 //import voting.model.results.CountyResult;
 //import voting.service.PartyService;
 //
@@ -46,9 +46,9 @@
 //        return votes / (double) population;
 //    }
 //
-//    public Map<Party, Long> getPartiesWithVotes(District district) {
-//        List<Party> parties = partyService.getParties();
-//        Map<Party, Long> mappedParties = StreamSupport.stream(parties.spliterator(), false)
+//    public Map<party, Long> getPartiesWithVotes(District district) {
+//        List<party> parties = partyService.getParties();
+//        Map<party, Long> mappedParties = StreamSupport.stream(parties.spliterator(), false)
 //                                                      .collect(Collectors.toMap(Function.identity(), v -> 0L));
 //
 //        district.getCounties().forEach(c -> {
@@ -63,11 +63,11 @@
 //        return mappedParties;
 //    }
 //
-//    public Long getPartyVotes(Party party, District district) {
+//    public Long getPartyVotes(party party, District district) {
 //        return getPartiesWithVotes(district).get(party);
 //    }
 //
-//    public double getPartyVotesOutOfTotalVotesInPercentage(Party party, District district) {
+//    public double getPartyVotesOutOfTotalVotesInPercentage(party party, District district) {
 //        Long votes = district.getCounties().stream()
 //                                           .mapToLong(c -> CRPS.getPartyVotes(party, c))
 //                                           .sum();
@@ -78,7 +78,7 @@
 //        return votes / (double) turnout;
 //    }
 //
-//    public double getPartyVotesOutOfValidVotesInPercentage(Party party, District district) {
+//    public double getPartyVotesOutOfValidVotesInPercentage(party party, District district) {
 //        Long votes = district.getCounties().stream()
 //                                           .mapToLong(c -> CRPS.getPartyVotes(party, c))
 //                                           .sum();

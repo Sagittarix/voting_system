@@ -1,7 +1,7 @@
 package voting.results;
 
 
-import voting.dto.results.CountyResultDTO;
+import voting.dto.results.CountyResultData;
 import voting.results.model.result.CountyMMResult;
 import voting.results.model.result.CountySMResult;
 
@@ -10,9 +10,9 @@ import voting.results.model.result.CountySMResult;
  */
 public interface ResultService {
 
-    public CountySMResult addCountySMResult(CountyResultDTO resultDTO);
+    public CountySMResult addCountySMResult(CountyResultData resultDTO);
 
-    public CountyMMResult addCountyMMResult(CountyResultDTO resultDTO);
+    public CountyMMResult addCountyMMResult(CountyResultData resultDTO);
 
     public CountySMResult getCountySMResult(Long countyId);
 

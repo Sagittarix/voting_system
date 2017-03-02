@@ -8,9 +8,9 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import voting.dto.CandidateRepresentation;
-import voting.dto.CountyData;
-import voting.dto.DistrictRepresentation;
+import voting.dto.candidate.CandidateDTO;
+import voting.dto.county.CountyData;
+import voting.dto.district.DistrictDTO;
 import voting.service.DistrictService;
 import voting.utils.Extractor;
 
@@ -45,7 +45,7 @@ public class DistrictServiceLoggingAspect {
     void getDistrictById() { }
 
     @AfterReturning(pointcut = "getDistrictById()", returning = "returnValue")
-    public void afterGetDistrictById(JoinPoint jp, DistrictRepresentation returnValue) {
+    public void afterGetDistrictById(JoinPoint jp, DistrictDTO returnValue) {
         logger.debug(String.format("District extracted [id: %d] : %s", returnValue.getId(), jp.toLongString()));
     }
 
@@ -53,7 +53,7 @@ public class DistrictServiceLoggingAspect {
     void addNewDistrict() { }
 
     @AfterReturning(value = "addNewDistrict()", returning = "returnValue")
-    public void afterCreatingNewDistrict(JoinPoint jp, DistrictRepresentation returnValue) {
+    public void afterCreatingNewDistrict(JoinPoint jp, DistrictDTO returnValue) {
         String[] ids = Extractor.extractIdsFromCounties(returnValue.getCounties());
         logger.debug(String.format(
                 "District [id: %d] created with counties [ids: %s] : %s",
@@ -78,7 +78,7 @@ public class DistrictServiceLoggingAspect {
     @AfterReturning(value = "deleteCandidateList(id)", argNames = "jp,id")
     public void afterDeletingDistrictCandidateList(JoinPoint jp, Long id) {
         String[] ids = Extractor.extractIdsFromCandidates(
-                new DistrictRepresentation(districtService.getDistrict(id)).getCandidates()
+                new DistrictDTO(districtService.getDistrict(id)).getCandidates()
         );
         logger.debug(String.format(
                 "District [id: %d] candidates removed [ids: %s] : %s",
@@ -90,7 +90,7 @@ public class DistrictServiceLoggingAspect {
     void setCandidateList(Long id) { }
 
     @AfterReturning(value = "setCandidateList(id)", argNames = "jp,id,returnValue", returning = "returnValue")
-    public void afterSettingDistrictCandidates(JoinPoint jp, Long id, DistrictRepresentation returnValue) {
+    public void afterSettingDistrictCandidates(JoinPoint jp, Long id, DistrictDTO returnValue) {
         String[] ids = Extractor.extractIdsFromCandidates(returnValue.getCandidates());
         logger.debug(String.format(
                 "District [id: %d] has uploaded candidates [ids: %s] : %s",
@@ -102,7 +102,7 @@ public class DistrictServiceLoggingAspect {
     void getCandidateList(Long id) { }
 
     @AfterReturning(value = "getCandidateList(id)", argNames = "jp,id,returnValue", returning = "returnValue")
-    public void afterGettingDistrictCandidates(JoinPoint jp, Long id, List<CandidateRepresentation> returnValue) {
+    public void afterGettingDistrictCandidates(JoinPoint jp, Long id, List<CandidateDTO> returnValue) {
         String[] ids = Extractor.extractIdsFromCandidates(returnValue);
         logger.debug(String.format(
                 "District [id: %d] has uploaded candidates [ids: %s] : %s",
@@ -119,7 +119,7 @@ public class DistrictServiceLoggingAspect {
             value = "addCounty(id, countyData)",
             argNames = "jp,id,countyData,returnValue",
             returning = "returnValue")
-    public void afterAddingCounty(JoinPoint jp, Long id, CountyData countyData, DistrictRepresentation returnValue) {
+    public void afterAddingCounty(JoinPoint jp, Long id, CountyData countyData, DistrictDTO returnValue) {
         Long cid = returnValue.getCounties().stream()
                                             .filter(c -> c.getName().equals(countyData.getName()))
                                             .findFirst()

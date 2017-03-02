@@ -1,7 +1,7 @@
 package voting.utils;
 
-import voting.dto.CandidateRepresentation;
-import voting.dto.CountyRepresentation;
+import voting.dto.candidate.CandidateDTO;
+import voting.dto.county.CountyDTO;
 import voting.model.Candidate;
 import voting.model.Party;
 
@@ -14,14 +14,14 @@ import java.util.stream.Collectors;
 
 public class Extractor {
 
-    public static String[] extractIdsFromCandidates(List<CandidateRepresentation> cands) {
+    public static String[] extractIdsFromCandidates(List<CandidateDTO> cands) {
         return cands.stream()
                     .map(c -> c.getId().toString())
                     .collect(Collectors.toList())
                     .toArray(new String[cands.size()]);
     }
 
-    public static String[] extractIdsFromCounties(List<CountyRepresentation> counties) {
+    public static String[] extractIdsFromCounties(List<CountyDTO> counties) {
         return counties.stream()
                        .map(c -> c.getId().toString())
                        .collect(Collectors.toList())

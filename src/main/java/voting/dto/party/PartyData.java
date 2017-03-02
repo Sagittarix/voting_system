@@ -1,7 +1,8 @@
-package voting.dto;
+package voting.dto.party;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.validator.constraints.Length;
+import voting.dto.candidate.CandidateData;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;

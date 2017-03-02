@@ -2,7 +2,7 @@ package voting.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import voting.dto.CandidateData;
+import voting.dto.candidate.CandidateData;
 import voting.exception.NotFoundException;
 import voting.model.Candidate;
 import voting.repository.CandidateRepository;

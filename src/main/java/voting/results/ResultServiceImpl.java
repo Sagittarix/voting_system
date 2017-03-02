@@ -3,8 +3,8 @@ package voting.results;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import voting.dto.results.CountyResultDTO;
-import voting.dto.results.VoteDTO;
+import voting.dto.results.CountyResultData;
+import voting.dto.results.vote.VoteData;
 import voting.exception.NotFoundException;
 import voting.model.Candidate;
 import voting.model.County;
@@ -57,7 +57,7 @@ public class ResultServiceImpl implements ResultService {
 
 
     @Override
-    public CountySMResult addCountySMResult(CountyResultDTO resultDTO) {
+    public CountySMResult addCountySMResult(CountyResultData resultDTO) {
         County county = districtService.getCounty(resultDTO.getCountyId());
         if (countySMrepo.existsByCounty(county)) {
             throw new IllegalArgumentException(String.format("Apylinkės \"%s\" rezultatas jau užregistruotas", county));
@@ -67,7 +67,7 @@ public class ResultServiceImpl implements ResultService {
     }
 
     @Override
-    public CountyMMResult addCountyMMResult(CountyResultDTO resultDTO) {
+    public CountyMMResult addCountyMMResult(CountyResultData resultDTO) {
         County county = districtService.getCounty(resultDTO.getCountyId());
         if (countyMMrepo.existsByCounty(county)) {
             throw new IllegalArgumentException(String.format("Apylinkės \"%s\" rezultatas jau užregistruotas", county));
@@ -149,7 +149,7 @@ public class ResultServiceImpl implements ResultService {
     }
 
 
-    private CountySMResult convertToCountySMResult(CountyResultDTO resultDTO) {
+    private CountySMResult convertToCountySMResult(CountyResultData resultDTO) {
         CountySMResult result = new CountySMResult();
         County county = districtService.getCounty(resultDTO.getCountyId());
         result.setCounty(county);
@@ -165,7 +165,7 @@ public class ResultServiceImpl implements ResultService {
         return result;
     }
 
-    private CountyMMResult convertToCountyMMResult(CountyResultDTO resultDTO) {
+    private CountyMMResult convertToCountyMMResult(CountyResultData resultDTO) {
         CountyMMResult result = new CountyMMResult();
         County county = districtService.getCounty(resultDTO.getCountyId());
         result.setCounty(county);
@@ -182,15 +182,15 @@ public class ResultServiceImpl implements ResultService {
     }
 
 
-    private CandidateVote convertToCandidateVote(VoteDTO voteDTO) {
-        Candidate candidate = candidateService.getCandidate(voteDTO.getUnitId());
-        CandidateVote vote = new CandidateVote(candidate, voteDTO.getVotes());
+    private CandidateVote convertToCandidateVote(VoteData voteData) {
+        Candidate candidate = candidateService.getCandidate(voteData.getUnitId());
+        CandidateVote vote = new CandidateVote(candidate, voteData.getVotes());
         return vote;
     }
 
-    private PartyVote convertToPartyVote(VoteDTO voteDTO) {
-        Party party = partyService.getParty(voteDTO.getUnitId());
-        PartyVote vote = new PartyVote(party, voteDTO.getVotes());
+    private PartyVote convertToPartyVote(VoteData voteData) {
+        Party party = partyService.getParty(voteData.getUnitId());
+        PartyVote vote = new PartyVote(party, voteData.getVotes());
         return vote;
     }
 

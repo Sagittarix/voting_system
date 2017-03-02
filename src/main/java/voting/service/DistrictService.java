@@ -2,8 +2,8 @@ package voting.service;
 
 import com.opencsv.exceptions.CsvException;
 import org.springframework.web.multipart.MultipartFile;
-import voting.dto.CountyData;
-import voting.dto.DistrictData;
+import voting.dto.county.CountyData;
+import voting.dto.district.DistrictData;
 import voting.model.Candidate;
 import voting.model.County;
 import voting.model.District;

@@ -1,4 +1,4 @@
-package voting.dto.results;
+package voting.dto.results.vote;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
 /**
  * Created by domas on 2/27/17.
  */
-public class VoteDTO {
+public class VoteData {
 
     @NotNull(message = "Balsavimo objekto identifikatorius privalomas")
     private Long unitId;
@@ -17,10 +17,10 @@ public class VoteDTO {
     @Max(value = 500000, message = "Skirtų balsų negali būti tiek daug")
     private Long votes;
 
-    public VoteDTO() {
+    public VoteData() {
     }
 
-    public VoteDTO(Long unitId, Long votes) {
+    public VoteData(Long unitId, Long votes) {
         this.unitId = unitId;
         this.votes = votes;
     }

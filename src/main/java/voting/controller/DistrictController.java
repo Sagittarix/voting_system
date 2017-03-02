@@ -5,10 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import voting.dto.CandidateRepresentation;
-import voting.dto.CountyData;
-import voting.dto.DistrictData;
-import voting.dto.DistrictRepresentation;
+import voting.dto.candidate.CandidateDTO;
+import voting.dto.county.CountyData;
+import voting.dto.district.DistrictDTO;
+import voting.dto.district.DistrictData;
 import voting.exception.MultiErrorException;
 import voting.model.District;
 import voting.service.DistrictService;
@@ -36,22 +36,22 @@ public class DistrictController {
 
 
     @GetMapping
-    public List<DistrictRepresentation> getDistricts() {
-        return districtService.getDistricts().stream().map(DistrictRepresentation::new).collect(Collectors.toList());
+    public List<DistrictDTO> getDistricts() {
+        return districtService.getDistricts().stream().map(DistrictDTO::new).collect(Collectors.toList());
     }
 
     @GetMapping("{id}")
-    public DistrictRepresentation getDistrict(@PathVariable Long id) {
+    public DistrictDTO getDistrict(@PathVariable Long id) {
         District district = districtService.getDistrict(id);
-        return new DistrictRepresentation(district);
+        return new DistrictDTO(district);
     }
 
     @PostMapping
-    public DistrictRepresentation addNewDistrict(@Valid @RequestBody DistrictData districtData, BindingResult result) {
+    public DistrictDTO addNewDistrict(@Valid @RequestBody DistrictData districtData, BindingResult result) {
         if (result.hasErrors()) {
             throw new MultiErrorException("Klaida registruojant apygardą " + districtData.getName(), result.getAllErrors());
         }
-        return new DistrictRepresentation(districtService.addNewDistrict(districtData));
+        return new DistrictDTO(districtService.addNewDistrict(districtData));
     }
 
     @DeleteMapping("{id}")
@@ -65,24 +65,24 @@ public class DistrictController {
     }
 
     @PostMapping(value = "{id}/candidates", consumes = "multipart/form-data")
-    public DistrictRepresentation setCandidateList(@PathVariable Long id, @RequestParam(name = "file") MultipartFile file)
+    public DistrictDTO setCandidateList(@PathVariable Long id, @RequestParam(name = "file") MultipartFile file)
             throws IOException, CsvException {
-        return new DistrictRepresentation(districtService.setCandidateList(id, file));
+        return new DistrictDTO(districtService.setCandidateList(id, file));
     }
 
     @GetMapping("/{id}/candidates")
-    public List<CandidateRepresentation> getCandidateList(@PathVariable Long id) {
+    public List<CandidateDTO> getCandidateList(@PathVariable Long id) {
         return districtService.getCandidateList(id).stream()
-                .map(CandidateRepresentation::new)
+                .map(CandidateDTO::new)
                 .collect(Collectors.toList());
     }
 
     @PostMapping("/{id}/add-county")
-    public DistrictRepresentation addCounty(@PathVariable("id") Long districtId, @Valid @RequestBody CountyData countyData, BindingResult result) {
+    public DistrictDTO addCounty(@PathVariable("id") Long districtId, @Valid @RequestBody CountyData countyData, BindingResult result) {
         if (result.hasErrors()) {
             throw new MultiErrorException("Klaida registruojant apylinkę " + countyData.getName(), result.getAllErrors());
         }
-        return new DistrictRepresentation(districtService.addCounty(districtId, countyData));
+        return new DistrictDTO(districtService.addCounty(districtId, countyData));
     }
 
     @DeleteMapping("/county/{id}")

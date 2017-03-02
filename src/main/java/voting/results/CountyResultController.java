@@ -3,9 +3,9 @@ package voting.results;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import voting.dto.results.CountyMMResultRepresentation;
-import voting.dto.results.CountyResultDTO;
-import voting.dto.results.CountySMResultRepresentation;
+import voting.dto.results.CountyMMResultDTO;
+import voting.dto.results.CountyResultData;
+import voting.dto.results.CountySMResultDTO;
 import voting.exception.MultiErrorException;
 import voting.results.model.result.CountyMMResult;
 import voting.results.model.result.CountySMResult;
@@ -29,38 +29,38 @@ public class CountyResultController {
     }
 
     @GetMapping(path = "county/{id}/single-mandate")
-    public CountySMResultRepresentation getCountySingleMandateResult(@PathVariable("id") Long countyId) {
+    public CountySMResultDTO getCountySingleMandateResult(@PathVariable("id") Long countyId) {
         CountySMResult result = resultService.getCountySMResult(countyId);
         if (result == null) {
             return null;
         }
-        return new CountySMResultRepresentation(result);
+        return new CountySMResultDTO(result);
     }
 
     @GetMapping(path = "county/{id}/multi-mandate")
-    public CountyMMResultRepresentation getCountyMultiMandateResult(@PathVariable("id") Long countyId) {
+    public CountyMMResultDTO getCountyMultiMandateResult(@PathVariable("id") Long countyId) {
         CountyMMResult result = resultService.getCountyMMResult(countyId);
         if (result == null) {
             return null;
         }
-        return new CountyMMResultRepresentation(result);
+        return new CountyMMResultDTO(result);
     }
 
     @PostMapping(path = "county/single-mandate")
-    public CountySMResultRepresentation addCountySMResult(@Valid @RequestBody CountyResultDTO resultDTO, BindingResult result) {
+    public CountySMResultDTO addCountySMResult(@Valid @RequestBody CountyResultData resultDTO, BindingResult result) {
         if (result.hasErrors()) {
             throw new MultiErrorException("Klaida apylinkės rezultatuose!", result.getAllErrors());
         }
-        return new CountySMResultRepresentation(resultService.addCountySMResult(resultDTO));
+        return new CountySMResultDTO(resultService.addCountySMResult(resultDTO));
 
     }
 
     @PostMapping(path = "county/multi-mandate")
-    public CountyMMResultRepresentation addCountyMMResult(@Valid @RequestBody CountyResultDTO resultDTO, BindingResult result) {
+    public CountyMMResultDTO addCountyMMResult(@Valid @RequestBody CountyResultData resultDTO, BindingResult result) {
         if (result.hasErrors()) {
             throw new MultiErrorException("Klaida apylinkės rezultatuose!", result.getAllErrors());
         }
-        return new CountyMMResultRepresentation(resultService.addCountyMMResult(resultDTO));
+        return new CountyMMResultDTO(resultService.addCountyMMResult(resultDTO));
     }
 
     @PostMapping(path = "confirm")

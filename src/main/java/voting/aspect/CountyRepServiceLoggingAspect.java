@@ -8,8 +8,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import voting.dto.CountyRepresentativeRepresentation;
-import voting.model.CountyRep;
+import voting.dto.countyrep.CountyRepresentativeDTO;
 import voting.service.CountyRepService;
 
 /**
@@ -48,10 +47,10 @@ public class CountyRepServiceLoggingAspect {
     void addNewCountyRep() { }
 
     @AfterReturning(pointcut = "addNewCountyRep()", returning = "crr")
-    public void afterAddNewCountyRep(JoinPoint jp, CountyRepresentativeRepresentation crr) {
+    public void afterAddNewCountyRep(JoinPoint jp, CountyRepresentativeDTO crr) {
         logger.debug(String.format(
                 "County representative [id: %d] (In county [id: %d]) created : %s",
-                crr.getId(), crr.getCountyId(), jp.toLongString())
+                crr.getId(), crr.getCounty().getId(), jp.toLongString())
         );
     }
 

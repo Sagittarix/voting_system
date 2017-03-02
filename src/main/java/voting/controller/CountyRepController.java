@@ -3,8 +3,8 @@ package voting.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import voting.dto.CountyRepresentativeData;
-import voting.dto.CountyRepresentativeRepresentation;
+import voting.dto.countyrep.CountyRepresentativeDTO;
+import voting.dto.countyrep.CountyRepresentativeData;
 import voting.exception.MultiErrorException;
 import voting.service.CountyRepService;
 
@@ -30,20 +30,20 @@ public class CountyRepController {
     }
 
     @GetMapping
-    public List<CountyRepresentativeRepresentation> getCountyReps() {
+    public List<CountyRepresentativeDTO> getCountyReps() {
         return countyRepService.getCountyReps()
                                .stream()
-                               .map(CountyRepresentativeRepresentation::new)
+                               .map(CountyRepresentativeDTO::new)
                                .collect(Collectors.toList());
     }
 
     @GetMapping("{id}")
-    public CountyRepresentativeRepresentation getCountyRep(@PathVariable Long id) {
-        return new CountyRepresentativeRepresentation(countyRepService.getCountyRep(id));
+    public CountyRepresentativeDTO getCountyRep(@PathVariable Long id) {
+        return new CountyRepresentativeDTO(countyRepService.getCountyRep(id));
     }
 
     @PostMapping
-    public CountyRepresentativeRepresentation addNewCountyRep(
+    public CountyRepresentativeDTO addNewCountyRep(
             @Valid @RequestBody CountyRepresentativeData countyRepData,
             BindingResult result) {
         if (result.hasErrors()) {
@@ -52,7 +52,7 @@ public class CountyRepController {
                             countyRepData.getFirstName(), countyRepData.getLastName()),
                     result.getAllErrors());
         }
-        return new CountyRepresentativeRepresentation(countyRepService.addNewCountyRep(countyRepData));
+        return new CountyRepresentativeDTO(countyRepService.addNewCountyRep(countyRepData));
     }
 
     @DeleteMapping("{id}")

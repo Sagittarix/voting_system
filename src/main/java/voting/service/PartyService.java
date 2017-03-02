@@ -2,7 +2,7 @@ package voting.service;
 
 import com.opencsv.exceptions.CsvException;
 import org.springframework.web.multipart.MultipartFile;
-import voting.dto.PartyData;
+import voting.dto.party.PartyData;
 import voting.model.Party;
 
 import java.io.IOException;

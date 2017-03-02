@@ -20,6 +20,7 @@ public abstract class Result {
     private Long id;
 
     private Long spoiledBallots;
+    private Long totalBallots;
 
     @OneToMany(mappedBy="result", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Vote> unitVotes = new ArrayList<>();
@@ -48,6 +49,14 @@ public abstract class Result {
 
     public void setSpoiledBallots(Long spoiledBallots) {
         this.spoiledBallots = spoiledBallots;
+    }
+
+    public Long getTotalBallots() {
+        return totalBallots;
+    }
+
+    public void setTotalBallots(Long totalBallots) {
+        this.totalBallots = totalBallots;
     }
 
     public List<Vote> getUnitVotes() {

@@ -4,7 +4,7 @@ import org.junit.*;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
-import voting.dto.CandidateData;
+import voting.dto.candidate.CandidateData;
 import voting.exception.NotFoundException;
 import voting.model.Candidate;
 import voting.model.District;
@@ -44,7 +44,7 @@ public class CandidateServiceTest {
 
     @BeforeClass
     public static void beforeClassSetup() {
-        party = new Party("Party 1");
+        party = new Party("party 1");
         district = new District("District 1");
         existingCandidate = new Candidate(firstName, lastName, personId, description);
     }
@@ -100,7 +100,7 @@ public class CandidateServiceTest {
         thrown.expectMessage("priskirtas kitai partijai");
 
         party.addCandidate(existingCandidate);
-        newCandidate.setPartyName("Party XXX");
+        newCandidate.setPartyName("party XXX");
 
         //Exercise
         sut.checkCandidateIntegrity(newCandidate, existingCandidate);
@@ -134,7 +134,7 @@ public class CandidateServiceTest {
     @Test
     public void existingCandidateNotBoundToAPartyAndNewCandidateBoundToAPartyShouldHaveNoConflict() {
         //Setup
-        newCandidate.setPartyName("Party XXX");
+        newCandidate.setPartyName("party XXX");
 
         //Exercise
         sut.checkCandidateIntegrity(newCandidate, existingCandidate);

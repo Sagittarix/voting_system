@@ -1,62 +1,45 @@
 package voting.dto.results;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import java.util.List;
+import voting.dto.county.CountyShortDTO;
+import voting.results.model.result.CountyResult;
+
+import java.util.Date;
 
 /**
- * Created by andrius on 1/24/17.
+ * Created by andrius on 2/9/17.
  */
-public class CountyResultDTO {
 
-    @NotNull(message = "Trūksta sugadintų biuletenių skaičiaus")
-    @Min(value = 0, message = "Sugadinti biuleteniai. Negali būti neigiamas skaičius")
-    @Max(value = 500000, message = "Sugadinti biuleteniai. Negali būti tiek daug")
-    private Long spoiledBallots;
+public class CountyResultDTO extends ResultDTO {
 
-    @Valid
-    @NotNull(message = "Spring - balsavimo duomenys privalomi")
-    @JsonProperty("unitVotes")
-    private List<VoteDTO> voteList;
+    private CountyShortDTO county;
+    private boolean confirmed;
+    private Date createdOn;
+    private Date confirmedOn;
 
-    @NotNull(message = "Spring - Apylinkė privaloma")
-    private Long countyId;
-
-
-    public CountyResultDTO() {
+    public CountyResultDTO(CountyResult result) {
+        super(result);
+        confirmed = result.isConfirmed();
+        createdOn = result.getCreatedOn();
+        confirmedOn = result.getConfirmedOn();
+        county = result.getCounty() == null ? null : new CountyShortDTO(result.getCounty());
     }
 
-    public CountyResultDTO(Long spoiledBallots, List<VoteDTO> voteList, Long countyId) {
-        this.spoiledBallots = spoiledBallots;
-        this.voteList = voteList;
-        this.countyId = countyId;
+
+    public CountyShortDTO getCounty() {
+        return county;
     }
 
-    public Long getSpoiledBallots() {
-        return spoiledBallots;
+    public boolean isConfirmed() {
+        return confirmed;
     }
 
-    public void setSpoiledBallots(Long spoiledBallots) {
-        this.spoiledBallots = spoiledBallots;
+    public Date getCreatedOn() {
+        return createdOn;
     }
 
-    public List<VoteDTO> getVoteList() {
-        return voteList;
+    public Date getConfirmedOn() {
+        return confirmedOn;
     }
 
-    public void setVoteList(List<VoteDTO> voteList) {
-        this.voteList = voteList;
-    }
-
-    public Long getCountyId() {
-        return countyId;
-    }
-
-    public void setCountyId(Long countyId) {
-        this.countyId = countyId;
-    }
 }

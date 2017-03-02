@@ -1,53 +1,47 @@
-package voting.dto;
+package voting.dto.candidate;
 
-import voting.model.Candidate;
-import voting.model.District;
-import voting.model.Party;
-import voting.utils.DateUtils;
+import org.hibernate.validator.constraints.Length;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import java.util.Calendar;
 import java.util.Objects;
 
 /**
  * Created by domas on 1/12/17.
  */
-public class CandidateRepresentation {
+public class CandidateData {
 
     private Long id;
-    private String personId;
-    private String firstName;
-    private String lastName;
-    private String description;
-    private String birthDate;
 
+    @NotNull(message = "Asmens kodas būtinas")
+    @Pattern(regexp = "\\d{11}", message = "Netinkamas asmens kodas")
+    private String personId;
+
+    @NotNull(message = "Vardas būtinas")
+    @Pattern(regexp = "^([a-zA-ZąčęėįšųūžĄČĘĖĮŠŲŪŽ\\s\\-][^qQwWxX0-9]*)$", message = "Netinkamas vardo formatas")
+    @Length(min = 3, max = 40, message = "Vardo ilgis nuo 3 iki 40 simbolių")
+    private String firstName;
+
+    @NotNull(message = "Pavardė būtina")
+    @Pattern(regexp = "^([a-zA-ZąčęėįšųūžĄČĘĖĮŠŲŪŽ\\s\\-][^qQwWxX0-9]*)$", message = "Netinkamas pavardės formatas")
+    @Length(min = 3, max = 40, message = "Pavardės ilgis nuo 3 iki 40 simbolių")
+    private String lastName;
+
+    @NotNull(message = "Aprašymas būtina")
+    @Length(min = 20, max = 250, message = "Aprašymas nuo 20 iki 250 simbolių")
+    private String description;
+
+    @NotNull(message = "Nepavyko nustatyti gimimo datos")
+    private Calendar birthDate;
+
+    private Long positionInPartyList;
+
+    // not sure kuriu reikia, kolkas palieku visus
     private Long districtId;
     private String districtName;
     private Long partyId;
     private String partyName;
-    private Long positionInPartyList;
-
-    public CandidateRepresentation() {
-    }
-
-    public CandidateRepresentation(Candidate candidate) {
-        this.id = candidate.getId();
-        this.personId = candidate.getPersonId();
-        this.firstName = candidate.getFirstName();
-        this.lastName = candidate.getLastName();
-        this.description = candidate.getDescription();
-        this.birthDate = DateUtils.stringifyCalendar(candidate.getBirthDate(), "-");
-        District district = candidate.getDistrict();
-        if (district != null) {
-            this.districtId = district.getId();
-            this.districtName = district.getName();
-        }
-        Party party = candidate.getParty();
-        if (party != null) {
-            this.partyId = party.getId();
-            this.partyName = party.getName();
-        }
-        this.positionInPartyList = candidate.getPositionInPartyList() != null ? candidate.getPositionInPartyList() : 0;
-    }
-
 
     public Long getId() {
         return id;
@@ -129,11 +123,11 @@ public class CandidateRepresentation {
         this.description = description;
     }
 
-    public String getBirthDate() {
+    public Calendar getBirthDate() {
         return birthDate;
     }
 
-    public void setBirthDate(String birthDate) {
+    public void setBirthDate(Calendar birthDate) {
         this.birthDate = birthDate;
     }
 
@@ -142,12 +136,11 @@ public class CandidateRepresentation {
 
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        CandidateRepresentation that = (CandidateRepresentation) o;
+        CandidateData that = (CandidateData) o;
         return Objects.equals(id, that.id) &&
                 Objects.equals(personId, that.personId) &&
                 Objects.equals(firstName, that.firstName) &&
                 Objects.equals(lastName, that.lastName) &&
-                Objects.equals(description, that.description) &&
                 Objects.equals(districtId, that.districtId) &&
                 Objects.equals(districtName, that.districtName) &&
                 Objects.equals(partyId, that.partyId) &&
@@ -162,11 +155,12 @@ public class CandidateRepresentation {
 
     @Override
     public String toString() {
-        return "CandidateRepresentation{" +
+        return "CandidateData{" +
                 "id=" + id +
                 ", personId='" + personId + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
+                ", description='" + description + '\'' +
                 ", districtId=" + districtId +
                 ", districtName='" + districtName + '\'' +
                 ", partyId=" + partyId +

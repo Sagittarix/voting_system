@@ -1,4 +1,4 @@
-package voting.dto;
+package voting.dto.county;
 
 import org.hibernate.validator.constraints.Length;
 

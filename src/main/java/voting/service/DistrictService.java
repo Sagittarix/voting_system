@@ -36,10 +36,13 @@ public interface DistrictService {
 
     boolean exists(String name);
 
+    List<County> getCounties();
+
     County getCounty(Long id);
 
     District addCounty(Long districtId, CountyData countyData);
 
     void deleteCounty(Long countyId);
 
+    List<County> getCountiesByDistrictId(Long id);
 }

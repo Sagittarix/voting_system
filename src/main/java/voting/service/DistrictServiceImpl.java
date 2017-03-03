@@ -158,6 +158,11 @@ public class DistrictServiceImpl implements DistrictService {
     }
 
     @Override
+    public List<County> getCounties() {
+        return (List<County>) countyRepository.findAll();
+    }
+
+    @Override
     public County getCounty(Long id) {
         County county = countyRepository.findOne(id);
         throwNotFoundIfNull(county, "Nepavyko rasti apskrities su id " + id);
@@ -185,6 +190,11 @@ public class DistrictServiceImpl implements DistrictService {
         District district = county.getDistrict();
         district.removeCounty(county);
         districtRepository.save(district);
+    }
+
+    @Override
+    public List<County> getCountiesByDistrictId(Long id) {
+        return getDistrict(id).getCounties();
     }
 
     private List<CandidateData> extractCandidateList(MultipartFile file) throws IOException, CsvException {

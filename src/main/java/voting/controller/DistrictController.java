@@ -6,6 +6,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import voting.dto.candidate.CandidateDTO;
+import voting.dto.county.CountyDTO;
 import voting.dto.county.CountyData;
 import voting.dto.district.DistrictDTO;
 import voting.dto.district.DistrictData;
@@ -70,24 +71,24 @@ public class DistrictController {
         return new DistrictDTO(districtService.setCandidateList(id, file));
     }
 
-    @GetMapping("/{id}/candidates")
+    @GetMapping("{id}/candidates")
     public List<CandidateDTO> getCandidateList(@PathVariable Long id) {
         return districtService.getCandidateList(id).stream()
                 .map(CandidateDTO::new)
                 .collect(Collectors.toList());
     }
 
-    @PostMapping("/{id}/add-county")
+    @GetMapping("{id}/counties")
+    public List<CountyDTO> getCounties(@PathVariable Long id) {
+        return districtService.getCountiesByDistrictId(id).stream().map(CountyDTO::new).collect(Collectors.toList());
+    }
+
+    @PostMapping("{id}/add-county")
     public DistrictDTO addCounty(@PathVariable("id") Long districtId, @Valid @RequestBody CountyData countyData, BindingResult result) {
         if (result.hasErrors()) {
             throw new MultiErrorException("Klaida registruojant apylinkę " + countyData.getName(), result.getAllErrors());
         }
         return new DistrictDTO(districtService.addCounty(districtId, countyData));
-    }
-
-    @DeleteMapping("/county/{id}")
-    public void deleteCounty(@PathVariable Long id) {
-        districtService.deleteCounty(id);
     }
 
 }

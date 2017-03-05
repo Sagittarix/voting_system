@@ -6,9 +6,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import voting.dto.CandidateData;
-import voting.dto.CountyData;
-import voting.dto.DistrictData;
+import voting.dto.*;
 import voting.exception.NotFoundException;
 import voting.model.Candidate;
 import voting.model.County;
@@ -177,6 +175,36 @@ public class DistrictServiceImpl implements DistrictService {
             throw new IllegalArgumentException("Apylinkių pavadinimai turi būti skirtingi", ex);
         }
         return district;
+    }
+
+    @Transactional
+    @Override
+    public District updateDistrict(DistrictData districtData, Long districtId) {
+        District district = districtRepository.findOne(districtId);
+        district.setName(districtData.getName());
+        return districtRepository.save(district);
+    }
+
+    @Transactional
+    @Override
+    public CountyRepresentation updateCounty(Long districtId, CountyData countyData, Long countyId) {
+        County county = countyRepository.findOne(countyId);
+        District district = getDistrict(districtId);
+        List<County> counties = district.getCounties();
+
+        int position = counties.indexOf(county);
+        county.setName(countyData.getName());
+        county.setVoterCount(countyData.getVoterCount());
+        county.setAddress(countyData.getAddress());
+        counties.add(position, county);
+
+        // TODO: fix this temporary hack
+        try {
+            districtRepository.save(district);
+        } catch (DataIntegrityViolationException ex) {
+            throw new IllegalArgumentException("Apylinkių pavadinimai turi būti skirtingi", ex);
+        }
+        return new CountyRepresentation(county);
     }
 
     @Override

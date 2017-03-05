@@ -5,10 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import voting.dto.CandidateRepresentation;
-import voting.dto.CountyData;
-import voting.dto.DistrictData;
-import voting.dto.DistrictRepresentation;
+import voting.dto.*;
 import voting.exception.MultiErrorException;
 import voting.model.District;
 import voting.service.DistrictService;
@@ -54,6 +51,20 @@ public class DistrictController {
         return new DistrictRepresentation(districtService.addNewDistrict(districtData));
     }
 
+    @PatchMapping("{id}/update")
+    public DistrictRepresentation updateDistrict(
+            @PathVariable Long id,
+            @Valid @RequestBody DistrictData districtData,
+            BindingResult result) {
+
+        if (result.hasErrors()) {
+            throw new MultiErrorException("Klaida atnaujinant apygardą " + districtData.getName(), result.getAllErrors());
+        }
+        return new DistrictRepresentation(districtService.updateDistrict(districtData, id));
+    }
+
+
+
     @DeleteMapping("{id}")
     public void deleteDistrict(@PathVariable Long id) {
         districtService.deleteDistrict(id);
@@ -83,6 +94,14 @@ public class DistrictController {
             throw new MultiErrorException("Klaida registruojant apylinkę " + countyData.getName(), result.getAllErrors());
         }
         return new DistrictRepresentation(districtService.addCounty(districtId, countyData));
+    }
+
+    @PostMapping("/{id}/update-county/{cid}")
+    public CountyRepresentation updateCounty(@PathVariable("id") Long districtId, @PathVariable("cid") Long cid, @Valid @RequestBody CountyData countyData, BindingResult result) {
+        if (result.hasErrors()) {
+            throw new MultiErrorException("Klaida atnaujinant apylinkę " + countyData.getName(), result.getAllErrors());
+        }
+        return districtService.updateCounty(districtId, countyData, cid);
     }
 
     @DeleteMapping("/county/{id}")

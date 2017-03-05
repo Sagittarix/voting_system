@@ -3,6 +3,7 @@ package voting.service;
 import com.opencsv.exceptions.CsvException;
 import org.springframework.web.multipart.MultipartFile;
 import voting.dto.CountyData;
+import voting.dto.CountyRepresentation;
 import voting.dto.DistrictData;
 import voting.model.Candidate;
 import voting.model.County;
@@ -40,6 +41,9 @@ public interface DistrictService {
 
     District addCounty(Long districtId, CountyData countyData);
 
+    CountyRepresentation updateCounty(Long districtId, CountyData countyData, Long countyId);
+
     void deleteCounty(Long countyId);
 
+    District updateDistrict(DistrictData districtData, Long id);
 }

@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import voting.dto.CandidateData;
 import voting.dto.PartyData;
+import voting.dto.PartyRepresentation;
 import voting.exception.NotFoundException;
 import voting.model.Candidate;
 import voting.model.Party;
@@ -78,6 +79,14 @@ public class PartyServiceImpl implements PartyService {
 
         setCandidateList(party, file);
         return party;
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public Party updateParty(PartyData partyData, Long partyId) {
+        Party party = partyRepository.findOne(partyId);
+        party.setName(partyData.getName());
+        return partyRepository.save(party);
     }
 
     /**

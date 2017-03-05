@@ -48,6 +48,10 @@ public class District {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public List<County> getCounties() {
         return counties;
     }
@@ -85,7 +89,6 @@ public class District {
         candidates.forEach(c -> c.setDistrict(null));
         candidates = new ArrayList<Candidate>();
     }
-
 
     public DistrictMMResult getMmResult() {
         return mmResult;

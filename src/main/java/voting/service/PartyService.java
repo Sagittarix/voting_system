@@ -1,8 +1,10 @@
 package voting.service;
 
 import com.opencsv.exceptions.CsvException;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import voting.dto.PartyData;
+import voting.dto.PartyRepresentation;
 import voting.model.Party;
 
 import java.io.IOException;
@@ -22,6 +24,8 @@ public interface PartyService {
     Party saveParty(PartyData partyData, MultipartFile file) throws IOException, CsvException;
 
     void deleteParty(Long id);
+
+    Party updateParty(PartyData partyData, Long partyId);
 
     Party setCandidateList(Long id, MultipartFile file) throws IOException, CsvException;
 

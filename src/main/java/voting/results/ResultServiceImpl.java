@@ -13,6 +13,7 @@ import voting.model.Party;
 import voting.results.model.result.*;
 import voting.results.model.votecount.CandidateVote;
 import voting.results.model.votecount.PartyVote;
+import voting.results.model.votecount.Vote;
 import voting.results.repository.ResultRepository;
 import voting.service.CandidateService;
 import voting.service.DistrictService;
@@ -65,34 +66,35 @@ public class ResultServiceImpl implements ResultService {
         return resultRepository.save(result);
     }
 
-
     @Override
     public CountySMResult getCountySmResult(Long countyId) {
         County county = districtService.getCounty(countyId);
-        CountySMResult result = resultRepository.findSmResultByCounty(county);
-        return result;
+        return resultRepository.findSmResultByCounty(county);
     }
-
 
     @Override
     public CountyMMResult getCountyMmResult(Long countyId) {
         County county = districtService.getCounty(countyId);
-        CountyMMResult result = resultRepository.findMmResultByCounty(county);
-        return result;
+        return resultRepository.findMmResultByCounty(county);
     }
 
     @Override
     public DistrictSMResult getDistrictSmResult(Long districtId) {
         District district = districtService.getDistrict(districtId);
         DistrictSMResult result = resultRepository.findSmResultByDistrict(district);
+        if (result == null) {
+            return constructBlankDistrictSmResult(district);
+        }
         return result;
     }
-
 
     @Override
     public DistrictMMResult getDistrictMmResult(Long districtId) {
         District district = districtService.getDistrict(districtId);
         DistrictMMResult result = resultRepository.findMmResultByDistrict(district);
+        if (result == null) {
+            return constructBlankDistrictMmResult(district);
+        }
         return result;
     }
 
@@ -105,16 +107,29 @@ public class ResultServiceImpl implements ResultService {
         CountyResult cr = (CountyResult) result;
         cr.setConfirmed(true);
 
-        County county = cr.getCounty();
-        if (result instanceof CountySMResult) {
-//            updateDistrictSmResult(county.getDistrict());
-        } else {
-//            updateDistrictMmResult(county.getDistrict());
-        }
-
         districtService.save(cr.getCounty().getDistrict());
 
-        // TODO: update district result on confirm
+        County county = cr.getCounty();
+        if (result instanceof CountySMResult) {
+            updateDistrictSmResult(county.getDistrict(), result);
+        } else {
+            updateDistrictMmResult(county.getDistrict(), result);
+        }
+
+    }
+
+    private void updateDistrictSmResult(District district, Result result) {
+        DistrictSMResult districtResult = getDistrictSmResult(district.getId());
+        districtResult.combineResults(result);
+        district.setSmResult(districtResult);
+        districtService.save(district);
+    }
+
+    private void updateDistrictMmResult(District district, Result result) {
+        DistrictMMResult districtResult = getDistrictMmResult(district.getId());
+        districtResult.combineResults(result);
+        district.setMmResult(districtResult);
+        districtService.save(district);
     }
 
     @Transactional
@@ -124,6 +139,8 @@ public class ResultServiceImpl implements ResultService {
         throwInvalidArgumentIfNotCountyResult(result, "Netinkamas rezultato tipas");
 
         CountyResult cr = (CountyResult) result;
+        throwIllegalArgumentIfConfirmed(cr, "Rezultatas jau patvritintas, negalima ištrint");
+
         County county = cr.getCounty();
 
         if (result instanceof CountySMResult) {
@@ -133,9 +150,6 @@ public class ResultServiceImpl implements ResultService {
         }
 
         districtService.save(county.getDistrict());
-
-        // TODO: update district result on confirm
-
     }
 
 
@@ -154,10 +168,15 @@ public class ResultServiceImpl implements ResultService {
         }
     }
 
+    private void throwIllegalArgumentIfConfirmed(CountyResult cr, String message) {
+        if (cr.isConfirmed()) {
+            throw new IllegalArgumentException(message);
+        }
+    }
+
     private boolean isCountyResult(Result result) {
         return result instanceof CountyResult;
     }
-
 
     private CountySMResult convertToCountySMResult(CountyResultData resultDTO) {
         CountySMResult result = new CountySMResult();
@@ -166,9 +185,9 @@ public class ResultServiceImpl implements ResultService {
 
         List<CandidateVote> voteList = resultDTO.getVoteList()
                                                 .stream()
-                                                .map(v -> convertToCandidateVote(v))
+                                                .map(this::convertToCandidateVote)
                                                 .collect(Collectors.toList());
-        voteList.stream().forEach(result::addVote);
+        voteList.forEach(result::addVote);
 
         result.setConfirmed(false);
         result.setSpoiledBallots(resultDTO.getSpoiledBallots());
@@ -182,9 +201,9 @@ public class ResultServiceImpl implements ResultService {
 
         List<PartyVote> voteList = resultDTO.getVoteList()
                 .stream()
-                .map(v -> convertToPartyVote(v))
+                .map(this::convertToPartyVote)
                 .collect(Collectors.toList());
-        voteList.stream().forEach(result::addVote);
+        voteList.forEach(result::addVote);
 
         result.setConfirmed(false);
         result.setSpoiledBallots(resultDTO.getSpoiledBallots());
@@ -193,14 +212,40 @@ public class ResultServiceImpl implements ResultService {
 
     private CandidateVote convertToCandidateVote(VoteData voteData) {
         Candidate candidate = candidateService.getCandidate(voteData.getUnitId());
-        CandidateVote vote = new CandidateVote(candidate, voteData.getVotes());
-        return vote;
+        return new CandidateVote(candidate, voteData.getVotes());
     }
 
     private PartyVote convertToPartyVote(VoteData voteData) {
         Party party = partyService.getParty(voteData.getUnitId());
-        PartyVote vote = new PartyVote(party, voteData.getVotes());
-        return vote;
+        return new PartyVote(party, voteData.getVotes());
+    }
+
+    private DistrictSMResult constructBlankDistrictSmResult(District district) {
+        DistrictSMResult result = new DistrictSMResult();
+        result.setDistrict(district);
+        List<Vote> voteList = constructBlankCandidateVoteList(district.getCandidates());
+        voteList.forEach(result::addVote);
+        return result;
+    }
+
+    private DistrictMMResult constructBlankDistrictMmResult(District district) {
+        DistrictMMResult result = new DistrictMMResult();
+        result.setDistrict(district);
+        List<Vote> voteList = constructBlankPartyVoteList(partyService.getParties());
+        voteList.forEach(result::addVote);
+        return result;
+    }
+
+    private List<Vote> constructBlankCandidateVoteList(List<Candidate> candidates) {
+        return candidates.stream()
+                .map(c -> new CandidateVote(c, 0L))
+                .collect(Collectors.toList());
+    }
+
+    private List<Vote> constructBlankPartyVoteList(List<Party> parties) {
+        return parties.stream()
+                .map(p -> new PartyVote(p, 0L))
+                .collect(Collectors.toList());
     }
 
 }

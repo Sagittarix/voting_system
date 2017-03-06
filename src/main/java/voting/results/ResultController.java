@@ -3,12 +3,12 @@ package voting.results;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import voting.dto.results.CountyMMResultDTO;
-import voting.dto.results.CountyResultData;
-import voting.dto.results.CountySMResultDTO;
+import voting.dto.results.*;
 import voting.exception.MultiErrorException;
 import voting.results.model.result.CountyMMResult;
 import voting.results.model.result.CountySMResult;
+import voting.results.model.result.DistrictMMResult;
+import voting.results.model.result.DistrictSMResult;
 
 import javax.validation.Valid;
 
@@ -44,6 +44,18 @@ public class ResultController {
             return null;
         }
         return new CountyMMResultDTO(result);
+    }
+
+    @GetMapping(path = "district/{id}/single-mandate")
+    public DistrictSMResultDTO getDistrictSingleMandateResult(@PathVariable("id") Long districtId) {
+        DistrictSMResult result = resultService.getDistrictSmResult(districtId);
+        return new DistrictSMResultDTO(result);
+    }
+
+    @GetMapping(path = "district/{id}/multi-mandate")
+    public DistrictMMResultDTO getDistrictMultiMandateResult(@PathVariable("id") Long districtId) {
+        DistrictMMResult result = resultService.getDistrictMmResult(districtId);
+        return new DistrictMMResultDTO(result);
     }
 
     @PostMapping(path = "county/single-mandate")

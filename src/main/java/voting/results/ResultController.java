@@ -52,7 +52,6 @@ public class CountyResultController {
             throw new MultiErrorException("Klaida apylinkės rezultatuose!", result.getAllErrors());
         }
         return new CountySMResultDTO(resultService.addCountySMResult(resultDTO));
-
     }
 
     @PostMapping(path = "county/multi-mandate")

@@ -16,6 +16,8 @@ import java.util.List;
  */
 public interface DistrictService {
 
+    District save(District district);
+
     District addNewDistrict(DistrictData districtData);
 
     void deleteDistrict(Long id);

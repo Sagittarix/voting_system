@@ -61,6 +61,11 @@ public class DistrictServiceImpl implements DistrictService {
         return district;
     }
 
+    @Override
+    public District save(District district) {
+        return districtRepository.save(district);
+    }
+
     @Transactional
     @Override
     public District addNewDistrict(DistrictData districtData) {

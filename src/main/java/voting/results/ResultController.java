@@ -19,18 +19,18 @@ import javax.validation.Valid;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("api/results")
-public class CountyResultController {
+public class ResultController {
 
     private ResultService resultService;
 
     @Autowired
-    public CountyResultController(ResultService resultService) {
+    public ResultController(ResultService resultService) {
         this.resultService = resultService;
     }
 
     @GetMapping(path = "county/{id}/single-mandate")
     public CountySMResultDTO getCountySingleMandateResult(@PathVariable("id") Long countyId) {
-        CountySMResult result = resultService.getCountySMResult(countyId);
+        CountySMResult result = resultService.getCountySmResult(countyId);
         if (result == null) {
             return null;
         }
@@ -39,7 +39,7 @@ public class CountyResultController {
 
     @GetMapping(path = "county/{id}/multi-mandate")
     public CountyMMResultDTO getCountyMultiMandateResult(@PathVariable("id") Long countyId) {
-        CountyMMResult result = resultService.getCountyMMResult(countyId);
+        CountyMMResult result = resultService.getCountyMmResult(countyId);
         if (result == null) {
             return null;
         }
@@ -47,19 +47,19 @@ public class CountyResultController {
     }
 
     @PostMapping(path = "county/single-mandate")
-    public CountySMResultDTO addCountySMResult(@Valid @RequestBody CountyResultData resultDTO, BindingResult result) {
+    public CountySMResultDTO addCountySMResult(@Valid @RequestBody CountyResultData resultData, BindingResult result) {
         if (result.hasErrors()) {
             throw new MultiErrorException("Klaida apylinkės rezultatuose!", result.getAllErrors());
         }
-        return new CountySMResultDTO(resultService.addCountySMResult(resultDTO));
+        return new CountySMResultDTO(resultService.addCountySmResult(resultData));
     }
 
     @PostMapping(path = "county/multi-mandate")
-    public CountyMMResultDTO addCountyMMResult(@Valid @RequestBody CountyResultData resultDTO, BindingResult result) {
+    public CountyMMResultDTO addCountyMMResult(@Valid @RequestBody CountyResultData resultData, BindingResult result) {
         if (result.hasErrors()) {
             throw new MultiErrorException("Klaida apylinkės rezultatuose!", result.getAllErrors());
         }
-        return new CountyMMResultDTO(resultService.addCountyMMResult(resultDTO));
+        return new CountyMMResultDTO(resultService.addCountyMmResult(resultData));
     }
 
     @PostMapping(path = "confirm")

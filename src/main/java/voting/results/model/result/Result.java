@@ -25,13 +25,13 @@ public abstract class Result {
     @OneToMany(mappedBy="result", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Vote> unitVotes = new ArrayList<>();
 
+    public Result() {
+        this.spoiledBallots = 0L;
+    }
+
     public void addVote(Vote vote) {
         this.unitVotes.add(vote);
         vote.setResult(this);
-    }
-
-    public Result() {
-        this.spoiledBallots = 0L;
     }
 
 

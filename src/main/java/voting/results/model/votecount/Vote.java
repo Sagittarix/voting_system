@@ -37,6 +37,8 @@ public abstract class Vote {
         this.id = id;
     }
 
+    public abstract Long getUnitId();
+
     public Long getVoteCount() {
         return voteCount;
     }

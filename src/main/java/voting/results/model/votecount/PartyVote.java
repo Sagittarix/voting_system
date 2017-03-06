@@ -19,6 +19,11 @@ public class PartyVote extends Vote {
     public PartyVote() {
     }
 
+    @Override
+    public Long getUnitId() {
+        return party.getId();
+    }
+
     public PartyVote(Party party, Long voteCount) {
         super(voteCount);
         this.party = party;

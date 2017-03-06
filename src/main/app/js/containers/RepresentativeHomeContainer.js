@@ -9,9 +9,7 @@ var RepresentativeHomeContainer = React.createClass({
     }, 
     getInitialState() {
         return {
-            representative: undefined,
-            countyId: undefined,
-            districtId: undefined
+            representative: undefined
         };
     },
     componentDidMount() {
@@ -21,8 +19,8 @@ var RepresentativeHomeContainer = React.createClass({
             .then(function(response) {
                 this.setState({ 
                     representative: response.data,
-                    countyId: response.data.countyId,
-                    districtId: response.data.districtId
+                    county: response.data.county,
+                    district: response.data.district
                  });
             }.bind(this))
             .catch(function(err) {
@@ -31,17 +29,24 @@ var RepresentativeHomeContainer = React.createClass({
     },
 
     render: function() {
+
+        const {representative, county, district } = this.state
+        
         let childrenWithProps = React.Children.map(this.props.children, (child) => 
             React.cloneElement(child, {
-                representative: this.state.representative,
-                countyId: this.state.countyId,
-                districtId: this.state.districtId
+                representative: representative,
+                county: county,
+                district: district
             })
         );
+        
+        if (!representative) {
+            return <div></div>
+        }
 
         return (
             <div>
-                <RepresentativePanelComponent />
+                <RepresentativePanelComponent repId={representative.id}/>
                 <div className="main-layout">
                     {childrenWithProps}
                 </div>

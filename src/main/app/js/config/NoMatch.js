@@ -2,15 +2,15 @@ var React = require('react');
 
 function NoMatch() {
 	return (
-		<div className="error-404">
-		    <div className="error-code m-b-10 m-t-20">404 <i className="fa fa-warning"></i></div>
-		    <h2 className="font-bold">Oops 404! That page can’t be found.</h2>
+		<div className="error-404" style={{textAlign:"center"}}>
+		    <h2 className="error-code m-b-10 m-t-20">404 <i className="fa fa-warning"></i></h2>
+		    <div className="font-bold">Klaida 404! Puslapis nerastas.</div>
 
 		    <div className="error-desc">
-		        Sorry, but the page you are looking for was either not found or does not exist. <br/>
-		        Try refreshing the page or click the button below to go back to the Homepage.
+				Atsiprašome, bet puslapio, kurio ieškote neradome. <br/>
+				Atnaujinkite puslapį arba spauskite žemiau esantį mygtuką.
 		        <div><br/>
-		            <a href="/" className="btn btn-primary"><span className="glyphicon glyphicon-home"></span> Go back to Homepage</a>
+		            <a href="/" className="btn btn-primary"><span className="glyphicon glyphicon-home"></span> Grįžti į pagrindinį puslapį</a>
 		        </div>
 		    </div>
 		</div>

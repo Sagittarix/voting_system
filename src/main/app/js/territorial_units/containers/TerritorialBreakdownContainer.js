@@ -23,14 +23,14 @@ var TerritorialBreakdownContainer = React.createClass({
                 console.log(err);
             });
     },
-    prepareDistricts() {
+    prepareDistricts(sort_order) {
         var districts = [];
         this.state.districts.forEach((d, index) => {
             districts.push(
                 <DistrictDisplayContainer
                     key={index}
                     index={index}
-                    district={d}
+                    unit={d}
                     remove={this.handleDistrictRemove}
                 />
             );

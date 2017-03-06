@@ -35,16 +35,15 @@ var PleaseWaitModal = React.createClass ({
 
     getInitialState: function() {
         return { modalIsOpen: false,
-            partyCandidate: {display: "block"},
-            independentCandidate: {display: "none"},
+                 partyCandidate: {display: "block"},
+                 independentCandidate: {display: "none"}
         };
     },
 
     openModal: function() {
         this.setState({modalIsOpen: true});
-        if(this.props.partyName == "Išsikėlęs pats"){
-            this.setState({partyCandidate: {display: "none"}});
-            this.setState({independentCandidate: {display: "block"}})
+        if(this.props.unit.name == "Išsikėlęs pats"){
+            this.setState({partyCandidate: {display: "none"}, independentCandidate: {display: "block"}});
         }
         setTimeout(function(){
             this.closeModal();
@@ -69,7 +68,7 @@ var PleaseWaitModal = React.createClass ({
                 <PartyDisplayContainer
                     raktas={this.props.raktas}
                     index={this.props.index}
-                    party={this.props.party}
+                    unit={this.props.unit}
                     delete={this.props.delete}
                     deleteCandidates={this.props.deleteCandidates}
                     updateParties={this.props.updateParties}

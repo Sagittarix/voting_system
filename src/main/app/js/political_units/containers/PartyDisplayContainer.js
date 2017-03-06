@@ -10,13 +10,13 @@ var PartyDisplayContainer = React.createClass({
     getInitialState: function() {
         return ({ showCandidates: false,
                   springErrors: [],
-                  party: this.props.party,
+                  party: this.props.unit,
                   displayLoadingIcon: {display: "none"}
                });
     },
     componentWillReceiveProps: function(newProps) {
-        if (newProps.party != this.state.party) {
-            this.setState({ party: newProps.party })
+        if (newProps.unit != this.state.party) {
+            this.setState({ party: newProps.unit })
         }
     },
     prepareCandidates: function() {

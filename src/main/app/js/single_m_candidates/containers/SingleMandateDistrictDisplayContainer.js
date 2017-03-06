@@ -10,7 +10,7 @@ var SingleMandateDistrictDisplayContainer = React.createClass({
     getInitialState: function() {
         return ({ showCandidates: false,
                   springErrors: [],
-                  district: this.props.district });
+                  district: this.props.unit });
     },
     componentWillReceiveProps: function(newProps) {
         if (newProps.district != this.state.district) {

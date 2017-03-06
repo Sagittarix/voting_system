@@ -11,34 +11,16 @@ var CountyDisplayContainer = React.createClass({
         return ({
             showResults: false,
             smDisplay: undefined,
-            county: this.props.county,
-            smResult: undefined,
-            mmResult: undefined,
+            county: this.props.unit,
+            smResult: this.props.unit.smResult,
+            mmResult: this.props.unit.mmResult,
             actveResultId: undefined
         });
     },
     componentWillReceiveProps: function(newProps) {
-        if (newProps.county != this.state.county) {
-            this.setState({ county: newProps.county });
+        if (newProps.unit != this.state.county) {
+            this.setState({ county: newProps.unit });
         }
-    },
-    componentDidMount: function() {
-        var county = this.state.county;
-        var _this = this
-        axios
-            .all([
-                axios.get(spring.localHost.concat('/api/results/county/' + county.id + '/single-mandate')),
-                axios.get(spring.localHost.concat('/api/results/county/' + county.id + '/multi-mandate')),
-            ])
-            .then(axios.spread(function(smResult, mmResult) {
-                _this.setState({
-                    smResult: smResult.data ? smResult.data : undefined,
-                    mmResult: mmResult.data ? mmResult.data : undefined
-                });
-            }))
-            .catch(function(err) {
-                console.log(err);
-            })
     },
     toggleShowResults: function() {
         this.setState({ showResults: !this.state.showResults });
@@ -48,7 +30,7 @@ var CountyDisplayContainer = React.createClass({
         this.setState({ 
             smDisplay: true, 
             activeResultId: activeResultId
-         });
+        });
     },
     displayMMresults: function() {
         activeResultId = this.state.mmResult ? this.state.mmResult.id : undefined
@@ -57,27 +39,27 @@ var CountyDisplayContainer = React.createClass({
             activeResultId: activeResultId
          });
     },
-    prepareResults: function() {
+    prepareResult: function() {
         if (this.state.smDisplay == undefined) return undefined;
-        var results = (this.state.smDisplay) ? this.state.smResult : this.state.mmResult
-        if (results == undefined) return results;
-        
-        var preparedResults = [];
+        var result = (this.state.smDisplay) ? this.state.smResult : this.state.mmResult
+        if (result == undefined) return result;
 
-        preparedResults.push(
-            <div className="list-group-item" key={results.votes.length}>
-                <p>Sugadinti biuleteniai: {results.spoiledBallots}</p>
+        var preparedResult = [];
+
+        preparedResult.push(
+            <div className="list-group-item" key={result.votes.length}>
+                <p>Sugadinti biuleteniai: {result.spoiledBallots}</p>
             </div>
         );
-        results.votes.forEach((vote, idx) => {
-            preparedResults.push(
+        result.votes.forEach((vote, idx) => {
+            preparedResult.push(
                 <VoteListRow
                     key={idx}
                     vote={vote}
                 />
             );
         });
-        return preparedResults;
+        return preparedResult;
     },
     determineConfirmButton: function() {
         var smDisplay = this.state.smDisplay;
@@ -154,13 +136,14 @@ var CountyDisplayContainer = React.createClass({
             })
     },
     determineAllConfirmedButton: function() {
-        // var btn = (
-        //     <span className="btn-sm confirmed-floaters">
-        //         Patvirtinta &nbsp; <span className="glyphicon glyphicon-flag"></span>
-        //     </span>
-        // );
-        // return (this.state.smResultsConfirmed && this.state.mmResultsConfirmed) ? btn : undefined;
-        return undefined
+        var btn = (
+            <span className="btn-sm confirmed-floaters">
+                Patvirtinta &nbsp; <span className="glyphicon glyphicon-flag"></span>
+            </span>
+        );
+        let smResult = this.state.smResult,
+            mmResult = this.state.mmResult;
+        return (smResult && mmResult && smResult.confirmed && mmResult.confirmed) ? btn : undefined;
     },
     render: function() {
         return (
@@ -171,7 +154,7 @@ var CountyDisplayContainer = React.createClass({
                 county={this.state.county}
                 displaySM={this.displaySMresults}
                 displayMM={this.displayMMresults}
-                results={this.prepareResults()}
+                results={this.prepareResult()}
                 smDisplay={this.state.smDisplay}
                 confirmBtn={this.determineConfirmButton()}
                 deleteBtn={this.determineDeleteButton()}

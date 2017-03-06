@@ -26,7 +26,7 @@ function CountyDisplayComponent(props) {
         <div className="unit">
             <div className="list-group-item active">
                 <div onClick={props.toggleShow} style={{ cursor: 'pointer' }}>
-                    <strong>{props.county.name}</strong> (Apygarda: {props.county.districtName})
+                    <strong>{props.county.name}</strong> (Apygarda: {props.county.district.name})
                     {props.allConfirmedBtn}
                 </div>
             </div>
@@ -36,7 +36,6 @@ function CountyDisplayComponent(props) {
                     <button onClick={props.displayMM} className={mmBtn}>M-MANDATINIAI</button>
                     {deleteBtn}
                     {confirmBtn}
-
                 </div>
                 {results}
             </div>

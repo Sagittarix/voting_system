@@ -1,4 +1,5 @@
 var React = require('react');
+var Fields = require('.//Fields');
 var styles = {
 		"image": {width: 20, height: 20}
 }
@@ -67,6 +68,46 @@ var Helpers = {
             </span>
         );
     },
+    sort(collection, ascending) {
+        collection.sort(function(a, b) {
+            let aa = a.props.unit.name;
+            let bb = b.props.unit.name;
+            if (aa > bb) {
+                return 1;
+            } else if (aa < bb) {
+                return -1;
+            }
+            return 0;
+        });
+        return (ascending) ? collection : collection.reverse();
+    },
+    sortRepresentatives(collection, state) {
+        const isSortingByName = state.field === Fields.name;
+
+        collection.sort(function(a, b) {
+            let aa; let bb;
+            if (isSortingByName) {
+                aa = a.props.unit.firstName;
+                bb = b.props.unit.firstName;
+            } else {
+                aa = a.props.unit.countyName;
+                bb = b.props.unit.countyName;
+            }
+
+            if (aa > bb) {
+                return 1;
+            } else if (aa < bb) {
+                return -1;
+            }
+            return 0;
+        });
+
+        if (isSortingByName) {
+            return (state.ASCname) ? collection : collection.reverse();
+        } else {
+            return (state.ASCcounty) ? collection : collection.reverse();
+        }
+    }
 };
 
 module.exports = Helpers;

@@ -29,7 +29,7 @@ var SingleCandidatesContainer = React.createClass({
             districts.push(<SingleMandateDistrictDisplayContainer
                                 key={index}
                                 index={index}
-                                district={d}
+                                unit={d}
                                 deleteCandidates={this.deleteCandidates}
                            />)
         });

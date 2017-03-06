@@ -202,7 +202,7 @@ public class ResultServiceIntegrationTest {
 
         //Setup
         //Exercise
-        CountySMResult result = resultService.addCountySMResult(smResultDto);
+        CountySMResult result = resultService.addCountySmResult(smResultDto);
 
         //Verify
         List<CandidateVote> votes = result.getVotes();
@@ -222,7 +222,7 @@ public class ResultServiceIntegrationTest {
 
         //Setup
         //Exercise
-        CountyMMResult result = resultService.addCountyMMResult(mmResultDto);
+        CountyMMResult result = resultService.addCountyMmResult(mmResultDto);
         List<PartyVote> votes = result.getVotes();
 
         //Verify
@@ -239,12 +239,12 @@ public class ResultServiceIntegrationTest {
     public void getsCountyResultsCorrectly() {
 
         //Setup
-        resultService.addCountySMResult(smResultDto);
-        resultService.addCountyMMResult(mmResultDto);
+        resultService.addCountySmResult(smResultDto);
+        resultService.addCountyMmResult(mmResultDto);
 
         //Exercise
-        CountySMResult smResult = resultService.getCountySMResult(county1.getId());
-        CountyMMResult mmResult = resultService.getCountyMMResult(county1.getId());
+        CountySMResult smResult = resultService.getCountySmResult(county1.getId());
+        CountyMMResult mmResult = resultService.getCountyMmResult(county1.getId());
 
         //Verify
         assertThat(smResult.getCounty(), is(county1));
@@ -268,17 +268,17 @@ public class ResultServiceIntegrationTest {
     @Test
     public void addingResultForCountyWhichAlreadyHasResultShouldThrowIllegalArgument() {
         //Setup
-        resultService.addCountySMResult(smResultDto);
-        resultService.addCountyMMResult(mmResultDto);
+        resultService.addCountySmResult(smResultDto);
+        resultService.addCountyMmResult(mmResultDto);
 
         //Exercise
         //Verify
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage("jau užregistruotas");
-        resultService.addCountySMResult(smResultDto);
+        resultService.addCountySmResult(smResultDto);
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage("jau užregistruotas");
-        resultService.addCountyMMResult(mmResultDto);
+        resultService.addCountyMmResult(mmResultDto);
     }
 
 

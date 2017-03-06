@@ -8,11 +8,12 @@ import voting.dto.results.vote.VoteData;
 import voting.exception.NotFoundException;
 import voting.model.Candidate;
 import voting.model.County;
+import voting.model.District;
 import voting.model.Party;
 import voting.results.model.result.*;
 import voting.results.model.votecount.CandidateVote;
 import voting.results.model.votecount.PartyVote;
-import voting.results.repository.*;
+import voting.results.repository.ResultRepository;
 import voting.service.CandidateService;
 import voting.service.DistrictService;
 import voting.service.PartyService;
@@ -30,36 +31,24 @@ public class ResultServiceImpl implements ResultService {
     private final PartyService partyService;
     private final CandidateService candidateService;
     private final ResultRepository resultRepository;
-    private final CountySMResultRepository countySMrepo;
-    private final CountyMMResultRepository countyMMrepo;
-    private final DistrictSMResultRepository districtSMrepo;
-    private final DistrictMMResultRepository districtMMrepo;
 
 
     @Autowired
     public ResultServiceImpl(DistrictService districtService,
                              PartyService partyService,
                              CandidateService candidateService,
-                             ResultRepository resultRepository,
-                             CountySMResultRepository countySMrepo,
-                             CountyMMResultRepository countyMMrepo,
-                             DistrictSMResultRepository districtSMrepo,
-                             DistrictMMResultRepository districtMMrepo) {
+                             ResultRepository resultRepository) {
         this.districtService = districtService;
         this.partyService = partyService;
         this.candidateService = candidateService;
         this.resultRepository = resultRepository;
-        this.countySMrepo = countySMrepo;
-        this.countyMMrepo = countyMMrepo;
-        this.districtSMrepo = districtSMrepo;
-        this.districtMMrepo = districtMMrepo;
     }
 
 
     @Override
-    public CountySMResult addCountySMResult(CountyResultData resultDTO) {
+    public CountySMResult addCountySmResult(CountyResultData resultDTO) {
         County county = districtService.getCounty(resultDTO.getCountyId());
-        if (countySMrepo.existsByCounty(county)) {
+        if (resultRepository.existsSmResultByCounty(county)) {
             throw new IllegalArgumentException(String.format("Apylinkės \"%s\" rezultatas jau užregistruotas", county));
         }
         CountySMResult result = convertToCountySMResult(resultDTO);
@@ -67,9 +56,9 @@ public class ResultServiceImpl implements ResultService {
     }
 
     @Override
-    public CountyMMResult addCountyMMResult(CountyResultData resultDTO) {
+    public CountyMMResult addCountyMmResult(CountyResultData resultDTO) {
         County county = districtService.getCounty(resultDTO.getCountyId());
-        if (countyMMrepo.existsByCounty(county)) {
+        if (resultRepository.existsMmResultByCounty(county)) {
             throw new IllegalArgumentException(String.format("Apylinkės \"%s\" rezultatas jau užregistruotas", county));
         }
         CountyMMResult result = convertToCountyMMResult(resultDTO);
@@ -78,53 +67,72 @@ public class ResultServiceImpl implements ResultService {
 
 
     @Override
-    public CountySMResult getCountySMResult(Long countyId) {
+    public CountySMResult getCountySmResult(Long countyId) {
         County county = districtService.getCounty(countyId);
-        CountySMResult result = countySMrepo.findOneByCounty(county);
+        CountySMResult result = resultRepository.findSmResultByCounty(county);
+        return result;
+    }
+
+
+    @Override
+    public CountyMMResult getCountyMmResult(Long countyId) {
+        County county = districtService.getCounty(countyId);
+        CountyMMResult result = resultRepository.findMmResultByCounty(county);
         return result;
     }
 
     @Override
-    public CountyMMResult getCountyMMResult(Long countyId) {
-        County county = districtService.getCounty(countyId);
-        CountyMMResult result = countyMMrepo.findOneByCounty(county);
+    public DistrictSMResult getDistrictSmResult(Long districtId) {
+        District district = districtService.getDistrict(districtId);
+        DistrictSMResult result = resultRepository.findSmResultByDistrict(district);
         return result;
     }
+
+
+    @Override
+    public DistrictMMResult getDistrictMmResult(Long districtId) {
+        District district = districtService.getDistrict(districtId);
+        DistrictMMResult result = resultRepository.findMmResultByDistrict(district);
+        return result;
+    }
+
 
     @Transactional
     @Override
     public void confirmCountyResult(Long id) {
         Result result = getResult(id);
-        if (!isCountyResult(result)) {
-            throw new RuntimeException("cannot confirm district result");
-        }
+        throwInvalidArgumentIfNotCountyResult(result, "Netinkamas rezultato tipas");
         CountyResult cr = (CountyResult) result;
         cr.setConfirmed(true);
-        resultRepository.save(cr);
-        // TODO: finish
+
+        County county = cr.getCounty();
+        if (result instanceof CountySMResult) {
+//            updateDistrictSmResult(county.getDistrict());
+        } else {
+//            updateDistrictMmResult(county.getDistrict());
+        }
+
+        districtService.save(cr.getCounty().getDistrict());
+
         // TODO: update district result on confirm
-        // updateDistrictResult(cr.getCounty().getDistrict());
     }
 
     @Transactional
     @Override
     public void deleteCountyResult(Long id) {
         Result result = getResult(id);
-        if (!isCountyResult(result)) {
-            throw new RuntimeException("cannot confirm district result");
-        }
+        throwInvalidArgumentIfNotCountyResult(result, "Netinkamas rezultato tipas");
 
         CountyResult cr = (CountyResult) result;
         County county = cr.getCounty();
 
-        //TODO: temp hack
         if (result instanceof CountySMResult) {
             county.setSmResult(null);
         } else {
             county.setMmResult(null);
         }
-        resultRepository.delete(id);
 
+        districtService.save(county.getDistrict());
 
         // TODO: update district result on confirm
 
@@ -140,12 +148,14 @@ public class ResultServiceImpl implements ResultService {
         return result;
     }
 
-    private boolean isCountyResult(Result result) {
-        return result instanceof CountyResult;
+    private void throwInvalidArgumentIfNotCountyResult(Result result, String message) {
+        if (!isCountyResult(result)) {
+            throw new IllegalArgumentException(message);
+        }
     }
 
-    private boolean isDistrictResut(Result result) {
-        return result instanceof DistrictResult;
+    private boolean isCountyResult(Result result) {
+        return result instanceof CountyResult;
     }
 
 
@@ -181,7 +191,6 @@ public class ResultServiceImpl implements ResultService {
         return result;
     }
 
-
     private CandidateVote convertToCandidateVote(VoteData voteData) {
         Candidate candidate = candidateService.getCandidate(voteData.getUnitId());
         CandidateVote vote = new CandidateVote(candidate, voteData.getVotes());
@@ -193,6 +202,5 @@ public class ResultServiceImpl implements ResultService {
         PartyVote vote = new PartyVote(party, voteData.getVotes());
         return vote;
     }
-
 
 }

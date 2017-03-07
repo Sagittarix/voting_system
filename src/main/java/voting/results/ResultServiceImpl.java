@@ -82,6 +82,7 @@ public class ResultServiceImpl implements ResultService {
     }
 
 
+    @Transactional
     @Override
     public DistrictSMResult getDistrictSmResult(Long districtId) {
         District district = districtService.getDistrict(districtId);
@@ -95,6 +96,7 @@ public class ResultServiceImpl implements ResultService {
     }
 
 
+    @Transactional
     @Override
     public DistrictMMResult getDistrictMmResult(Long districtId) {
         District district = districtService.getDistrict(districtId);
@@ -222,7 +224,6 @@ public class ResultServiceImpl implements ResultService {
 
     private DistrictSMResult constructBlankDistrictSmResult(District district) {
         DistrictSMResult result = new DistrictSMResult();
-//        result.setDistrict(district);
         List<Vote> voteList = constructBlankCandidateVoteList(district.getCandidates());
         voteList.forEach(result::addVote);
         district.setSmResult(result);
@@ -231,7 +232,6 @@ public class ResultServiceImpl implements ResultService {
 
     private DistrictMMResult constructBlankDistrictMmResult(District district) {
         DistrictMMResult result = new DistrictMMResult();
-//        result.setDistrict(district);
         List<Vote> voteList = constructBlankPartyVoteList(partyService.getParties());
         voteList.forEach(result::addVote);
         district.setMmResult(result);

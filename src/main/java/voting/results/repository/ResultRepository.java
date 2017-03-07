@@ -30,4 +30,6 @@ public interface ResultRepository extends CrudRepository<Result, Long> {
     @Query("select count(r)>0 from CountyMMResult r where r.county = ?1")
     boolean existsMmResultByCounty(County county);
 
+    @Query("select r from CountyResult r where r.id = ?1")
+    CountyResult findOneCountyResult(Long id);
 }

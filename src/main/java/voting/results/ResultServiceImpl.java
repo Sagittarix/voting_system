@@ -52,9 +52,11 @@ public class ResultServiceImpl implements ResultService {
         if (resultRepository.existsSmResultByCounty(county)) {
             throw new IllegalArgumentException(String.format("Apylinkės \"%s\" rezultatas jau užregistruotas", county));
         }
-        CountySMResult result = convertToCountySMResult(resultDTO);
-        return resultRepository.save(result);
+        county.setSmResult(convertToCountySMResult(resultDTO));
+        districtService.save(county.getDistrict());
+        return county.getSmResult();
     }
+
 
     @Override
     public CountyMMResult addCountyMmResult(CountyResultData resultDTO) {
@@ -62,38 +64,45 @@ public class ResultServiceImpl implements ResultService {
         if (resultRepository.existsMmResultByCounty(county)) {
             throw new IllegalArgumentException(String.format("Apylinkės \"%s\" rezultatas jau užregistruotas", county));
         }
-        CountyMMResult result = convertToCountyMMResult(resultDTO);
-        return resultRepository.save(result);
+        county.setMmResult(convertToCountyMMResult(resultDTO));
+        districtService.save(county.getDistrict());
+        return county.getMmResult();
     }
+
 
     @Override
     public CountySMResult getCountySmResult(Long countyId) {
-        County county = districtService.getCounty(countyId);
-        return resultRepository.findSmResultByCounty(county);
+        return resultRepository.findSmResultByCounty(districtService.getCounty(countyId));
     }
+
 
     @Override
     public CountyMMResult getCountyMmResult(Long countyId) {
-        County county = districtService.getCounty(countyId);
-        return resultRepository.findMmResultByCounty(county);
+        return resultRepository.findMmResultByCounty(districtService.getCounty(countyId));
     }
+
 
     @Override
     public DistrictSMResult getDistrictSmResult(Long districtId) {
         District district = districtService.getDistrict(districtId);
         DistrictSMResult result = resultRepository.findSmResultByDistrict(district);
         if (result == null) {
-            return constructBlankDistrictSmResult(district);
+            district.setSmResult(constructBlankDistrictSmResult(district));
+            districtService.save(district);
+            return district.getSmResult();
         }
         return result;
     }
+
 
     @Override
     public DistrictMMResult getDistrictMmResult(Long districtId) {
         District district = districtService.getDistrict(districtId);
         DistrictMMResult result = resultRepository.findMmResultByDistrict(district);
         if (result == null) {
-            return constructBlankDistrictMmResult(district);
+            district.setMmResult(constructBlankDistrictMmResult(district));
+            districtService.save(district);
+            return district.getMmResult();
         }
         return result;
     }
@@ -102,47 +111,36 @@ public class ResultServiceImpl implements ResultService {
     @Transactional
     @Override
     public void confirmCountyResult(Long id) {
-        Result result = getResult(id);
-        throwInvalidArgumentIfNotCountyResult(result, "Netinkamas rezultato tipas");
-        CountyResult cr = (CountyResult) result;
-        cr.setConfirmed(true);
+        CountyResult result = getCountyResult(id);
+        throwIllegalArgumentIfConfirmed(result, "Rezultatas jau patvirtintas");
 
-        districtService.save(cr.getCounty().getDistrict());
+        result.setConfirmed(true);
+        District district = result.getCounty().getDistrict();
+        districtService.save(district);
+        updateDistrictResult(district, result);
+    }
 
-        County county = cr.getCounty();
+
+    @Transactional
+    private void updateDistrictResult(District district, Result result) {
+        DistrictResult districtResult;
         if (result instanceof CountySMResult) {
-            updateDistrictSmResult(county.getDistrict(), result);
+            districtResult = getDistrictSmResult(district.getId());
         } else {
-            updateDistrictMmResult(county.getDistrict(), result);
+            districtResult = getDistrictMmResult(district.getId());
         }
-
-    }
-
-    private void updateDistrictSmResult(District district, Result result) {
-        DistrictSMResult districtResult = getDistrictSmResult(district.getId());
         districtResult.combineResults(result);
-        district.setSmResult(districtResult);
         districtService.save(district);
     }
 
-    private void updateDistrictMmResult(District district, Result result) {
-        DistrictMMResult districtResult = getDistrictMmResult(district.getId());
-        districtResult.combineResults(result);
-        district.setMmResult(districtResult);
-        districtService.save(district);
-    }
 
     @Transactional
     @Override
     public void deleteCountyResult(Long id) {
-        Result result = getResult(id);
-        throwInvalidArgumentIfNotCountyResult(result, "Netinkamas rezultato tipas");
+        CountyResult result = getCountyResult(id);
+        throwIllegalArgumentIfConfirmed(result, "Rezultatas jau patvritintas, negalima ištrint");
 
-        CountyResult cr = (CountyResult) result;
-        throwIllegalArgumentIfConfirmed(cr, "Rezultatas jau patvritintas, negalima ištrint");
-
-        County county = cr.getCounty();
-
+        County county = result.getCounty();
         if (result instanceof CountySMResult) {
             county.setSmResult(null);
         } else {
@@ -153,7 +151,6 @@ public class ResultServiceImpl implements ResultService {
     }
 
 
-
     private Result getResult(Long id) {
         Result result = resultRepository.findOne(id);
         if (result == null) {
@@ -162,10 +159,12 @@ public class ResultServiceImpl implements ResultService {
         return result;
     }
 
-    private void throwInvalidArgumentIfNotCountyResult(Result result, String message) {
+    private CountyResult getCountyResult(Long id) {
+        Result result = getResult(id);
         if (!isCountyResult(result)) {
-            throw new IllegalArgumentException(message);
+            throw new NotFoundException("Nepavyko rasti apylinkės rezultato su id " + id);
         }
+        return (CountyResult) result;
     }
 
     private void throwIllegalArgumentIfConfirmed(CountyResult cr, String message) {
@@ -182,6 +181,7 @@ public class ResultServiceImpl implements ResultService {
         CountySMResult result = new CountySMResult();
         County county = districtService.getCounty(resultDTO.getCountyId());
         result.setCounty(county);
+
 
         List<CandidateVote> voteList = resultDTO.getVoteList()
                                                 .stream()
@@ -222,17 +222,19 @@ public class ResultServiceImpl implements ResultService {
 
     private DistrictSMResult constructBlankDistrictSmResult(District district) {
         DistrictSMResult result = new DistrictSMResult();
-        result.setDistrict(district);
+//        result.setDistrict(district);
         List<Vote> voteList = constructBlankCandidateVoteList(district.getCandidates());
         voteList.forEach(result::addVote);
+        district.setSmResult(result);
         return result;
     }
 
     private DistrictMMResult constructBlankDistrictMmResult(District district) {
         DistrictMMResult result = new DistrictMMResult();
-        result.setDistrict(district);
+//        result.setDistrict(district);
         List<Vote> voteList = constructBlankPartyVoteList(partyService.getParties());
         voteList.forEach(result::addVote);
+        district.setMmResult(result);
         return result;
     }
 

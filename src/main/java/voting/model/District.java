@@ -1,7 +1,6 @@
 package voting.model;
 
-import voting.results.model.result.DistrictMMResult;
-import voting.results.model.result.DistrictSMResult;
+import voting.results.model.result.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -114,6 +113,22 @@ public class District {
         smResult.setDistrict(this);
     }
 
+    public DistrictResult getResultByType(ResultType type) {
+        if (type == ResultType.SINGLE_MANDATE) {
+            return getSmResult();
+        } else {
+            return getMmResult();
+        }
+    }
+
+    public void setResultByType(DistrictResult districtResult, ResultType type) {
+        if (type == ResultType.SINGLE_MANDATE) {
+            setSmResult((DistrictSMResult) districtResult);
+        } else {
+            setMmResult((DistrictMMResult) districtResult);
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -132,4 +147,6 @@ public class District {
     public String toString() {
         return String.format("%s (id %d)", name, id);
     }
+
+
 }

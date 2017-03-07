@@ -124,7 +124,7 @@ public class ResultServiceImpl implements ResultService {
 
 
     @Transactional
-    private void updateDistrictResult(District district, Result result) {
+    private void updateDistrictResult(District district, CountyResult result) {
         DistrictResult districtResult;
         if (result instanceof CountySMResult) {
             districtResult = getDistrictSmResult(district.getId());
@@ -226,7 +226,6 @@ public class ResultServiceImpl implements ResultService {
         DistrictSMResult result = new DistrictSMResult();
         List<Vote> voteList = constructBlankCandidateVoteList(district.getCandidates());
         voteList.forEach(result::addVote);
-        district.setSmResult(result);
         return result;
     }
 
@@ -234,7 +233,6 @@ public class ResultServiceImpl implements ResultService {
         DistrictMMResult result = new DistrictMMResult();
         List<Vote> voteList = constructBlankPartyVoteList(partyService.getParties());
         voteList.forEach(result::addVote);
-        district.setMmResult(result);
         return result;
     }
 

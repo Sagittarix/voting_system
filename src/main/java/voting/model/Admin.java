@@ -1,9 +1,14 @@
 package voting.model;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import voting.utils.Formatter;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -12,49 +17,81 @@ import java.util.Objects;
 @Entity
 public class Admin {
 
+    public static final PasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String personalId;
     private String firstName;
     private String lastName;
-    private String role;
-    private String password_digest;
+    private String username;
+    private String[] roles;
+    private String password;
 
-    public Admin(String personalId, String firstName, String lastName, String role, String password_digest) {
+    public Admin(String personalId, String firstName, String lastName, String password, String... roles) {
         this.personalId = personalId;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.role = role;
-        this.password_digest = password_digest;
+        this.username = Formatter.formUsername(firstName, lastName);
+        this.setPassword(password);
+        this.roles = roles;
     }
 
     public Long getId() {
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getPersonalId() {
         return personalId;
+    }
+
+    public void setPersonalId(String personalId) {
+        this.personalId = personalId;
     }
 
     public String getFirstName() {
         return firstName;
     }
 
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
     public String getLastName() {
         return lastName;
     }
 
-    public String getRole() {
-        return role;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
-    public String getPassword_digest() {
-        return password_digest;
+    public String getUsername() {
+        return username;
     }
 
-    public void setPassword_digest(String password_digest) {
-        this.password_digest = password_digest;
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String[] getRoles() {
+        return roles;
+    }
+
+    public void setRoles(String[] roles) {
+        this.roles = roles;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = PASSWORD_ENCODER.encode(password);
     }
 
     @Override
@@ -67,13 +104,13 @@ public class Admin {
                 Objects.equals(personalId, admin.personalId) &&
                 Objects.equals(firstName, admin.firstName) &&
                 Objects.equals(lastName, admin.lastName) &&
-                Objects.equals(role, admin.role) &&
-                Objects.equals(password_digest, admin.password_digest);
+                Arrays.equals(roles, admin.roles) &&
+                Objects.equals(password, admin.password);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, personalId, firstName, lastName, role, password_digest);
+        return Objects.hash(id, personalId, firstName, lastName, roles, password);
     }
 
     @Override
@@ -83,8 +120,7 @@ public class Admin {
                 ", personalId='" + personalId + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
-                ", role='" + role + '\'' +
-                ", password_digest='" + password_digest + '\'' +
-                '}';
+                ", roles='" + Arrays.toString(roles) + '\'' +
+                ", password=[PROTECTED] }";
     }
 }

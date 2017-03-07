@@ -16,7 +16,38 @@ var NavigationBarComponent = React.createClass ({
             homeButtonText : 'Pradžia'
         })
     },
-
+    determineCurrentUserDisplay() {
+        console.log(this.props.currentUser);
+        if (this.props.currentUser != "") {
+            return (
+                <li className="dropdown">
+                    <Link to="#"
+                          className="dropdown-toggle"
+                          data-toggle="dropdown"
+                          role="button"
+                          aria-haspopup="true"
+                          aria-expanded="false"
+                    >
+                        <span className="glyphicon glyphicon-user" aria-hidden="true"></span>
+                        {this.props.currentUser}
+                        <span className="caret"></span>
+                    </Link>
+                    <ul className="dropdown-menu">
+                        <li>
+                            <Link to="">
+                                <span className="glyphicon glyphicon-log-out" aria-hidden="true"></span>
+                                {this.state.logout}
+                            </Link>
+                        </li>
+                    </ul>
+                </li>
+            );
+        } else {
+            return (
+                <div><Link to="/prisijungti">PRISIJUNGTI</Link></div>
+            );
+        }
+    },
     render: function () {
         var b1 = {display : 'inline'};
         if(this.props.mainMenu == ''){
@@ -34,7 +65,6 @@ var NavigationBarComponent = React.createClass ({
         }
 
         return (
-
             <nav className="navbar navbar-default">
                 <div className="container-fluid">
 
@@ -62,12 +92,7 @@ var NavigationBarComponent = React.createClass ({
 
                     <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                         <ul className="nav navbar-nav navbar-right">
-                            <li className="dropdown">
-                                <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span className="glyphicon glyphicon-user" aria-hidden="true"></span> {this.state.userName} <span className="caret"></span></a>
-                                <ul className="dropdown-menu">
-                                    <li><a href="#"><span className="glyphicon glyphicon-log-out" aria-hidden="true"></span>{this.state.logout}</a></li>
-                                </ul>
-                            </li>
+                            {this.determineCurrentUserDisplay()}
                         </ul>
                         {/*<div style={{margin:"15px"}}>
                             <Link to="/prisijungti">

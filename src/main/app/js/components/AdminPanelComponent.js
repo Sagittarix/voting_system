@@ -1,6 +1,8 @@
 var React = require('react');
 var ReactRouter = require('react-router');
 var Link = ReactRouter.Link;
+var axios = require('axios');
+var spring = require('../config/SpringConfig');
 
 var styles = {
 		"active": {backgroundColor: '#006B96', color:"white"},
@@ -9,21 +11,41 @@ var styles = {
 }
 
 var AdminPanelComponent = React.createClass({
-		getInitialState: function () {
-				return ({ tagIds: this.setBackgroundsByLocation() });
-	  },
-		resetButtonBackgrounds: function() {
-	      this.setState({
+	getInitialState() {
+		return ({ tagIds: this.setBackgroundsByLocation(), admin: false });
+	},
+    contextTypes: {
+        router: React.PropTypes.object.isRequired
+    },
+	componentDidMount() {
+		const _this = this;
+		let fd = new FormData();
+		fd.append("role", "ROLE_ADMIN");
+        axios.post(spring.localHost.concat('/api/auth/role'), fd)
+            .then(resp => {
+            	if (resp.data == false) {
+                    _this.context.router.push('/prisijungti')
+				} else {
+            		_this.setState({ admin: resp.data });
+				}
+            })
+            .catch(err => {
+                console.log(err);
+            });
+
+	},
+	resetButtonBackgrounds: function() {
+	     this.setState({
 						tagIds: {
-								location1: styles.passive,
-								location2: styles.passive,
-								location3: styles.passive,
-								location4: styles.passive,
-								location5: styles.passive
+							location1: styles.passive,
+							location2: styles.passive,
+							location3: styles.passive,
+							location4: styles.passive,
+							location5: styles.passive
 						}
-				});
-	  },
-		setBackgrounds: function(tag) {
+	     });
+	},
+	setBackgrounds: function(tag) {
 				var stateObj = this.state;
 				var newState = {};
 
@@ -32,8 +54,8 @@ var AdminPanelComponent = React.createClass({
 						newState[key] = value;
 				});
 				this.setState({ tagIds: newState });
-		},
-	  componentWillReceiveProps: function(nextProps) {
+	},
+	componentWillReceiveProps: function(nextProps) {
 		    if (nextProps.location.pathname === '/administravimas') {
 						this.resetButtonBackgrounds();
 		    }
@@ -52,8 +74,8 @@ var AdminPanelComponent = React.createClass({
 		    if (nextProps.location.pathname === '/administravimas/apylinkiu-rezultatai') {
 						this.setBackgrounds(location5);
 		    }
-	  },
-		setBackgroundsByLocation: function() {
+	},
+	setBackgroundsByLocation: function() {
 				var tagIds = {
 						location1: styles.passive,
 						location2: styles.passive,
@@ -81,8 +103,8 @@ var AdminPanelComponent = React.createClass({
 
 				return tagIds;
 
-		},
-	  render: function() {
+	},
+	render: function() {
 	  		return (
 						<div>
 								<div className="menu">
@@ -140,11 +162,11 @@ var AdminPanelComponent = React.createClass({
 										</ul>
 								</div>
 								<div className="main-layout">
-				            {this.props.children}
+				            		{this.props.children}
 								</div>
 						</div>
 	      );
-	  }
+	}
 });
 
 module.exports = AdminPanelComponent;

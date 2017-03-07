@@ -1,7 +1,9 @@
 package voting.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import voting.utils.Formatter;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -13,11 +15,14 @@ import java.util.Objects;
 @Entity
 public class CountyRep {
 
+    public static final PasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String firstName;
     private String lastName;
+    private String username;
     private String email;
     private String password_digest;
 
@@ -28,15 +33,23 @@ public class CountyRep {
     @JoinColumn(name = "county_id", nullable = false)
     private County county;
 
-    public CountyRep() {
-    }
+    private String[] roles;
 
-    public CountyRep(String firstName, String lastName, String email, String password, County county) {
+    public CountyRep() { }
+
+    public CountyRep(String firstName,
+                     String lastName,
+                     String email,
+                     String password,
+                     County county,
+                     String... roles) {
         this.firstName = firstName;
         this.lastName = lastName;
+        this.username = Formatter.formUsername(firstName, lastName);
         this.email = email;
-        this.password_digest = password;
+        this.setPassword_digest(password);
         this.county = county;
+        this.roles = roles;
     }
 
     public Long getId() {
@@ -63,6 +76,14 @@ public class CountyRep {
         this.lastName = lastName;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     public String getEmail() {
         return email;
     }
@@ -85,7 +106,15 @@ public class CountyRep {
     }
 
     public void setPassword_digest(String password_digest) {
-        this.password_digest = BCrypt.hashpw(password_digest, BCrypt.gensalt());
+        this.password_digest = PASSWORD_ENCODER.encode(password_digest);
+    }
+
+    public String[] getRoles() {
+        return roles;
+    }
+
+    public void setRoles(String[] roles) {
+        this.roles = roles;
     }
 
     @Override
@@ -110,6 +139,7 @@ public class CountyRep {
                 "id=" + id +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
+                ", username='" + username + '\'' +
                 ", email='" + email + '\'' +
                 ", county=" + county +
                 '}';

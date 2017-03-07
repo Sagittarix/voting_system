@@ -42,6 +42,7 @@ public class CountyRepServiceImpl implements CountyRepService {
         countyRep.setEmail(countyRepData.getEmail());
         countyRep.setPassword_digest(randomPassword);
         countyRep.setCounty(county);
+        countyRep.setRoles(new String[]{"ROLE_REPRESENTATIVE"});
         return countyRepRepository.save(countyRep);
     }
 
@@ -55,6 +56,11 @@ public class CountyRepServiceImpl implements CountyRepService {
     @Override
     public List<CountyRep> getCountyReps() {
         return (List<CountyRep>) countyRepRepository.findAll();
+    }
+
+    @Override
+    public CountyRep getCountyRepByUsername(String username) {
+        return countyRepRepository.findOneByUsername(username);
     }
 
     @Override

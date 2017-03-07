@@ -10,7 +10,7 @@ public class ResultDTO {
     private Long id;
     private Long spoiledBallots;
     private Long totalBallots;
-
+    private Long voterCount;
 
     public ResultDTO(Result result) {
         this.id = result.getId();
@@ -28,5 +28,13 @@ public class ResultDTO {
 
     public Long getTotalBallots() {
         return totalBallots;
+    }
+
+    public Long getVoterCount() {
+        return voterCount;
+    }
+
+    public void setVoterCount(Long voterCount) {
+        this.voterCount = voterCount;
     }
 }

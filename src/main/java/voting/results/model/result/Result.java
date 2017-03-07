@@ -24,14 +24,11 @@ public abstract class Result {
     private Long spoiledBallots = 0L;
     private Long totalBallots = 0L;
 
-    @OneToMany(mappedBy="result", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "result", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Vote> unitVotes = new ArrayList<>();
 
     public Result() {
-        this.spoiledBallots = 0L;
-        this.totalBallots = 0L;
     }
-
 
     public void combineResults(Result r) {
         this.spoiledBallots += r.getSpoiledBallots();
@@ -44,7 +41,7 @@ public abstract class Result {
         unitVotes.stream().forEach(v -> v.setVoteCount(v.getVoteCount() + votemap.get(v.getUnitId())));
     }
 
-    private Map<Long,Long> convertToMap(List<Vote> unitVotes) {
+    private Map<Long, Long> convertToMap(List<Vote> unitVotes) {
         return unitVotes.stream().collect(Collectors.toMap(Vote::getUnitId, Vote::getVoteCount));
     }
 
@@ -82,10 +79,6 @@ public abstract class Result {
         return unitVotes;
     }
 
-    public void setUnitVotes(List<Vote> unitVotes) {
-        this.unitVotes = unitVotes;
-    }
-
 
     @Override
     public String toString() {
@@ -94,7 +87,5 @@ public abstract class Result {
                 ", spoiledBallots=" + spoiledBallots +
                 '}';
     }
-
-
 
 }

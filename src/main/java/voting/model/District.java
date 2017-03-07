@@ -21,6 +21,8 @@ public class District {
     @Column(unique = true, nullable = false)
     private String name;
 
+    private Long voterCount = 0L;
+
     @OneToMany(mappedBy = "district", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<County> counties = new ArrayList<>();
 
@@ -33,8 +35,8 @@ public class District {
     @OneToOne(mappedBy = "district", cascade = CascadeType.ALL)
     private DistrictSMResult smResult;
 
-
     public District() { }
+
 
     public District(String name) {
         this.name = name;
@@ -48,6 +50,10 @@ public class District {
         return name;
     }
 
+    public Long getVoterCount() {
+        return voterCount;
+    }
+
     public List<County> getCounties() {
         return counties;
     }
@@ -59,16 +65,19 @@ public class District {
     public void addCounty(County county) {
         counties.add(county);
         county.setDistrict(this);
+        voterCount += county.getVoterCount();
     }
 
     public void removeCounty(County county) {
         counties.remove(county);
         county.setDistrict(null);
+        voterCount -= county.getVoterCount();
     }
 
     public void removeAllCounties() {
         counties.forEach(c -> c.setDistrict(null));
         counties = new ArrayList<County>();
+        voterCount = 0L;
     }
 
     public void addCandidate(Candidate candidate) {

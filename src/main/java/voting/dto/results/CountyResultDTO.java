@@ -23,6 +23,7 @@ public class CountyResultDTO extends ResultDTO {
         createdOn = result.getCreatedOn();
         confirmedOn = result.getConfirmedOn();
         county = result.getCounty() == null ? null : new CountyShortDTO(result.getCounty());
+        setVoterCount(result.getCounty().getVoterCount());
     }
 
 

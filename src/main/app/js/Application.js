@@ -3,12 +3,34 @@ var axios = require('axios');
 var NavigationBarComponent = require('./components/NavigationBarComponent');
 var spring = require('./config/SpringConfig');
 
+var representative = {
+    "id": 1,
+    "firstName": "Rep",
+    "lastName": "Rep",
+    "username": "rep.rep",
+    "email": "email@email.lt",
+    "county": { "id": 1, "name": "TEST COUNTY", "link": "http://dummy" },
+    "district": { "id": 1, "name": "TEST DISTRICT", "link": "http://dummy" },
+    "roles": ["ROLE_REPRESENTATIVE"]
+};
+
+var admin = {
+    "id": 1,
+    "firstName": "Admin",
+    "lastName": "Admin",
+    "username": "admin.admin",
+    "roles": ["ROLE_ADMIN"]
+};
+
 var Application = React.createClass({
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
-    getInitialState() {
+    /*getInitialState() {
         return ({ currentUser: {} });
+    },*/
+    getInitialState() {
+        return ({ currentUser: representative });
     },
     getPrincipal() {
         const _this = this;

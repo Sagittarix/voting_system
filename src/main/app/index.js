@@ -19,7 +19,6 @@ var CountyRepresentativesDisplayContainer = require('./js/countyRepresentativesM
 var CountyResultsContainer = require('./js/counties_results/containers/CountyResultsContainer');
 var AdminResultsViewContainer = require('./js/admin_results_view/containers/AdminResultsViewContainer');
 var SearchCandidatesListContainer = require('./js/search/SearchCandidatesListContainer');
-var RepresentativePanelComponent = require('./js/components/RepresentativePanelComponent');
 var Tester = require('./js/config/Tester');
 const Login = require('./js/auth/Login');
 
@@ -34,13 +33,14 @@ ReactDOM.render((
 			      <Route path="politinis-suskirstymas" component={PoliticalUnitsContainer}/>
             <Route path="apylinkiu-rezultatai" component={AdminResultsViewContainer}/>
         </Route>
-        <Route path="atstovui" component={RepresentativeHomeContainer}>
-            <IndexRoute component={RepresentativePanelComponent}/>
+        <Route path="atstovui/:id" component={RepresentativeHomeContainer}>
+            <IndexRoute component={RepresentativeProfileComponent}/>
             <Route path="profilis" component={RepresentativeProfileComponent}/>
             <Route path="rezultatai">
                 <Route path="vienmandaciai" component={CountyResultsContainer}/>
                 <Route path="daugiamandaciai" component={CountyResultsContainer}/>
             </Route>
+            
         </Route>
         {/*<Route path="rezultatai" component={}/>*/}
         <Route path="paieska" component={SearchCandidatesListContainer}/>

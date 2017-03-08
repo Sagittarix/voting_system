@@ -30,11 +30,12 @@ var CountyRepresentativeListLineComponent = React.createClass ({
                 <div>
                     <div style={{height: 20}}>
 
-                        <div className="col-md-4">{this.unitCredentials()}</div>
+                        <div id={"representative-name-and-surname-" + this.unitCredentials()} className="col-md-4">{this.unitCredentials()}</div>
 
                         {/*<div className="col-md-2">{this.props.unit.firstName}</div>*/}
                         {/*<div className="col-md-2">{this.props.unit.lastName}</div>*/}
                         <div
+                            id={"representative-location-" + this.unitCredentials()}
                             className={"col-md-4 popovering-" + this.props.index}
                             onClick={this.popupTruncated.bind(this, this.territorialTitle(), "popovering-" + this.props.index)}
                             data-content={this.territorialTitle()}
@@ -45,7 +46,9 @@ var CountyRepresentativeListLineComponent = React.createClass ({
                             {this.territorialTitle().substring(0, truncLength+1)}
                         </div>
 
-                        <div className={"col-md-3 popovering-" + this.props.index}
+                        <div
+                             id={"representative-email-" + this.unitCredentials()}
+                             className={"col-md-3 popovering-" + this.props.index}
                              onClick={this.popupTruncated.bind(this, this.props.unit.email, "popovering-" + this.props.index)}
                              data-content={this.props.unit.email}
                              rel="popover"
@@ -62,7 +65,7 @@ var CountyRepresentativeListLineComponent = React.createClass ({
                             >
                                 <span
                                     className="glyphicon glyphicon-remove-sign remove-representative confirmation-buttons"
-                                    id={"remove-representative-" + this.props.id}
+                                    id={"remove-representative-" + this.unitCredentials()}
                                 >
                                 </span>
                             </ConfirmAction>

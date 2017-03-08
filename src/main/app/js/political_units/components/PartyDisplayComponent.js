@@ -1,39 +1,72 @@
 var React = require('react');
-const InfiniteScroll = require('react-infinite-scroller');
+var InlineEditComponent = require('../../components/tiny_components/InlineEditComponent');
 
-function PartyDisplayComponent(props) {
-
-    var scrollUp = function() {
+var PartyDisplayComponent = React.createClass({
+    getInitialState() {
+        return ({ update: false, unit: this.props.unit });
+    },
+    scrollUp() {
         window.scrollTo(0, 0);
-    };
-
-    return (
-        <div className="unit">
-            <div className="list-group-item list-group-item-success">
-                <div onClick={props.toggleShow} style={{ cursor: 'pointer' }}>
-                    {props.name}
+    },
+    toggleEdit() {
+        this.setState({ update: !this.state.update });
+    },
+    updateOrDisplay() {
+        if (this.state.update) {
+            return (
+                <InlineEditComponent
+                    update={this.updateSelf}
+                    toggleUpdate={this.toggleUpdate}
+                    unit={this.props.unit}
+                    parent={"PARTY"}
+                />
+            );
+        } else {
+            return (
+                <div>
+                    <div onClick={this.props.toggleShow} style={{ cursor: 'pointer' }}>
+                        {this.state.unit.name}
+                    </div>
+                </div>
+            );
+        }
+    },
+    updateSelf(updatedUnit) {
+        this.setState({ unit: updatedUnit, update: false });
+    },
+    toggleUpdate() {
+        this.setState({ update: !this.state.update });
+    },
+    render() {
+        return (
+            <div className="unit">
+                <div className="list-group-item list-group-item-success" id={"party-" + this.state.unit.name}>
+                    {this.updateOrDisplay()}
+                </div>
+                <div style={ this.props.display }>
+                    <div className="list-group-item">
+                        {this.props.actions}
+                        {this.props.confirmDeleteParty}
+                        <p className="remove-units-element confirmation-buttons"
+                            onClick={this.toggleEdit}    
+                        >
+                            <span className="glyphicon glyphicon-edit">
+                            </span> &nbsp;
+                            Redaguoti partiją
+                        </p>
+                        <b style={this.props.displayLoadingIcon}>Prašome palaukti&nbsp;</b>
+                        <img style={this.props.displayLoadingIcon} src="app/imgs/axios-loader.gif" alt="working-hard"/>
+                    </div>
+                    <div id="scroller" style={{ maxHeight: 200, overflow: 'scroll' }}>
+                        {this.props.candidates}
+                        <buttton id="load-more" className="btn btn-default btn-sm" style={{ width: '100%' }}></buttton>
+                    </div>
+                    <buttton className="btn btn-default btn-sm" onClick={this.scrollUp}>UP</buttton>
                 </div>
             </div>
-            <div style={ props.display }>
-                <div className="list-group-item">
-                    {props.actions}
-                    <b style={props.displayLoadingIcon}>Prašome palaukti&nbsp;</b>
-                    <img style={props.displayLoadingIcon} src="app/imgs/axios-loader.gif" alt="working-hard"/>
-                    {props.confirmDeleteParty}
-                </div>
-                <InfiniteScroll
-                    pageStart={0}
-                    hasMore={true || false}
-                    initialLoad={false}
-                    loader={<div className="loader">Kraunama ...</div>}
-                >
-                    {props.candidates}
-                    <buttton className="btn btn-default btn-sm" onClick={scrollUp}>UP</buttton>
-                </InfiniteScroll>
-            </div>
+        );
+    }
+});
 
-        </div>
-    );
-}
 
 module.exports = PartyDisplayComponent;

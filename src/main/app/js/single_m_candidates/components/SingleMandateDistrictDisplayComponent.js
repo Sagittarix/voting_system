@@ -4,7 +4,7 @@ function SingleMandateDistrictDisplayComponent(props) {
     return (
         <div className="unit">
             <div className="list-group-item list-group-item-success">
-                <div onClick={props.toggleShow} style={{ cursor: 'pointer' }}>
+                <div id={"district-title-" + props.name} onClick={props.toggleShow} style={{ cursor: 'pointer' }}>
                     {props.name}
                 </div>
             </div>

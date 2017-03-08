@@ -125,27 +125,27 @@ var NewRepresentativeSideFormComponent = React.createClass({
             <form>
                 <div className="form-group">
                     <label htmlFor="inputCounty">Atstovo vardas</label>
-                    <input type="text" className="form-control" value={this.state.name} onChange={this.handleNameChange}/>
+                    <input id="representative-name" type="text" className="form-control" value={this.state.name} onChange={this.handleNameChange}/>
                     {this.state.nameErrors}
                     <label htmlFor="inputCounty">Atstovo pavardė</label>
-                    <input type="text" className="form-control" value={this.state.surname} onChange={this.handleSurnameChange}/>
+                    <input id="representative-surname" type="text" className="form-control" value={this.state.surname} onChange={this.handleSurnameChange}/>
                     {this.state.surnameErrors}
                     <label htmlFor="inputCounty">Atstovo el. paštas</label>
-                    <input type="text" className="form-control"  value={this.state.email} onChange={this.hendleEmailChange}/>
+                    <input id="representative-email" type="text" className="form-control"  value={this.state.email} onChange={this.hendleEmailChange}/>
                     {this.state.emailErrors}
                     <label htmlFor="inputCounty" >Atstovo apygarda</label>
-                    <select className="form-control" value={this.state.district} onChange={this.callHelperFunction}>
+                    <select id="representative-district" className="form-control" value={this.state.district} onChange={this.callHelperFunction}>
                         <option>Pasirinkite apygardą</option>;
                         {DistrictNames.map(MakeDistrictItem)}
                     </select>
                     <label htmlFor="inputCounty">Atstovo apylinkė</label>
-                    <select className="form-control" value={this.state.county} onChange={this.handleCountyChange}>
+                    <select id="representative-county" className="form-control" value={this.state.county} onChange={this.handleCountyChange}>
                         <option>Pasirinkite apylinkę</option>;
                         {onlyRequiredCounties.map(MakeCountyItem)}
                     </select>
                 </div>
                 <div>
-                    <button type="submit" disabled={
+                    <button id="create-representative-button" type="submit" disabled={
                         this.state.nameErrors.length > 0 ||
                         this.state.surnameErrors.length > 0 ||
                         this.state.emailErrors.length > 0 ||

@@ -17,8 +17,13 @@ var CountyRepresentativesDisplayContainer = React.createClass({
                 lastName: "pavarde",
                 county: { id: 0 }
             },
-            springErrors: []
+            springErrors: [],
+            toggleFullRepresentativesDisplayView: false,
         });
+    },
+
+    toggleFullRepresentativesList: function () {
+        this.setState({ toggleFullRepresentativesDisplayView: !this.state.toggleFullRepresentativesDisplayView });
     },
 
     componentDidMount: function () {
@@ -87,17 +92,17 @@ var CountyRepresentativesDisplayContainer = React.createClass({
     },
 
     render: function () {
-        return (
-            <div>
-                <CountyRepresentativesDisplayComponent
-                    repData={this.state.representatives}
-                    onDeleteRepresentative={this.handleDeleteRepresentative}
-                    newRep={this.newRep}
-                    districtsData={this.state.districts}
-                    springErrors={this.state.springErrors}
-                />
-            </div>
-        )
+            return (
+                    <CountyRepresentativesDisplayComponent
+                        repData={this.state.representatives}
+                        onDeleteRepresentative={this.handleDeleteRepresentative}
+                        newRep={this.newRep}
+                        districtsData={this.state.districts}
+                        springErrors={this.state.springErrors}
+                        toggleFullRepresentativesList={this.toggleFullRepresentativesList}
+                        toggleFullRepresentativesDisplayView={this.state.toggleFullRepresentativesDisplayView}
+                    />
+            )
     }
 });
 

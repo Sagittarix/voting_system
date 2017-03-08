@@ -13,8 +13,8 @@ var SingleMandateDistrictDisplayContainer = React.createClass({
                   district: this.props.unit });
     },
     componentWillReceiveProps: function(newProps) {
-        if (newProps.district != this.state.district) {
-            this.setState({ district: newProps.district })
+        if (newProps.unit != this.state.district) {
+            this.setState({ district: newProps.unit })
         }
     },
     prepareCandidates: function() {
@@ -46,7 +46,7 @@ var SingleMandateDistrictDisplayContainer = React.createClass({
             });
     },
     deleteCandidates: function() {
-        this.props.deleteCandidates(this.props.district.id);
+        this.props.deleteCandidates(this.state.district.id);
     },
     toggleShowCandidates: function() {
         this.setState({ showCandidates: !this.state.showCandidates });
@@ -73,6 +73,7 @@ var SingleMandateDistrictDisplayContainer = React.createClass({
                           associationId={this.state.district.id}
                           springErrors={this.state.springErrors}
                           openModal={this.emptyFunction}
+                          name={this.state.district.name}
                       />
         }
         return actions;

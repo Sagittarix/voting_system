@@ -6,9 +6,9 @@ var NewDistrictAsideForm = React.createClass({
     getInitialState: function() {
         return ({ jsErrors: [] });
     },
-    /*componentDidUpdate() {
+    componentDidUpdate() {
         $('.toggleInput').bootstrapToggle();
-    },*/
+    },
     reportCountyErrors: function(errors, countyName) {
         if (errors.length == 0) {
             this.setState({ jsErrors: [] });
@@ -40,7 +40,7 @@ var NewDistrictAsideForm = React.createClass({
                 <form>
                     <div className="form-group">
                         <label htmlFor="inputDistrict">Apygardos pavadinimas</label>
-                        <input type="text" className="form-control" id="inputDistrictName" value={this.props.name} onChange={this.props.changeName}/>
+                        <input type="text" className="form-control" id="input-district-name" value={this.props.name} onChange={this.props.changeName}/>
                     </div>
                     {this.countiesHeader()}
                     {this.props.counties}
@@ -48,7 +48,7 @@ var NewDistrictAsideForm = React.createClass({
                         addCounty={this.props.addCounty}
                         reportCountyErrors={this.reportCountyErrors}
                     />
-                    <button type="submit" className="btn btn-primary btn-md" style={{ marginTop: 10 }} onClick={this.create}>Sukurti</button>
+                    <button type="submit" id="create-district-button" className="btn btn-primary btn-md" style={{ marginTop: 10 }} onClick={this.create}>Sukurti</button>
                 </form>
                 <div className="form-group errors-area">
                     {this.state.jsErrors}

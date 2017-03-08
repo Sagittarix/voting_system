@@ -4,6 +4,7 @@ function NewCountyFormButton(props) {
     return (
         <div>
             <span
+                id="add-new-county-button"
                 onClick={props.renderCountyForm}
                 style={{ cursor: 'pointer' }}>
                 <span className="glyphicon glyphicon-plus"></span>

@@ -1,5 +1,6 @@
 var React = require('react');
 var VoteListComponent = require('./VoteListComponent');
+var CountyDetailsCard = require('./CountyDetailsCard');
 
 var ResultsDisplayComponent = React.createClass({
 
@@ -25,7 +26,7 @@ var ResultsDisplayComponent = React.createClass({
 
                     <div className="col-md-4 units-create-area">
                         <div className="col-md-11">
-                            <div>ideti county details</div>
+                            <CountyDetailsCard />
                             {createdOn}
                             {confirmedOn}
                         </div>

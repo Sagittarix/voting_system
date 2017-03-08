@@ -1,5 +1,6 @@
 var React = require('react');
 var ResultsFormComponent = require('./ResultsFormComponent');
+var CountyDetailsCard = require('./CountyDetailsCard');
 var Validations = require('../../utils/Validations');
 
 var CountyResultsComponent = React.createClass({
@@ -43,7 +44,7 @@ var CountyResultsComponent = React.createClass({
                     </div>
                     <div className="col-md-4 units-create-area">
                         <div className="col-md-11">
-                            <div>ideti county details</div>
+                            <CountyDetailsCard />
                             <div style={{ marginTop: 30 }}>
                                 <button className="btn btn-default btn-md county-results-form-btns" onClick={this.submitResults}>
                                     SIŲSTI REZULTATUS

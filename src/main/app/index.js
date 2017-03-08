@@ -41,7 +41,6 @@ ReactDOM.render((
                 <Route path="vienmandaciai" component={CountyResultsContainer}/>
                 <Route path="daugiamandaciai" component={CountyResultsContainer}/>
             </Route>
-
         </Route>
         {/*<Route path="rezultatai" component={}/>*/}
         <Route path="paieska" component={SearchCandidatesListContainer}/>

@@ -10,7 +10,6 @@ var spring = require('../../config/SpringConfig');
 
 var CountyResultsContainer = React.createClass({
     getInitialState: function() {
-
         let resultType = (this.props.location.pathname.includes('vienmandaciai')) ?
             'single-mandate' : 'multi-mandate';
         let resultPostUrl =  spring.localHost.concat('/api/results/county/') + resultType;
@@ -30,13 +29,6 @@ var CountyResultsContainer = React.createClass({
         });
     },
     componentDidMount() {
-        /*this.resultType = this.props.location.pathname.includes('vienmandaciai') ?
-            'single-mandate' : 'multi-mandate';
-        this.resultPostUrl =  spring.localHost.concat('/api/results/county/') + this.resultType;
-        this.header = this.resultType === 'single-mandate' ?
-            "Apylinkės kandidatų rezultatai (VIENMANDAČIAI)" :
-            "Partijų sąrašas (DAUGIAMANDAČIAI)";*/
-
         const _this = this;
         axios.post(spring.localHost.concat('/api/auth/principal'))
             .then(resp => {
@@ -45,6 +37,19 @@ var CountyResultsContainer = React.createClass({
             .catch(err => {
                 console.log(err);
             });
+    },
+    componentWillReceiveProps(newProps) {
+        let resultType = (newProps.location.pathname.includes('vienmandaciai')) ?
+            'single-mandate' : 'multi-mandate';
+        let resultPostUrl =  spring.localHost.concat('/api/results/county/') + resultType;
+        let header = (resultType === 'single-mandate') ?
+            "Apylinkės kandidatų rezultatai (VIENMANDAČIAI)" : "Partijų sąrašas (DAUGIAMANDAČIAI)";
+
+        this.setState({
+            resultType: resultType,
+            resultPostUrl: resultPostUrl,
+            header: header
+        });
     },
     getResultsOrVotees: function(props) {
         let _this = this;

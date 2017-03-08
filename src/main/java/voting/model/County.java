@@ -27,10 +27,10 @@ public class County {
 
 
 
-    @OneToOne(mappedBy = "county", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "county", cascade = CascadeType.ALL, orphanRemoval = true)
     private CountyMMResult mmResult;
 
-    @OneToOne(mappedBy = "county", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "county", cascade = CascadeType.ALL, orphanRemoval = true)
     private CountySMResult smResult;
 
 

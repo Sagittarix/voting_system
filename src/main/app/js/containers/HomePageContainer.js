@@ -11,9 +11,9 @@ var HomePageContainer = React.createClass({
     },
     render: function() {
         return <HomePageComponent
-                results={this.state.results}
-                representatives={this.state.representatives}
-                admin={this.state.admin}
+                    results={this.state.results}
+                    representatives={this.state.representatives}
+                    admin={this.state.admin}
                />
     }
 });

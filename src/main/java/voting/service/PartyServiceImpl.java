@@ -80,6 +80,14 @@ public class PartyServiceImpl implements PartyService {
         return party;
     }
 
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public Party updateParty(PartyData partyData, Long partyId) {
+        Party party = partyRepository.findOne(partyId);
+        party.setName(partyData.getName());
+        return partyRepository.save(party);
+    }
+
     /**
      * Given party id and csv file with list of candidates, binds those candidates to a given party.
      * Previously bound candidates are unbound from a party.

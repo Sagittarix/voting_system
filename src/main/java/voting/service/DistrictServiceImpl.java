@@ -189,6 +189,32 @@ public class DistrictServiceImpl implements DistrictService {
         return district;
     }
 
+    @Transactional
+    @Override
+    public District updateDistrict(DistrictData districtData, Long districtId) {
+        District district = districtRepository.findOne(districtId);
+        district.setName(districtData.getName());
+        return districtRepository.save(district);
+    }
+
+    @Transactional
+    @Override
+    public County updateCounty(Long countyId, CountyData countyData) {
+        County county = getCounty(countyId);
+
+        county.setName(countyData.getName());
+        county.setVoterCount(countyData.getVoterCount());
+        county.setAddress(countyData.getAddress());
+
+        // TODO: fix this temporary hack
+        try {
+            districtRepository.save(county.getDistrict());
+        } catch (DataIntegrityViolationException ex) {
+            throw new IllegalArgumentException("Apylinkių pavadinimai turi būti skirtingi", ex);
+        }
+        return county;
+    }
+
     @Override
     public void deleteCounty(Long countyId) {
         County county = getCounty(countyId);

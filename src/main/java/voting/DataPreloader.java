@@ -1,21 +1,16 @@
 package voting;
 
+import com.github.javafaker.Faker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import voting.model.*;
-import voting.repository.CandidateRepository;
-import voting.repository.CountyRepRepository;
-import voting.repository.DistrictRepository;
-import voting.repository.PartyRepository;
+import voting.repository.*;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Created by domas on 1/11/17.
@@ -25,6 +20,7 @@ public class DataPreloader implements CommandLineRunner {
 
     private static Random rand = new Random(0);
     private final CountyRepRepository countyRepRepository;
+    private final AdminRepository adminRepRepository;
     private final DistrictRepository districtRepository;
     private final PartyRepository partyRepository;
     private final CandidateRepository candidateRepository;
@@ -33,13 +29,14 @@ public class DataPreloader implements CommandLineRunner {
     public DataPreloader(CountyRepRepository countyRepRepository,
                          DistrictRepository districtRepository,
                          PartyRepository partyRepository,
-                         CandidateRepository candidateRepository) {
+                         CandidateRepository candidateRepository,
+                         AdminRepository adminRepository) {
         this.countyRepRepository = countyRepRepository;
         this.districtRepository = districtRepository;
         this.partyRepository = partyRepository;
         this.candidateRepository = candidateRepository;
+        this.adminRepRepository = adminRepository;
     }
-
 
     @Override
     public void run(String... strings) throws Exception {
@@ -52,14 +49,15 @@ public class DataPreloader implements CommandLineRunner {
         District district4 = new District("District 4");
         District district5 = new District("District asd");
 
-        County county1 = new County("Senamiestis1", 3000L, "Adresas 1");
-        County county2 = new County("Naujamiestis1", 3000L, "Adresas 2");
-        County county3 = new County("Pašilaičiai1", 3000L, "Adresas 3");
-        County county4 = new County("Senamiestis1", 3000L, "Adresas 4");
-        County county5 = new County("Šilainiai1", 3000L, "Adresas 5");
+        County county1 = new County("Senamiestis", 3000L, "Adresas 1");
+        County county2 = new County("Naujamiestis", 3000L, "Adresas 2");
+        County county3 = new County("Pašilaičiai", 3000L, "Adresas 3");
+        County county4 = new County("Senamiestis", 3000L, "Adresas 4");
+        County county5 = new County("Šilainiai", 3000L, "Adresas 5");
+        County county6 = new County("Unknown", 10000L, "Unknown address");
 
         List<County> countyList1 = new ArrayList<County>(Arrays.asList(county1, county2, county3));
-        List<County> countyList2 = new ArrayList<County>(Arrays.asList(county4, county5));
+        List<County> countyList2 = new ArrayList<County>(Arrays.asList(county4, county5, county6));
 
         countyList1.forEach(c -> district1.addCounty(c));
         countyList2.forEach(c -> district2.addCounty(c));
@@ -107,20 +105,80 @@ public class DataPreloader implements CommandLineRunner {
             candidateRepository.save(c);
         });
 
-        CountyRep cr1 = new CountyRep("CR1001first", "CR001last", "test1@test.lt", "password1", county1);
-        CountyRep cr2 = new CountyRep("CR002first", "CR002last", "test1@test.lt", "password2", county2);
-        CountyRep cr3 = new CountyRep("CR003first", "CR003last", "test1@test.lt", "password3", county3);
-        CountyRep cr4 = new CountyRep("CR004first", "CR004last", "test1@test.lt", "password4", county4);
-        CountyRep cr5 = new CountyRep("CR005first", "CR005last", "test1@test.lt", "password5", county5);
+        Faker faker = new Faker();
+        CountyRep cr1 = new CountyRep(
+                faker.name().firstName(),
+                faker.name().lastName(),
+                "test1@test.lt",
+                "password1",
+                county1,
+                new String[]{"REPRESENTATIVE"}
+        );
+        CountyRep cr2 = new CountyRep(
+                faker.name().firstName(),
+                faker.name().lastName(),
+                "test1@test.lt",
+                "password2",
+                county2,
+                new String[]{"REPRESENTATIVE"}
+        );
+        CountyRep cr3 = new CountyRep(
+                faker.name().firstName(),
+                faker.name().lastName(),
+                "test1@test.lt",
+                "password3",
+                county3,
+                new String[]{"REPRESENTATIVE"}
+        );
+        CountyRep cr4 = new CountyRep(
+                faker.name().firstName(),
+                faker.name().lastName(),
+                "test1@test.lt",
+                "password4",
+                county4,
+                new String[]{"REPRESENTATIVE"}
+        );
+        CountyRep cr5 = new CountyRep(
+                faker.name().firstName(),
+                faker.name().lastName(),
+                "test1@test.lt",
+                "password5",
+                county5,
+                new String[]{"REPRESENTATIVE"}
+        );
+        CountyRep cr6 = new CountyRep(
+                "As",
+                "As",
+                "rep@rep.lt",
+                "asas",
+                county6,
+                new String[]{"ROLE_REPRESENTATIVE"}
+        );
         List<CountyRep> crs = new ArrayList<CountyRep>() {{
             add(cr1);
             add(cr2);
             add(cr3);
             add(cr4);
             add(cr5);
+            add(cr6);
         }};
         countyRepRepository.save(crs);
 
+        Admin admin = new Admin(
+                "Admin",
+                "Admin",
+                "admin@admin.lt",
+                new String[]{"ROLE_ADMIN"}
+        );
+
+        adminRepRepository.save(admin);
+    }
+
+    public static String generateRandomPersonId() {
+        StringBuilder id = new StringBuilder();
+        rand.ints(11, 0, 10).forEach(digit -> id.append(digit));
+        System.out.println(id.toString());
+        return id.toString();
     }
 
     private void loadStressData() {
@@ -154,48 +212,56 @@ public class DataPreloader implements CommandLineRunner {
 //            int countyCount = 0;
             while ((line = fileReader.readLine()) != null) {
                 lineNumber++;
-                if(lineNumber == 1){ continue; }
+                if (lineNumber == 1) {
+                    continue;
+                }
                 int tokenNumber = 0;
                 String[] tokens = line.split(DELIMITER);
-                for(String token : tokens)
-                {
-                    switch(tokenNumber) {
-                        case 1: districtName = token;
+                for (String token : tokens) {
+                    switch (tokenNumber) {
+                        case 1:
+                            districtName = token;
                             break;
-                        case 3: countyName = token;
+                        case 3:
+                            countyName = token;
                             break;
-                        case 4: countyAddress = token;
+                        case 4:
+                            countyAddress = token;
                             break;
-                        case 5: votersCount = Integer.parseInt(token);
+                        case 5:
+                            votersCount = Integer.parseInt(token);
                             break;
                     }
                     tokenNumber++;
                 }
-                if(currentDistrictName.equals("") && currentCountyName.equals("") && currentCountyAddress.equals("")) {
+                if (currentDistrictName.equals("") && currentCountyName.equals("") && currentCountyAddress.equals("")) {
                     currentDistrictName = districtName;
                     currentCountyName = countyName;
                     currentCountyAddress = countyAddress;
                     currentDistrictObject = new District(districtName);
                 }
-                if(!countyName.equals(currentCountyName)) {
+                if (!countyName.equals(currentCountyName)) {
                     currentVotersCount = currentVotersCount + votersCount;
                     currentCountyAddress = currentCountyAddress.substring(9);
                     County currentCountyObject = new County(currentCountyName, currentVotersCount, currentCountyAddress);
                     currentDistrictObject.addCounty(currentCountyObject);
                     // GENERATES COUNTY REPRESENTATIVE FOR CURRENT COUNTY OBJECT
-                    if ((line = fileReader2.readLine()) != null){
+                    if ((line = fileReader2.readLine()) != null) {
                         int tokenNumber2 = 0;
                         String[] tokens2 = line.split(DELIMITER);
-                        for(String token : tokens2)
-                        {
-                            switch(tokenNumber2) {
-                                case 0: representativeName = token;
+                        for (String token : tokens2) {
+                            switch (tokenNumber2) {
+                                case 0:
+                                    representativeName = token;
                                     break;
-                                case 1: representativeSurname = token;
+                                case 1:
+                                    representativeSurname = token;
                                     break;
-                                case 2: representativeEmail = token;
+                                case 2:
+                                    representativeEmail = token;
                                     break;
-                                case 3: representativePassword = token;
+                                case 3:
+                                    representativePassword = token;
                                     break;
                             }
                             tokenNumber2++;
@@ -205,38 +271,40 @@ public class DataPreloader implements CommandLineRunner {
                     allCountyRepresentatives.add(currentCountyRepresentative);
                     currentVotersCount = 0;
 //                    countyCount++;
-                } else { currentVotersCount = currentVotersCount + votersCount; }
-                if(!districtName.equals(currentDistrictName) || linesCount == lineNumber + 1) {
+                } else {
+                    currentVotersCount = currentVotersCount + votersCount;
+                }
+                if (!districtName.equals(currentDistrictName) || linesCount == lineNumber + 1) {
                     districtRepository.save(currentDistrictObject);
                     currentDistrictObject = new District(districtName);
 //                    int countFromRepository = StreamSupport.stream(districtRepository.findAll().spliterator(), false).mapToInt(d -> d.getCounties().size()).sum();
 //                    System.out.println(countyCount + " " + countFromRepository); // @OneToMany(fetch= FetchType.EAGER, mappedBy = "district", cascade = CascadeType.ALL, orphanRemoval = true)
                 }
-                if(!currentDistrictName.equals(districtName)) {
+                if (!currentDistrictName.equals(districtName)) {
                     currentDistrictName = districtName;
                 }
-                if(!currentCountyName.equals(countyName)) {
+                if (!currentCountyName.equals(countyName)) {
                     currentCountyName = countyName;
                 }
-                if(!currentCountyAddress.equals(countyAddress)){
+                if (!currentCountyAddress.equals(countyAddress)) {
                     currentCountyAddress = countyAddress;
                 }
             }
             countyRepRepository.save(allCountyRepresentatives);
-        }
-        catch (Exception e) { e.printStackTrace(); }
-        finally {
-            try { fileReader.close(); }
-            catch (IOException e) { e.printStackTrace(); }
-            try { fileReader2.close(); }
-            catch (IOException e) { e.printStackTrace(); }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                fileReader.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                fileReader2.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    public static String generateRandomPersonId() {
-        StringBuilder id = new StringBuilder();
-        rand.ints(11, 0, 10).forEach(digit -> id.append(digit));
-        System.out.println(id.toString());
-        return id.toString();
-    }
 }

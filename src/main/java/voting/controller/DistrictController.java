@@ -55,6 +55,18 @@ public class DistrictController {
         return new DistrictDTO(districtService.addNewDistrict(districtData));
     }
 
+    @PatchMapping("{id}/update")
+    public DistrictDTO updateDistrict(
+            @PathVariable Long id,
+            @Valid @RequestBody DistrictData districtData,
+            BindingResult result) {
+
+        if (result.hasErrors()) {
+            throw new MultiErrorException("Klaida atnaujinant apygardą " + districtData.getName(), result.getAllErrors());
+        }
+        return new DistrictDTO(districtService.updateDistrict(districtData, id));
+    }
+
     @DeleteMapping("{id}")
     public void deleteDistrict(@PathVariable Long id) {
         districtService.deleteDistrict(id);

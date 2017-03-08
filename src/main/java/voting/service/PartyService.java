@@ -23,6 +23,8 @@ public interface PartyService {
 
     void deleteParty(Long id);
 
+    Party updateParty(PartyData partyData, Long partyId);
+
     Party setCandidateList(Long id, MultipartFile file) throws IOException, CsvException;
 
     void deleteCandidateList(Long id);

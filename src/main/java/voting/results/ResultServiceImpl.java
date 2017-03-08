@@ -82,29 +82,22 @@ public class ResultServiceImpl implements ResultService {
     }
 
 
-    @Transactional
     @Override
     public DistrictSMResult getDistrictSmResult(Long districtId) {
         District district = districtService.getDistrict(districtId);
         DistrictSMResult result = resultRepository.findSmResultByDistrict(district);
         if (result == null) {
-            district.setSmResult(constructBlankDistrictSmResult(district));
-            districtService.save(district);
-            return district.getSmResult();
+            result = (DistrictSMResult) saveNewDistrictResult(district, ResultType.SINGLE_MANDATE);
         }
         return result;
     }
 
-
-    @Transactional
     @Override
     public DistrictMMResult getDistrictMmResult(Long districtId) {
         District district = districtService.getDistrict(districtId);
         DistrictMMResult result = resultRepository.findMmResultByDistrict(district);
         if (result == null) {
-            district.setMmResult(constructBlankDistrictMmResult(district));
-            districtService.save(district);
-            return district.getMmResult();
+            result = (DistrictMMResult) saveNewDistrictResult(district, ResultType.MULTI_MANDATE);
         }
         return result;
     }
@@ -119,19 +112,26 @@ public class ResultServiceImpl implements ResultService {
         result.setConfirmed(true);
         District district = result.getCounty().getDistrict();
         districtService.save(district);
-        updateDistrictResult(district, result);
+
+        ResultType type = result instanceof CountySMResult ?
+                          ResultType.SINGLE_MANDATE :
+                          ResultType.MULTI_MANDATE;
+
+        updateDistrictResult(district, result, type);
     }
 
 
     @Transactional
-    private void updateDistrictResult(District district, CountyResult result) {
-        DistrictResult districtResult;
-        if (result instanceof CountySMResult) {
-            districtResult = getDistrictSmResult(district.getId());
+    private void updateDistrictResult(District district, CountyResult countyResult, ResultType type) {
+        DistrictResult districtResult = type == ResultType.SINGLE_MANDATE ?
+                                        resultRepository.findSmResultByDistrict(district) :
+                                        resultRepository.findMmResultByDistrict(district);
+
+        if (districtResult == null) {
+            saveNewDistrictResult(district, type);
         } else {
-            districtResult = getDistrictMmResult(district.getId());
+            districtResult.combineResults(countyResult);
         }
-        districtResult.combineResults(result);
         districtService.save(district);
     }
 
@@ -161,6 +161,7 @@ public class ResultServiceImpl implements ResultService {
         return result;
     }
 
+
     private CountyResult getCountyResult(Long id) {
         Result result = getResult(id);
         if (!isCountyResult(result)) {
@@ -185,10 +186,10 @@ public class ResultServiceImpl implements ResultService {
         result.setCounty(county);
 
 
-        List<CandidateVote> voteList = resultDTO.getVoteList()
-                                                .stream()
-                                                .map(this::convertToCandidateVote)
-                                                .collect(Collectors.toList());
+        List<Vote> voteList = resultDTO.getVoteList()
+                                        .stream()
+                                        .map(this::convertToCandidateVote)
+                                        .collect(Collectors.toList());
         voteList.forEach(result::addVote);
 
         result.setConfirmed(false);
@@ -201,10 +202,10 @@ public class ResultServiceImpl implements ResultService {
         County county = districtService.getCounty(resultDTO.getCountyId());
         result.setCounty(county);
 
-        List<PartyVote> voteList = resultDTO.getVoteList()
-                .stream()
-                .map(this::convertToPartyVote)
-                .collect(Collectors.toList());
+        List<Vote> voteList = resultDTO.getVoteList()
+                                        .stream()
+                                        .map(this::convertToPartyVote)
+                                        .collect(Collectors.toList());
         voteList.forEach(result::addVote);
 
         result.setConfirmed(false);
@@ -222,16 +223,29 @@ public class ResultServiceImpl implements ResultService {
         return new PartyVote(party, voteData.getVotes());
     }
 
-    private DistrictSMResult constructBlankDistrictSmResult(District district) {
-        DistrictSMResult result = new DistrictSMResult();
-        List<Vote> voteList = constructBlankCandidateVoteList(district.getCandidates());
-        voteList.forEach(result::addVote);
+    private DistrictResult saveNewDistrictResult(District district, ResultType type) {
+        DistrictResult result = constructDistrictResult(district, type);
+        district.setResultByType(result, type);
+        districtService.save(district);
         return result;
     }
 
-    private DistrictMMResult constructBlankDistrictMmResult(District district) {
-        DistrictMMResult result = new DistrictMMResult();
-        List<Vote> voteList = constructBlankPartyVoteList(partyService.getParties());
+    private DistrictResult constructDistrictResult(District district, ResultType type) {
+        DistrictResult districtResult = constructBlankDistrictResult(district, type);
+        district.getCounties().stream()
+                .map(c -> c.getResultByType(type))
+                .filter(c -> c != null && c.isConfirmed())
+                .forEach(districtResult::combineResults);
+        return districtResult;
+    }
+
+    private DistrictResult constructBlankDistrictResult(District district, ResultType type) {
+        DistrictResult result = type == ResultType.SINGLE_MANDATE ?
+                                new DistrictSMResult() :
+                                new DistrictMMResult();
+        List<Vote> voteList = type == ResultType.SINGLE_MANDATE ?
+                              constructBlankCandidateVoteList(district.getCandidates()):
+                              constructBlankPartyVoteList(partyService.getParties());
         voteList.forEach(result::addVote);
         return result;
     }

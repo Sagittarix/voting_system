@@ -78,7 +78,7 @@
 //    @Transactional
 //    public CountyResult confirmResultForCounty(Long countyId, boolean isSingleMandate) {
 //        County county = districtService.getCounty(countyId);
-//        CountyResult cResult = getResult(county, isSingleMandate);
+//        CountyResult cResult = getResultByType(county, isSingleMandate);
 //        cResult.setConfirmed(true);
 //        // TODO: temp hack
 //        cResult.setConfirmedOn(new Date());
@@ -87,13 +87,13 @@
 //
 //    public CountyDTO deleteResultForCounty(Long countyId, boolean isSingleMandate) {
 //        County county = districtService.getCounty(countyId);
-//        CountyResult cr = getResult(county, isSingleMandate);
+//        CountyResult cr = getResultByType(county, isSingleMandate);
 //        countyResultRepository.delete(cr);
 //        county.removeResult(cr);
 //        return new CountyDTO(county);
 //    }
 //
-//    private CountyResult getResult(County county, boolean isSingleMandate) {
+//    private CountyResult getResultByType(County county, boolean isSingleMandate) {
 //        return county.getCountyResultList()
 //                     .stream()
 //                     .filter(cr -> cr.isSingleMandateSystem() == isSingleMandate)

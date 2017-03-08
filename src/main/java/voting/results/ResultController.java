@@ -5,12 +5,16 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import voting.dto.results.*;
 import voting.exception.MultiErrorException;
+import voting.model.District;
 import voting.results.model.result.CountyMMResult;
 import voting.results.model.result.CountySMResult;
 import voting.results.model.result.DistrictMMResult;
 import voting.results.model.result.DistrictSMResult;
+import voting.service.DistrictService;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by andrius on 1/24/17.
@@ -22,11 +26,14 @@ import javax.validation.Valid;
 public class ResultController {
 
     private ResultService resultService;
+    private DistrictService districtService;
 
     @Autowired
-    public ResultController(ResultService resultService) {
+    public ResultController(ResultService resultService, DistrictService districtService) {
         this.resultService = resultService;
+        this.districtService = districtService;
     }
+
 
     @GetMapping(path = "county/{id}/single-mandate")
     public CountySMResultDTO getCountySingleMandateResult(@PathVariable("id") Long countyId) {
@@ -57,6 +64,13 @@ public class ResultController {
         DistrictMMResult result = resultService.getDistrictMmResult(districtId);
         return new DistrictMMResultDTO(result);
     }
+
+    @GetMapping(path = "single-mandate")
+    public List<SingleMandateSummaryDTO> getSingleMandateResultsSummary() {
+        List<District> results = districtService.getDistricts();
+        return results.stream().map(SingleMandateSummaryDTO::new).collect(Collectors.toList());
+    }
+
 
     @PostMapping(path = "county/single-mandate")
     public CountySMResultDTO addCountySMResult(@Valid @RequestBody CountyResultData resultData, BindingResult result) {

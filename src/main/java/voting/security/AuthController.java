@@ -7,7 +7,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import voting.dto.AdminRepresentation;
-import voting.dto.CountyRepresentativeRepresentation;
 import voting.dto.countyrep.CountyRepresentativeDTO;
 import voting.repository.AdminRepository;
 import voting.service.CountyRepService;

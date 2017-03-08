@@ -30,16 +30,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .authorizeRequests()
                     .antMatchers("/api/auth/**").permitAll()
-                    //.antMatchers("/login").denyAll()
                     .and()
                 .formLogin()
-                    .loginPage("/login").successForwardUrl("/api/auth/authorities")
+                    .loginPage("/login")
+                    .successForwardUrl("/api/auth/authorities")
                     .permitAll()
                     .and()
                 .httpBasic()
                     .and()
                 .logout()
-                    .logoutUrl("/login?logout")
+                    .logoutSuccessUrl("/api/auth/logout")
                     .permitAll();
 
         http.headers().frameOptions().disable();

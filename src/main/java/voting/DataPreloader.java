@@ -142,8 +142,8 @@ public class DataPreloader implements CommandLineRunner {
                 new String[]{"REPRESENTATIVE"}
         );
         CountyRep cr6 = new CountyRep(
-                "as",
-                "as",
+                "As",
+                "As",
                 "rep@rep.lt",
                 "asas",
                 county6,
@@ -163,7 +163,6 @@ public class DataPreloader implements CommandLineRunner {
                 "Admin",
                 "Admin",
                 "admin@admin.lt",
-                "admin",
                 new String[]{"ROLE_ADMIN"}
         );
 

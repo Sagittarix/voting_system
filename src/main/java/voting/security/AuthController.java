@@ -6,15 +6,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import voting.dto.AdminRepresentation;
 import voting.dto.CountyRepresentativeRepresentation;
 import voting.repository.AdminRepository;
 import voting.service.CountyRepService;
 
-import javax.websocket.server.PathParam;
-import java.security.Principal;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -22,7 +19,7 @@ import java.util.stream.Collectors;
  */
 
 @Controller
-@RequestMapping("/api/auth")
+@RequestMapping("/api/auth/")
 public class AuthController {
 
     private final CountyRepService countyRepService;
@@ -33,6 +30,10 @@ public class AuthController {
         this.countyRepService = countyRepService;
         this.adminRepository = adminRepository;
     }
+
+    @GetMapping(path = "logout")
+    @ResponseBody
+    public boolean loginLogout() { return true; }
 
     @PostMapping(path = "authorities")
     @ResponseBody
@@ -59,11 +60,11 @@ public class AuthController {
     @PostMapping(path = "role")
     @ResponseBody
     public boolean getSecuredRole(@RequestParam("role") String role) {
-        System.out.println(role);
         return isContextContainsRole(role);
     }
 
-    @PostMapping(path = "details")
+    @PostMapping(path = "principal")
+    @ResponseBody
     public Object getSecuredPrincipal() {
         Object userDetails = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String username = (userDetails instanceof UserDetails) ? ((UserDetails) userDetails).getUsername() : null;
@@ -75,7 +76,7 @@ public class AuthController {
         } else if (admin) {
             return new AdminRepresentation(adminRepository.findOneByUsername(username));
         } else {
-            return null;
+            return "";
         }
     }
 

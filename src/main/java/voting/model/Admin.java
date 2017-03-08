@@ -22,15 +22,15 @@ public class Admin {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private String personalId;
     private String firstName;
     private String lastName;
     private String username;
     private String[] roles;
     private String password;
 
-    public Admin(String personalId, String firstName, String lastName, String password, String... roles) {
-        this.personalId = personalId;
+    public Admin() { }
+
+    public Admin(String firstName, String lastName, String password, String... roles) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = Formatter.formUsername(firstName, lastName);
@@ -44,14 +44,6 @@ public class Admin {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getPersonalId() {
-        return personalId;
-    }
-
-    public void setPersonalId(String personalId) {
-        this.personalId = personalId;
     }
 
     public String getFirstName() {
@@ -101,7 +93,6 @@ public class Admin {
         if (o == null || getClass() != o.getClass()) return false;
         Admin admin = (Admin) o;
         return Objects.equals(id, admin.id) &&
-                Objects.equals(personalId, admin.personalId) &&
                 Objects.equals(firstName, admin.firstName) &&
                 Objects.equals(lastName, admin.lastName) &&
                 Arrays.equals(roles, admin.roles) &&
@@ -110,14 +101,13 @@ public class Admin {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, personalId, firstName, lastName, roles, password);
+        return Objects.hash(id, firstName, lastName, roles, password);
     }
 
     @Override
     public String toString() {
         return "Admin{" +
                 "id=" + id +
-                ", personalId='" + personalId + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", roles='" + Arrays.toString(roles) + '\'' +

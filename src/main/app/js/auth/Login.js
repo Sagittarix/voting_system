@@ -23,6 +23,7 @@ const Login = React.createClass({
                 { headers: { 'Content-Type': 'multipart/form-data' } }
             )
             .then(resp => {
+                _this.props.manageUser("LOGIN");
                 if (resp.data === "REPRESENTATIVE") {
                     _this.props.router.push("/atstovui");
                 } else if (resp.data === "ADMIN") {

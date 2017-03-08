@@ -9,46 +9,60 @@ var styles = {
 }
 
 var RepresentativesPanelComponent = React.createClass({
-	getInitialState: function () {
-		return ({
-			tagIds: {
-				location1: styles.passive,
-				location2: styles.passive,
-				location3: styles.passive,
-			}
-		});
-   },
-	resetButtonBackgrounds: function() {
-	 this.setState({
-			tagIds: {
-				location1: styles.passive,
-				location2: styles.passive,
-				location3: styles.passive,
-			}
-		});
-   },
-	setBackgrounds: function(tag) {
-		var stateObj = this.state;
-		var newState = {};
+    getInitialState() {
+        return ({ tagIds: this.setBackgroundsByLocation() });
+    },
+    contextTypes: {
+        router: React.PropTypes.object.isRequired
+    },
+    resetButtonBackgrounds: function() {
+        this.setState({
+            tagIds: {
+                location1: styles.passive,
+                location2: styles.passive,
+                location3: styles.passive
+            }
+        });
+    },
+    setBackgrounds: function(tag) {
+        var stateObj = this.state;
+        var newState = {};
 
-		Object.keys(stateObj.tagIds).forEach(key => {
-			var value = (key === tag.id) ? styles.active : styles.passive;
-			newState[key] = value;
-		});
-		this.setState({ tagIds: newState });
-	},
-   componentWillReceiveProps: function(nextProps) {
-		// if (nextProps.location.pathname === '/atstovui') {
-		// 	this.resetButtonBackgrounds();
-		// }
-		// if (nextProps.location.pathname === '/atstovui/rezultatai/vienmandaciai') {
-		// 	this.setBackgrounds(location1);
-		// }
-		// if (nextProps.location.pathname === '/atstovui/rezultatai/daugiamandaciai') {
-		// 	this.setBackgrounds(location2);
-		// }
-   },
-   render: function() {
+        Object.keys(stateObj.tagIds).forEach(key => {
+            var value = (key === tag.id) ? styles.active : styles.passive;
+            newState[key] = value;
+        });
+        this.setState({ tagIds: newState });
+    },
+    componentWillReceiveProps: function(nextProps) {
+        if (nextProps.location.pathname === '/atstovui') this.resetButtonBackgrounds();
+        if (nextProps.location.pathname === '/atstovui/rezultatai/vienmandaciai') this.setBackgrounds(location1);
+        if (nextProps.location.pathname === '/atstovui/rezultatai/daugiamandaciai') this.setBackgrounds(location2);
+        if (nextProps.location.pathname === '/atstovui/profilis') this.setBackgrounds(location3);
+    },
+    setBackgroundsByLocation: function() {
+        var tagIds = {
+            location1: styles.passive,
+            location2: styles.passive,
+            location3: styles.passive
+        };
+
+        switch (this.context.router.location.pathname) {
+            case '/atstovui/rezultatai/vienmandaciai':
+                tagIds.location1 = styles.active;
+                break;
+            case '/atstovui/rezultatai/daugiamandaciai':
+                tagIds.location2 = styles.active;
+                break;
+            case '/atstovui/rezultatai/profilis':
+                tagIds.location3 = styles.active;
+                break;
+        }
+
+        return tagIds;
+
+    },
+    render: function() {
 	  return (
 			<div className="menu">
 				<ul className="nav nav-tabs" id="bootstrap-overrides-nav-tabs">
@@ -77,7 +91,7 @@ var RepresentativesPanelComponent = React.createClass({
 							to="atstovui/profilis"
 							className="adminPanelButton"
 							id="location3"
-							style={this.state.tagIds.location5}>
+							style={this.state.tagIds.location3}>
 							<img src="app/imgs/user.png" style={ styles.image }/>
 							<p style={{ marginBottom: 0 }}>Atstovo</p>
 							<p>profilis</p>
@@ -85,8 +99,8 @@ var RepresentativesPanelComponent = React.createClass({
 					</li>
 				</ul>
 			</div>
-	 );
-   }
+	  );
+    }
 });
 
 module.exports = RepresentativesPanelComponent;

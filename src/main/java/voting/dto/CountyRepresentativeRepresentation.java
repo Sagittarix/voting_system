@@ -11,29 +11,30 @@ import java.util.Objects;
 public class CountyRepresentativeRepresentation {
 
     private Long id;
-    private String personalId;
     private String firstName;
     private String lastName;
+    private String username;
     private String email;
     private Long countyId;
     private String countyName;
     private Long districtId;
     private String districtName;
+    private String[] roles;
 
     public CountyRepresentativeRepresentation() { }
 
     public CountyRepresentativeRepresentation(CountyRep countyRep) {
         this.id = countyRep.getId();
-        this.personalId =
         this.firstName = countyRep.getFirstName();
         this.lastName = countyRep.getLastName();
+        this.username = countyRep.getUsername();
         this.email = countyRep.getEmail();
         County county = countyRep.getCounty();
         this.countyId = county.getId();
         this.countyName = county.getName();
         this.districtId = county.getDistrict().getId();
         this.districtName = county.getDistrict().getName();
-
+        this.roles = countyRep.getRoles();
     }
 
     public Long getId() {
@@ -42,14 +43,6 @@ public class CountyRepresentativeRepresentation {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getPersonalId() {
-        return personalId;
-    }
-
-    public void setPersonalId(String personalId) {
-        this.personalId = personalId;
     }
 
     public String getFirstName() {
@@ -66,6 +59,14 @@ public class CountyRepresentativeRepresentation {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getEmail() {
@@ -108,6 +109,14 @@ public class CountyRepresentativeRepresentation {
         this.districtName = districtName;
     }
 
+    public String[] getRoles() {
+        return roles;
+    }
+
+    public void setRoles(String[] roles) {
+        this.roles = roles;
+    }
+
     @Override
     public boolean equals(Object o) {
 
@@ -115,7 +124,6 @@ public class CountyRepresentativeRepresentation {
         if (o == null || getClass() != o.getClass()) return false;
         CountyRepresentativeRepresentation that = (CountyRepresentativeRepresentation) o;
         return Objects.equals(id, that.id) &&
-                Objects.equals(personalId, that.personalId) &&
                 Objects.equals(firstName, that.firstName) &&
                 Objects.equals(lastName, that.lastName) &&
                 Objects.equals(email, that.email) &&
@@ -127,14 +135,13 @@ public class CountyRepresentativeRepresentation {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, personalId, firstName, lastName, email, countyId, countyName, districtId, districtName);
+        return Objects.hash(id, firstName, lastName, email, countyId, countyName, districtId, districtName);
     }
 
     @Override
     public String toString() {
         return "CountyRepresentativeRepresentation {" +
                 "id=" + id +
-                ", personalId='" + personalId + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +

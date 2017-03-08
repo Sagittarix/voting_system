@@ -10,46 +10,54 @@ var spring = require('../../config/SpringConfig');
 
 var CountyResultsContainer = React.createClass({
     getInitialState: function() {
+
+        let resultType = (this.props.location.pathname.includes('vienmandaciai')) ?
+            'single-mandate' : 'multi-mandate';
+        let resultPostUrl =  spring.localHost.concat('/api/results/county/') + resultType;
+        let header = (resultType === 'single-mandate') ?
+            "Apylinkės kandidatų rezultatai (VIENMANDAČIAI)" : "Partijų sąrašas (DAUGIAMANDAČIAI)";
+
         return ({
-            representative: undefined,
             results: undefined,
             votees: undefined,
             activeCountyId: undefined,
             dictionary: new Map(),
             spoiled: "",
-            springErrors: []
+            springErrors: [],
+            resultType: resultType,
+            resultPostUrl: resultPostUrl,
+            header: header
         });
     },
-    componentWillMount() {
-        this.resultType = this.props.location.pathname.includes('vienmandaciai') ?
-                            'single-mandate' : 'multi-mandate';
+    componentDidMount() {
+        /*this.resultType = this.props.location.pathname.includes('vienmandaciai') ?
+            'single-mandate' : 'multi-mandate';
         this.resultPostUrl =  spring.localHost.concat('/api/results/county/') + this.resultType;
         this.header = this.resultType === 'single-mandate' ?
-                        "Apylinkės kandidatų rezultatai (VIENMANDAČIAI)" :
-                        "Partijų sąrašas (DAUGIAMANDAČIAI)"
-    },
-    componentDidMount: function() {
+            "Apylinkės kandidatų rezultatai (VIENMANDAČIAI)" :
+            "Partijų sąrašas (DAUGIAMANDAČIAI)";*/
 
-        // refactor when login will be implemented
-        
-    },
-    componentWillReceiveProps(newProps) {
-        if (newProps.countyId !== null) {
-            this.getResultsOrVotees(newProps);
-        }
+        const _this = this;
+        axios.post(spring.localHost.concat('/api/auth/principal'))
+            .then(resp => {
+                _this.getResultsOrVotees(resp.data);
+            })
+            .catch(err => {
+                console.log(err);
+            });
     },
     getResultsOrVotees: function(props) {
-        let _this = this
-        let resultsUrl = spring.localHost.concat("/api/results/county/") + props.countyId + "/" + this.resultType;
+        let _this = this;
+        let resultsUrl = spring.localHost.concat("/api/results/county/") + props.countyId + "/" + this.state.resultType;
         axios
             .get(resultsUrl)
             .then(function(response) {
                 if (response.data) {
                     _this.setState({ results: response.data })
                 } else {
-                    let getUrl = _this.resultType === 'single-mandate' ?
-                                    spring.localHost.concat('/api/district/') + props.districtId + '/candidates' :
-                                    spring.localHost.concat('/api/party/');
+                    let getUrl = (_this.state.resultType === 'single-mandate') ?
+                        spring.localHost.concat('/api/district/') + props.districtId + '/candidates' :
+                        spring.localHost.concat('/api/party/');
                     _this.getVotees(getUrl);
                 }
             })
@@ -58,11 +66,11 @@ var CountyResultsContainer = React.createClass({
             });
     },
     getVotees(url) {
-        let _this = this
+        let _this = this;
         axios
             .get(url)
             .then(function(response) {
-                _this.setState({ 
+                _this.setState({
                     votees: response.data,
                     dictionary: _this.formDictionary(response.data)
                 })
@@ -72,31 +80,28 @@ var CountyResultsContainer = React.createClass({
             })
     },
     prepareVotees() {
-        let votees = this.resultType === 'single-mandate' ?
-                     this.prepareCandidates() :
-                     this.prepareParties();
-        return votees
+        return this.state.resultType === 'single-mandate' ? this.prepareCandidates() : this.prepareParties();
     },
     prepareCandidates() {
         let candidates = this.state.votees.map((votee, idx) => {
-                            return <CandidateDisplayComponent
-                                        key={idx}
-                                        candidate={votee}
-                                        changeVotes={this.handleChangeVotes}
-                                        votes={this.state.dictionary.get(votee.id)}
-                                    />
-                        });
-        return candidates
+            return <CandidateDisplayComponent
+                key={idx}
+                candidate={votee}
+                changeVotes={this.handleChangeVotes}
+                votes={this.state.dictionary.get(votee.id)}
+            />
+        });
+        return candidates;
     },
     prepareParties() {
         let parties = this.state.votees.map((votee, idx) => {
-                        return <MM_PartyComponent
-                                    key={idx}
-                                    party={votee}
-                                    changeVotes={this.handleChangeVotes}
-                                    votes={this.state.dictionary.get(votee.id)}
-                                />
-                    });
+            return <MM_PartyComponent
+                key={idx}
+                party={votee}
+                changeVotes={this.handleChangeVotes}
+                votes={this.state.dictionary.get(votee.id)}
+            />
+        });
         return parties
     },
     formDictionary: function(votees) {
@@ -111,8 +116,8 @@ var CountyResultsContainer = React.createClass({
             newDictionary.set(key, "");
         });
         this.setState({ dictionary: newDictionary,
-                        springErrors: [],
-                        spoiled: "" });
+            springErrors: [],
+            spoiled: "" });
     },
     handleChangeSpoiled: function(e) {
         e.preventDefault()
@@ -133,14 +138,14 @@ var CountyResultsContainer = React.createClass({
             "spoiledBallots": this.state.spoiled,
             "countyId": this.props.countyId,
             "unitVotes": voteList
-        }
+        };
         axios.post(this.resultPostUrl, body)
             .then(function(resp) {
-                _this.setState({ 
+                _this.setState({
                     springErrors: [],
                     dictionary: new Map(),
                     spoiled: undefined,
-                    results: resp.data 
+                    results: resp.data
                 });
             })
             .catch(function(err) {
@@ -152,32 +157,33 @@ var CountyResultsContainer = React.createClass({
     render: function() {
         var formOrResults;
         if (this.state.results) {
-            formOrResults = <ResultsDisplayComponent
-                                header={this.header}
-                                representative={this.props.representative}
-                                results={this.state.results}
-                                createdOn={Helpers.dateTimeFormatWithMessage(
-                                              this.state.results.createdOn,
-                                              "Rezultatai pateikti"
-                                          )}
-                                confirmedOn={Helpers.dateTimeFormatWithMessage(
-                                              this.state.results.confirmedOn,
-                                              "Rezultatai patvirtinti"
-                                          )}
-                            />
+            formOrResults = (
+                <ResultsDisplayComponent
+                    header={this.header}
+                    results={this.state.results}
+                    createdOn={Helpers.dateTimeFormatWithMessage(
+                        this.state.results.createdOn,
+                        "Rezultatai pateikti"
+                    )}
+                    confirmedOn={Helpers.dateTimeFormatWithMessage(
+                        this.state.results.confirmedOn,
+                        "Rezultatai patvirtinti"
+                    )}
+                />
+            );
         } else if (this.state.votees) {
-            formOrResults = <CountyResultsComponent
-                                header={this.header}
-                                representative={this.props.representative}
-                                votees={this.prepareVotees()}
-                                spoiled={this.state.spoiled}
-                                dictionary={this.state.dictionary}
-                                changeSpoiled={this.handleChangeSpoiled}
-                                submitResults={this.handleSubmitResults}
-                                springErrors={this.state.springErrors}
-                                activeCountyId={this.props.countyId}
-                                clearForm={this.clearForm}
-                            />
+            formOrResults = (
+                <CountyResultsComponent
+                    header={this.header}
+                    votees={this.prepareVotees()}
+                    spoiled={this.state.spoiled}
+                    dictionary={this.state.dictionary}
+                    changeSpoiled={this.handleChangeSpoiled}
+                    submitResults={this.handleSubmitResults}
+                    springErrors={this.state.springErrors}
+                    clearForm={this.clearForm}
+                />
+            );
         } else {
             return <div></div>
         }

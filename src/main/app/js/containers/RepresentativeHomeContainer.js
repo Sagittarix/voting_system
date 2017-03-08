@@ -4,49 +4,54 @@ var axios = require('axios');
 var spring = require('../config/SpringConfig');
 
 var RepresentativeHomeContainer = React.createClass({
-    propTypes: {
-        
-    }, 
     getInitialState() {
         return {
-            representative: undefined,
-            countyId: undefined,
-            districtId: undefined
+            representative: false
         };
     },
+    contextTypes: {
+        router: React.PropTypes.object.isRequired
+    },
+    /*componentWillReceiveProps(newProps) {
+        if (newProps.currentUser != this.state.currentUser) this.setState({ currentUser: newProps.currentUser });
+    },*/
     componentDidMount() {
-        const url = spring.localHost.concat("/api/county-rep/") + this.props.params.id;
-
-        axios.get(url)
-            .then(function(response) {
-                this.setState({ 
-                    representative: response.data,
-                    countyId: response.data.countyId,
-                    districtId: response.data.districtId
-                 });
-            }.bind(this))
-            .catch(function(err) {
+        const _this = this;
+        let fd = new FormData();
+        fd.append("role", "ROLE_REPRESENTATIVE");
+        axios.post(spring.localHost.concat('/api/auth/role'), fd)
+            .then(resp => {
+                if (resp.data == false) {
+                    _this.context.router.push('/prisijungti')
+                } else {
+                    _this.setState({ representative: true });
+                }
+            })
+            .catch(err => {
                 console.log(err);
             });
     },
-
     render: function() {
-        let childrenWithProps = React.Children.map(this.props.children, (child) => 
-            React.cloneElement(child, {
-                representative: this.state.representative,
-                countyId: this.state.countyId,
-                districtId: this.state.districtId
-            })
-        );
 
-        return (
-            <div>
-                <RepresentativePanelComponent />
-                <div className="main-layout">
-                    {childrenWithProps}
+        /*let childrenWithProps = React.Children.map(this.props.children, (child) =>
+            React.cloneElement(child, {currentUser: this.state.currentUser})
+        );*/
+
+        let displayer;
+        if (this.state.representative) {
+            displayer = (
+                <div>
+                    <RepresentativePanelComponent location={this.props.location} />
+                    <div className="main-layout">
+                        {this.props.children}
+                    </div>
                 </div>
-            </div>
-        );
+            );
+        } else {
+            displayer = <div></div>
+        }
+
+        return displayer;
     }
 });
 

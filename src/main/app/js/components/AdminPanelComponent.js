@@ -17,7 +17,7 @@ var AdminPanelComponent = React.createClass({
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
-	componentDidMount() {
+	componentWillMount() {
 		const _this = this;
 		let fd = new FormData();
 		fd.append("role", "ROLE_ADMIN");
@@ -36,13 +36,13 @@ var AdminPanelComponent = React.createClass({
 	},
 	resetButtonBackgrounds: function() {
 	     this.setState({
-						tagIds: {
-							location1: styles.passive,
-							location2: styles.passive,
-							location3: styles.passive,
-							location4: styles.passive,
-							location5: styles.passive
-						}
+	     	tagIds: {
+				location1: styles.passive,
+				location2: styles.passive,
+				location3: styles.passive,
+				location4: styles.passive,
+				location5: styles.passive
+	     	}
 	     });
 	},
 	setBackgrounds: function(tag) {
@@ -50,8 +50,8 @@ var AdminPanelComponent = React.createClass({
 				var newState = {};
 
 				Object.keys(stateObj.tagIds).forEach(key => {
-						var value = (key === tag.id) ? styles.active : styles.passive;
-						newState[key] = value;
+					var value = (key === tag.id) ? styles.active : styles.passive;
+					newState[key] = value;
 				});
 				this.setState({ tagIds: newState });
 	},
@@ -105,67 +105,75 @@ var AdminPanelComponent = React.createClass({
 
 	},
 	render: function() {
-	  		return (
-						<div>
-								<div className="menu">
-										<ul className="nav nav-tabs" id="bootstrap-overrides-nav-tabs">
-												<li className="tab">
-														<Link
-																to="administravimas/teritorinis-suskirstymas"
-																className="adminPanelButton"
-																id="location1"
-																style={this.state.tagIds.location1}>
-																<img src="app/imgs/planet-earth.png" style={ styles.image }/>
-																<p>Teritoriniai vienetai</p>
-														</Link>
-												</li>
-												<li className="tab">
-														<Link
-																to="administravimas/apygardu-kandidatai"
-																className="adminPanelButton"
-																id="location2"
-																style={this.state.tagIds.location2}>
-																<img src="app/imgs/SM_candidate.png" style={ styles.image }/>
-																<p>Apygardų kandidatai</p>
-														</Link>
-												</li>
-												<li className="tab">
-														<Link
-																to="administravimas/apylinkiu-atstovai"
-																className="adminPanelButton"
-																id="location3"
-																style={this.state.tagIds.location3}>
-																<img src="app/imgs/representative1.png" style={ styles.image }/>
-																<p>Apylinkių atstovai</p>
-														</Link>
-												</li>
-												<li className="tab">
-														<Link
-																to="administravimas/politinis-suskirstymas"
-																className="adminPanelButton"
-																id="location4"
-																style={this.state.tagIds.location4}>
-																<img src="app/imgs/political_party.png" style={ styles.image }/>
-																<p>Politiniai vienetai</p>
-														</Link>
-												</li>
-												<li className="tab">
-														<Link
-																to="administravimas/apylinkiu-rezultatai"
-																className="adminPanelButton"
-																id="location5"
-																style={this.state.tagIds.location5}>
-																<img src="app/imgs/results_chart.png" style={ styles.image }/>
-																<p>Apylinkių rezultatai</p>
-														</Link>
-												</li>
-										</ul>
-								</div>
-								<div className="main-layout">
-				            		{this.props.children}
-								</div>
+			console.log("RENDER");
+			var displayer;
+			if (this.state.admin) {
+				displayer = (
+					<div>
+						<div className="menu">
+							<ul className="nav nav-tabs" id="bootstrap-overrides-nav-tabs">
+								<li className="tab">
+									<Link
+										to="administravimas/teritorinis-suskirstymas"
+										className="adminPanelButton"
+										id="location1"
+										style={this.state.tagIds.location1}>
+										<img src="app/imgs/planet-earth.png" style={ styles.image }/>
+										<p>Teritoriniai vienetai</p>
+									</Link>
+								</li>
+								<li className="tab">
+									<Link
+										to="administravimas/apygardu-kandidatai"
+										className="adminPanelButton"
+										id="location2"
+										style={this.state.tagIds.location2}>
+										<img src="app/imgs/SM_candidate.png" style={ styles.image }/>
+										<p>Apygardų kandidatai</p>
+									</Link>
+								</li>
+								<li className="tab">
+									<Link
+										to="administravimas/apylinkiu-atstovai"
+										className="adminPanelButton"
+										id="location3"
+										style={this.state.tagIds.location3}>
+										<img src="app/imgs/representative1.png" style={ styles.image }/>
+										<p>Apylinkių atstovai</p>
+									</Link>
+								</li>
+								<li className="tab">
+									<Link
+										to="administravimas/politinis-suskirstymas"
+										className="adminPanelButton"
+										id="location4"
+										style={this.state.tagIds.location4}>
+										<img src="app/imgs/political_party.png" style={ styles.image }/>
+										<p>Politiniai vienetai</p>
+									</Link>
+								</li>
+								<li className="tab">
+									<Link
+										to="administravimas/apylinkiu-rezultatai"
+										className="adminPanelButton"
+										id="location5"
+										style={this.state.tagIds.location5}>
+										<img src="app/imgs/results_chart.png" style={ styles.image }/>
+										<p>Apylinkių rezultatai</p>
+									</Link>
+								</li>
+							</ul>
 						</div>
-	      );
+						<div className="main-layout">
+                            {this.props.children}
+						</div>
+					</div>
+				);
+			} else {
+				displayer = <div></div>
+			}
+
+	  		return displayer;
 	}
 });
 

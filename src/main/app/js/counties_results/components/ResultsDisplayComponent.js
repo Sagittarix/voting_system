@@ -1,11 +1,10 @@
-var React = require('react')
-var RepresentativeCard = require('./RepresentativeCard')
-var VoteListComponent = require('./VoteListComponent')
+var React = require('react');
+var VoteListComponent = require('./VoteListComponent');
 
 var ResultsDisplayComponent = React.createClass({
 
     render: function() {
-        const { header, representative, results, createdOn, confirmedOn } = this.props;
+        const { header, results, createdOn, confirmedOn } = this.props;
         return (
             <div className="container">
                 <div className="row">
@@ -26,7 +25,7 @@ var ResultsDisplayComponent = React.createClass({
 
                     <div className="col-md-4 units-create-area">
                         <div className="col-md-11">
-                            <RepresentativeCard representative={representative} />
+                            <div>ideti county details</div>
                             {createdOn}
                             {confirmedOn}
                         </div>

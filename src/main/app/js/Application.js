@@ -21,7 +21,7 @@ var Application = React.createClass({
             });
     },
     componentDidMount() {
-        this.getPrincipal();
+        //this.getPrincipal();
     },
     manageUser(command) {
         if (command === "LOGOUT") {

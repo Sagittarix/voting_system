@@ -4,17 +4,17 @@ var HomePageComponent = require('../components/HomePageComponent');
 var HomePageContainer = React.createClass({
     getInitialState: function () {
         return ({
-            search : "KANDIDATO PAIEŠKA",
-            countiesResults : "VIENMANDAČIAI REZULTATAI",
-            districtsResults : "DAUGIAMANDAČIAI REZULTATAI",
+            search : "KANDIDATŲ PAIEŠKA",
+            smResults : "VIENMANDAČIAI REZULTATAI",
+            mmResults : "DAUGIAMANDAČIAI REZULTATAI",
             finalResults : "SUVESTINIAI REZULTATAI"
         })
     },
     render: function() {
         return <HomePageComponent
                     search={this.state.search}
-                    countiesResults={this.state.countiesResults}
-                    districtsResults={this.state.districtsResults}
+                    smResults={this.state.smResults}
+                    mmResults={this.state.mmResults}
                     finalResults={this.state.finalResults}
                />
     }

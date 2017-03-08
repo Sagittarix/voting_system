@@ -12,22 +12,22 @@ var HomePageComponent = React.createClass({
                 <div className="homePageButtonsRow">
                     <div className="col-sm-3">
                         <Link to="paieska" className="NoUnderlineLink" href="#" title="title">
-                            <button className="frontPageButton" id="buttonElectionResults"><span className="glyphicon glyphicon-search"></span><div className="innerButtonDiv">{this.props.search}</div></button>
+                            <button className="frontPageButton" id="btn1"><span className="glyphicon glyphicon-search"></span><div className="innerButtonDiv">{this.props.search}</div></button>
                         </Link>
                     </div>
                     <div className="col-sm-3">
                         <Link to="" className="NoUnderlineLink" href="#" title="title">
-                            <button className="frontPageButton" id="buttonCountyRepresentatives"><span className="glyphicon glyphicon-knight"></span><div className="innerButtonDiv">{this.props.countiesResults}</div></button>
+                            <button className="frontPageButton" id="btn2"><span className="glyphicon glyphicon-knight"></span><div className="innerButtonDiv">{this.props.smResults}</div></button>
                         </Link>
                     </div>
                     <div className="col-sm-3">
                         <Link to="" className="NoUnderlineLink" href="#" title="title">
-                            <button className="frontPageButton" id="buttonAdministration"><span className="glyphicon glyphicon-bishop"></span><div className="innerButtonDiv">{this.props.districtsResults}</div></button>
+                            <button className="frontPageButton" id="btn3"><span className="glyphicon glyphicon-bishop"></span><div className="innerButtonDiv">{this.props.mmResults}</div></button>
                         </Link>
                     </div>
                     <div className="col-sm-3">
                         <Link to="" className="NoUnderlineLink" href="#" title="title">
-                            <button className="frontPageButton" id="buttonAdministration"><span className="glyphicon glyphicon-king"></span><div className="innerButtonDiv">{this.props.finalResults}</div></button>
+                            <button className="frontPageButton" id="btn4"><span className="glyphicon glyphicon-king"></span><div className="innerButtonDiv">{this.props.finalResults}</div></button>
                         </Link>
                     </div>
                 </div>

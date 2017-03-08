@@ -377,7 +377,7 @@ form div.form-group.browse-button-area, form div.form-group.upload-button-area {
 
 #homePageButtonsRow{
     width: 90%;
-    margin: 0 auto;
+    margin: 10vh auto;
 }
 
 .NoUnderlineLink:hover{

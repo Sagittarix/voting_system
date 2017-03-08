@@ -23,30 +23,30 @@ var Tester = require('./js/config/Tester');
 const Login = require('./js/auth/Login');
 
 ReactDOM.render((
-  <Router history={ReactRouter.hashHistory}>
-    <Route path="/" component={Application}>
-        <IndexRoute component={HomePageContainer}/>
-        <Route path="administravimas" component={AdminPanelComponent}>
-            <Route path="teritorinis-suskirstymas" component={TerritorialBreakdownContainer}/>
-            <Route path="apygardu-kandidatai" component={SingleCandidatesContainer}/>
-			      <Route path="apylinkiu-atstovai" component={CountyRepresentativesDisplayContainer}/>
-			      <Route path="politinis-suskirstymas" component={PoliticalUnitsContainer}/>
-            <Route path="apylinkiu-rezultatai" component={AdminResultsViewContainer}/>
-        </Route>
-        <Route path="atstovui/:id" component={RepresentativeHomeContainer}>
-            <IndexRoute component={RepresentativeProfileComponent}/>
-            <Route path="profilis" component={RepresentativeProfileComponent}/>
-            <Route path="rezultatai">
-                <Route path="vienmandaciai" component={CountyResultsContainer}/>
-                <Route path="daugiamandaciai" component={CountyResultsContainer}/>
+    <Router history={ReactRouter.hashHistory}>
+        <Route path="/" component={Application}>
+            <IndexRoute component={HomePageContainer}/>
+            <Route path="administravimas" component={AdminPanelComponent}>
+                <Route path="teritorinis-suskirstymas" component={TerritorialBreakdownContainer}/>
+                <Route path="apygardu-kandidatai" component={SingleCandidatesContainer}/>
+                <Route path="apylinkiu-atstovai" component={CountyRepresentativesDisplayContainer}/>
+                <Route path="politinis-suskirstymas" component={PoliticalUnitsContainer}/>
+                <Route path="apylinkiu-rezultatai" component={AdminResultsViewContainer}/>
             </Route>
-            
+            <Route path="atstovui" component={RepresentativeHomeContainer}>
+                <IndexRoute component={RepresentativeProfileComponent}/>
+                <Route path="profilis" component={RepresentativeProfileComponent}/>
+                <Route path="rezultatai">
+                    <Route path="vienmandaciai" component={CountyResultsContainer}/>
+                    <Route path="daugiamandaciai" component={CountyResultsContainer}/>
+                </Route>
+
+            </Route>
+            {/*<Route path="rezultatai" component={}/>*/}
+            <Route path="paieska" component={SearchCandidatesListContainer}/>
+            <Route path="prisijungti" component={Login}/>
+            <Route path="test" component={Tester}/>
+            <Route path="*" component={NoMatch} />
         </Route>
-        {/*<Route path="rezultatai" component={}/>*/}
-        <Route path="paieska" component={SearchCandidatesListContainer}/>
-        <Route path="prisijungti" component={Login}/>
-        <Route path="test" component={Tester}/>
-        <Route path="*" component={NoMatch} />
-    </Route>
-  </Router>
+    </Router>
 ), document.getElementById('root'));

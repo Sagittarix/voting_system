@@ -5,53 +5,57 @@ var spring = require('../config/SpringConfig');
 
 var RepresentativeHomeContainer = React.createClass({
     propTypes: {
-        
-    }, 
+
+    },
+    contextTypes: {
+        router: React.PropTypes.object.isRequired
+    },
     getInitialState() {
         return {
-            representative: undefined
+            representative: false
         };
     },
     componentDidMount() {
-        const url = spring.localHost.concat("/api/county-rep/") + this.props.params.id;
+        const _this = this;
+        let fd = new FormData();
+        fd.append("role", "ROLE_REPRESENTATIVE");
 
-        axios.get(url)
-            .then(function(response) {
-                this.setState({ 
-                    representative: response.data,
-                    county: response.data.county,
-                    district: response.data.district
-                 });
-            }.bind(this))
-            .catch(function(err) {
+        axios.post(spring.localHost.concat('/api/auth/role'), fd)
+            .then(resp => {
+                if (resp.data == false) {
+                    _this.context.router.push('/')
+                } else {
+                    _this.setState({ representative: true });
+                }
+            })
+            .catch(err => {
                 console.log(err);
             });
     },
 
     render: function() {
-
-        const {representative, county, district } = this.state
-        
-        let childrenWithProps = React.Children.map(this.props.children, (child) => 
+        let displayer;
+        let childrenWithProps = React.Children.map(this.props.children, (child) =>
             React.cloneElement(child, {
-                representative: representative,
-                county: county,
-                district: district
+                representative: this.props.currentUser,
+                county: this.props.currentUser.county,
+                district: this.props.currentUser.district
             })
         );
-        
-        if (!representative) {
-            return <div></div>
+        if (this.state.representative) {
+            displayer = (
+                <div>
+                    <RepresentativePanelComponent location={this.props.location} />
+                    <div className="main-layout">
+                        {childrenWithProps}
+                    </div>
+                </div>
+            );
+        } else {
+            displayer = <div></div>
         }
 
-        return (
-            <div>
-                <RepresentativePanelComponent repId={representative.id}/>
-                <div className="main-layout">
-                    {childrenWithProps}
-                </div>
-            </div>
-        );
+        return displayer;
     }
 });
 

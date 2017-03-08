@@ -1,7 +1,7 @@
 const React = require('react');
 const axios = require('axios');
 const LoginComponent = require('./LoginComponent');
-var spring = require('../config/SpringConfig');
+const spring = require('../config/SpringConfig');
 
 const Login = React.createClass({
     contextTypes: {
@@ -23,7 +23,15 @@ const Login = React.createClass({
                 { headers: { 'Content-Type': 'multipart/form-data' } }
             )
             .then(resp => {
-                console.log(resp.data);
+                if (resp.data === "REPRESENTATIVE") {
+                    _this.context.router.push("/atstovui");
+                } else if (resp.data === "ADMIN") {
+                    _this.context.router.push("/administravimas");
+                } else {
+                    _this.setState({ loginError: true });
+                    //_this.context.router.push("/");
+                }
+                _this.props.manageUser("LOGIN");
             })
             .catch(err => {
                 console.log(err);
@@ -37,12 +45,14 @@ const Login = React.createClass({
         this.setState({ username: e.target.value })
     },
     prepareloginError() {
-        var error = [];
-        if (this.state.loginError) error =(
-                                            <div className="form-group alert alert-danger login">
-                                                <label>Neteisingi prisijungimo duomenys</label>
-                                            </div>
-                                        );
+        let error = [];
+        if (this.state.loginError) {
+            error =(
+                <div className="form-group alert alert-danger login">
+                    <label>Neteisingi prisijungimo duomenys</label>
+                </div>
+            );
+        }
         return error;
     },
     render: function() {

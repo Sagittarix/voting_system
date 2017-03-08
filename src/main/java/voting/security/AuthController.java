@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
  * Created by andrius on 3/6/17.
  */
 
+@CrossOrigin(origins = "*", maxAge = 3600)
 @Controller
 @RequestMapping("/api/auth/")
 public class AuthController {

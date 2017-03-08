@@ -28,7 +28,7 @@ var CountyDisplayComponent = React.createClass({
             voterCount: this.state.newCount,
             address: this.state.newAddress
         };
-        var postUrl = spring.localHost.concat('/api/district/') + this.props.unit.districtId + '/update-county/' + this.props.unit.id
+        var postUrl = spring.localHost.concat('/api/county/') + this.props.unit.id;
         axios.post(postUrl, body)
             .then(function(resp) {
                 _this.setState({ springErrors: [], update: false });

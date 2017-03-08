@@ -17,4 +17,6 @@ public interface CountyRepService {
     CountyRep getCountyRep(Long id);
 
     List<CountyRep> getCountyReps();
+
+    CountyRep getCountyRepByUsername(String username);
 }

@@ -10,30 +10,28 @@ import voting.model.CountyRep;
 public class CountyRepresentativeDTO {
 
     private Long id;
-    private String personalId;
     private String firstName;
     private String lastName;
+    private String username;
     private String email;
     private CountyShortDTO county;
     private DistrictShortDTO district;
+    private String[] roles;
 
 
     public CountyRepresentativeDTO(CountyRep cr) {
         this.id = cr.getId();
-        this.personalId =
         this.firstName = cr.getFirstName();
         this.lastName = cr.getLastName();
+        this.username = cr.getUsername();
         this.email = cr.getEmail();
         this.county = new CountyShortDTO(cr.getCounty());
         this.district = new DistrictShortDTO(cr.getCounty().getDistrict());
+        this.roles = cr.getRoles();
     }
 
     public Long getId() {
         return id;
-    }
-
-    public String getPersonalId() {
-        return personalId;
     }
 
     public String getFirstName() {
@@ -42,6 +40,10 @@ public class CountyRepresentativeDTO {
 
     public String getLastName() {
         return lastName;
+    }
+
+    public String getUsername() {
+        return username;
     }
 
     public String getEmail() {
@@ -54,5 +56,9 @@ public class CountyRepresentativeDTO {
 
     public DistrictShortDTO getDistrict() {
         return district;
+    }
+
+    public String[] getRoles() {
+        return roles;
     }
 }

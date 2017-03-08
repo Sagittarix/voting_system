@@ -17,7 +17,8 @@ import java.io.IOException;
 /**
  * Created by domas on 2/13/17.
  */
-@ControllerAdvice
+
+//@ControllerAdvice
 public class MultiErrorExceptionHandler {
 
     @ExceptionHandler(MultiErrorException.class)

@@ -1,7 +1,7 @@
 const React = require('react');
 const axios = require('axios');
 const LoginComponent = require('./LoginComponent');
-var spring = require('../config/SpringConfig');
+const spring = require('../config/SpringConfig');
 
 const Login = React.createClass({
     contextTypes: {
@@ -13,17 +13,24 @@ const Login = React.createClass({
     doLogin(e) {
         e.preventDefault();
         const _this = this;
-        const loginData = {
-            "username": this.state.username,
-            "password": this.state.password
-        };
+        let fd = new FormData();
+        fd.append("username", this.state.username);
+        fd.append("password", this.state.password);
+
         axios.post(
-                spring.localHost.concat('/api/auth/login'),
-                loginData,
-                { headers: { 'Content-Type': 'application/json' } }
+                spring.localHost.concat('/login'),
+                fd,
+                { headers: { 'Content-Type': 'multipart/form-data' } }
             )
             .then(resp => {
-                console.log(resp.data);
+                _this.props.manageUser("LOGIN");
+                if (resp.data === "REPRESENTATIVE") {
+                    _this.props.router.push("/atstovui");
+                } else if (resp.data === "ADMIN") {
+                    _this.props.router.push("/administravimas");
+                } else {
+                    _this.props.router.push("/prisijungti");
+                }
             })
             .catch(err => {
                 console.log(err);
@@ -37,12 +44,14 @@ const Login = React.createClass({
         this.setState({ username: e.target.value })
     },
     prepareloginError() {
-        var error = [];
-        if (this.state.loginError) error =(
-                                            <div className="form-group alert alert-danger login">
-                                                <label>Neteisingi prisijungimo duomenys</label>
-                                            </div>
-                                        );
+        let error = [];
+        if (this.state.loginError) {
+            error =(
+                <div className="form-group alert alert-danger login">
+                    <label>Neteisingi prisijungimo duomenys</label>
+                </div>
+            );
+        }
         return error;
     },
     render: function() {

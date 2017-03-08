@@ -50,4 +50,12 @@ public class CountyController {
         districtService.deleteCounty(id);
     }
 
+    @PostMapping("{id}")
+    public CountyDTO updateCounty(@PathVariable("id") Long id, @Valid @RequestBody CountyData countyData, BindingResult result) {
+        if (result.hasErrors()) {
+            throw new MultiErrorException("Klaida atnaujinant apylinkę " + countyData.getName(), result.getAllErrors());
+        }
+        return new CountyDTO(districtService.updateCounty(id, countyData));
+    }
+
 }

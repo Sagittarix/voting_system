@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.opencsv.exceptions.CsvException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.validation.beanvalidation.SpringValidatorAdapter;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +16,7 @@ import voting.exception.MultiErrorException;
 import voting.model.Party;
 import voting.service.PartyService;
 
+import javax.validation.Valid;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
@@ -71,10 +73,24 @@ public class PartyController {
         Errors bindingResult = new BeanPropertyBindingResult(partyData, "partyData");
         validator.validate(partyData, bindingResult);
         if (bindingResult.hasErrors()) {
-            throw new MultiErrorException("Klaida registruojant partiją " + partyData.getName(), bindingResult.getAllErrors());
+            throw new MultiErrorException(
+                    "Klaida registruojant partiją " + partyData.getName(), bindingResult.getAllErrors()
+            );
         }
 
         return new PartyDTO(partyService.saveParty(partyData, multipartFile));
+    }
+
+    @PatchMapping("{id}/update")
+    public PartyDTO updateParty(
+            @PathVariable Long id,
+            @Valid @RequestBody PartyData partyData,
+            BindingResult result) {
+
+        if (result.hasErrors()) {
+            throw new MultiErrorException("Klaida atnaujinant partiją " + partyData.getName(), result.getAllErrors());
+        }
+        return new PartyDTO(partyService.updateParty(partyData, id));
     }
 
     @DeleteMapping("{id}")

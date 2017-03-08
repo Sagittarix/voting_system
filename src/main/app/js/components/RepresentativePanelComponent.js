@@ -9,28 +9,26 @@ var styles = {
 }
 
 var RepresentativesPanelComponent = React.createClass({
-	getInitialState: function () {
-		return ({
-			tagIds: {
-				location1: styles.passive,
-				location2: styles.passive,
-				location3: styles.passive,
-			}
-		});
-   },
-	resetButtonBackgrounds: function() {
-	 this.setState({
-			tagIds: {
-				location1: styles.passive,
-				location2: styles.passive,
-				location3: styles.passive,
-			}
-		});
-   },
-	setBackgrounds: function(tag) {
-		var stateObj = this.state;
-		var newState = {};
+    getInitialState() {
+        return ({ tagIds: this.setBackgroundsByLocation() });
+    },
+    contextTypes: {
+        router: React.PropTypes.object.isRequired
+    },
+    resetButtonBackgrounds: function() {
+        this.setState({
+            tagIds: {
+                location1: styles.passive,
+                location2: styles.passive,
+                location3: styles.passive
+            }
+        });
+    },
+    setBackgrounds: function(tag) {
+        var stateObj = this.state;
+        var newState = {};
 
+<<<<<<< HEAD
 		Object.keys(stateObj.tagIds).forEach(key => {
 			var value = (key === tag.id) ? styles.active : styles.passive;
 			newState[key] = value;
@@ -50,6 +48,62 @@ var RepresentativesPanelComponent = React.createClass({
 		// }
    },
    render: function() {
+||||||| merged common ancestors
+		Object.keys(stateObj.tagIds).forEach(key => {
+			var value = (key === tag.id) ? styles.active : styles.passive;
+			newState[key] = value;
+		});
+		this.setState({ tagIds: newState });
+	},
+   componentWillReceiveProps: function(nextProps) {
+		// if (nextProps.location.pathname === '/atstovui') {
+		// 	this.resetButtonBackgrounds();
+		// }
+		// if (nextProps.location.pathname === '/atstovui/rezultatai/vienmandaciai') {
+		// 	this.setBackgrounds(location1);
+		// }
+		// if (nextProps.location.pathname === '/atstovui/rezultatai/daugiamandaciai') {
+		// 	this.setBackgrounds(location2);
+		// }
+   },
+   render: function() {
+=======
+        Object.keys(stateObj.tagIds).forEach(key => {
+            var value = (key === tag.id) ? styles.active : styles.passive;
+            newState[key] = value;
+        });
+        this.setState({ tagIds: newState });
+    },
+    componentWillReceiveProps: function(nextProps) {
+        if (nextProps.location.pathname === '/atstovui') this.resetButtonBackgrounds();
+        if (nextProps.location.pathname === '/atstovui/rezultatai/vienmandaciai') this.setBackgrounds(location1);
+        if (nextProps.location.pathname === '/atstovui/rezultatai/daugiamandaciai') this.setBackgrounds(location2);
+        if (nextProps.location.pathname === '/atstovui/profilis') this.setBackgrounds(location3);
+    },
+    setBackgroundsByLocation: function() {
+        var tagIds = {
+            location1: styles.passive,
+            location2: styles.passive,
+            location3: styles.passive
+        };
+
+        switch (this.context.router.location.pathname) {
+            case '/atstovui/rezultatai/vienmandaciai':
+                tagIds.location1 = styles.active;
+                break;
+            case '/atstovui/rezultatai/daugiamandaciai':
+                tagIds.location2 = styles.active;
+                break;
+            case '/atstovui/rezultatai/profilis':
+                tagIds.location3 = styles.active;
+                break;
+        }
+
+        return tagIds;
+
+    },
+    render: function() {
+>>>>>>> 3d63d0cf9afd35327b1916ce5c41949a50e219fe
 	  return (
 			<div className="menu">
 				<ul className="nav nav-tabs" id="bootstrap-overrides-nav-tabs">
@@ -86,8 +140,8 @@ var RepresentativesPanelComponent = React.createClass({
 					</li>
 				</ul>
 			</div>
-	 );
-   }
+	  );
+    }
 });
 
 module.exports = RepresentativesPanelComponent;

@@ -2,16 +2,19 @@ var React = require('react');
 
 var CountyDetailsCard = React.createClass({
     propTypes: {
-        county: React.PropTypes.object.isRequired
+        representative: React.PropTypes.object.isRequired
     }, 
     render: function() {
+        let rep = this.props.representative
         return (
             <div>
                 <div className="list-group-item active">
-                    APYLINKES DUOMENYS
+                    Prisijungęs kaip
                 </div>
                 <div className="list-group-item">
-                    DUOMENYS
+                    <img src="app/imgs/representative.png" style={{ width: 20, height: 20 }}/> &nbsp;
+                    <span>{rep.firstName}</span> &nbsp;
+                    <span>{rep.lastName}</span>
                 </div>
             </div>
         );

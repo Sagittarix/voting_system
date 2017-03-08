@@ -4,21 +4,22 @@ var axios = require('axios');
 var spring = require('../config/SpringConfig');
 
 var RepresentativeHomeContainer = React.createClass({
+    propTypes: {
+
+    },
+    contextTypes: {
+        router: React.PropTypes.object.isRequired
+    },
     getInitialState() {
         return {
             representative: false
         };
     },
-    contextTypes: {
-        router: React.PropTypes.object.isRequired
-    },
-    /*componentWillReceiveProps(newProps) {
-        if (newProps.currentUser != this.state.currentUser) this.setState({ currentUser: newProps.currentUser });
-    },*/
     componentDidMount() {
         const _this = this;
         let fd = new FormData();
         fd.append("role", "ROLE_REPRESENTATIVE");
+
         axios.post(spring.localHost.concat('/api/auth/role'), fd)
             .then(resp => {
                 if (resp.data == false) {
@@ -33,12 +34,19 @@ var RepresentativeHomeContainer = React.createClass({
     },
     render: function() {
         let displayer;
+        let childrenWithProps = React.Children.map(this.props.children, (child) =>
+            React.cloneElement(child, {
+                representative: this.props.currentUser,
+                county: this.props.currentUser.county,
+                district: this.props.currentUser.district
+            })
+        );
         if (this.state.representative) {
             displayer = (
                 <div>
                     <RepresentativePanelComponent location={this.props.location} />
                     <div className="main-layout">
-                        {this.props.children}
+                        {childrenWithProps}
                     </div>
                 </div>
             );

@@ -1,8 +1,6 @@
-package voting.dto;
+package voting.dto.admin;
 
 import voting.model.Admin;
-import voting.model.CountyRep;
-import voting.utils.Formatter;
 
 import java.util.Arrays;
 

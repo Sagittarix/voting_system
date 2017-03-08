@@ -3,9 +3,9 @@ var ReactRouter = require('react-router');
 var Link = ReactRouter.Link;
 
 var styles = {
-	"active": {backgroundColor: '#006B96', color:"white"},
-	"passive": {backgroundColor: '#CDEBF7', color:"#006B96"},
-	"image": {width: 60, height: 60, marginBottom: 10}
+    "active": {backgroundColor: '#006B96', color:"white"},
+    "passive": {backgroundColor: '#CDEBF7', color:"#006B96"},
+    "image": {width: 60, height: 60, marginBottom: 10}
 }
 
 var RepresentativesPanelComponent = React.createClass({
@@ -63,7 +63,7 @@ var RepresentativesPanelComponent = React.createClass({
 
     },
     render: function() {
-	  return (
+        return (
 			<div className="menu">
 				<ul className="nav nav-tabs" id="bootstrap-overrides-nav-tabs">
 					<li className="tab centered">
@@ -99,7 +99,7 @@ var RepresentativesPanelComponent = React.createClass({
 					</li>
 				</ul>
 			</div>
-	  );
+        );
     }
 });
 

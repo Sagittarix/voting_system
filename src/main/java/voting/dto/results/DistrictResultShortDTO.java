@@ -1,13 +1,8 @@
 package voting.dto.results;
 
-import voting.dto.district.DistrictShortDTO;
-import voting.model.District;
-import voting.results.model.result.*;
+import voting.results.model.result.DistrictResult;
+import voting.results.model.result.DistrictSMResult;
 import voting.utils.Constants;
-
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by domas on 2/27/17.

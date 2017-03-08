@@ -7,10 +7,10 @@ var Application = React.createClass({
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
-	getInitialState() {
-		return ({ currentUser: {} });
-	},
-	getPrincipal() {
+    getInitialState() {
+        return ({ currentUser: {} });
+    },
+    getPrincipal() {
         const _this = this;
         axios.post(spring.localHost.concat('/api/auth/principal'))
             .then(resp => {
@@ -19,32 +19,31 @@ var Application = React.createClass({
             .catch(err => {
                 console.log(err);
             });
-	},
-	componentDidMount() {
-		this.getPrincipal();
-	},
+    },
+    componentDidMount() {
+        this.getPrincipal();
+    },
     manageUser(command) {
-		if (command === "LOGOUT") {
+        if (command === "LOGOUT") {
             this.setState({ currentUser: {} });
-		} else if (command === "LOGIN") {
+        } else if (command === "LOGIN") {
             this.getPrincipal();
-		}
-	},
-	render() {
-		return (
+        }
+    },
+    render() {
+        return (
 			<div className="container">
 				<NavigationBarComponent
 					currentUser={ this.state.currentUser }
 					manageUser={this.manageUser}
 				/>
                 {React.cloneElement(
-						this.props.children,
-						{manageUser: this.manageUser, currentUser: this.state.currentUser}
-					)
-                }
+                    this.props.children,
+                    {manageUser: this.manageUser, currentUser: this.state.currentUser}
+                )}
 			</div>
-		);
-	}
+        );
+    }
 });
 
 module.exports = Application;

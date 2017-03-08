@@ -236,13 +236,17 @@ form div.form-group.browse-button-area, form div.form-group.upload-button-area {
     box-sizing: border-box;
 }
 
+.row-autoheight {
+    height: auto;
+}
+
 .candidate-card-wide {
     width: 100%;
 }
 
 /* validations */
 
-#inline-form-errors {
+.inline-form-errors {
     display: block;
     max-width: 50%;
     margin-top: 10px;
@@ -328,6 +332,15 @@ form div.form-group.browse-button-area, form div.form-group.upload-button-area {
     display: table-cell;
 }
 
+/* sort buttons */
+
+.no-background {
+    background-color: Transparent;
+    color: #006B96;
+    float: right;
+    margin-right: 20px;
+}
+
 /* OSVALDO */
 
 .firstDivAfterHeader{
@@ -364,7 +377,7 @@ form div.form-group.browse-button-area, form div.form-group.upload-button-area {
 
 #homePageButtonsRow{
     width: 90%;
-    margin: 0 auto;
+    margin: 10vh auto;
 }
 
 .NoUnderlineLink:hover{
@@ -451,8 +464,6 @@ form div.form-group.browse-button-area, form div.form-group.upload-button-area {
 {
     display: table-cell;
 }
-
-
 
 
 @import url('https://fonts.googleapis.com/css?family=Lato:300,400');

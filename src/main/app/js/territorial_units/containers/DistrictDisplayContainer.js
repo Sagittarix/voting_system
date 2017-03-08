@@ -5,21 +5,28 @@ var CountyDisplayComponent = require('../components/CountyDisplayComponent');
 var NewCountyInlineForm = require('../components/tiny_components/NewCountyInlineForm');
 var NewCountyFormButton = require('../components/tiny_components/NewCountyFormButton');
 var spring = require('../../config/SpringConfig');
+var Helper = require('../../utils/Helper');
 
 var DistrictDisplayContainer = React.createClass({
-    getInitialState: function() {
+    getInitialState() {
         return ({ showCounties: false,
                   showInlineForm: false,
                   countyName: "",
                   countyAddress: "",
                   voterCount: undefined,
                   counties: this.props.unit.counties,
-                  springErrors: [] });
+                  springErrors: [],
+                  ASC: true,
+                  needToSort: false
+                });
     },
-    toggleCountiesList: function() {
+    toggleSortOrder() {
+        this.setState({ ASC: !this.state.ASC, needToSort: true });
+    },
+    toggleCountiesList() {
         this.setState({ showCounties: !this.state.showCounties });
     },
-    prepareCounties: function() {
+    prepareAndSortCounties() {
         var stateCounties = this.state.counties;
         var counties = [];
 
@@ -28,19 +35,26 @@ var DistrictDisplayContainer = React.createClass({
                 <CountyDisplayComponent
                     key={index}
                     index={index}
-                    county={c}
+                    unit={c}
                     delete={this.handleCountyDelete}
+                    updateCountiesState={this.updateCountiesState}
                 />
             );
         });
-        counties.push(
+        var sortedCounties = (this.state.needToSort) ? Helper.sort(counties, this.state.ASC) : counties;
+        sortedCounties.push(
             <div className="list-group-item" key={stateCounties.length}>
                 {this.toggleInlineForm()}
             </div>
         );
-        return counties;
+        return sortedCounties;
     },
-    toggleShowInlineState: function() {
+    updateCountiesState(newCounty, index) {
+        var counties = this.state.counties;
+        counties.splice(index, 1, newCounty);
+        this.setState({ counties: counties });
+    },
+    toggleShowInlineState() {
         this.setState({
             showInlineForm: !this.state.showInlineForm,
             countyName: "",
@@ -59,9 +73,6 @@ var DistrictDisplayContainer = React.createClass({
         var postUrl = spring.localHost.concat('/api/district/') + this.props.unit.id + '/add-county'
         axios.post(postUrl, body)
             .then(function(resp) {
-                var counties = _this.state.counties;
-                counties.push(resp.data);
-
                 _this.setState({
                     showInlineForm: false,
                     countyName: "",
@@ -74,11 +85,19 @@ var DistrictDisplayContainer = React.createClass({
             })
             .catch(function(err) {
                 console.log(err);
-                errors.push(err.response.data.rootMessage);
-                _this.setState({ springErrors: errors.concat(err.response.data.errorsMessages) });
+                var finalErrors = [];
+                
+                if (err.response == undefined) {
+                    finalErrors.push("Tinklo klaida");
+                } else {
+                    errors.push(err.response.data.rootMessage);
+                    errors.concat(err.response.data.errorsMessages);
+                }
+
+                _this.setState({ springErrors: finalErrors });
             });
     },
-    handleCountyDelete: function(index) {
+    handleCountyDelete(index) {
         var _this = this;
         var counties = this.state.counties;
 
@@ -91,19 +110,19 @@ var DistrictDisplayContainer = React.createClass({
 		        console.log(err);
 		    })
     },
-    handleCountyCancel: function() {
+    handleCountyCancel() {
         this.setState({ showInlineForm: !this.state.showInlineForm });
     },
-    handleNameChange: function(e) {
-        this.setState({ countyName: e.target.value });
+    handleNameChange(e) {
+        this.setState({ countyName: e.target.value })
     },
-    handleVoterCount: function(e) {
-        this.setState({ voterCount: e.target.value });
+    handleVoterCount(e) {
+        this.setState({ voterCount: e.target.value })
     },
-    handleAddressChange: function(value) {
+    handleAddressChange(value) {
         this.setState({ countyAddress: value});
     },
-    setSuggest: function(suggest) {
+    setSuggest(suggest) {
         this.setState({ countyAddress: suggest.label });
     },
     handleDistrictDestroy() {
@@ -138,12 +157,14 @@ var DistrictDisplayContainer = React.createClass({
             />
         }
     },
-    render: function() {
-        var counties = (this.state.showCounties) ? this.prepareCounties() : [];
+    render() {
+        var counties = (this.state.showCounties) ? this.prepareAndSortCounties() : [];
         return <DistrictDisplayComponent
-                    name={this.props.unit.name}
+                    unit={this.props.unit}
                     counties={counties}
                     toggleCountiesList={this.toggleCountiesList}
+                    toggleSortOrder={this.toggleSortOrder}
+                    ASC={this.state.ASC}
                     show={this.state.showCounties}
                     delete={this.handleDistrictDestroy}
                />

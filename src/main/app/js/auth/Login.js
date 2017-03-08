@@ -23,14 +23,15 @@ const Login = React.createClass({
                 { headers: { 'Content-Type': 'multipart/form-data' } }
             )
             .then(resp => {
-                _this.props.manageUser("LOGIN");
                 if (resp.data === "REPRESENTATIVE") {
-                    _this.props.router.push("/atstovui");
+                    _this.context.router.push("/atstovui");
                 } else if (resp.data === "ADMIN") {
-                    _this.props.router.push("/administravimas");
+                    _this.context.router.push("/administravimas");
                 } else {
-                    _this.props.router.push("/prisijungti");
+                    _this.setState({ loginError: true });
+                    //_this.context.router.push("/");
                 }
+                _this.props.manageUser("LOGIN");
             })
             .catch(err => {
                 console.log(err);

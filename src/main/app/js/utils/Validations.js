@@ -27,6 +27,15 @@ var Validations = {
 
         return errors;
     },
+    checkErrorsUnitEditForm: function(name) {
+        var errors = [];
+
+        if (name.length < Vars.min) errors.push("Pavadinimas " + Errors.toShort);
+        if (name.length > Vars.max) errors.push("Pavadinimas " + Errors.toLong);
+        if (!Vars.partyNameRegex.test(name)) errors.push(Errors.onlyAlphas);
+
+        return errors;
+    },
     checkErrorsDistrictAsideForm: function(name) {
         var errors = [];
 

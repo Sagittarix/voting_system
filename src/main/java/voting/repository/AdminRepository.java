@@ -1,7 +1,6 @@
 package voting.repository;
 
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Repository;
 import voting.model.Admin;
 
 /**

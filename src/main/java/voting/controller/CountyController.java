@@ -1,21 +1,14 @@
 package voting.controller;
 
-import com.opencsv.exceptions.CsvException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import voting.dto.candidate.CandidateDTO;
 import voting.dto.county.CountyDTO;
 import voting.dto.county.CountyData;
-import voting.dto.district.DistrictDTO;
-import voting.dto.district.DistrictData;
 import voting.exception.MultiErrorException;
-import voting.model.District;
 import voting.service.DistrictService;
 
 import javax.validation.Valid;
-import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,6 +41,14 @@ public class CountyController {
     @DeleteMapping("{id}")
     public void deleteCounty(@PathVariable Long id) {
         districtService.deleteCounty(id);
+    }
+
+    @PostMapping("{id}")
+    public CountyDTO updateCounty(@PathVariable("id") Long id, @Valid @RequestBody CountyData countyData, BindingResult result) {
+        if (result.hasErrors()) {
+            throw new MultiErrorException("Klaida atnaujinant apylinkę " + countyData.getName(), result.getAllErrors());
+        }
+        return new CountyDTO(districtService.updateCounty(id, countyData));
     }
 
 }

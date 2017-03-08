@@ -10,7 +10,10 @@ import voting.repository.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 /**
  * Created by domas on 1/11/17.
@@ -41,8 +44,7 @@ public class DataPreloader implements CommandLineRunner {
 
     @Override
     public void run(String... strings) throws Exception {
-
-        //loadStressData();
+        // loadStressData();
 
         District district1 = new District("Vilnius");
         District district2 = new District("Kaunas");
@@ -176,6 +178,13 @@ public class DataPreloader implements CommandLineRunner {
         adminRepRepository.save(admin);
     }
 
+    public static String generateRandomPersonId() {
+        StringBuilder id = new StringBuilder();
+        rand.ints(11, 0, 10).forEach(digit -> id.append(digit));
+        System.out.println(id.toString());
+        return id.toString();
+    }
+
     private void loadStressData() {
         // GENERATES DISTRICTS, COUNTIES AND THEIR VOTER_COUNT
         String districtsFile = "src/main/resources/districts_and_counties.csv";
@@ -207,48 +216,56 @@ public class DataPreloader implements CommandLineRunner {
 //            int countyCount = 0;
             while ((line = fileReader.readLine()) != null) {
                 lineNumber++;
-                if(lineNumber == 1){ continue; }
+                if (lineNumber == 1) {
+                    continue;
+                }
                 int tokenNumber = 0;
                 String[] tokens = line.split(DELIMITER);
-                for(String token : tokens)
-                {
-                    switch(tokenNumber) {
-                        case 1: districtName = token;
+                for (String token : tokens) {
+                    switch (tokenNumber) {
+                        case 1:
+                            districtName = token;
                             break;
-                        case 3: countyName = token;
+                        case 3:
+                            countyName = token;
                             break;
-                        case 4: countyAddress = token;
+                        case 4:
+                            countyAddress = token;
                             break;
-                        case 5: votersCount = Integer.parseInt(token);
+                        case 5:
+                            votersCount = Integer.parseInt(token);
                             break;
                     }
                     tokenNumber++;
                 }
-                if(currentDistrictName.equals("") && currentCountyName.equals("") && currentCountyAddress.equals("")) {
+                if (currentDistrictName.equals("") && currentCountyName.equals("") && currentCountyAddress.equals("")) {
                     currentDistrictName = districtName;
                     currentCountyName = countyName;
                     currentCountyAddress = countyAddress;
                     currentDistrictObject = new District(districtName);
                 }
-                if(!countyName.equals(currentCountyName)) {
+                if (!countyName.equals(currentCountyName)) {
                     currentVotersCount = currentVotersCount + votersCount;
                     currentCountyAddress = currentCountyAddress.substring(9);
                     County currentCountyObject = new County(currentCountyName, currentVotersCount, currentCountyAddress);
                     currentDistrictObject.addCounty(currentCountyObject);
                     // GENERATES COUNTY REPRESENTATIVE FOR CURRENT COUNTY OBJECT
-                    if ((line = fileReader2.readLine()) != null){
+                    if ((line = fileReader2.readLine()) != null) {
                         int tokenNumber2 = 0;
                         String[] tokens2 = line.split(DELIMITER);
-                        for(String token : tokens2)
-                        {
-                            switch(tokenNumber2) {
-                                case 0: representativeName = token;
+                        for (String token : tokens2) {
+                            switch (tokenNumber2) {
+                                case 0:
+                                    representativeName = token;
                                     break;
-                                case 1: representativeSurname = token;
+                                case 1:
+                                    representativeSurname = token;
                                     break;
-                                case 2: representativeEmail = token;
+                                case 2:
+                                    representativeEmail = token;
                                     break;
-                                case 3: representativePassword = token;
+                                case 3:
+                                    representativePassword = token;
                                     break;
                             }
                             tokenNumber2++;
@@ -258,38 +275,40 @@ public class DataPreloader implements CommandLineRunner {
                     allCountyRepresentatives.add(currentCountyRepresentative);
                     currentVotersCount = 0;
 //                    countyCount++;
-                } else { currentVotersCount = currentVotersCount + votersCount; }
-                if(!districtName.equals(currentDistrictName) || linesCount == lineNumber + 1) {
+                } else {
+                    currentVotersCount = currentVotersCount + votersCount;
+                }
+                if (!districtName.equals(currentDistrictName) || linesCount == lineNumber + 1) {
                     districtRepository.save(currentDistrictObject);
                     currentDistrictObject = new District(districtName);
 //                    int countFromRepository = StreamSupport.stream(districtRepository.findAll().spliterator(), false).mapToInt(d -> d.getCounties().size()).sum();
 //                    System.out.println(countyCount + " " + countFromRepository); // @OneToMany(fetch= FetchType.EAGER, mappedBy = "district", cascade = CascadeType.ALL, orphanRemoval = true)
                 }
-                if(!currentDistrictName.equals(districtName)) {
+                if (!currentDistrictName.equals(districtName)) {
                     currentDistrictName = districtName;
                 }
-                if(!currentCountyName.equals(countyName)) {
+                if (!currentCountyName.equals(countyName)) {
                     currentCountyName = countyName;
                 }
-                if(!currentCountyAddress.equals(countyAddress)){
+                if (!currentCountyAddress.equals(countyAddress)) {
                     currentCountyAddress = countyAddress;
                 }
             }
             countyRepRepository.save(allCountyRepresentatives);
-        }
-        catch (Exception e) { e.printStackTrace(); }
-        finally {
-            try { fileReader.close(); }
-            catch (IOException e) { e.printStackTrace(); }
-            try { fileReader2.close(); }
-            catch (IOException e) { e.printStackTrace(); }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                fileReader.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                fileReader2.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    public static String generateRandomPersonId() {
-        StringBuilder id = new StringBuilder();
-        rand.ints(11, 0, 10).forEach(digit -> id.append(digit));
-        System.out.println(id.toString());
-        return id.toString();
-    }
 }

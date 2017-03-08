@@ -10,34 +10,21 @@ var spring = require('../../config/SpringConfig');
 
 var CountyResultsContainer = React.createClass({
     getInitialState: function() {
-        let resultType = (this.props.location.pathname.includes('vienmandaciai')) ?
-            'single-mandate' : 'multi-mandate';
-        let resultPostUrl =  spring.localHost.concat('/api/results/county/') + resultType;
-        let header = (resultType === 'single-mandate') ?
-            "Apylinkės kandidatų rezultatai (VIENMANDAČIAI)" : "Partijų sąrašas (DAUGIAMANDAČIAI)";
-
         return ({
+            representative: undefined,
             results: undefined,
             votees: undefined,
             activeCountyId: undefined,
             dictionary: new Map(),
             spoiled: "",
-            springErrors: [],
-            resultType: resultType,
-            resultPostUrl: resultPostUrl,
-            header: header
+            springErrors: []
         });
     },
     componentWillMount() {
         this.determineResultType(this.props.location.pathname);
     },
     componentDidMount: function() {
-        if (this.props.county) {
-            this.getResultsOrVotees(this.props);
-        }
-
-        // refactor when login will be implemented
-
+        if (this.props.county) this.getResultsOrVotees(this.props);
     },
     componentWillReceiveProps(newProps) {
         if (this.props.location.pathname != newProps.location.pathname) {
@@ -72,7 +59,7 @@ var CountyResultsContainer = React.createClass({
             });
     },
     getVotees(url) {
-        let _this = this;
+        let _this = this
         axios
             .get(url)
             .then(function(response) {
@@ -87,28 +74,31 @@ var CountyResultsContainer = React.createClass({
             })
     },
     prepareVotees() {
-        return this.state.resultType === 'single-mandate' ? this.prepareCandidates() : this.prepareParties();
+        let votees = this.resultType === 'single-mandate' ?
+                     this.prepareCandidates() :
+                     this.prepareParties();
+        return votees
     },
     prepareCandidates() {
         let candidates = this.state.votees.map((votee, idx) => {
-            return <CandidateDisplayComponent
-                key={idx}
-                candidate={votee}
-                changeVotes={this.handleChangeVotes}
-                votes={this.state.dictionary.get(votee.id)}
-            />
-        });
-        return candidates;
+                            return <CandidateDisplayComponent
+                                        key={idx}
+                                        candidate={votee}
+                                        changeVotes={this.handleChangeVotes}
+                                        votes={this.state.dictionary.get(votee.id)}
+                                    />
+                        });
+        return candidates
     },
     prepareParties() {
         let parties = this.state.votees.map((votee, idx) => {
-            return <MM_PartyComponent
-                key={idx}
-                party={votee}
-                changeVotes={this.handleChangeVotes}
-                votes={this.state.dictionary.get(votee.id)}
-            />
-        });
+                        return <MM_PartyComponent
+                                    key={idx}
+                                    party={votee}
+                                    changeVotes={this.handleChangeVotes}
+                                    votes={this.state.dictionary.get(votee.id)}
+                                />
+                    });
         return parties
     },
     formDictionary: function(votees) {
@@ -123,8 +113,8 @@ var CountyResultsContainer = React.createClass({
             newDictionary.set(key, "");
         });
         this.setState({ dictionary: newDictionary,
-            springErrors: [],
-            spoiled: "" });
+                        springErrors: [],
+                        spoiled: "" });
     },
     handleChangeSpoiled: function(e) {
         e.preventDefault()
@@ -149,11 +139,11 @@ var CountyResultsContainer = React.createClass({
         var resultPostUrl =  spring.localHost.concat('/api/results/county/') + this.resultType;
         axios.post(resultPostUrl, body)
             .then(function(resp) {
-                _this.setState({
+                _this.setState({ 
                     springErrors: [],
                     dictionary: new Map(),
                     spoiled: undefined,
-                    results: resp.data
+                    results: resp.data 
                 });
             })
             .catch(function(err) {

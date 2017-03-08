@@ -6,8 +6,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import voting.dto.AdminRepresentation;
-import voting.dto.CountyRepresentativeRepresentation;
+import voting.dto.admin.AdminRepresentation;
+import voting.dto.countyrep.CountyRepresentativeDTO;
 import voting.repository.AdminRepository;
 import voting.service.CountyRepService;
 
@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
  * Created by andrius on 3/6/17.
  */
 
+@CrossOrigin(origins = "*", maxAge = 3600)
 @Controller
 @RequestMapping("/api/auth/")
 public class AuthController {
@@ -72,7 +73,7 @@ public class AuthController {
         boolean admin = isContextContainsRole("ROLE_ADMIN");
 
         if (representative) {
-            return new CountyRepresentativeRepresentation(countyRepService.getCountyRepByUsername(username));
+            return new CountyRepresentativeDTO(countyRepService.getCountyRepByUsername(username));
         } else if (admin) {
             return new AdminRepresentation(adminRepository.findOneByUsername(username));
         } else {

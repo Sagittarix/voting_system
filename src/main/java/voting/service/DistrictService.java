@@ -44,12 +44,11 @@ public interface DistrictService {
 
     District addCounty(Long districtId, CountyData countyData);
 
-    County updateCounty(Long districtId, CountyData countyData, Long countyId);
+    County updateCounty(Long countyId, CountyData countyData);
 
     void deleteCounty(Long countyId);
 
-    District updateDistrict(DistrictData districtData, Long id);
-
     List<County> getCountiesByDistrictId(Long id);
 
+    District updateDistrict(DistrictData districtData, Long id);
 }

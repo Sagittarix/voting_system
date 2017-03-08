@@ -103,17 +103,4 @@ public class DistrictController {
         return new DistrictDTO(districtService.addCounty(districtId, countyData));
     }
 
-    @PostMapping("/{id}/update-county/{cid}")
-    public CountyDTO updateCounty(@PathVariable("id") Long districtId, @PathVariable("cid") Long cid, @Valid @RequestBody CountyData countyData, BindingResult result) {
-        if (result.hasErrors()) {
-            throw new MultiErrorException("Klaida atnaujinant apylinkę " + countyData.getName(), result.getAllErrors());
-        }
-        return new CountyDTO(districtService.updateCounty(districtId, countyData, cid));
-    }
-
-    @DeleteMapping("/county/{id}")
-    public void deleteCounty(@PathVariable Long id) {
-        districtService.deleteCounty(id);
-    }
-
 }

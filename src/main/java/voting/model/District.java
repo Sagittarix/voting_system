@@ -1,6 +1,9 @@
 package voting.model;
 
-import voting.results.model.result.*;
+import voting.results.model.result.DistrictMMResult;
+import voting.results.model.result.DistrictResult;
+import voting.results.model.result.DistrictSMResult;
+import voting.results.model.result.ResultType;
 
 import javax.persistence.*;
 import java.util.ArrayList;

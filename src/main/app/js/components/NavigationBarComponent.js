@@ -39,6 +39,16 @@ var NavigationBarComponent = React.createClass ({
     formCredentials() {
         return this.state.currentUser.firstName.concat(" ").concat(this.state.currentUser.lastName);
     },
+    dashboardLink() {
+        let dashboardLink = undefined;
+        if (this.props.currentUser.roles.includes("ROLE_REPRESENTATIVE")) {
+            dashboardLink = '/atstovui';
+        } else if (this.props.currentUser.roles.includes("ROLE_ADMIN")) {
+            dashboardLink = '/administravimas';
+        }
+
+        return dashboardLink;
+    },
     determineCurrentUserDisplay() {
         if (Object.keys(this.state.currentUser).length > 0) {
             return (
@@ -56,8 +66,14 @@ var NavigationBarComponent = React.createClass ({
                     </Link>
                     <ul className="dropdown-menu">
                         <li>
+                            <Link to={this.dashboardLink()} style={{ cursor: 'pointer' }}>
+                                <span className="glyphicon glyphicon-tasks" aria-hidden="true"></span> &nbsp;
+                                Darbo aplinka
+                            </Link>
+                        </li>
+                        <li>
                             <Link to="" onClick={this.doLogout} style={{ cursor: 'pointer' }}>
-                                <span className="glyphicon glyphicon-log-out" aria-hidden="true"></span>
+                                <span className="glyphicon glyphicon-log-out" aria-hidden="true"></span> &nbsp;
                                 {this.state.logout}
                             </Link>
                         </li>
@@ -85,14 +101,14 @@ var NavigationBarComponent = React.createClass ({
                         <ul className="nav navbar-nav">
                             {/*<li><a id="homePageButton" onClick={this.props.homePageButtonPressed} href="#"><span className="glyphicon glyphicon-home" aria-hidden="true"></span> Pradžia </a></li>*/}
                             <li><div className="navBarTitle">{this.state.pageTitle}</div></li>
-                                <Link to="/">
-                                    <button id="homeButton" onClick={this.props.homePageButtonPressed} ><span className="glyphicon glyphicon-home" aria-hidden="true"></span> {this.state.homeButtonText}</button>
-                                </Link>
+                            <Link to="/">
+                                <button id="homeButton" onClick={this.props.homePageButtonPressed} ><span className="glyphicon glyphicon-home" aria-hidden="true"></span> {this.state.homeButtonText}</button>
+                            </Link>
                         </ul>
 
                         {/*<button className="navBarButton" style={b1}> {this.props.mainMenu}</button>
-                        <button className="navBarButton" style={b2}> {this.props.secondMenu}</button>
-                        <button className="navBarButton" style={b3}> {this.props.thirdMenu}</button>*/}
+                         <button className="navBarButton" style={b2}> {this.props.secondMenu}</button>
+                         <button className="navBarButton" style={b3}> {this.props.thirdMenu}</button>*/}
 
                         {/*<span className="navbar-brand" >{this.props.mainMenu}</span>*/}
                         {/*<span className="navbar-brand" >{this.props.secondMenu}</span>*/}

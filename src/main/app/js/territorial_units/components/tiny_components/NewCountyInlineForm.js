@@ -6,7 +6,8 @@ var NewCountyInlineForm = React.createClass({
     getInitialState: function() {
         return ({ jsErrors: [] });
     },
-    submit: function() {
+    submit: function(e) {
+        e.preventDefault();
         var errors = Validations.checkErrorsCountyForm(this.props.name, this.props.count, this.props.address);
         if (errors.length > 0) {
             this.setState({ jsErrors: errors });

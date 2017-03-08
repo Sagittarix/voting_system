@@ -68,7 +68,7 @@ var RepresentativesPanelComponent = React.createClass({
 				<ul className="nav nav-tabs" id="bootstrap-overrides-nav-tabs">
 					<li className="tab centered">
 						<Link
-							to="atstovui/rezultatai/vienmandaciai"
+							to={"atstovui/rezultatai/vienmandaciai"}
 							className="adminPanelButton"
 							id="location1"
 							style={this.state.tagIds.location1}>
@@ -78,17 +78,17 @@ var RepresentativesPanelComponent = React.createClass({
 					</li>
 					<li className="tab centered">
 						<Link
-							to="atstovui/rezultatai/daugiamandaciai"
+							to={"atstovui/rezultatai/daugiamandaciai"}
 							className="adminPanelButton"
 							id="location2"
 							style={this.state.tagIds.location2}>
 							<img src="app/imgs/results_chart.png" style={ styles.image }/>
-							<p>Apylinkės rezultatai (DAUGIMANDAČIAI)</p>
+							<p>Apylinkės rezultatai (DAUGIAMANDAČIAI)</p>
 						</Link>
 					</li>
 					<li className="tab centered">
 						<Link
-							to="atstovui/profilis"
+							to={"atstovui/profilis"}
 							className="adminPanelButton"
 							id="location3"
 							style={this.state.tagIds.location3}>

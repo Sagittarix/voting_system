@@ -2,7 +2,7 @@ package voting.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import voting.dto.CandidateRepresentation;
+import voting.dto.candidate.CandidateDTO;
 import voting.service.CandidateService;
 
 import java.util.List;
@@ -25,15 +25,15 @@ public class CandidateController {
     }
 
     @GetMapping
-    public List<CandidateRepresentation> getCandidates() {
+    public List<CandidateDTO> getCandidates() {
         return candidateService.getCandidates().stream()
-                                               .map(CandidateRepresentation::new)
+                                               .map(CandidateDTO::new)
                                                .collect(Collectors.toList());
     }
 
     @GetMapping("{id}")
-    public CandidateRepresentation getCandidate(@PathVariable Long id) {
-        return new CandidateRepresentation(candidateService.getCandidate(id));
+    public CandidateDTO getCandidate(@PathVariable Long id) {
+        return new CandidateDTO(candidateService.getCandidate(id));
     }
 
 }

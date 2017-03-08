@@ -1,35 +1,54 @@
 var React = require('react');
-var ReactRouter = require('react-router');
 var NewDistrictAsideForm = require('./NewDistrictAsideForm');
+var Helper = require('../../utils/Helper');
 
-function TerritorialBreakdownComponent(props) {
-    return (
-        <div className="container">
-            <div className="row">
-                <div className="col-md-8 units-list-area">
-                    <div className="list-group-item active">
-                        <span>Apygardų sąrašas</span>
+var TerritorialBreakdownComponent = React.createClass({
+    getInitialState() {
+        return ({ ASC: true });
+    },
+    toggleSortOrder() {
+        this.setState({ ASC: !this.state.ASC });
+    },
+    sortDistricts() {
+        return Helper.sort(this.props.districts, this.state.ASC);
+    },
+    render() {
+        var rotation = (this.state.ASC) ? " Z-A" : "A-Z";
+        return (
+            <div className="container">
+                {/*<nav className="navbar navbar-inverse" data-spy="affix" data-offset-top="197">*/}
+                <div className="row">
+                    <div className="col-md-8 units-list-area">
+                        <div className="list-group-item active">
+                            <span>Apygardų sąrašas</span>
+                            <span
+                                className="btn btn-sm btn-primary no-background"
+                                style={{ color: '#FFFFFF', borderColor: '#FFFFFF' }}
+                                onClick={this.toggleSortOrder}>
+                                Rušiuoti {rotation}
+                            </span>
+                        </div>
+                        <div className="list-group-item" style={{ height: 'auto' }}>
+                            {this.sortDistricts()}
+                        </div>
                     </div>
-                    <div className="list-group-item" style={{ height: 'auto' }}>
-                        {props.districts}
-                    </div>
-                </div>
 
-                <div className="col-md-4 units-create-area">
-                    <div className="col-md-11">
-                        <NewDistrictAsideForm
-                            counties={props.counties}
-                            addCounty={props.addCounty}
-                            changeName={props.changeName}
-                            name={props.name}
-                            create={props.create}
-                            springErrors={props.springErrors}
-                        />
+                    <div className="col-md-4 units-create-area">
+                        <div className="col-md-11">
+                            <NewDistrictAsideForm
+                                counties={this.props.counties}
+                                addCounty={this.props.addCounty}
+                                changeName={this.props.changeName}
+                                name={this.props.name}
+                                create={this.props.create}
+                                springErrors={this.props.springErrors}
+                            />
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    );
-};
+        );
+    },
+});
 
 module.exports = TerritorialBreakdownComponent;

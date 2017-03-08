@@ -7,7 +7,7 @@ import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
-import voting.dto.CandidateRepresentation;
+import voting.dto.candidate.CandidateDTO;
 
 /**
  * Created by andrius on 2/27/17.
@@ -31,7 +31,7 @@ public class CandidateServiceLoggingAspect {
     void getCandidate() { }
 
     @AfterReturning(pointcut = "getCandidate()", returning = "returnValue")
-    public void afterGetCandidate(JoinPoint jp, CandidateRepresentation returnValue) {
+    public void afterGetCandidate(JoinPoint jp, CandidateDTO returnValue) {
         logger.debug(String.format("Candidate [id: %d] extracted : %s", returnValue.getId(), jp.toLongString()));
     }
 }

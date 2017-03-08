@@ -1,7 +1,7 @@
 package voting.service;
 
 import com.opencsv.exceptions.CsvException;
-import voting.dto.CandidateData;
+import voting.dto.candidate.CandidateData;
 
 import java.io.File;
 import java.io.IOException;

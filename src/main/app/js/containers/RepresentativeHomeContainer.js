@@ -22,7 +22,7 @@ var RepresentativeHomeContainer = React.createClass({
         axios.post(spring.localHost.concat('/api/auth/role'), fd)
             .then(resp => {
                 if (resp.data == false) {
-                    _this.context.router.push('/prisijungti')
+                    _this.context.router.push('/')
                 } else {
                     _this.setState({ representative: true });
                 }
@@ -32,11 +32,6 @@ var RepresentativeHomeContainer = React.createClass({
             });
     },
     render: function() {
-
-        /*let childrenWithProps = React.Children.map(this.props.children, (child) =>
-            React.cloneElement(child, {currentUser: this.state.currentUser})
-        );*/
-
         let displayer;
         if (this.state.representative) {
             displayer = (

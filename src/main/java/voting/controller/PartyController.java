@@ -10,9 +10,8 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.beanvalidation.SpringValidatorAdapter;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import voting.dto.DistrictRepresentation;
-import voting.dto.PartyData;
-import voting.dto.PartyRepresentation;
+import voting.dto.party.PartyDTO;
+import voting.dto.party.PartyData;
 import voting.exception.MultiErrorException;
 import voting.model.Party;
 import voting.service.PartyService;
@@ -28,7 +27,6 @@ import java.util.stream.Collectors;
 /**
  * Created by domas on 1/15/17.
  */
-
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -50,18 +48,18 @@ public class PartyController {
 
 
     @GetMapping
-    public List<PartyRepresentation> getParties() {
-        return partyService.getParties().stream().map(p -> new PartyRepresentation(p)).collect(Collectors.toList());
+    public List<PartyDTO> getParties() {
+        return partyService.getParties().stream().map(p -> new PartyDTO(p)).collect(Collectors.toList());
     }
 
     @GetMapping("{id}")
-    public PartyRepresentation getParty(@PathVariable Long id) {
+    public PartyDTO getParty(@PathVariable Long id) {
         Party party = partyService.getParty(id);
-        return new PartyRepresentation(party);
+        return new PartyDTO(party);
     }
 
     @PostMapping(consumes = "multipart/form-data")
-    public PartyRepresentation saveParty(@RequestParam(name = "party") String partyDataString, @RequestParam(name = "file") MultipartFile multipartFile)
+    public PartyDTO saveParty(@RequestParam(name = "party") String partyDataString, @RequestParam(name = "file") MultipartFile multipartFile)
             throws IOException, CsvException {
         PartyData partyData = null;
         try {
@@ -79,11 +77,11 @@ public class PartyController {
             );
         }
 
-        return new PartyRepresentation(partyService.saveParty(partyData, multipartFile));
+        return new PartyDTO(partyService.saveParty(partyData, multipartFile));
     }
 
     @PatchMapping("{id}/update")
-    public PartyRepresentation updateParty(
+    public PartyDTO updateParty(
             @PathVariable Long id,
             @Valid @RequestBody PartyData partyData,
             BindingResult result) {
@@ -91,7 +89,7 @@ public class PartyController {
         if (result.hasErrors()) {
             throw new MultiErrorException("Klaida atnaujinant partiją " + partyData.getName(), result.getAllErrors());
         }
-        return new PartyRepresentation(partyService.updateParty(partyData, id));
+        return new PartyDTO(partyService.updateParty(partyData, id));
     }
 
     @DeleteMapping("{id}")
@@ -100,9 +98,9 @@ public class PartyController {
     }
 
     @PostMapping(value = "{id}/candidates", consumes = "multipart/form-data")
-    public PartyRepresentation setCandidateList(@PathVariable Long id, @RequestParam(name = "file") MultipartFile multipartFile)
+    public PartyDTO setCandidateList(@PathVariable Long id, @RequestParam(name = "file") MultipartFile multipartFile)
             throws IOException, CsvException {
-        return new PartyRepresentation(partyService.setCandidateList(id, multipartFile));
+        return new PartyDTO(partyService.setCandidateList(id, multipartFile));
     }
 
     @DeleteMapping("{id}/candidates")

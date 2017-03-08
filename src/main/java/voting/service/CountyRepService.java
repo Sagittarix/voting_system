@@ -1,6 +1,6 @@
 package voting.service;
 
-import voting.dto.CountyRepresentativeData;
+import voting.dto.countyrep.CountyRepresentativeData;
 import voting.model.CountyRep;
 
 import java.util.List;

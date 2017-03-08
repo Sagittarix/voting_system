@@ -3,8 +3,8 @@
 //import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.stereotype.Service;
 //import org.springframework.transaction.annotation.Transactional;
-//import voting.dto.CountyRepresentation;
-//import voting.dto.results.CountyResultDTO;
+//import voting.dto.CountyDTO;
+//import voting.dto.results.CountyResultData;
 //import voting.exception.NotFoundException;
 //import voting.model.County;
 //import voting.model.results.CountyResult;
@@ -47,7 +47,7 @@
 //    }
 //
 //    @Transactional
-//    public CountyResult save(CountyResultDTO crdm) {
+//    public CountyResult save(CountyResultData crdm) {
 //        return countyResultRepository.save(mapDataWithCollectionToEntity(crdm));
 //    }
 //
@@ -62,7 +62,7 @@
 //    }
 //
 //
-//    public CountyResult mapDataWithCollectionToEntity(CountyResultDTO crdm) {
+//    public CountyResult mapDataWithCollectionToEntity(CountyResultData crdm) {
 //        CountyResult cr = new CountyResult();;
 //        List<Vote> votesList = unitVotesService.mapCollectionDataToEntities(
 //                crdm.getUnitVotesDataModelsList(),
@@ -78,22 +78,22 @@
 //    @Transactional
 //    public CountyResult confirmResultForCounty(Long countyId, boolean isSingleMandate) {
 //        County county = districtService.getCounty(countyId);
-//        CountyResult cResult = getResult(county, isSingleMandate);
+//        CountyResult cResult = getResultByType(county, isSingleMandate);
 //        cResult.setConfirmed(true);
 //        // TODO: temp hack
 //        cResult.setConfirmedOn(new Date());
 //        return countyResultRepository.save(cResult);
 //    }
 //
-//    public CountyRepresentation deleteResultForCounty(Long countyId, boolean isSingleMandate) {
+//    public CountyDTO deleteResultForCounty(Long countyId, boolean isSingleMandate) {
 //        County county = districtService.getCounty(countyId);
-//        CountyResult cr = getResult(county, isSingleMandate);
+//        CountyResult cr = getResultByType(county, isSingleMandate);
 //        countyResultRepository.delete(cr);
 //        county.removeResult(cr);
-//        return new CountyRepresentation(county);
+//        return new CountyDTO(county);
 //    }
 //
-//    private CountyResult getResult(County county, boolean isSingleMandate) {
+//    private CountyResult getResultByType(County county, boolean isSingleMandate) {
 //        return county.getCountyResultList()
 //                     .stream()
 //                     .filter(cr -> cr.isSingleMandateSystem() == isSingleMandate)

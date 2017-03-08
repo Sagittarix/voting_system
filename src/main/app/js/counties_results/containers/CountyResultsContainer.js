@@ -5,7 +5,7 @@ var ResultsDisplayComponent = require('../components/ResultsDisplayComponent');
 var CandidateDisplayComponent = require('../components/CandidateDisplayComponent');
 var MM_PartyComponent = require('../components/MM_PartyComponent')
 var Validations = require('../../utils/Validations');
-var Helpers = require('../../utils/Helpers');
+var Helpers = require('../../utils/Helper');
 var spring = require('../../config/SpringConfig');
 
 var CountyResultsContainer = React.createClass({
@@ -28,41 +28,42 @@ var CountyResultsContainer = React.createClass({
             header: header
         });
     },
-    componentDidMount() {
-        const _this = this;
-        axios.post(spring.localHost.concat('/api/auth/principal'))
-            .then(resp => {
-                _this.getResultsOrVotees(resp.data);
-            })
-            .catch(err => {
-                console.log(err);
-            });
+    componentWillMount() {
+        this.determineResultType(this.props.location.pathname);
+    },
+    componentDidMount: function() {
+        if (this.props.county) {
+            this.getResultsOrVotees(this.props);
+        }
+
+        // refactor when login will be implemented
+
     },
     componentWillReceiveProps(newProps) {
-        let resultType = (newProps.location.pathname.includes('vienmandaciai')) ?
-            'single-mandate' : 'multi-mandate';
-        let resultPostUrl =  spring.localHost.concat('/api/results/county/') + resultType;
-        let header = (resultType === 'single-mandate') ?
-            "Apylinkės kandidatų rezultatai (VIENMANDAČIAI)" : "Partijų sąrašas (DAUGIAMANDAČIAI)";
-
-        this.setState({
-            resultType: resultType,
-            resultPostUrl: resultPostUrl,
-            header: header
-        });
+        if (this.props.location.pathname != newProps.location.pathname) {
+            this.determineResultType(newProps.location.pathname)
+        }
+        if (newProps.county) {
+            this.getResultsOrVotees(newProps);
+        }
+    },
+    determineResultType(pathname) {
+        this.resultType = pathname.includes('vienmandaciai') ?
+                          'single-mandate' : 
+                          'multi-mandate';
     },
     getResultsOrVotees: function(props) {
-        let _this = this;
-        let resultsUrl = spring.localHost.concat("/api/results/county/") + props.countyId + "/" + this.state.resultType;
+        let _this = this
+        let resultsUrl = spring.localHost.concat("/api/results/county/") + props.county.id + "/" + this.resultType;
         axios
             .get(resultsUrl)
             .then(function(response) {
                 if (response.data) {
                     _this.setState({ results: response.data })
                 } else {
-                    let getUrl = (_this.state.resultType === 'single-mandate') ?
-                        spring.localHost.concat('/api/district/') + props.districtId + '/candidates' :
-                        spring.localHost.concat('/api/party/');
+                    let getUrl = _this.resultType === 'single-mandate' ?
+                                    spring.localHost.concat('/api/district/') + props.district.id + '/candidates' :
+                                    spring.localHost.concat('/api/party/');
                     _this.getVotees(getUrl);
                 }
             })
@@ -75,9 +76,10 @@ var CountyResultsContainer = React.createClass({
         axios
             .get(url)
             .then(function(response) {
-                _this.setState({
+                _this.setState({ 
+                    results: undefined,
                     votees: response.data,
-                    dictionary: _this.formDictionary(response.data)
+                    dictionary: _this.formDictionary(response.data),
                 })
             })
             .catch(function(err) {
@@ -141,10 +143,11 @@ var CountyResultsContainer = React.createClass({
         var errors = [];
         var body = {
             "spoiledBallots": this.state.spoiled,
-            "countyId": this.props.countyId,
+            "countyId": this.props.county.id,
             "unitVotes": voteList
-        };
-        axios.post(this.resultPostUrl, body)
+        }
+        var resultPostUrl =  spring.localHost.concat('/api/results/county/') + this.resultType;
+        axios.post(resultPostUrl, body)
             .then(function(resp) {
                 _this.setState({
                     springErrors: [],
@@ -160,35 +163,39 @@ var CountyResultsContainer = React.createClass({
             });
     },
     render: function() {
+        var header = this.resultType === 'single-mandate' ?
+                    "Apylinkės kandidatų rezultatai (VIENMANDAČIAI)" :
+                    "Partijų sąrašas (DAUGIAMANDAČIAI)"
+
         var formOrResults;
+
         if (this.state.results) {
-            formOrResults = (
-                <ResultsDisplayComponent
-                    header={this.header}
-                    results={this.state.results}
-                    createdOn={Helpers.dateTimeFormatWithMessage(
-                        this.state.results.createdOn,
-                        "Rezultatai pateikti"
-                    )}
-                    confirmedOn={Helpers.dateTimeFormatWithMessage(
-                        this.state.results.confirmedOn,
-                        "Rezultatai patvirtinti"
-                    )}
-                />
-            );
+            formOrResults = <ResultsDisplayComponent
+                                header={header}
+                                representative={this.props.representative}
+                                results={this.state.results}
+                                createdOn={Helpers.dateTimeFormatWithMessage(
+                                              this.state.results.createdOn,
+                                              "Rezultatai pateikti"
+                                          )}
+                                confirmedOn={Helpers.dateTimeFormatWithMessage(
+                                              this.state.results.confirmedOn,
+                                              "Rezultatai patvirtinti"
+                                          )}
+                            />
         } else if (this.state.votees) {
-            formOrResults = (
-                <CountyResultsComponent
-                    header={this.header}
-                    votees={this.prepareVotees()}
-                    spoiled={this.state.spoiled}
-                    dictionary={this.state.dictionary}
-                    changeSpoiled={this.handleChangeSpoiled}
-                    submitResults={this.handleSubmitResults}
-                    springErrors={this.state.springErrors}
-                    clearForm={this.clearForm}
-                />
-            );
+            formOrResults = <CountyResultsComponent
+                                header={header}
+                                representative={this.props.representative}
+                                votees={this.prepareVotees()}
+                                spoiled={this.state.spoiled}
+                                dictionary={this.state.dictionary}
+                                changeSpoiled={this.handleChangeSpoiled}
+                                submitResults={this.handleSubmitResults}
+                                springErrors={this.state.springErrors}
+                                activeCountyId={this.props.county.id}
+                                clearForm={this.clearForm}
+                            />
         } else {
             return <div></div>
         }

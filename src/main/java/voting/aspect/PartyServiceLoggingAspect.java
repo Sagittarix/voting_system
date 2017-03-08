@@ -8,11 +8,8 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import voting.dto.PartyRepresentation;
+import voting.dto.party.PartyDTO;
 import voting.service.PartyService;
-import voting.utils.Extractor;
-
-import java.util.Arrays;
 
 /**
  * Created by andrius on 2/27/17.
@@ -50,7 +47,7 @@ public class PartyServiceLoggingAspect {
     void saveParty() { }
 
     @AfterReturning(pointcut = "saveParty()", returning = "returnValue")
-    public void afterSavePartyWithCandidates(JoinPoint jp, PartyRepresentation returnValue) {
+    public void afterSavePartyWithCandidates(JoinPoint jp, PartyDTO returnValue) {
 //        String[] ids = Extractor.extractIdsFromCandidates(returnValue.getCandidates());
 //        logger.debug(String.format(
 //                "Political party created [id: %d] with candidates [ids: %s] : %s",
@@ -77,7 +74,7 @@ public class PartyServiceLoggingAspect {
     public void afterDeletingPartyCandidateList(JoinPoint jp, Long id) {
 //        String[] ids = Extractor.extractIdsFromOrphanCandidates(partyService.getParty(id));
 //        logger.debug(String.format(
-//                "Party [id: %d] candidates (districtless) [ids: %s] deleted : %s",
+//                "party [id: %d] candidates (districtless) [ids: %s] deleted : %s",
 //                id, Arrays.toString(ids), jp.toLongString())
 //        );
     }

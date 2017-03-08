@@ -3,16 +3,18 @@ package voting.results;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import voting.dto.results.CountyResultDTO;
-import voting.dto.results.VoteDTO;
+import voting.dto.results.CountyResultData;
+import voting.dto.results.vote.VoteData;
 import voting.exception.NotFoundException;
 import voting.model.Candidate;
 import voting.model.County;
+import voting.model.District;
 import voting.model.Party;
 import voting.results.model.result.*;
 import voting.results.model.votecount.CandidateVote;
 import voting.results.model.votecount.PartyVote;
-import voting.results.repository.*;
+import voting.results.model.votecount.Vote;
+import voting.results.repository.ResultRepository;
 import voting.service.CandidateService;
 import voting.service.DistrictService;
 import voting.service.PartyService;
@@ -30,106 +32,125 @@ public class ResultServiceImpl implements ResultService {
     private final PartyService partyService;
     private final CandidateService candidateService;
     private final ResultRepository resultRepository;
-    private final CountySMResultRepository countySMrepo;
-    private final CountyMMResultRepository countyMMrepo;
-    private final DistrictSMResultRepository districtSMrepo;
-    private final DistrictMMResultRepository districtMMrepo;
 
 
     @Autowired
     public ResultServiceImpl(DistrictService districtService,
                              PartyService partyService,
                              CandidateService candidateService,
-                             ResultRepository resultRepository,
-                             CountySMResultRepository countySMrepo,
-                             CountyMMResultRepository countyMMrepo,
-                             DistrictSMResultRepository districtSMrepo,
-                             DistrictMMResultRepository districtMMrepo) {
+                             ResultRepository resultRepository) {
         this.districtService = districtService;
         this.partyService = partyService;
         this.candidateService = candidateService;
         this.resultRepository = resultRepository;
-        this.countySMrepo = countySMrepo;
-        this.countyMMrepo = countyMMrepo;
-        this.districtSMrepo = districtSMrepo;
-        this.districtMMrepo = districtMMrepo;
     }
 
 
     @Override
-    public CountySMResult addCountySMResult(CountyResultDTO resultDTO) {
+    public CountySMResult addCountySmResult(CountyResultData resultDTO) {
         County county = districtService.getCounty(resultDTO.getCountyId());
-        if (countySMrepo.existsByCounty(county)) {
+        if (resultRepository.existsSmResultByCounty(county)) {
             throw new IllegalArgumentException(String.format("Apylinkės \"%s\" rezultatas jau užregistruotas", county));
         }
-        CountySMResult result = convertToCountySMResult(resultDTO);
-        return resultRepository.save(result);
+        county.setSmResult(convertToCountySMResult(resultDTO));
+        districtService.save(county.getDistrict());
+        return county.getSmResult();
     }
 
+
     @Override
-    public CountyMMResult addCountyMMResult(CountyResultDTO resultDTO) {
+    public CountyMMResult addCountyMmResult(CountyResultData resultDTO) {
         County county = districtService.getCounty(resultDTO.getCountyId());
-        if (countyMMrepo.existsByCounty(county)) {
+        if (resultRepository.existsMmResultByCounty(county)) {
             throw new IllegalArgumentException(String.format("Apylinkės \"%s\" rezultatas jau užregistruotas", county));
         }
-        CountyMMResult result = convertToCountyMMResult(resultDTO);
-        return resultRepository.save(result);
+        county.setMmResult(convertToCountyMMResult(resultDTO));
+        districtService.save(county.getDistrict());
+        return county.getMmResult();
     }
 
 
     @Override
-    public CountySMResult getCountySMResult(Long countyId) {
-        County county = districtService.getCounty(countyId);
-        CountySMResult result = countySMrepo.findOneByCounty(county);
+    public CountySMResult getCountySmResult(Long countyId) {
+        return resultRepository.findSmResultByCounty(districtService.getCounty(countyId));
+    }
+
+
+    @Override
+    public CountyMMResult getCountyMmResult(Long countyId) {
+        return resultRepository.findMmResultByCounty(districtService.getCounty(countyId));
+    }
+
+
+    @Override
+    public DistrictSMResult getDistrictSmResult(Long districtId) {
+        District district = districtService.getDistrict(districtId);
+        DistrictSMResult result = resultRepository.findSmResultByDistrict(district);
+        if (result == null) {
+            result = (DistrictSMResult) saveNewDistrictResult(district, ResultType.SINGLE_MANDATE);
+        }
         return result;
     }
 
     @Override
-    public CountyMMResult getCountyMMResult(Long countyId) {
-        County county = districtService.getCounty(countyId);
-        CountyMMResult result = countyMMrepo.findOneByCounty(county);
+    public DistrictMMResult getDistrictMmResult(Long districtId) {
+        District district = districtService.getDistrict(districtId);
+        DistrictMMResult result = resultRepository.findMmResultByDistrict(district);
+        if (result == null) {
+            result = (DistrictMMResult) saveNewDistrictResult(district, ResultType.MULTI_MANDATE);
+        }
         return result;
     }
+
 
     @Transactional
     @Override
     public void confirmCountyResult(Long id) {
-        Result result = getResult(id);
-        if (!isCountyResult(result)) {
-            throw new RuntimeException("cannot confirm district result");
-        }
-        CountyResult cr = (CountyResult) result;
-        cr.setConfirmed(true);
-        resultRepository.save(cr);
-        // TODO: finish
-        // TODO: update district result on confirm
-        // updateDistrictResult(cr.getCounty().getDistrict());
+        CountyResult result = getCountyResult(id);
+        throwIllegalArgumentIfConfirmed(result, "Rezultatas jau patvirtintas");
+
+        result.setConfirmed(true);
+        District district = result.getCounty().getDistrict();
+        districtService.save(district);
+
+        ResultType type = result instanceof CountySMResult ?
+                          ResultType.SINGLE_MANDATE :
+                          ResultType.MULTI_MANDATE;
+
+        updateDistrictResult(district, result, type);
     }
+
+
+    @Transactional
+    private void updateDistrictResult(District district, CountyResult countyResult, ResultType type) {
+        DistrictResult districtResult = type == ResultType.SINGLE_MANDATE ?
+                                        resultRepository.findSmResultByDistrict(district) :
+                                        resultRepository.findMmResultByDistrict(district);
+
+        if (districtResult == null) {
+            saveNewDistrictResult(district, type);
+        } else {
+            districtResult.combineResults(countyResult);
+        }
+        districtService.save(district);
+    }
+
 
     @Transactional
     @Override
     public void deleteCountyResult(Long id) {
-        Result result = getResult(id);
-        if (!isCountyResult(result)) {
-            throw new RuntimeException("cannot confirm district result");
-        }
+        CountyResult result = getCountyResult(id);
+        throwIllegalArgumentIfConfirmed(result, "Rezultatas jau patvritintas, negalima ištrint");
 
-        CountyResult cr = (CountyResult) result;
-        County county = cr.getCounty();
-
-        //TODO: temp hack
+        County county = result.getCounty();
         if (result instanceof CountySMResult) {
             county.setSmResult(null);
         } else {
             county.setMmResult(null);
         }
-        resultRepository.delete(id);
 
-
-        // TODO: update district result on confirm
-
+        districtService.save(county.getDistrict());
     }
-
 
 
     private Result getResult(Long id) {
@@ -140,59 +161,105 @@ public class ResultServiceImpl implements ResultService {
         return result;
     }
 
+
+    private CountyResult getCountyResult(Long id) {
+        Result result = getResult(id);
+        if (!isCountyResult(result)) {
+            throw new NotFoundException("Nepavyko rasti apylinkės rezultato su id " + id);
+        }
+        return (CountyResult) result;
+    }
+
+    private void throwIllegalArgumentIfConfirmed(CountyResult cr, String message) {
+        if (cr.isConfirmed()) {
+            throw new IllegalArgumentException(message);
+        }
+    }
+
     private boolean isCountyResult(Result result) {
         return result instanceof CountyResult;
     }
 
-    private boolean isDistrictResut(Result result) {
-        return result instanceof DistrictResult;
-    }
-
-
-    private CountySMResult convertToCountySMResult(CountyResultDTO resultDTO) {
+    private CountySMResult convertToCountySMResult(CountyResultData resultDTO) {
         CountySMResult result = new CountySMResult();
         County county = districtService.getCounty(resultDTO.getCountyId());
         result.setCounty(county);
 
-        List<CandidateVote> voteList = resultDTO.getVoteList()
-                                                .stream()
-                                                .map(v -> convertToCandidateVote(v))
-                                                .collect(Collectors.toList());
-        voteList.stream().forEach(result::addVote);
+
+        List<Vote> voteList = resultDTO.getVoteList()
+                                        .stream()
+                                        .map(this::convertToCandidateVote)
+                                        .collect(Collectors.toList());
+        voteList.forEach(result::addVote);
 
         result.setConfirmed(false);
         result.setSpoiledBallots(resultDTO.getSpoiledBallots());
         return result;
     }
 
-    private CountyMMResult convertToCountyMMResult(CountyResultDTO resultDTO) {
+    private CountyMMResult convertToCountyMMResult(CountyResultData resultDTO) {
         CountyMMResult result = new CountyMMResult();
         County county = districtService.getCounty(resultDTO.getCountyId());
         result.setCounty(county);
 
-        List<PartyVote> voteList = resultDTO.getVoteList()
-                .stream()
-                .map(v -> convertToPartyVote(v))
-                .collect(Collectors.toList());
-        voteList.stream().forEach(result::addVote);
+        List<Vote> voteList = resultDTO.getVoteList()
+                                        .stream()
+                                        .map(this::convertToPartyVote)
+                                        .collect(Collectors.toList());
+        voteList.forEach(result::addVote);
 
         result.setConfirmed(false);
         result.setSpoiledBallots(resultDTO.getSpoiledBallots());
         return result;
     }
 
-
-    private CandidateVote convertToCandidateVote(VoteDTO voteDTO) {
-        Candidate candidate = candidateService.getCandidate(voteDTO.getUnitId());
-        CandidateVote vote = new CandidateVote(candidate, voteDTO.getVotes());
-        return vote;
+    private CandidateVote convertToCandidateVote(VoteData voteData) {
+        Candidate candidate = candidateService.getCandidate(voteData.getUnitId());
+        return new CandidateVote(candidate, voteData.getVotes());
     }
 
-    private PartyVote convertToPartyVote(VoteDTO voteDTO) {
-        Party party = partyService.getParty(voteDTO.getUnitId());
-        PartyVote vote = new PartyVote(party, voteDTO.getVotes());
-        return vote;
+    private PartyVote convertToPartyVote(VoteData voteData) {
+        Party party = partyService.getParty(voteData.getUnitId());
+        return new PartyVote(party, voteData.getVotes());
     }
 
+    private DistrictResult saveNewDistrictResult(District district, ResultType type) {
+        DistrictResult result = constructDistrictResult(district, type);
+        district.setResultByType(result, type);
+        districtService.save(district);
+        return result;
+    }
+
+    private DistrictResult constructDistrictResult(District district, ResultType type) {
+        DistrictResult districtResult = constructBlankDistrictResult(district, type);
+        district.getCounties().stream()
+                .map(c -> c.getResultByType(type))
+                .filter(c -> c != null && c.isConfirmed())
+                .forEach(districtResult::combineResults);
+        return districtResult;
+    }
+
+    private DistrictResult constructBlankDistrictResult(District district, ResultType type) {
+        DistrictResult result = type == ResultType.SINGLE_MANDATE ?
+                                new DistrictSMResult() :
+                                new DistrictMMResult();
+        List<Vote> voteList = type == ResultType.SINGLE_MANDATE ?
+                              constructBlankCandidateVoteList(district.getCandidates()):
+                              constructBlankPartyVoteList(partyService.getParties());
+        voteList.forEach(result::addVote);
+        return result;
+    }
+
+    private List<Vote> constructBlankCandidateVoteList(List<Candidate> candidates) {
+        return candidates.stream()
+                .map(c -> new CandidateVote(c, 0L))
+                .collect(Collectors.toList());
+    }
+
+    private List<Vote> constructBlankPartyVoteList(List<Party> parties) {
+        return parties.stream()
+                .map(p -> new PartyVote(p, 0L))
+                .collect(Collectors.toList());
+    }
 
 }

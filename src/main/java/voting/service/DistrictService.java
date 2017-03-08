@@ -2,20 +2,21 @@ package voting.service;
 
 import com.opencsv.exceptions.CsvException;
 import org.springframework.web.multipart.MultipartFile;
-import voting.dto.CountyData;
-import voting.dto.CountyRepresentation;
-import voting.dto.DistrictData;
+import voting.dto.county.CountyData;
+import voting.dto.district.DistrictData;
 import voting.model.Candidate;
 import voting.model.County;
 import voting.model.District;
-
 import java.io.IOException;
 import java.util.List;
 
 /**
  * Created by domas on 1/10/17.
  */
+
 public interface DistrictService {
+
+    District save(District district);
 
     District addNewDistrict(DistrictData districtData);
 
@@ -37,13 +38,18 @@ public interface DistrictService {
 
     boolean exists(String name);
 
+    List<County> getCounties();
+
     County getCounty(Long id);
 
     District addCounty(Long districtId, CountyData countyData);
 
-    CountyRepresentation updateCounty(Long districtId, CountyData countyData, Long countyId);
+    County updateCounty(Long districtId, CountyData countyData, Long countyId);
 
     void deleteCounty(Long countyId);
 
     District updateDistrict(DistrictData districtData, Long id);
+
+    List<County> getCountiesByDistrictId(Long id);
+
 }

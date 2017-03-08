@@ -1,10 +1,10 @@
 //package voting.utils;
 //
 //import org.springframework.stereotype.Component;
-//import voting.dto.CandidateRepresentation;
-//import voting.dto.PartyRepresentation;
-//import voting.dto.results.CandidateVoteRepresentation;
-//import voting.dto.results.PartyVoteRepresentation;
+//import voting.dto.CandidateDTO;
+//import voting.dto.PartyDTO;
+//import voting.dto.results.CandidateVoteDTO;
+//import voting.dto.results.PartyVoteDTO;
 //import voting.dto.results.UnitVoteRepresentation;
 //
 //import java.util.ArrayList;
@@ -17,8 +17,8 @@
 //@Component
 //public class RepresentationFactory {
 //
-//    public static CountyResultRepresentation makeRepresentationOf(CountyResult cr) {
-//        CountyResultRepresentation crr = new CountyResultRepresentation();
+//    public static CountyResultDTO makeRepresentationOf(CountyResult cr) {
+//        CountyResultDTO crr = new CountyResultDTO();
 //        crr.setId(cr.getId());
 //        crr.setSpoiledBallots(cr.getSpoiledBallots());
 //        crr.setSingleMandateSystem(cr.isSingleMandateSystem());
@@ -30,26 +30,26 @@
 //        return crr;
 //    }
 //
-//    public static List<CountyResultRepresentation> makeRepresentationOfCountyResultsList(List<CountyResult> list) {
-//        List<CountyResultRepresentation> crrl = new ArrayList<>();
+//    public static List<CountyResultDTO> makeRepresentationOfCountyResultsList(List<CountyResult> list) {
+//        List<CountyResultDTO> crrl = new ArrayList<>();
 //        list.forEach(cr -> crrl.add(makeRepresentationOf(cr)));
 //        return crrl;
 //    }
 //
-//    public static CandidateVoteRepresentation makeRepresentationOf(CandidateVote cv) {
-//        CandidateVoteRepresentation cvr = new CandidateVoteRepresentation();
+//    public static CandidateVoteDTO makeRepresentationOf(CandidateVote cv) {
+//        CandidateVoteDTO cvr = new CandidateVoteDTO();
 //        cvr.setId(cv.getId());
 //        cvr.setVoteCount(cv.getVoteCount());
-//        cvr.setCandidate(new CandidateRepresentation(cv.getCandidate()));
+//        cvr.setCandidate(new CandidateDTO(cv.getCandidate()));
 //
 //        return cvr;
 //    }
 //
-//    public static PartyVoteRepresentation makeRepresentationOf(PartyVote cv) {
-//        PartyVoteRepresentation pvr = new PartyVoteRepresentation();
+//    public static PartyVoteDTO makeRepresentationOf(PartyVote cv) {
+//        PartyVoteDTO pvr = new PartyVoteDTO();
 //        pvr.setId(cv.getId());
 //        pvr.setVoteCount(cv.getVoteCount());
-//        pvr.setParty(new PartyRepresentation(cv.getParty()));
+//        pvr.setParty(new PartyDTO(cv.getParty()));
 //        return pvr;
 //    }
 //

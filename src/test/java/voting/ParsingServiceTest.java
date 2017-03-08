@@ -2,13 +2,12 @@ package voting;
 
 import com.opencsv.exceptions.CsvException;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
-import voting.dto.CandidateData;
+import voting.dto.candidate.CandidateData;
 import voting.exception.MultiErrorException;
 import voting.service.ParsingService;
 import voting.service.ParsingServiceImpl;

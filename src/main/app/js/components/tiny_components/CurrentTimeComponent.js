@@ -1,5 +1,5 @@
 var React = require('react');
-var Helpers = require('../../utils/Helpers');
+var Helper = require('../../utils/Helper');
 
 var CurrentTimeComponent = React.createClass({
 		getInitialState: function() {
@@ -9,7 +9,7 @@ var CurrentTimeComponent = React.createClass({
 				setInterval(this.tick, 1000);
 		},
 		tick: function() {
-				this.setState({ time: Helpers.currentTime() });
+				this.setState({ time: Helper.currentTime() });
 		},
 		render: function() {
 				return (

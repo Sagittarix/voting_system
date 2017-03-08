@@ -5,9 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import voting.dto.CandidateData;
-import voting.dto.PartyData;
-import voting.dto.PartyRepresentation;
+import voting.dto.candidate.CandidateData;
+import voting.dto.party.PartyData;
 import voting.exception.NotFoundException;
 import voting.model.Candidate;
 import voting.model.Party;
@@ -60,7 +59,6 @@ public class PartyServiceImpl implements PartyService {
     public List<Party> getParties() {
         return (List<Party>) partyRepository.findAll();
     }
-
 
     @Transactional(rollbackFor = Exception.class)
     @Override
@@ -159,7 +157,6 @@ public class PartyServiceImpl implements PartyService {
     public boolean exists(String name) {
         return partyRepository.existsByName(name);
     }
-
 
     private List<CandidateData> extractCandidateList(MultipartFile file) throws IOException, CsvException {
         Path tempFile = storageService.storeTemporary(file);

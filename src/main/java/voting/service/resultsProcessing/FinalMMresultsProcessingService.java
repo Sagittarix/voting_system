@@ -2,7 +2,7 @@
 //
 //import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.stereotype.Service;
-//import voting.model.Party;
+//import voting.model.party;
 //import voting.service.DistrictService;
 //import voting.service.PartyService;
 //
@@ -30,9 +30,9 @@
 //        this.partyService = partyService;
 //    }
 //
-//    public Map<Party, Long> getAllPartiesWithVotes() {
-//        Map<Party, Long> mappedParties = new HashMap<>();
-//        List<Map<Party, Long>> listOfMaps = new ArrayList<>();
+//    public Map<party, Long> getAllPartiesWithVotes() {
+//        Map<party, Long> mappedParties = new HashMap<>();
+//        List<Map<party, Long>> listOfMaps = new ArrayList<>();
 //
 //        partyService.getParties().spliterator().forEachRemaining(p -> mappedParties.put(p, 0L));
 //        districtService.getDistricts().forEach(d -> listOfMaps.add(DRPS.getPartiesWithVotes(d)));
@@ -44,48 +44,48 @@
 //        return mappedParties;
 //    }
 //
-//    public Map<Party, Double> getAllPartiesWithSharePercentage() {
-//        Map<Party, Long> allPartiesWithVotes = getAllPartiesWithVotes();
+//    public Map<party, Double> getAllPartiesWithSharePercentage() {
+//        Map<party, Long> allPartiesWithVotes = getAllPartiesWithVotes();
 //        Long grandTotalVotes = allPartiesWithVotes.entrySet().stream()
 //                .mapToLong(Map.Entry::getValue)
 //                .sum();
 //
 //        return allPartiesWithVotes.entrySet().stream()
-//                .map(es -> new AbstractMap.SimpleEntry<Party, Double>(es.getKey(), es.getValue() / (double) grandTotalVotes))
+//                .map(es -> new AbstractMap.SimpleEntry<party, Double>(es.getKey(), es.getValue() / (double) grandTotalVotes))
 //                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 //    }
 //
 //    // filter parties (with votes) that pass 5% of total MM votes
-//    public Map<Party, Long> getPartiesWithVotes() {
-//        List<Party> _5percentParties = getFilteredParties();
+//    public Map<party, Long> getPartiesWithVotes() {
+//        List<party> _5percentParties = getFilteredParties();
 //        return getAllPartiesWithVotes().entrySet().stream()
 //                .filter(es -> _5percentParties.contains(es.getKey()))
 //                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 //    }
 //
 //    // filter parties (with percentage) that pass 5% of total MM votes
-//    public Map<Party, Double> getPartiesWithSharePercentage() {
-//        Map<Party, Long> filteredPartiesWithVotes = getPartiesWithVotes();
+//    public Map<party, Double> getPartiesWithSharePercentage() {
+//        Map<party, Long> filteredPartiesWithVotes = getPartiesWithVotes();
 //        Long filteredGrandTotalVotes = filteredPartiesWithVotes.entrySet().stream()
 //                .mapToLong(Map.Entry::getValue)
 //                .sum();
 //
 //        return filteredPartiesWithVotes.entrySet().stream()
-//                .map(es -> new AbstractMap.SimpleEntry<Party, Double>(es.getKey(), es.getValue() / (double) filteredGrandTotalVotes))
+//                .map(es -> new AbstractMap.SimpleEntry<party, Double>(es.getKey(), es.getValue() / (double) filteredGrandTotalVotes))
 //                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 //    }
 //
 //    //TODO skaiciuoja apytikslius mandatus
 //    // parties with approx (double value) won mandates
-//    public Map<Party, Double> getPartiesWithWonMandates() {
+//    public Map<party, Double> getPartiesWithWonMandates() {
 //        Long blackHoles = 141L;
 //        return getPartiesWithSharePercentage().entrySet().stream()
-//                .map(es -> new AbstractMap.SimpleEntry<Party, Double>(es.getKey(), blackHoles / es.getValue()))
+//                .map(es -> new AbstractMap.SimpleEntry<party, Double>(es.getKey(), blackHoles / es.getValue()))
 //                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 //    }
 //
 //    // filter parties to List that pass 5% of total MM votes
-//    private List<Party> getFilteredParties() {
+//    private List<party> getFilteredParties() {
 //        return getAllPartiesWithSharePercentage()
 //                .entrySet()
 //                .stream()

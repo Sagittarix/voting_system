@@ -1,6 +1,12 @@
 var React = require('react');
+const InfiniteScroll = require('react-infinite-scroller');
 
 function PartyDisplayComponent(props) {
+
+    var scrollUp = function() {
+        window.scrollTo(0, 0);
+    };
+
     return (
         <div className="unit">
             <div className="list-group-item list-group-item-success">
@@ -15,7 +21,15 @@ function PartyDisplayComponent(props) {
                     <img style={props.displayLoadingIcon} src="app/imgs/axios-loader.gif" alt="working-hard"/>
                     {props.confirmDeleteParty}
                 </div>
-                {props.candidates}
+                <InfiniteScroll
+                    pageStart={0}
+                    hasMore={true || false}
+                    initialLoad={false}
+                    loader={<div className="loader">Kraunama ...</div>}
+                >
+                    {props.candidates}
+                    <buttton className="btn btn-default btn-sm" onClick={scrollUp}>UP</buttton>
+                </InfiniteScroll>
             </div>
 
         </div>

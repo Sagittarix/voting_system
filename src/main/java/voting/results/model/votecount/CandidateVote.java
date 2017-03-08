@@ -19,6 +19,11 @@ public class CandidateVote extends Vote {
     public CandidateVote() {
     }
 
+    @Override
+    public Long getUnitId() {
+        return candidate.getId();
+    }
+
     public CandidateVote(Candidate candidate, Long votes) {
         super(votes);
         this.candidate = candidate;

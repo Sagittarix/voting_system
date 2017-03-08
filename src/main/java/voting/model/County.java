@@ -3,6 +3,7 @@ package voting.model;
 import voting.results.model.result.CountyMMResult;
 import voting.results.model.result.CountyResult;
 import voting.results.model.result.CountySMResult;
+import voting.results.model.result.ResultType;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -26,10 +27,10 @@ public class County {
 
 
 
-    @OneToOne(mappedBy = "county", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "county", cascade = CascadeType.ALL, orphanRemoval = true)
     private CountyMMResult mmResult;
 
-    @OneToOne(mappedBy = "county", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "county", cascade = CascadeType.ALL, orphanRemoval = true)
     private CountySMResult smResult;
 
 
@@ -87,7 +88,7 @@ public class County {
         }
     }
 
-    public CountyResult getSmResult() {
+    public CountySMResult getSmResult() {
         return smResult;
     }
 
@@ -95,6 +96,22 @@ public class County {
         this.smResult = smResult;
         if (smResult != null) {
             smResult.setCounty(this);
+        }
+    }
+
+    public CountyResult getResultByType(ResultType type) {
+        if (type == ResultType.SINGLE_MANDATE) {
+            return getSmResult();
+        } else {
+            return getMmResult();
+        }
+    }
+
+    public void setResultByType(CountyResult result, ResultType type) {
+        if (type == ResultType.SINGLE_MANDATE) {
+            setSmResult((CountySMResult) result);
+        } else {
+            setMmResult((CountyMMResult) result);
         }
     }
 

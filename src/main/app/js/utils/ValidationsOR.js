@@ -31,7 +31,7 @@ var ValidationsOR = {
         }
         var doesEmailAlreadyExists = false;
         doesEmailAlreadyExists = allRepresentativesEmails.includes(email.toLowerCase());
-        console.log(doesEmailAlreadyExists);
+        // console.log(doesEmailAlreadyExists);
         if(doesEmailAlreadyExists){
             currentErrors.push(Helpers.errorWrapperWarning(ErrorMessages.emailAlreadyExists, 2));
         }

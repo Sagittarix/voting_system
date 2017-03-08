@@ -18,8 +18,8 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
-import voting.dto.CandidateData;
-import voting.dto.PartyData;
+import voting.dto.candidate.CandidateData;
+import voting.dto.party.PartyData;
 import voting.exception.NotFoundException;
 import voting.model.Party;
 import voting.service.CandidateService;
@@ -215,7 +215,7 @@ public class PartyServiceIntegrationTest {
             sut.saveParty(updatedPartyData, multiPartFile);
         } catch (Exception e) {
 
-            //            Party updatedParty = sut.getParty(savedParty.getId());
+            //            party updatedParty = sut.getParty(savedParty.getId());
             // LazyInitializationException workaround
             Party updatedParty = (Party) em.createQuery("SELECT p FROM Party p JOIN FETCH p.candidates WHERE p.id = :id")
                     .setParameter("id", savedParty.getId())

@@ -1,6 +1,5 @@
 package voting.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import voting.utils.DateUtils;
 
 import javax.persistence.*;

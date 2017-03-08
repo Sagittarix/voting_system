@@ -6,7 +6,9 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import voting.dto.*;
+import voting.dto.candidate.CandidateData;
+import voting.dto.county.CountyData;
+import voting.dto.district.DistrictData;
 import voting.exception.NotFoundException;
 import voting.model.Candidate;
 import voting.model.County;
@@ -57,6 +59,11 @@ public class DistrictServiceImpl implements DistrictService {
         District district = districtRepository.findByName(name);
         throwNotFoundIfNull(district, String.format("Nepavyko rasti apygardos pavadinimu \"%s\"", name));
         return district;
+    }
+
+    @Override
+    public District save(District district) {
+        return districtRepository.save(district);
     }
 
     @Transactional
@@ -156,6 +163,11 @@ public class DistrictServiceImpl implements DistrictService {
     }
 
     @Override
+    public List<County> getCounties() {
+        return (List<County>) countyRepository.findAll();
+    }
+
+    @Override
     public County getCounty(Long id) {
         County county = countyRepository.findOne(id);
         throwNotFoundIfNull(county, "Nepavyko rasti apskrities su id " + id);
@@ -187,7 +199,7 @@ public class DistrictServiceImpl implements DistrictService {
 
     @Transactional
     @Override
-    public CountyRepresentation updateCounty(Long districtId, CountyData countyData, Long countyId) {
+    public County updateCounty(Long districtId, CountyData countyData, Long countyId) {
         County county = countyRepository.findOne(countyId);
         District district = getDistrict(districtId);
         List<County> counties = district.getCounties();
@@ -204,7 +216,7 @@ public class DistrictServiceImpl implements DistrictService {
         } catch (DataIntegrityViolationException ex) {
             throw new IllegalArgumentException("Apylinkių pavadinimai turi būti skirtingi", ex);
         }
-        return new CountyRepresentation(county);
+        return county;
     }
 
     @Override
@@ -213,6 +225,11 @@ public class DistrictServiceImpl implements DistrictService {
         District district = county.getDistrict();
         district.removeCounty(county);
         districtRepository.save(district);
+    }
+
+    @Override
+    public List<County> getCountiesByDistrictId(Long id) {
+        return getDistrict(id).getCounties();
     }
 
     private List<CandidateData> extractCandidateList(MultipartFile file) throws IOException, CsvException {

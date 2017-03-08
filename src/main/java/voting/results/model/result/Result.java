@@ -6,6 +6,8 @@ import voting.results.model.votecount.Vote;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Created by domas on 2/22/17.
@@ -19,20 +21,35 @@ public abstract class Result {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private Long spoiledBallots;
+    private Long spoiledBallots = 0L;
+    private Long totalBallots = 0L;
 
-    @OneToMany(mappedBy="result", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "result", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Vote> unitVotes = new ArrayList<>();
+
+    public Result() {
+    }
+
+    public void combineResults(Result r) {
+        this.spoiledBallots += r.getSpoiledBallots();
+        this.totalBallots += r.getTotalBallots();
+        combineVotes(r.getUnitVotes());
+    }
+
+    private void combineVotes(List<Vote> voteList) {
+        Map<Long, Long> votemap = convertToMap(voteList);
+        unitVotes.stream().forEach(v -> v.setVoteCount(v.getVoteCount() + votemap.get(v.getUnitId())));
+    }
+
+    private Map<Long, Long> convertToMap(List<Vote> unitVotes) {
+        return unitVotes.stream().collect(Collectors.toMap(Vote::getUnitId, Vote::getVoteCount));
+    }
 
     public void addVote(Vote vote) {
         this.unitVotes.add(vote);
         vote.setResult(this);
+        this.totalBallots += vote.getVoteCount();
     }
-
-    public Result() {
-        this.spoiledBallots = 0L;
-    }
-
 
     public Long getId() {
         return id;
@@ -50,12 +67,16 @@ public abstract class Result {
         this.spoiledBallots = spoiledBallots;
     }
 
-    public List<Vote> getUnitVotes() {
-        return unitVotes;
+    public Long getTotalBallots() {
+        return totalBallots;
     }
 
-    public void setUnitVotes(List<Vote> unitVotes) {
-        this.unitVotes = unitVotes;
+    public void setTotalBallots(Long totalBallots) {
+        this.totalBallots = totalBallots;
+    }
+
+    public List<Vote> getUnitVotes() {
+        return unitVotes;
     }
 
 
@@ -66,7 +87,5 @@ public abstract class Result {
                 ", spoiledBallots=" + spoiledBallots +
                 '}';
     }
-
-
 
 }

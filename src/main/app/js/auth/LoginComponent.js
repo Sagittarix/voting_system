@@ -4,7 +4,7 @@ function LoginComponent(props) {
     return (
         <div>
             <div className="container">
-                <h1>Login</h1>
+                <h1 style={{ textAlign: 'center' }}>PRISIJUNGTI</h1>
                 <div className="col-md-4 col-md-offset-4">
                     <form className="" onSubmit={props.doLogin}>
                         {props.loginError}

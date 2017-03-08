@@ -24,7 +24,7 @@ var AdminPanelComponent = React.createClass({
         axios.post(spring.localHost.concat('/api/auth/role'), fd)
             .then(resp => {
             	if (resp.data == false) {
-                    _this.context.router.push('/prisijungti')
+                    _this.context.router.push('/')
 				} else {
             		_this.setState({ admin: resp.data });
 				}

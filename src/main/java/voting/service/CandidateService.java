@@ -1,6 +1,6 @@
 package voting.service;
 
-import voting.dto.CandidateData;
+import voting.dto.candidate.CandidateData;
 import voting.model.Candidate;
 
 import java.util.List;

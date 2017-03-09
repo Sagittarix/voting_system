@@ -51,12 +51,8 @@ public class ResultServiceImpl implements ResultService {
     public CountySMResult addCountySmResult(CountyResultData resultDTO) {
 
         County county = districtService.getCounty(resultDTO.getCountyId());
-        System.out.println("ADDING RESULT FOR COUNTY: " + county);
-        System.out.println("RESULT: " + resultDTO.getCountyId() + " " + resultDTO.getVoteList());
         if (resultRepository.existsSmResultByCounty(county)) {
             throw new IllegalArgumentException(String.format("Apylinkės \"%s\" rezultatas jau užregistruotas", county));
-        } else {
-            System.out.println("NO CONLICT");
         }
         county.setSmResult(convertToCountySMResult(resultDTO));
         districtService.save(county.getDistrict());
@@ -89,7 +85,6 @@ public class ResultServiceImpl implements ResultService {
     }
 
 
-    @Transactional
     @Override
     public DistrictSMResult getDistrictSmResult(Long districtId) {
         District district = districtService.getDistrict(districtId);
@@ -100,7 +95,6 @@ public class ResultServiceImpl implements ResultService {
         return result;
     }
 
-    @Transactional
     @Override
     public DistrictMMResult getDistrictMmResult(Long districtId) {
         District district = districtService.getDistrict(districtId);
@@ -232,6 +226,7 @@ public class ResultServiceImpl implements ResultService {
         return new PartyVote(party, voteData.getVotes());
     }
 
+    @Transactional
     private DistrictResult saveNewDistrictResult(District district, ResultType type) {
         DistrictResult result = constructDistrictResult(district, type);
         district.setResultByType(result, type);

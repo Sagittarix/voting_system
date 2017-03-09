@@ -1,5 +1,6 @@
 package voting.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import voting.results.model.result.DistrictMMResult;
 import voting.results.model.result.DistrictResult;
 import voting.results.model.result.DistrictSMResult;
@@ -25,15 +26,19 @@ public class District {
 
     private Long voterCount = 0L;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "district", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<County> counties = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "district")
     private List<Candidate> candidates = new ArrayList<>();
 
+    @JsonIgnore
     @OneToOne(mappedBy = "district", cascade = CascadeType.ALL)
     private DistrictMMResult mmResult;
 
+    @JsonIgnore
     @OneToOne(mappedBy = "district", cascade = CascadeType.ALL)
     private DistrictSMResult smResult;
 

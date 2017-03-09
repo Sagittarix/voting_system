@@ -2,6 +2,10 @@ package voting.controller;
 
 import com.opencsv.exceptions.CsvException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,6 +19,7 @@ import voting.model.District;
 import voting.service.DistrictService;
 
 import javax.validation.Valid;
+import javax.websocket.server.PathParam;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,6 +44,18 @@ public class DistrictController {
     @GetMapping
     public List<DistrictDTO> getDistricts() {
         return districtService.getDistricts().stream().map(DistrictDTO::new).collect(Collectors.toList());
+    }
+
+    @GetMapping(path = "paged")
+    public Page<DistrictDTO> getDistrictsPaged(Pageable pageable) {
+        Page<District> loadedPage = districtService.listAllByPage(pageable);
+
+        List<DistrictDTO> list = loadedPage.getContent()
+                                           .stream()
+                                           .map(DistrictDTO::new)
+                                           .collect(Collectors.toList());
+
+        return new PageImpl<>(list, pageable, loadedPage.getTotalElements());
     }
 
     @GetMapping("{id}")

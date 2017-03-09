@@ -18,9 +18,9 @@ public class DistrictResultShortDTO {
         this.id = result.getId();
         this.link = String.format("%s/results/district/%d", Constants.API_ROOT_URL, id);;
         if (result instanceof DistrictSMResult) {
-            this.link.concat("/single-mandate");
+            link = link.concat("/single-mandate");
         } else {
-            this.link.concat("/multi-mandate");
+            link = link.concat("/multi-mandate");
         }
     }
 

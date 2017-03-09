@@ -26,12 +26,9 @@ public class DistrictResultDTO extends ResultDTO {
         this.district = district == null ? null : new DistrictShortDTO(district);
         this.setVoterCount(district.getVoterCount());
 
-        ResultType type;
-        if (result instanceof DistrictSMResult) {
-            type = ResultType.SINGLE_MANDATE;
-        } else {
-            type = ResultType.MULTI_MANDATE;
-        }
+        ResultType type = result instanceof DistrictSMResult ?
+                          ResultType.SINGLE_MANDATE :
+                          ResultType.MULTI_MANDATE;
 
         this.countyResults = district.getCounties().stream()
                 .map(c -> new CountyResultSummaryDTO(c, type))

@@ -1,5 +1,5 @@
 var React = require('react')
-var RepresentativeCard = require('./RepresentativeCard')
+var RepresentativeCard = require('./CountyDetailsCard')
 var VoteListComponent = require('./VoteListComponent')
 
 var ResultsDisplayComponent = React.createClass({

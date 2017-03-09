@@ -17,7 +17,7 @@ var ValidationsOR = {
         if (!checkMaxLength){
             currentErrors.push(Helpers.errorWrapperWarning(ErrorMessages.nameTooLongBeginning + Variables.maxNameLength + ErrorMessages.nameTooLongEnding + name.length, 2));
         }
-        if (!name.length > 0){
+        if (!name.length >= 3){
             currentErrors.push(Helpers.errorWrapperWarning(ErrorMessages.nameTooShort, 3));
         }
         return currentErrors;
@@ -31,7 +31,6 @@ var ValidationsOR = {
         }
         var doesEmailAlreadyExists = false;
         doesEmailAlreadyExists = allRepresentativesEmails.includes(email.toLowerCase());
-        // console.log(doesEmailAlreadyExists);
         if(doesEmailAlreadyExists){
             currentErrors.push(Helpers.errorWrapperWarning(ErrorMessages.emailAlreadyExists, 2));
         }
@@ -64,8 +63,6 @@ var Variables = {
     maxNameLength: 15,
     minNameLength: 1,
     emailRegex: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-
-
 };
 
 var ErrorMessages = {

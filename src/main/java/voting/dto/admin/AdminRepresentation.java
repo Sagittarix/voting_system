@@ -1,4 +1,4 @@
-package voting.dto;
+package voting.dto.admin;
 
 import voting.model.Admin;
 

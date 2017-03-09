@@ -18,6 +18,7 @@ import java.util.Random;
 /**
  * Created by domas on 1/11/17.
  */
+
 @Component
 public class DataPreloader implements CommandLineRunner {
 
@@ -43,8 +44,7 @@ public class DataPreloader implements CommandLineRunner {
 
     @Override
     public void run(String... strings) throws Exception {
-
-//        loadStressData();
+        // loadStressData();
 
         District district1 = new District("Vilnius");
         District district2 = new District("Kaunas");
@@ -157,6 +157,7 @@ public class DataPreloader implements CommandLineRunner {
                 county6,
                 new String[]{"ROLE_REPRESENTATIVE"}
         );
+
         List<CountyRep> crs = new ArrayList<CountyRep>() {{
             add(cr1);
             add(cr2);

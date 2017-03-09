@@ -28,7 +28,6 @@ import java.util.stream.Collectors;
  * Created by domas on 1/15/17.
  */
 
-
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping(path="/api/party")

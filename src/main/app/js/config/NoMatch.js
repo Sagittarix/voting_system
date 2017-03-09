@@ -1,4 +1,6 @@
 var React = require('react');
+var ReactRouter = require('react-router');
+var Link = ReactRouter.Link;
 
 function NoMatch() {
 	return (
@@ -10,7 +12,7 @@ function NoMatch() {
 				Atsiprašome, bet puslapio, kurio ieškote neradome. <br/>
 				Atnaujinkite puslapį arba spauskite žemiau esantį mygtuką.
 		        <div><br/>
-		            <a href="/" className="btn btn-primary"><span className="glyphicon glyphicon-home"></span> Grįžti į pagrindinį puslapį</a>
+		            <Link to="/" className="btn btn-primary"><span className="glyphicon glyphicon-home"></span> Grįžti į pagrindinį puslapį</Link>
 		        </div>
 		    </div>
 		</div>

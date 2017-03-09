@@ -7,13 +7,13 @@ import voting.dto.district.DistrictData;
 import voting.model.Candidate;
 import voting.model.County;
 import voting.model.District;
-
 import java.io.IOException;
 import java.util.List;
 
 /**
  * Created by domas on 1/10/17.
  */
+
 public interface DistrictService {
 
     District save(District district);
@@ -51,5 +51,4 @@ public interface DistrictService {
     List<County> getCountiesByDistrictId(Long id);
 
     District updateDistrict(DistrictData districtData, Long id);
-
 }

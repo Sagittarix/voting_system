@@ -24,12 +24,7 @@ var CountyResultsContainer = React.createClass({
         this.determineResultType(this.props.location.pathname);
     },
     componentDidMount: function() {
-        if (this.props.county) {
-            this.getResultsOrVotees(this.props);
-        }
-
-        // refactor when login will be implemented
-
+        if (this.props.county) this.getResultsOrVotees(this.props);
     },
     componentWillReceiveProps(newProps) {
         if (this.props.location.pathname != newProps.location.pathname) {
@@ -45,7 +40,6 @@ var CountyResultsContainer = React.createClass({
                           'multi-mandate';
     },
     getResultsOrVotees: function(props) {
-
         let _this = this
         let resultsUrl = spring.localHost.concat("/api/results/county/") + props.county.id + "/" + this.resultType;
         axios

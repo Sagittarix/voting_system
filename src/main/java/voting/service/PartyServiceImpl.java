@@ -60,7 +60,6 @@ public class PartyServiceImpl implements PartyService {
         return (List<Party>) partyRepository.findAll();
     }
 
-
     @Transactional(rollbackFor = Exception.class)
     @Override
     public Party saveParty(PartyData partyData, MultipartFile file) throws IOException, CsvException {
@@ -158,7 +157,6 @@ public class PartyServiceImpl implements PartyService {
     public boolean exists(String name) {
         return partyRepository.existsByName(name);
     }
-
 
     private List<CandidateData> extractCandidateList(MultipartFile file) throws IOException, CsvException {
         Path tempFile = storageService.storeTemporary(file);

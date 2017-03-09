@@ -201,7 +201,6 @@ public class DistrictServiceImpl implements DistrictService {
     @Override
     public County updateCounty(Long countyId, CountyData countyData) {
         County county = getCounty(countyId);
-
         county.setName(countyData.getName());
         county.setVoterCount(countyData.getVoterCount());
         county.setAddress(countyData.getAddress());

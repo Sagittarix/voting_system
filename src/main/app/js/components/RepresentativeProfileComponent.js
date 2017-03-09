@@ -10,7 +10,7 @@ var RepresentativeProfileComponent = React.createClass({
             <div className="row">
                 <div className="col-sm-3">
                     <ul className="list-group">
-                        <li className="list-group-item text-muted" contenteditable="false">Profile</li>
+                        <li className="list-group-item text-muted" contentEditable="false">Profile</li>
                         <li className="list-group-item text-right"><span className="pull-left"><strong className="">Joined</strong></span> 2.13.2014</li>
                         <li className="list-group-item text-right"><span className="pull-left"><strong className="">Last seen</strong></span> Yesterday</li>
                         <li className="list-group-item text-right"><span className="pull-left"><strong className="">Real name</strong></span> Joseph Doe</li>
@@ -40,13 +40,13 @@ var RepresentativeProfileComponent = React.createClass({
                 </div>
 
 
-                <div className="col-sm-9" style={{}} contenteditable="false">
+                <div className="col-sm-9" style={{}} contentEditable="false">
                     <div className="panel panel-default">
                         <div className="panel-heading">Starfox221's Bio</div>
                         <div className="panel-body"> A long description about me.</div>
                     </div>
                     <div className="panel panel-default target">
-                        <div className="panel-heading" contenteditable="false">Pets I Own</div>
+                        <div className="panel-heading" contentEditable="false">Pets I Own</div>
                             <div className="panel-body">
                                 <div className="row row-autoheight">
                                     <div className="col-md-4">

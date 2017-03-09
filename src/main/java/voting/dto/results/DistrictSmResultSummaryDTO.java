@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Created by domas on 3/7/17.
  */
-public class SingleMandateSummaryDTO {
+public class DistrictSingleMandateResultSummaryDTO {
 
     private DistrictShortDTO district;
     private DistrictResultShortDTO result;
@@ -22,7 +22,7 @@ public class SingleMandateSummaryDTO {
     private Long voteCount;
     private Long totalBallots;
 
-    public SingleMandateSummaryDTO(District district) {
+    public DistrictSingleMandateResultSummaryDTO(District district) {
         this.district = new DistrictShortDTO(district);
         DistrictSMResult result = district.getSmResult();
         if (result != null && result.getTotalBallots() > 0) {

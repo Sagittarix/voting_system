@@ -5,7 +5,7 @@ import voting.results.model.result.Result;
 /**
  * Created by domas on 2/27/17.
  */
-public class ResultDTO {
+public abstract class ResultDTO {
 
     private Long id;
     private Long spoiledBallots;

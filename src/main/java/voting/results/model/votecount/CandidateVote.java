@@ -36,4 +36,7 @@ public class CandidateVote extends Vote {
     public void setCandidate(Candidate candidate) {
         this.candidate = candidate;
     }
+
+
+
 }

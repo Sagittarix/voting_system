@@ -30,6 +30,7 @@ import voting.model.Party;
 import voting.results.ResultService;
 import voting.results.model.result.CountyMMResult;
 import voting.results.model.result.CountySMResult;
+import voting.results.model.result.DistrictSMResult;
 import voting.results.model.votecount.CandidateVote;
 import voting.results.model.votecount.PartyVote;
 import voting.service.*;
@@ -73,6 +74,7 @@ public class ResultServiceIntegrationTest {
     private static List<VoteData> voteList1;
     private static List<VoteData> voteList2;
     private static CountyResultData smResultDto;
+    private static CountyResultData smResultDto2;
     private static CountyResultData mmResultDto;
 
     District district1;
@@ -146,6 +148,11 @@ public class ResultServiceIntegrationTest {
 
         smResultDto = new CountyResultData();
         smResultDto.setCountyId(1L);
+        smResultDto.setSpoiledBallots(111L);
+        smResultDto.setVoteList(voteList1);
+
+        smResultDto = new CountyResultData();
+        smResultDto.setCountyId(2L);
         smResultDto.setSpoiledBallots(111L);
         smResultDto.setVoteList(voteList1);
 
@@ -261,6 +268,24 @@ public class ResultServiceIntegrationTest {
         assertThat(mmResult.getVotes().get(0).getVoteCount(), is(1000L));
         assertThat(mmResult.getVotes().get(1).getParty(), is(party2));
         assertThat(mmResult.getVotes().get(1).getVoteCount(), is(2000L));
+    }
+
+
+    @Test
+    public void updatesDistrictResultsCorrectly() {
+
+        //Setup
+        resultService.addCountySmResult(smResultDto);
+        resultService.addCountySmResult(smResultDto2);
+
+        //Exercise
+        DistrictSMResult result = resultService.getDistrictSmResult(district1.getId());
+        List<CandidateVote> votes = result.getVotes();
+
+        //Verify
+        assertThat(result.getSpoiledBallots(), is(222L));
+        assertThat(result.getTotalBallots(), is(1200L));
+        // TODO: finish
 
     }
 

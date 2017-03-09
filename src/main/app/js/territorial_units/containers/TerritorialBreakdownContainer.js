@@ -28,7 +28,7 @@ var TerritorialBreakdownContainer = React.createClass({
         this.state.districts.forEach((d, index) => {
             districts.push(
                 <DistrictDisplayContainer
-                    key={index}
+                    key={d.id + "-" + d.name}
                     index={index}
                     unit={d}
                     remove={this.handleDistrictRemove}
@@ -42,7 +42,7 @@ var TerritorialBreakdownContainer = React.createClass({
         this.state.counties.forEach((c, index) => {
             counties.push(
                 <AddedCountyDisplayComponent
-                    key={index}
+                    key={c.name}
                     index={index}
                     county={c}
                     remove={this.handleAddedCountyRemove}
@@ -92,6 +92,7 @@ var TerritorialBreakdownContainer = React.createClass({
         this.setState({ counties: counties });
     },
     render: function() {
+        console.log("RENDERING TERRITORIALBREAKDOWNCONTAINER")
         return <TerritorialBreakdownComponent
                   districts={this.prepareDistricts()}
                   delete={this.handleDistrictRemove}

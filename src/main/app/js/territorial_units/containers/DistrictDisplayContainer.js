@@ -33,7 +33,7 @@ var DistrictDisplayContainer = React.createClass({
         stateCounties.forEach((c, index) => {
             counties.push(
                 <CountyDisplayComponent
-                    key={index}
+                    key={c.district.name + "-" + c.name}
                     index={index}
                     unit={c}
                     delete={this.handleCountyDelete}

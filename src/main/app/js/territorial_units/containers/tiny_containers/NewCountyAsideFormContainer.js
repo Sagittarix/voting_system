@@ -14,7 +14,8 @@ var  NewCountyAsideFormContainer = React.createClass({
       this.setState({ showAsideForm: !this.state.showAsideForm, countyName: "", voterCount: undefined, countyAddress: "" });
       this.props.reportCountyErrors([]);
     },
-    handleCountyAdd() {
+    handleCountyAdd(e) {
+        e.preventDefault();
         var lithuaniatedAddress = this.state.countyAddress.replace("Lithuania", "Lietuva");
         var errors = Validations.checkErrorsCountyForm(
             this.state.countyName,

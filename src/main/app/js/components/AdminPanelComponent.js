@@ -105,7 +105,6 @@ var AdminPanelComponent = React.createClass({
 
     },
     render: function() {
-        console.log("RENDER");
         var displayer;
         if (this.state.admin) {
             displayer = (

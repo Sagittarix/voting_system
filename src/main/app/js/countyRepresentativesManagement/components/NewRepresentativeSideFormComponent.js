@@ -88,6 +88,7 @@ var NewRepresentativeSideFormComponent = React.createClass({
     },
 
     onSubmit: function (event) {
+        event.preventDefault();
         var tempName = this.state.name.trim()[0].toUpperCase() + this.state.name.trim().substring(1).toLowerCase();
         var tempSurname = this.state.surname.trim()[0].toUpperCase() + this.state.surname.trim().substring(1).toLowerCase();
         tempSurname[0].toUpperCase();

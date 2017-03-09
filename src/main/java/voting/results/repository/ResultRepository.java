@@ -6,6 +6,8 @@ import voting.model.County;
 import voting.model.District;
 import voting.results.model.result.*;
 
+import java.util.List;
+
 /**
  * Created by domas on 2/23/17.
  */
@@ -23,6 +25,9 @@ public interface ResultRepository extends CrudRepository<Result, Long> {
 
     @Query("select r from DistrictMMResult r where r.district = ?1")
     public DistrictMMResult findMmResultByDistrict(District district);
+
+    @Query("select r from DistrictMMResult r")
+    public List<DistrictMMResult> findAllDistrictMmResults();
 
     @Query("select count(r)>0 from CountySMResult r where r.county = ?1")
     boolean existsSmResultByCounty(County county);

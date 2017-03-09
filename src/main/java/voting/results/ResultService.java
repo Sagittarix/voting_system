@@ -2,10 +2,7 @@ package voting.results;
 
 
 import voting.dto.results.CountyResultData;
-import voting.results.model.result.CountyMMResult;
-import voting.results.model.result.CountySMResult;
-import voting.results.model.result.DistrictMMResult;
-import voting.results.model.result.DistrictSMResult;
+import voting.results.model.result.*;
 
 /**
  * Created by domas on 2/22/17.
@@ -28,4 +25,5 @@ public interface ResultService {
 
     public void deleteCountyResult(Long resultId);
 
+    MultiMandateResultSummary getMmResultSummary();
 }

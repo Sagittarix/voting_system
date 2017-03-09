@@ -33,6 +33,8 @@ public class ResultServiceImpl implements ResultService {
     private final CandidateService candidateService;
     private final ResultRepository resultRepository;
 
+    private MultiMandateResultSummary mmSummary;
+
 
     @Autowired
     public ResultServiceImpl(DistrictService districtService,
@@ -43,6 +45,15 @@ public class ResultServiceImpl implements ResultService {
         this.partyService = partyService;
         this.candidateService = candidateService;
         this.resultRepository = resultRepository;
+    }
+
+
+    @Override
+    public MultiMandateResultSummary getMmResultSummary() {
+        if (mmSummary == null) {
+            constructNewMmResultSummary();
+        }
+        return mmSummary;
     }
 
 
@@ -121,21 +132,38 @@ public class ResultServiceImpl implements ResultService {
                           ResultType.MULTI_MANDATE;
 
         updateDistrictResult(district, result, type);
+        if (type == ResultType.MULTI_MANDATE) {
+            updateMmResultSummary((CountyMMResult) result);
+        }
     }
-
 
     @Transactional
     private void updateDistrictResult(District district, CountyResult countyResult, ResultType type) {
         DistrictResult districtResult = type == ResultType.SINGLE_MANDATE ?
-                                        resultRepository.findSmResultByDistrict(district) :
-                                        resultRepository.findMmResultByDistrict(district);
-
+                resultRepository.findSmResultByDistrict(district) :
+                resultRepository.findMmResultByDistrict(district);
         if (districtResult == null) {
             saveNewDistrictResult(district, type);
         } else {
             districtResult.combineResults(countyResult);
         }
         districtService.save(district);
+    }
+
+    private void updateMmResultSummary(CountyMMResult result) {
+        if (mmSummary == null) {
+            constructNewMmResultSummary();
+        } else {
+            mmSummary.combineResults(result);
+        }
+    }
+
+    private void constructNewMmResultSummary() {
+        List<DistrictMMResult> results = districtService.getDistricts().stream()
+                .map(d -> getDistrictMmResult(d.getId()))
+                .collect(Collectors.toList());
+
+        mmSummary = new MultiMandateResultSummary(partyService.getParties(), results);
     }
 
 
@@ -163,7 +191,6 @@ public class ResultServiceImpl implements ResultService {
         }
         return result;
     }
-
 
     private CountyResult getCountyResult(Long id) {
         Result result = getResult(id);

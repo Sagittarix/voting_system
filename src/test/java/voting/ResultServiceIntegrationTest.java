@@ -17,6 +17,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 import voting.dto.candidate.CandidateData;
 import voting.dto.county.CountyData;
 import voting.dto.district.DistrictData;
@@ -31,6 +32,7 @@ import voting.results.ResultService;
 import voting.results.model.result.CountyMMResult;
 import voting.results.model.result.CountySMResult;
 import voting.results.model.result.DistrictSMResult;
+import voting.results.model.result.Result;
 import voting.results.model.votecount.CandidateVote;
 import voting.results.model.votecount.PartyVote;
 import voting.service.*;
@@ -151,10 +153,10 @@ public class ResultServiceIntegrationTest {
         smResultDto.setSpoiledBallots(111L);
         smResultDto.setVoteList(voteList1);
 
-        smResultDto = new CountyResultData();
-        smResultDto.setCountyId(2L);
-        smResultDto.setSpoiledBallots(111L);
-        smResultDto.setVoteList(voteList1);
+        smResultDto2 = new CountyResultData();
+        smResultDto2.setCountyId(2L);
+        smResultDto2.setSpoiledBallots(111L);
+        smResultDto2.setVoteList(voteList1);
 
         voteList2 = new ArrayList<>();
         voteList2.add(new VoteData(1L, 1000L));
@@ -250,8 +252,8 @@ public class ResultServiceIntegrationTest {
         resultService.addCountyMmResult(mmResultDto);
 
         //Exercise
-        CountySMResult smResult = resultService.getCountySmResult(county1.getId());
-        CountyMMResult mmResult = resultService.getCountyMmResult(county1.getId());
+        CountySMResult smResult = resultService.getCountySmResult(smResultDto.getCountyId());
+        CountyMMResult mmResult = resultService.getCountyMmResult(mmResultDto.getCountyId());
 
         //Verify
         assertThat(smResult.getCounty(), is(county1));
@@ -270,9 +272,9 @@ public class ResultServiceIntegrationTest {
         assertThat(mmResult.getVotes().get(1).getVoteCount(), is(2000L));
     }
 
-
+    @Transactional
     @Test
-    public void updatesDistrictResultsCorrectly() {
+    public void nonConirmedResultsShouldntAddToDistrictResult() {
 
         //Setup
         resultService.addCountySmResult(smResultDto);
@@ -283,9 +285,28 @@ public class ResultServiceIntegrationTest {
         List<CandidateVote> votes = result.getVotes();
 
         //Verify
+        assertThat(result.getSpoiledBallots(), is(0L));
+        assertThat(result.getTotalBallots(), is(0L));
+    }
+
+
+    @Test
+    public void updatesDistrictResultsCorrectly() {
+
+        //Setup
+        Result r1 = resultService.addCountySmResult(smResultDto);
+        resultService.confirmCountyResult(r1.getId());
+        Result r2 = resultService.addCountySmResult(smResultDto2);
+        resultService.confirmCountyResult(r2.getId());
+
+        //Exercise
+        DistrictSMResult result = resultService.getDistrictSmResult(district1.getId());
+        List<CandidateVote> votes = result.getVotes();
+
+        //Verify
         assertThat(result.getSpoiledBallots(), is(222L));
         assertThat(result.getTotalBallots(), is(1200L));
-        // TODO: finish
+
 
     }
 

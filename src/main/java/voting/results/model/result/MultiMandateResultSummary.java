@@ -20,6 +20,8 @@ public class MultiMandateResultSummary {
 
 
     public MultiMandateResultSummary(List<Party> parties, List<DistrictMMResult> results) {
+        this.totalBallots = 0L;
+        this.spoiledBallots = 0L;
         this.partyVotecount = parties.stream().collect(Collectors.toMap(p -> p, p -> 0L));
         this.partyMandates = parties.stream().collect(Collectors.toMap(p -> p, p -> 0L));
         this.results = results;

@@ -28,6 +28,8 @@ public abstract class Result {
     private List<Vote> unitVotes = new ArrayList<>();
 
     public Result() {
+        this.spoiledBallots = 0L;
+        this.totalBallots = 0L;
     }
 
     public void combineResults(Result r) {

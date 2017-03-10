@@ -1,5 +1,7 @@
 package voting.model;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import voting.results.model.result.DistrictMMResult;
 import voting.results.model.result.DistrictResult;
 import voting.results.model.result.DistrictSMResult;
@@ -25,6 +27,7 @@ public class District {
 
     private Long voterCount = 0L;
 
+    @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "district", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<County> counties = new ArrayList<>();
 

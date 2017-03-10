@@ -32,6 +32,7 @@ public class ResultServiceImpl implements ResultService {
     private final PartyService partyService;
     private final CandidateService candidateService;
     private final ResultRepository resultRepository;
+    private final ResultProcessingService resultProcessingService;
 
     private MultiMandateResultSummary mmSummary;
 
@@ -40,11 +41,13 @@ public class ResultServiceImpl implements ResultService {
     public ResultServiceImpl(DistrictService districtService,
                              PartyService partyService,
                              CandidateService candidateService,
-                             ResultRepository resultRepository) {
+                             ResultRepository resultRepository,
+                             ResultProcessingService resultProcessingService) {
         this.districtService = districtService;
         this.partyService = partyService;
         this.candidateService = candidateService;
         this.resultRepository = resultRepository;
+        this.resultProcessingService = resultProcessingService;
     }
 
 
@@ -154,18 +157,21 @@ public class ResultServiceImpl implements ResultService {
             constructNewMmResultSummary();
         } else {
             mmSummary.combineResults(result);
+            mmSummary.setResults(getAllDistrictMmResults());
         }
     }
 
-    @Transactional
     private void constructNewMmResultSummary() {
-        List<DistrictMMResult> results = districtService.getDistricts().stream()
-                .map(d -> getDistrictMmResult(d.getId()))
-                .collect(Collectors.toList());
-
-        mmSummary = new MultiMandateResultSummary(partyService.getParties(), results);
+        mmSummary = new MultiMandateResultSummary(partyService.getParties(), getAllDistrictMmResults());
     }
 
+
+    @Transactional
+    private List<DistrictMMResult> getAllDistrictMmResults() {
+        return districtService.getDistricts().stream()
+                .map(d -> getDistrictMmResult(d.getId()))
+                .collect(Collectors.toList());
+    }
 
     @Transactional
     @Override

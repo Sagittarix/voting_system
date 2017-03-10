@@ -42,6 +42,9 @@ public class MultiMandateResultSummary {
     }
 
 
+    public void setResults(List<DistrictMMResult> results) {
+        this.results = results;
+    }
 
     private void addVotes(List<PartyVote> votes) {
         votes.stream()

@@ -116,7 +116,6 @@ public class ResultServiceImpl implements ResultService {
         return result;
     }
 
-
     @Transactional
     @Override
     public void confirmCountyResult(Long id) {
@@ -158,6 +157,7 @@ public class ResultServiceImpl implements ResultService {
         }
     }
 
+    @Transactional
     private void constructNewMmResultSummary() {
         List<DistrictMMResult> results = districtService.getDistricts().stream()
                 .map(d -> getDistrictMmResult(d.getId()))
@@ -258,7 +258,7 @@ public class ResultServiceImpl implements ResultService {
         DistrictResult result = constructDistrictResult(district, type);
         district.setResultByType(result, type);
         districtService.save(district);
-        return result;
+        return district.getResultByType(type);
     }
 
     private DistrictResult constructDistrictResult(District district, ResultType type) {

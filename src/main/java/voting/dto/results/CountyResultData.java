@@ -27,9 +27,7 @@ public class CountyResultData {
     @NotNull(message = "Spring - Apylinkė privaloma")
     private Long countyId;
 
-
-    public CountyResultData() {
-    }
+    public CountyResultData() { }
 
     public CountyResultData(Long spoiledBallots, List<VoteData> voteList, Long countyId) {
         this.spoiledBallots = spoiledBallots;

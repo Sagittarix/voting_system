@@ -13,7 +13,6 @@ public class DistrictSMResultDTO extends DistrictResultDTO {
 
     private List<CandidateVoteDTO> votes;
 
-
     public DistrictSMResultDTO(DistrictSMResult result) {
         super(result);
         votes = result.getVotes().stream().map(CandidateVoteDTO::new).collect(Collectors.toList());

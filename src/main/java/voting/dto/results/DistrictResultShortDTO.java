@@ -9,10 +9,8 @@ import voting.utils.Constants;
  */
 public class DistrictResultShortDTO {
 
-
     private Long id;
     private String link;
-
 
     public DistrictResultShortDTO(DistrictResult result) {
         this.id = result.getId();

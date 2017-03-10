@@ -16,7 +16,6 @@ public class CountyResultShortDTO {
     private Date confirmedOn;
     private String link;
 
-
     public CountyResultShortDTO(CountyResult result) {
         this.id = result.getId();
         this.createdOn = result.getCreatedOn();

@@ -7,7 +7,6 @@ import voting.results.model.result.CountyResult;
 import voting.results.model.result.DistrictResult;
 import voting.results.model.result.DistrictSMResult;
 import voting.results.model.result.ResultType;
-import voting.utils.Constants;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,10 +19,10 @@ public class DistrictResultSummaryDTO {
     private DistrictShortDTO district;
     private DistrictResultShortDTO result;
     private Long confirmedCountyResults = 0L;
-    private int totalCounties;
+    private int totalCounties = 0;
     private Long voterCount;
-    private Long totalBallots;
-    private Long spoiledBallots;
+    private Long totalBallots = 0L;
+    private Long spoiledBallots = 0L;
 
 
     public DistrictResultSummaryDTO(DistrictResult result) {
@@ -57,6 +56,10 @@ public class DistrictResultSummaryDTO {
         return district;
     }
 
+    public DistrictResultShortDTO getResult() {
+        return result;
+    }
+
     public Long getConfirmedCountyResults() {
         return confirmedCountyResults;
     }
@@ -76,5 +79,4 @@ public class DistrictResultSummaryDTO {
     public Long getSpoiledBallots() {
         return spoiledBallots;
     }
-
 }

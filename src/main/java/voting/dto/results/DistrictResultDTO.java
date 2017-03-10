@@ -23,7 +23,7 @@ public class DistrictResultDTO extends ResultDTO {
     public DistrictResultDTO(DistrictResult result) {
         super(result);
         District district = result.getDistrict();
-        this.district = district == null ? null : new DistrictShortDTO(district);
+        this.district = new DistrictShortDTO(district);
         this.setVoterCount(district.getVoterCount());
 
         ResultType type = result instanceof DistrictSMResult ?

@@ -19,7 +19,7 @@ public class MultiMandateResultSummary {
     private Long totalBallots = 0L;
     private Long spoiledBallots = 0L;
     private List<DistrictMMResult> results;
-    private Long availableMandates;
+    private Long availableMandates = 141L;
 
 
     public MultiMandateResultSummary(List<Party> parties, List<DistrictMMResult> results) {
@@ -36,8 +36,8 @@ public class MultiMandateResultSummary {
 
     public void combineResults(Result result) {
         validBallots += result.getValidBallots();
-        totalBallots += result.getTotalBallots();
         spoiledBallots += result.getSpoiledBallots();
+        totalBallots = validBallots + spoiledBallots;
         if (result instanceof CountyMMResult) {
             CountyMMResult cr = (CountyMMResult) result;
             addVotes(cr.getVotes());

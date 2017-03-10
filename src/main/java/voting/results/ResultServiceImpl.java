@@ -252,18 +252,17 @@ public class ResultServiceImpl implements ResultService {
         CountyResult result = type == SINGLE_MANDATE ?
                               new CountySMResult() :
                               new CountyMMResult();
-
         County county = districtService.getCounty(resultDTO.getCountyId());
         result.setCounty(county);
+        result.setConfirmed(false);
+        result.setTotalBallots(resultDTO.getSpoiledBallots());
+        result.setSpoiledBallots(resultDTO.getSpoiledBallots());
 
         List<Vote> voteList = (type == SINGLE_MANDATE) ?
                               convertToCandidateVotes(resultDTO.getVoteList()) :
                               convertToPartyVotes(resultDTO.getVoteList());
-
         voteList.forEach(result::addVote);
 
-        result.setConfirmed(false);
-        result.setSpoiledBallots(resultDTO.getSpoiledBallots());
         return result;
     }
 

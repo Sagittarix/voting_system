@@ -7,6 +7,7 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -37,7 +38,7 @@ public abstract class Result {
     public void combineResults(Result r) {
         this.validBallots += r.getValidBallots();
         this.spoiledBallots += r.getSpoiledBallots();
-        this.totalBallots += r.getTotalBallots();
+        this.totalBallots = validBallots + spoiledBallots;
         combineVotes(r.getUnitVotes());
     }
 
@@ -94,12 +95,30 @@ public abstract class Result {
     }
 
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Result result = (Result) o;
+        return Objects.equals(id, result.id) &&
+                Objects.equals(validBallots, result.validBallots) &&
+                Objects.equals(spoiledBallots, result.spoiledBallots) &&
+                Objects.equals(totalBallots, result.totalBallots);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, validBallots, spoiledBallots, totalBallots);
+    }
+
     @Override
     public String toString() {
         return "Result{" +
-                "id=" + id +
+//                "id=" + id +
+                ", validBallots=" + validBallots +
                 ", spoiledBallots=" + spoiledBallots +
+                ", totalBallots=" + totalBallots +
                 '}';
     }
-
 }

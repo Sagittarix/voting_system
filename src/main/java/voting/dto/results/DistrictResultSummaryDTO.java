@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 public class DistrictResultSummaryDTO {
 
     private DistrictShortDTO district;
-    private DistrictResultShortDTO result;
+    private ResultShortDTO result;
     private Long confirmedCountyResults = 0L;
     private int totalCounties = 0;
     private Long voterCount;
@@ -28,7 +28,7 @@ public class DistrictResultSummaryDTO {
     public DistrictResultSummaryDTO(DistrictResult result) {
         District district = result.getDistrict();
         this.district = new DistrictShortDTO(district);
-        this.result = new DistrictResultShortDTO(result);
+        this.result = new ResultShortDTO(result);
         this.voterCount = district.getVoterCount();
 
         List<County> counties = district.getCounties();
@@ -56,7 +56,7 @@ public class DistrictResultSummaryDTO {
         return district;
     }
 
-    public DistrictResultShortDTO getResult() {
+    public ResultShortDTO getResult() {
         return result;
     }
 

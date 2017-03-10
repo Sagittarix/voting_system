@@ -1,13 +1,12 @@
-package voting.dto.results;
+package voting.dto.results.unused;
 
 import voting.dto.district.DistrictShortDTO;
 import voting.dto.party.PartyShortDTO;
+import voting.dto.results.ResultShortDTO;
 import voting.model.District;
 import voting.results.model.result.DistrictMMResult;
-import voting.results.model.result.ResultType;
 import voting.results.model.votecount.PartyVote;
 import voting.results.model.votecount.Vote;
-import voting.utils.Constants;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -19,16 +18,17 @@ import java.util.List;
 public class DistrictMmResultSummaryDTO {
 
     private DistrictShortDTO district;
-    private DistrictResultShortDTO result;
+    private ResultShortDTO result;
     private PartyShortDTO party;
     private Long voteCount;
+    private Long validBallots;
     private Long totalBallots;
 
     public DistrictMmResultSummaryDTO(District district) {
         this.district = new DistrictShortDTO(district);
         DistrictMMResult result = district.getMmResult();
         if (result != null && result.getTotalBallots() > 0) {
-            this.result = new DistrictResultShortDTO(result);
+            this.result = new ResultShortDTO(result);
 
             List<PartyVote> votes = result.getVotes();
             votes.sort(Collections.reverseOrder(Comparator.comparing(Vote::getVoteCount)));
@@ -36,6 +36,7 @@ public class DistrictMmResultSummaryDTO {
 
             this.party= new PartyShortDTO(top1vote.getParty());
             this.voteCount = top1vote.getVoteCount();
+            this.validBallots = result.getValidBallots();
             this.totalBallots = result.getTotalBallots();
         }
     }
@@ -44,7 +45,7 @@ public class DistrictMmResultSummaryDTO {
         return district;
     }
 
-    public DistrictResultShortDTO getResult() {
+    public ResultShortDTO getResult() {
         return result;
     }
 
@@ -54,6 +55,10 @@ public class DistrictMmResultSummaryDTO {
 
     public Long getVoteCount() {
         return voteCount;
+    }
+
+    public Long getValidBallots() {
+        return validBallots;
     }
 
     public Long getTotalBallots() {

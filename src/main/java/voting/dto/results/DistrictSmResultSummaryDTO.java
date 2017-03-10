@@ -17,9 +17,10 @@ import java.util.List;
 public class DistrictSmResultSummaryDTO {
 
     private DistrictShortDTO district;
-    private DistrictResultShortDTO result;
+    private ResultShortDTO result;
     private CandidateShortDTO candidate;
     private Long voteCount;
+    private Long validBallots;
     private Long totalBallots;
 
     //TODO: add total / confirmed counties
@@ -28,7 +29,7 @@ public class DistrictSmResultSummaryDTO {
         this.district = new DistrictShortDTO(district);
         DistrictSMResult result = district.getSmResult();
         if (result != null && result.getTotalBallots() > 0) {
-            this.result = new DistrictResultShortDTO(result);
+            this.result = new ResultShortDTO(result);
 
 
             //TODO: TEMP, move sorting to where it belongs
@@ -38,6 +39,7 @@ public class DistrictSmResultSummaryDTO {
 
             this.candidate = new CandidateShortDTO(top1vote.getCandidate());
             this.voteCount = top1vote.getVoteCount();
+            this.validBallots = result.getValidBallots();
             this.totalBallots = result.getTotalBallots();
         }
     }
@@ -46,7 +48,7 @@ public class DistrictSmResultSummaryDTO {
         return district;
     }
 
-    public DistrictResultShortDTO getResult() {
+    public ResultShortDTO getResult() {
         return result;
     }
 
@@ -56,6 +58,10 @@ public class DistrictSmResultSummaryDTO {
 
     public Long getVoteCount() {
         return voteCount;
+    }
+
+    public Long getValidBallots() {
+        return validBallots;
     }
 
     public Long getTotalBallots() {

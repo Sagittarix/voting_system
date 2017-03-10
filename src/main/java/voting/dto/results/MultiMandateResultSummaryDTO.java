@@ -14,6 +14,7 @@ public class MultiMandateResultSummaryDTO {
 
     private List<PartyResultDTO> partyResults;
     private Long totalBallots = 0L;
+    private Long validBallots = 0L;
     private Long spoiledBallots = 0L;
 
     private List<DistrictResultSummaryDTO> districtResults;
@@ -21,6 +22,7 @@ public class MultiMandateResultSummaryDTO {
     public MultiMandateResultSummaryDTO(MultiMandateResultSummary summary) {
         Map<Party, Long> partyVotes = summary.getPartyVotecount();
         Map<Party, Long> partyMandates = summary.getPartyMandates();
+        this.validBallots = summary.getValidBallots();
         this.totalBallots = summary.getTotalBallots();
         this.spoiledBallots = summary.getSpoiledBallots();
         this.partyResults = partyVotes.keySet().stream()
@@ -34,6 +36,10 @@ public class MultiMandateResultSummaryDTO {
 
     public List<PartyResultDTO> getPartyResults() {
         return partyResults;
+    }
+
+    public Long getValidBallots() {
+        return validBallots;
     }
 
     public Long getTotalBallots() {

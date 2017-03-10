@@ -21,6 +21,7 @@ public abstract class Result {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    private Long validBallots = 0L;
     private Long spoiledBallots = 0L;
     private Long totalBallots = 0L;
 
@@ -28,11 +29,13 @@ public abstract class Result {
     private List<Vote> unitVotes = new ArrayList<>();
 
     public Result() {
+        this.validBallots = 0L;
         this.spoiledBallots = 0L;
         this.totalBallots = 0L;
     }
 
     public void combineResults(Result r) {
+        this.validBallots += r.getValidBallots();
         this.spoiledBallots += r.getSpoiledBallots();
         this.totalBallots += r.getTotalBallots();
         combineVotes(r.getUnitVotes());
@@ -50,6 +53,7 @@ public abstract class Result {
     public void addVote(Vote vote) {
         this.unitVotes.add(vote);
         vote.setResult(this);
+        this.validBallots += vote.getVoteCount();
         this.totalBallots += vote.getVoteCount();
     }
 
@@ -59,6 +63,14 @@ public abstract class Result {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getValidBallots() {
+        return validBallots;
+    }
+
+    public void setValidBallots(Long validBallots) {
+        this.validBallots = validBallots;
     }
 
     public Long getSpoiledBallots() {

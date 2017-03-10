@@ -1,4 +1,4 @@
-package voting.dto.results;
+package voting.dto.results.unused;
 
 import voting.results.model.result.CountyResult;
 import voting.results.model.result.CountySMResult;
@@ -21,13 +21,19 @@ public class CountyResultShortDTO {
         this.id = result.getId();
         this.createdOn = result.getCreatedOn();
         this.confirmedOn = result.getConfirmedOn();
-        this.link = String.format("%s/results/county/%d", Constants.API_ROOT_URL, id);;
-        if (result instanceof CountySMResult) {
-            this.link.concat("/single-mandate");
-        } else {
-            this.link.concat("/multi-mandate");
-        }
+        this.link = constructLink(result);
     }
+
+    private String constructLink(CountyResult result) {
+        String link = String.format("%s/results/county/%d", Constants.API_ROOT_URL, id);;
+        if (result instanceof CountySMResult) {
+            link = link.concat("/single-mandate");
+        } else {
+            link = link.concat("/multi-mandate");
+        }
+        return link;
+    }
+
 
     public Long getId() {
         return id;

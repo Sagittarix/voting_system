@@ -4,7 +4,6 @@ import voting.dto.county.CountyShortDTO;
 import voting.model.County;
 import voting.results.model.result.CountyResult;
 import voting.results.model.result.ResultType;
-import voting.utils.Constants;
 
 import java.util.Date;
 
@@ -14,11 +13,12 @@ import java.util.Date;
 public class CountyResultSummaryDTO {
 
     private CountyShortDTO county;
+    private ResultShortDTO result;
     private Date createdOn;
     private Long voterCount;
+    private Long validBallots;
     private Long totalBallots;
     private Long spoiledBallots;
-    private String link;
 
     public CountyResultSummaryDTO(County county, ResultType type) {
         CountyResult result = (type == ResultType.SINGLE_MANDATE) ?
@@ -27,28 +27,22 @@ public class CountyResultSummaryDTO {
 
         this.county = new CountyShortDTO(county);
         this.voterCount = county.getVoterCount();
+        this.result = (result != null) ? new ResultShortDTO(result) : null;
 
         if (result != null && result.isConfirmed()) {
             this.createdOn = result.getCreatedOn();
+            this.validBallots = result.getValidBallots();
             this.totalBallots = result.getTotalBallots();
             this.spoiledBallots = result.getSpoiledBallots();
         }
-
-        this.link = constructLink(county, type);
-    }
-
-    private String constructLink(County county, ResultType type) {
-        String link = String.format("%s/results/county/%d", Constants.API_ROOT_URL, county.getId());
-        if (type == ResultType.SINGLE_MANDATE) {
-            link.concat("/single-mandate");
-        } else {
-            link.concat("/multi-mandate");
-        }
-        return link;
     }
 
     public CountyShortDTO getCounty() {
         return county;
+    }
+
+    public ResultShortDTO getResult() {
+        return result;
     }
 
     public Date getCreatedOn() {
@@ -59,6 +53,10 @@ public class CountyResultSummaryDTO {
         return voterCount;
     }
 
+    public Long getValidBallots() {
+        return validBallots;
+    }
+
     public Long getTotalBallots() {
         return totalBallots;
     }
@@ -67,7 +65,4 @@ public class CountyResultSummaryDTO {
         return spoiledBallots;
     }
 
-    public String getLink() {
-        return link;
-    }
 }

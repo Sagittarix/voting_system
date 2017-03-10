@@ -15,6 +15,7 @@ public class MultiMandateResultSummary {
 
     private Map<Party, Long> partyVotecount;
     private Map<Party, Long> partyMandates;
+    private Long validBallots = 0L;
     private Long totalBallots = 0L;
     private Long spoiledBallots = 0L;
     private List<DistrictMMResult> results;
@@ -22,6 +23,7 @@ public class MultiMandateResultSummary {
 
 
     public MultiMandateResultSummary(List<Party> parties, List<DistrictMMResult> results) {
+        this.validBallots = 0L;
         this.totalBallots = 0L;
         this.spoiledBallots = 0L;
         this.partyVotecount = parties.stream().collect(Collectors.toMap(p -> p, p -> 0L));
@@ -33,6 +35,7 @@ public class MultiMandateResultSummary {
 
 
     public void combineResults(Result result) {
+        validBallots += result.getValidBallots();
         totalBallots += result.getTotalBallots();
         spoiledBallots += result.getSpoiledBallots();
         if (result instanceof CountyMMResult) {
@@ -91,6 +94,10 @@ public class MultiMandateResultSummary {
 
     public Map<Party, Long> getPartyMandates() {
         return partyMandates;
+    }
+
+    public Long getValidBallots() {
+        return validBallots;
     }
 
     public Long getTotalBallots() {

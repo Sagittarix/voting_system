@@ -3,13 +3,12 @@ package voting.dto.results;
 import voting.dto.district.DistrictShortDTO;
 import voting.model.County;
 import voting.model.District;
-import voting.results.model.result.CountyResult;
-import voting.results.model.result.DistrictResult;
-import voting.results.model.result.DistrictSMResult;
-import voting.results.model.result.ResultType;
+import voting.results.model.result.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static voting.results.model.result.ResultType.*;
 
 /**
  * Created by domas on 2/27/17.
@@ -25,18 +24,20 @@ public class DistrictResultSummaryDTO {
     private Long spoiledBallots = 0L;
 
 
-    public DistrictResultSummaryDTO(DistrictResult result) {
-        District district = result.getDistrict();
+    public DistrictResultSummaryDTO(District district, ResultType type) {
         this.district = new DistrictShortDTO(district);
-        this.result = new ResultShortDTO(result);
         this.voterCount = district.getVoterCount();
 
         List<County> counties = district.getCounties();
         this.totalCounties = counties.size();
 
-        ResultType type = result instanceof DistrictSMResult ?
-                ResultType.SINGLE_MANDATE :
-                ResultType.MULTI_MANDATE;
+
+        DistrictResult result = (type == SINGLE_MANDATE) ?
+                district.getSmResult() :
+                district.getMmResult();
+        if (result != null) {
+            this.result = new ResultShortDTO(result);
+        }
 
         List<CountyResult> countyResults = district.getCounties().stream()
                 .map(c -> c.getResultByType(type))

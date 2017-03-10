@@ -2,6 +2,7 @@ package voting.dto.results;
 
 import voting.model.Party;
 import voting.results.model.result.MultiMandateResultSummary;
+import voting.results.model.result.ResultType;
 
 import java.util.Map;
 import java.util.List;
@@ -29,7 +30,7 @@ public class MultiMandateResultSummaryDTO {
                 .map(p -> new PartyResultDTO(p, partyVotes.get(p), partyMandates.get(p)))
                 .collect(Collectors.toList());
         this.districtResults = summary.getResults().stream()
-                .map(DistrictResultSummaryDTO::new)
+                .map(r -> new DistrictResultSummaryDTO(r.getDistrict(), ResultType.MULTI_MANDATE))
                 .collect(Collectors.toList());
     }
 

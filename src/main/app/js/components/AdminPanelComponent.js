@@ -13,7 +13,6 @@ var styles = {
 var AdminPanelComponent = React.createClass({
     getInitialState() {
         return ({ tagIds: this.setBackgroundsByLocation(), admin: false });
-        //return ({ tagIds: this.setBackgroundsByLocation(), admin: true });
     },
     contextTypes: {
         router: React.PropTypes.object.isRequired

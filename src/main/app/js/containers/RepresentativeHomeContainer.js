@@ -11,10 +11,7 @@ var RepresentativeHomeContainer = React.createClass({
         router: React.PropTypes.object.isRequired
     },
     getInitialState() {
-        return {
-            representative: false
-            //representative: true
-        };
+        return { representative: false };
     },
     componentDidMount() {
         const _this = this;

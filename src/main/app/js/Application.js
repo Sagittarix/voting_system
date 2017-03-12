@@ -3,7 +3,7 @@ var axios = require('axios');
 var NavigationBarComponent = require('./components/NavigationBarComponent');
 var spring = require('./config/SpringConfig');
 
-var representative = {
+/*var representative = {
     "id": 1,
     "firstName": "Rep",
     "lastName": "Rep",
@@ -20,7 +20,7 @@ var admin = {
     "lastName": "Admin",
     "username": "admin.admin",
     "roles": ["ROLE_ADMIN"]
-};
+};*/
 
 var Application = React.createClass({
     contextTypes: {
@@ -29,9 +29,6 @@ var Application = React.createClass({
     getInitialState() {
         return ({ currentUser: {} });
     },
-    /*getInitialState() {
-        return ({ currentUser: representative });
-    },*/
     getPrincipal() {
         const _this = this;
         axios.post(spring.localHost.concat('/api/auth/principal'))

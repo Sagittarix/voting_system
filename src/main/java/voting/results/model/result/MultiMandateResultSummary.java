@@ -1,0 +1,129 @@
+package voting.results.model.result;
+
+import voting.model.Party;
+import voting.results.model.votecount.PartyVote;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+/**
+ * Created by domas on 3/9/17.
+ */
+public class MultiMandateResultSummary {
+
+    private Map<Party, Long> partyVotecount;
+    private Map<Party, Long> partyMandates;
+    private Long validBallots = 0L;
+    private Long totalBallots = 0L;
+    private Long spoiledBallots = 0L;
+    private List<DistrictMMResult> results;
+    private int completedDistrictResults;
+    private int totalDistrictResults;
+    private Long availableMandates = 141L;
+
+
+    public MultiMandateResultSummary(List<Party> parties, List<DistrictMMResult> results) {
+        this.validBallots = 0L;
+        this.totalBallots = 0L;
+        this.spoiledBallots = 0L;
+        this.partyVotecount = parties.stream().collect(Collectors.toMap(p -> p, p -> 0L));
+        this.partyMandates = parties.stream().collect(Collectors.toMap(p -> p, p -> 0L));
+        this.availableMandates = 141L - results.size();
+        this.completedDistrictResults = 0;
+        this.totalDistrictResults = results.size();
+        this.results = results;
+        this.results.forEach(this::combineResults);
+    }
+
+
+    public void combineResults(Result result) {
+        validBallots += result.getValidBallots();
+        spoiledBallots += result.getSpoiledBallots();
+        totalBallots = validBallots + spoiledBallots;
+        if (result instanceof CountyMMResult) {
+            CountyMMResult cr = (CountyMMResult) result;
+            addVotes(cr.getVotes());
+        } else {
+            DistrictMMResult dr = (DistrictMMResult) result;
+            completedDistrictResults = (dr.getConfirmedCountyResults() == dr.getTotalCountyResults()) ?
+                                        completedDistrictResults++ :
+                                        completedDistrictResults;
+            addVotes(dr.getVotes());
+        }
+        computePartyMandates();
+    }
+
+    private void computePartyMandates() {
+        Map<Party, Double> mandateFractions = new HashMap<>();
+
+        partyVotecount.forEach((party, votecount) -> {
+            Double floatMandates = computeMandates(votecount);
+            Long longMandates = floatMandates.longValue();
+            partyMandates.put(party, longMandates);
+            mandateFractions.put(party, floatMandates - longMandates);
+        });
+
+        Long mandatesGiven = partyMandates.values().stream().reduce(Long::sum).get();
+        Long mandatesRemaining = availableMandates - mandatesGiven;
+
+        if (totalBallots != 0) {
+            mandateFractions.entrySet().stream()
+                    .sorted(Map.Entry.<Party, Double>comparingByValue().reversed())
+                    .limit(mandatesRemaining)
+                    .map(Map.Entry::getKey)
+                    .forEach(party -> partyMandates.merge(party, 1L, Long::sum));
+        }
+    }
+
+    private Double computeMandates(Long votecount) {
+        if (totalBallots == 0) {
+            return 0d;
+        }
+        double percentOfAllVotes = (double) votecount / totalBallots;
+        return percentOfAllVotes > 0.05d ?
+               percentOfAllVotes * availableMandates :
+               0d;
+    }
+
+    private void addVotes(List<PartyVote> votes) {
+        votes.forEach(v -> partyVotecount.merge(v.getParty(), v.getVoteCount(), Long::sum));
+    }
+
+    public void setResults(List<DistrictMMResult> results) {
+        this.results = results;
+    }
+
+    public Map<Party, Long> getPartyVotecount() {
+        return partyVotecount;
+    }
+
+    public Map<Party, Long> getPartyMandates() {
+        return partyMandates;
+    }
+
+    public Long getValidBallots() {
+        return validBallots;
+    }
+
+    public Long getTotalBallots() {
+        return totalBallots;
+    }
+
+    public Long getSpoiledBallots() {
+        return spoiledBallots;
+    }
+
+    public List<DistrictMMResult> getResults() {
+        return results;
+    }
+
+    public int getCompletedDistrictResults() {
+        return completedDistrictResults;
+    }
+
+    public int getTotalDistrictResults() {
+        return totalDistrictResults;
+    }
+}

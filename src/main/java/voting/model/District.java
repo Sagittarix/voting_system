@@ -1,6 +1,8 @@
 package voting.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import voting.results.model.result.DistrictMMResult;
 import voting.results.model.result.DistrictResult;
 import voting.results.model.result.DistrictSMResult;
@@ -14,6 +16,7 @@ import java.util.Objects;
 /**
  * Created by domas on 1/10/17.
  */
+
 @Entity
 public class District {
 
@@ -26,7 +29,7 @@ public class District {
 
     private Long voterCount = 0L;
 
-    @JsonIgnore
+    @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "district", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<County> counties = new ArrayList<>();
 
@@ -43,7 +46,6 @@ public class District {
     private DistrictSMResult smResult;
 
     public District() { }
-
 
     public District(String name) {
         this.name = name;
@@ -112,7 +114,6 @@ public class District {
 
     public void setMmResult(DistrictMMResult mmResult) {
         this.mmResult = mmResult;
-        mmResult.setDistrict(this);
     }
 
     public DistrictSMResult getSmResult() {
@@ -121,7 +122,6 @@ public class District {
 
     public void setSmResult(DistrictSMResult smResult) {
         this.smResult = smResult;
-        smResult.setDistrict(this);
     }
 
     public DistrictResult getResultByType(ResultType type) {
@@ -158,6 +158,5 @@ public class District {
     public String toString() {
         return String.format("%s (id %d)", name, id);
     }
-
 
 }

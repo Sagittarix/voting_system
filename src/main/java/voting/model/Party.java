@@ -69,7 +69,7 @@ public class Party {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, candidates);
+        return Objects.hash(id, name);
     }
 
     @Override

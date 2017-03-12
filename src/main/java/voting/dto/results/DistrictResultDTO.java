@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 public class DistrictResultDTO extends ResultDTO {
 
     private DistrictShortDTO district;
-    private Long confirmedCountyResults;
+    private int confirmedCountyResults;
     private int totalCounties;
     private List<CountyResultSummaryDTO> countyResults;
 
@@ -23,29 +23,26 @@ public class DistrictResultDTO extends ResultDTO {
     public DistrictResultDTO(DistrictResult result) {
         super(result);
         District district = result.getDistrict();
-        this.district = district == null ? null : new DistrictShortDTO(district);
+        this.district = new DistrictShortDTO(district);
         this.setVoterCount(district.getVoterCount());
 
-        ResultType type;
-        if (result instanceof DistrictSMResult) {
-            type = ResultType.SINGLE_MANDATE;
-        } else {
-            type = ResultType.MULTI_MANDATE;
-        }
+        ResultType type = result instanceof DistrictSMResult ?
+                          ResultType.SINGLE_MANDATE :
+                          ResultType.MULTI_MANDATE;
 
         this.countyResults = district.getCounties().stream()
-                .map(c -> new CountyResultSummaryDTO(c, type))
+                .map(c -> new CountyResultSummaryDTO(c, c.getResultByType(type)))
                 .collect(Collectors.toList());
 
-        this.confirmedCountyResults = countyResults.stream().filter(r -> r.getCreatedOn() != null).count();
-        this.totalCounties = countyResults.size();
+        this.confirmedCountyResults = result.getConfirmedCountyResults();
+        this.totalCounties = result.getTotalCountyResults();
     }
 
     public DistrictShortDTO getDistrict() {
         return district;
     }
 
-    public Long getConfirmedCountyResults() {
+    public int getConfirmedCountyResults() {
         return confirmedCountyResults;
     }
 

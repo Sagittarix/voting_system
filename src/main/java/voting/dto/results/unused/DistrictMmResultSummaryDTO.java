@@ -1,10 +1,11 @@
-package voting.dto.results;
+package voting.dto.results.unused;
 
-import voting.dto.candidate.CandidateShortDTO;
 import voting.dto.district.DistrictShortDTO;
+import voting.dto.party.PartyShortDTO;
+import voting.dto.results.ResultShortDTO;
 import voting.model.District;
-import voting.results.model.result.DistrictSMResult;
-import voting.results.model.votecount.CandidateVote;
+import voting.results.model.result.DistrictMMResult;
+import voting.results.model.votecount.PartyVote;
 import voting.results.model.votecount.Vote;
 
 import java.util.Collections;
@@ -14,27 +15,28 @@ import java.util.List;
 /**
  * Created by domas on 3/7/17.
  */
-public class SingleMandateSummaryDTO {
+public class DistrictMmResultSummaryDTO {
 
     private DistrictShortDTO district;
-    private DistrictResultShortDTO result;
-    private CandidateShortDTO candidate;
+    private ResultShortDTO result;
+    private PartyShortDTO party;
     private Long voteCount;
+    private Long validBallots;
     private Long totalBallots;
 
-    public SingleMandateSummaryDTO(District district) {
+    public DistrictMmResultSummaryDTO(District district) {
         this.district = new DistrictShortDTO(district);
-        DistrictSMResult result = district.getSmResult();
+        DistrictMMResult result = district.getMmResult();
         if (result != null && result.getTotalBallots() > 0) {
-            this.result = new DistrictResultShortDTO(result);
+            this.result = new ResultShortDTO(result);
 
-//            CandidateVote top1vote = result.getVotes().get(0);
-            List<CandidateVote> votes = result.getVotes();
+            List<PartyVote> votes = result.getVotes();
             votes.sort(Collections.reverseOrder(Comparator.comparing(Vote::getVoteCount)));
-            CandidateVote top1vote = votes.get(0);
+            PartyVote top1vote = votes.get(0);
 
-            this.candidate = new CandidateShortDTO(top1vote.getCandidate());
+            this.party= new PartyShortDTO(top1vote.getParty());
             this.voteCount = top1vote.getVoteCount();
+            this.validBallots = result.getValidBallots();
             this.totalBallots = result.getTotalBallots();
         }
     }
@@ -43,19 +45,24 @@ public class SingleMandateSummaryDTO {
         return district;
     }
 
-    public DistrictResultShortDTO getResult() {
+    public ResultShortDTO getResult() {
         return result;
     }
 
-    public CandidateShortDTO getCandidate() {
-        return candidate;
+    public PartyShortDTO getParty() {
+        return party;
     }
 
     public Long getVoteCount() {
         return voteCount;
     }
 
+    public Long getValidBallots() {
+        return validBallots;
+    }
+
     public Long getTotalBallots() {
         return totalBallots;
     }
+
 }

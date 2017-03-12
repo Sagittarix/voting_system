@@ -49,8 +49,8 @@ public class DataPreloader implements CommandLineRunner {
         District district1 = new District("Vilnius");
         District district2 = new District("Kaunas");
         District district3 = new District("Klaipėda");
-        District district4 = new District("District 4");
-        District district5 = new District("District asd");
+//        District district4 = new District("District 4");
+//        District district5 = new District("District asd");
 
         County county1 = new County("Senamiestis", 3000L, "Adresas 1");
         County county2 = new County("Naujamiestis", 3000L, "Adresas 2");
@@ -60,16 +60,18 @@ public class DataPreloader implements CommandLineRunner {
         County county6 = new County("Unknown", 10000L, "Unknown address");
 
         List<County> countyList1 = new ArrayList<County>(Arrays.asList(county1, county2, county3));
-        List<County> countyList2 = new ArrayList<County>(Arrays.asList(county4, county5, county6));
+        List<County> countyList2 = new ArrayList<County>(Arrays.asList(county4, county5));
+        List<County> countyList3 = new ArrayList<County>(Arrays.asList(county6));
 
         countyList1.forEach(c -> district1.addCounty(c));
         countyList2.forEach(c -> district2.addCounty(c));
+        countyList3.forEach(c -> district3.addCounty(c));
 
         districtRepository.save(district1);
         districtRepository.save(district2);
         districtRepository.save(district3);
-        districtRepository.save(district4);
-        districtRepository.save(district5);
+//        districtRepository.save(district4);
+//        districtRepository.save(district5);
 
         Party party1 = new Party("Demokratai");
         Party party2 = new Party("Tvarka ir tesingumas");

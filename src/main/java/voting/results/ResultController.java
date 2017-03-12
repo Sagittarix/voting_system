@@ -66,11 +66,17 @@ public class ResultController {
     }
 
     @GetMapping(path = "single-mandate")
-    public List<SingleMandateSummaryDTO> getSingleMandateResultsSummary() {
-        List<District> results = districtService.getDistricts();
-        return results.stream().map(SingleMandateSummaryDTO::new).collect(Collectors.toList());
+    public List<DistrictSmResultSummaryDTO> getSingleMandateResultsSummary() {
+        return resultService.getAllDistrictSmResults()
+                    .stream()
+                    .map(DistrictSmResultSummaryDTO::new)
+                    .collect(Collectors.toList());
     }
 
+    @GetMapping(path = "multi-mandate")
+    public MultiMandateResultSummaryDTO getMultiMandateResultsSummary() {
+        return new MultiMandateResultSummaryDTO(resultService.getMmResultSummary());
+    }
 
     @PostMapping(path = "county/single-mandate")
     public CountySMResultDTO addCountySMResult(@Valid @RequestBody CountyResultData resultData, BindingResult result) {

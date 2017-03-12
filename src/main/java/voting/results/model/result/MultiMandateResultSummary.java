@@ -19,6 +19,8 @@ public class MultiMandateResultSummary {
     private Long totalBallots = 0L;
     private Long spoiledBallots = 0L;
     private List<DistrictMMResult> results;
+    private int completedDistrictResults;
+    private int totalDistrictResults;
     private Long availableMandates = 141L;
 
 
@@ -29,6 +31,8 @@ public class MultiMandateResultSummary {
         this.partyVotecount = parties.stream().collect(Collectors.toMap(p -> p, p -> 0L));
         this.partyMandates = parties.stream().collect(Collectors.toMap(p -> p, p -> 0L));
         this.availableMandates = 141L - results.size();
+        this.completedDistrictResults = 0;
+        this.totalDistrictResults = results.size();
         this.results = results;
         this.results.forEach(this::combineResults);
     }
@@ -43,6 +47,9 @@ public class MultiMandateResultSummary {
             addVotes(cr.getVotes());
         } else {
             DistrictMMResult dr = (DistrictMMResult) result;
+            completedDistrictResults = (dr.getConfirmedCountyResults() == dr.getTotalCountyResults()) ?
+                                        completedDistrictResults++ :
+                                        completedDistrictResults;
             addVotes(dr.getVotes());
         }
         computePartyMandates();
@@ -80,12 +87,12 @@ public class MultiMandateResultSummary {
                0d;
     }
 
-    public void setResults(List<DistrictMMResult> results) {
-        this.results = results;
-    }
-
     private void addVotes(List<PartyVote> votes) {
         votes.forEach(v -> partyVotecount.merge(v.getParty(), v.getVoteCount(), Long::sum));
+    }
+
+    public void setResults(List<DistrictMMResult> results) {
+        this.results = results;
     }
 
     public Map<Party, Long> getPartyVotecount() {
@@ -110,5 +117,13 @@ public class MultiMandateResultSummary {
 
     public List<DistrictMMResult> getResults() {
         return results;
+    }
+
+    public int getCompletedDistrictResults() {
+        return completedDistrictResults;
+    }
+
+    public int getTotalDistrictResults() {
+        return totalDistrictResults;
     }
 }

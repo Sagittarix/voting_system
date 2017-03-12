@@ -4,6 +4,8 @@ package voting.results;
 import voting.dto.results.CountyResultData;
 import voting.results.model.result.*;
 
+import java.util.List;
+
 /**
  * Created by domas on 2/22/17.
  */
@@ -16,6 +18,8 @@ public interface ResultService {
     public CountySMResult getCountySmResult(Long countyId);
 
     public CountyMMResult getCountyMmResult(Long countyId);
+
+    List<DistrictSMResult> getAllDistrictSmResults();
 
     DistrictSMResult getDistrictSmResult(Long districtId);
 

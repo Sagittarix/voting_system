@@ -81,6 +81,13 @@ public class ResultServiceImpl implements ResultService {
     }
 
     @Transactional
+    public List<DistrictSMResult> getAllDistrictSmResults() {
+        return districtService.getDistricts().stream()
+                .map(d -> getDistrictSmResult(d.getId()))
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
     private List<DistrictMMResult> getAllDistrictMmResults() {
         return districtService.getDistricts().stream()
                 .map(d -> getDistrictMmResult(d.getId()))

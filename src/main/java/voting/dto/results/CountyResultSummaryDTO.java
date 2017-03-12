@@ -20,11 +20,7 @@ public class CountyResultSummaryDTO {
     private Long totalBallots;
     private Long spoiledBallots;
 
-    public CountyResultSummaryDTO(County county, ResultType type) {
-        CountyResult result = (type == ResultType.SINGLE_MANDATE) ?
-                county.getSmResult() :
-                county.getMmResult();
-
+    public CountyResultSummaryDTO(County county, CountyResult result) {
         this.county = new CountyShortDTO(county);
         this.voterCount = county.getVoterCount();
         this.result = (result != null) ? new ResultShortDTO(result) : null;

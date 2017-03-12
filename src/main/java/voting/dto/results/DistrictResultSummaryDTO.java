@@ -17,39 +17,27 @@ public class DistrictResultSummaryDTO {
 
     private DistrictShortDTO district;
     private ResultShortDTO result;
-    private Long confirmedCountyResults = 0L;
+    private int confirmedCountyResults = 0;
     private int totalCounties = 0;
     private Long voterCount;
+    private Long validBallots = 0L;
     private Long totalBallots = 0L;
     private Long spoiledBallots = 0L;
 
 
-    public DistrictResultSummaryDTO(District district, ResultType type) {
+    public DistrictResultSummaryDTO(DistrictResult result) {
+        District district = result.getDistrict();
         this.district = new DistrictShortDTO(district);
         this.voterCount = district.getVoterCount();
+        this.totalCounties = result.getTotalCountyResults();
 
-        List<County> counties = district.getCounties();
-        this.totalCounties = counties.size();
-
-
-        DistrictResult result = (type == SINGLE_MANDATE) ?
-                district.getSmResult() :
-                district.getMmResult();
         if (result != null) {
             this.result = new ResultShortDTO(result);
+            this.confirmedCountyResults = result.getConfirmedCountyResults();
+            this.totalBallots = result.getTotalBallots();
+            this.validBallots = result.getValidBallots();
+            this.spoiledBallots = result.getSpoiledBallots();
         }
-
-        List<CountyResult> countyResults = district.getCounties().stream()
-                .map(c -> c.getResultByType(type))
-                .collect(Collectors.toList());
-
-        countyResults.stream()
-                .filter(r -> r != null && r.isConfirmed())
-                .forEach(r -> {
-                    confirmedCountyResults++;
-                    totalBallots += r.getTotalBallots();
-                    spoiledBallots += r.getSpoiledBallots();
-                });
     }
 
 
@@ -61,7 +49,7 @@ public class DistrictResultSummaryDTO {
         return result;
     }
 
-    public Long getConfirmedCountyResults() {
+    public int getConfirmedCountyResults() {
         return confirmedCountyResults;
     }
 
@@ -71,6 +59,10 @@ public class DistrictResultSummaryDTO {
 
     public Long getVoterCount() {
         return voterCount;
+    }
+
+    public Long getValidBallots() {
+        return validBallots;
     }
 
     public Long getTotalBallots() {

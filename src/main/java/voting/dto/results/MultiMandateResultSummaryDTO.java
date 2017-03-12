@@ -30,7 +30,7 @@ public class MultiMandateResultSummaryDTO {
                 .map(p -> new PartyResultDTO(p, partyVotes.get(p), partyMandates.get(p)))
                 .collect(Collectors.toList());
         this.districtResults = summary.getResults().stream()
-                .map(r -> new DistrictResultSummaryDTO(r.getDistrict(), ResultType.MULTI_MANDATE))
+                .map(DistrictResultSummaryDTO::new)
                 .collect(Collectors.toList());
     }
 

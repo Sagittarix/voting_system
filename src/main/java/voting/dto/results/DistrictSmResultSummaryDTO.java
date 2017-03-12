@@ -19,10 +19,9 @@ public class DistrictSmResultSummaryDTO extends DistrictResultSummaryDTO{
 
     private CandidateShortDTO candidate;
 
-    public DistrictSmResultSummaryDTO(District district) {
-        super(district, SINGLE_MANDATE);
-        DistrictSMResult result = district.getSmResult();
-        if (result != null && result.getTotalBallots() > 0) {
+    public DistrictSmResultSummaryDTO(DistrictSMResult result) {
+        super(result);
+        if (result.getTotalBallots() > 0) {
 
             //TODO: TEMP, move sorting to where it belongs
             List<CandidateVote> votes = result.getVotes();

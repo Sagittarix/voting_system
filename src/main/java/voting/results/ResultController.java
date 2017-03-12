@@ -67,8 +67,10 @@ public class ResultController {
 
     @GetMapping(path = "single-mandate")
     public List<DistrictSmResultSummaryDTO> getSingleMandateResultsSummary() {
-        List<District> results = districtService.getDistricts();
-        return results.stream().map(DistrictSmResultSummaryDTO::new).collect(Collectors.toList());
+        return resultService.getAllDistrictSmResults()
+                    .stream()
+                    .map(DistrictSmResultSummaryDTO::new)
+                    .collect(Collectors.toList());
     }
 
     @GetMapping(path = "multi-mandate")

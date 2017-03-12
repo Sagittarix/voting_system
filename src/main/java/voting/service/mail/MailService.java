@@ -1,4 +1,4 @@
-package voting.mail;
+package voting.service.mail;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

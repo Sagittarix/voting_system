@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import voting.dto.countyrep.CountyRepresentativeData;
 import voting.exception.NotFoundException;
-import voting.mail.MailService;
+import voting.service.mail.MailService;
 import voting.model.County;
 import voting.model.CountyRep;
 import voting.repository.CountyRepRepository;

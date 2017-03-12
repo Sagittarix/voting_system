@@ -35,7 +35,7 @@ public abstract class Result {
         this.totalBallots = 0L;
     }
 
-    public void combineResults(Result r) {
+    protected void combineResults(Result r) {
         this.validBallots += r.getValidBallots();
         this.spoiledBallots += r.getSpoiledBallots();
         this.totalBallots = validBallots + spoiledBallots;

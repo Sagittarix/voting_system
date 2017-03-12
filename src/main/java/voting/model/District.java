@@ -110,7 +110,6 @@ public class District {
 
     public void setMmResult(DistrictMMResult mmResult) {
         this.mmResult = mmResult;
-        mmResult.setDistrict(this);
     }
 
     public DistrictSMResult getSmResult() {
@@ -119,7 +118,6 @@ public class District {
 
     public void setSmResult(DistrictSMResult smResult) {
         this.smResult = smResult;
-        smResult.setDistrict(this);
     }
 
     public DistrictResult getResultByType(ResultType type) {

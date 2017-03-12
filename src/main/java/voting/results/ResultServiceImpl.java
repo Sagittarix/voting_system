@@ -147,7 +147,7 @@ public class ResultServiceImpl implements ResultService {
         if (districtResult == null) {
             saveNewDistrictResult(district, type);
         } else {
-            districtResult.combineResults(countyResult);
+            districtResult.addCountyResult(countyResult);
         }
         districtService.save(district);
     }
@@ -211,14 +211,14 @@ public class ResultServiceImpl implements ResultService {
         district.getCounties().stream()
                 .map(c -> c.getResultByType(type))
                 .filter(c -> c != null && c.isConfirmed())
-                .forEach(districtResult::combineResults);
+                .forEach(districtResult::addCountyResult);
         return districtResult;
     }
 
     private DistrictResult constructBlankDistrictResult(District district, ResultType type) {
         DistrictResult result = type == SINGLE_MANDATE ?
-                new DistrictSMResult() :
-                new DistrictMMResult();
+                new DistrictSMResult(district) :
+                new DistrictMMResult(district);
         List<Vote> voteList = type == SINGLE_MANDATE ?
                 constructBlankCandidateVoteList(district.getCandidates()):
                 constructBlankPartyVoteList(partyService.getParties());

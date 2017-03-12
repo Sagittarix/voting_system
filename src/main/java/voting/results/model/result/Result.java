@@ -4,10 +4,7 @@ package voting.results.model.result;
 import voting.results.model.votecount.Vote;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -91,6 +88,7 @@ public abstract class Result {
     }
 
     public List<Vote> getUnitVotes() {
+        unitVotes.sort(Collections.reverseOrder(Comparator.comparing(Vote::getVoteCount)));
         return unitVotes;
     }
 

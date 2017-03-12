@@ -1,14 +1,8 @@
 package voting.dto.results;
 
 import voting.dto.district.DistrictShortDTO;
-import voting.model.County;
 import voting.model.District;
-import voting.results.model.result.*;
-
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static voting.results.model.result.ResultType.*;
+import voting.results.model.result.DistrictResult;
 
 /**
  * Created by domas on 2/27/17.
@@ -28,16 +22,13 @@ public class DistrictResultSummaryDTO {
     public DistrictResultSummaryDTO(DistrictResult result) {
         District district = result.getDistrict();
         this.district = new DistrictShortDTO(district);
-        this.voterCount = district.getVoterCount();
+        this.result = new ResultShortDTO(result);
+        this.confirmedCountyResults = result.getConfirmedCountyResults();
         this.totalCounties = result.getTotalCountyResults();
-
-        if (result != null) {
-            this.result = new ResultShortDTO(result);
-            this.confirmedCountyResults = result.getConfirmedCountyResults();
-            this.totalBallots = result.getTotalBallots();
-            this.validBallots = result.getValidBallots();
-            this.spoiledBallots = result.getSpoiledBallots();
-        }
+        this.voterCount = district.getVoterCount();
+        this.validBallots = result.getValidBallots();
+        this.totalBallots = result.getTotalBallots();
+        this.spoiledBallots = result.getSpoiledBallots();
     }
 
 

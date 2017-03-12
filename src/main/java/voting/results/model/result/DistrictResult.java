@@ -25,8 +25,6 @@ public abstract class DistrictResult extends Result {
     private int confirmedCountyResults;
     private int totalCountyResults;
 
-    @OneToMany
-    List<CountyResult> countyResults = new ArrayList<>();
 
     public DistrictResult() {
     }
@@ -34,10 +32,7 @@ public abstract class DistrictResult extends Result {
     public DistrictResult(District district) {
         super();
         this.district = district;
-        countyResults = new ArrayList<>();
-        ResultType type = (this instanceof DistrictSMResult) ?
-                SINGLE_MANDATE :
-                MULTI_MANDATE;
+        ResultType type = (this instanceof DistrictSMResult) ? SINGLE_MANDATE : MULTI_MANDATE;
         district.setResultByType(this, type);
         this.totalCountyResults = district.getCounties().size();
         this.confirmedCountyResults = 0;
@@ -45,7 +40,6 @@ public abstract class DistrictResult extends Result {
 
 
     public void addCountyResult(CountyResult cr) {
-        countyResults.add(cr);
         confirmedCountyResults++;
         super.combineResults(cr);
     }
@@ -60,9 +54,5 @@ public abstract class DistrictResult extends Result {
 
     public int getTotalCountyResults() {
         return totalCountyResults;
-    }
-
-    public List<CountyResult> getCountyResults() {
-        return countyResults;
     }
 }

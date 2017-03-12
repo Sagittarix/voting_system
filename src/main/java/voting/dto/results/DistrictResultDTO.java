@@ -30,8 +30,8 @@ public class DistrictResultDTO extends ResultDTO {
                           ResultType.SINGLE_MANDATE :
                           ResultType.MULTI_MANDATE;
 
-        this.countyResults = result.getCountyResults().stream()
-                .map(r -> new CountyResultSummaryDTO(r.getCounty(), r))
+        this.countyResults = district.getCounties().stream()
+                .map(c -> new CountyResultSummaryDTO(c, c.getResultByType(type)))
                 .collect(Collectors.toList());
 
         this.confirmedCountyResults = result.getConfirmedCountyResults();

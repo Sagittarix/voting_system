@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping(path = "/api/district")
-@PreAuthorize("hasRole('ROLE_ADMIN')")
+//@PreAuthorize("hasRole('ROLE_ADMIN')")
 public class DistrictController {
 
     private DistrictService districtService;
@@ -102,7 +102,7 @@ public class DistrictController {
         return new DistrictDTO(districtService.setCandidateList(id, file));
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_REPRESENTATIVE')")
+    //@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_REPRESENTATIVE')")
     @GetMapping("{id}/candidates")
     public List<CandidateDTO> getCandidateList(@PathVariable Long id) {
         return districtService.getCandidateList(id).stream()

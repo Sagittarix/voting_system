@@ -1,6 +1,7 @@
 package voting.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import voting.dto.countyrep.CountyRepresentativeDTO;
@@ -8,6 +9,7 @@ import voting.dto.countyrep.CountyRepresentativeData;
 import voting.exception.MultiErrorException;
 import voting.service.CountyRepService;
 
+import javax.mail.MessagingException;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,6 +22,7 @@ import java.util.stream.Collectors;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping(path="/api/county-rep")
+@PreAuthorize("hasRole('ROLE_ADMIN')")
 public class CountyRepController {
 
     private CountyRepService countyRepService;
@@ -45,7 +48,7 @@ public class CountyRepController {
     @PostMapping
     public CountyRepresentativeDTO addNewCountyRep(
             @Valid @RequestBody CountyRepresentativeData countyRepData,
-            BindingResult result) {
+            BindingResult result) throws MessagingException {
         if (result.hasErrors()) {
             throw new MultiErrorException(
                     String.format("Klaida registruojant apygardos atstovą %s %s",

@@ -1,6 +1,7 @@
 package voting.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import voting.dto.candidate.CandidateDTO;
 import voting.service.CandidateService;
@@ -31,6 +32,7 @@ public class CandidateController {
                                                .collect(Collectors.toList());
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @GetMapping("{id}")
     public CandidateDTO getCandidate(@PathVariable Long id) {
         return new CandidateDTO(candidateService.getCandidate(id));

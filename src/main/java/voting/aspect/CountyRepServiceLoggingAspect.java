@@ -2,13 +2,12 @@ package voting.aspect;
 
 import org.apache.log4j.Logger;
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.After;
-import org.aspectj.lang.annotation.AfterReturning;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import voting.dto.countyrep.CountyRepresentativeDTO;
+import voting.model.CountyRep;
 import voting.service.CountyRepService;
 
 /**
@@ -32,7 +31,7 @@ public class CountyRepServiceLoggingAspect {
 
     @After("getCountyReps()")
     public void afterGetAllCountyReps(JoinPoint jp) {
-        logger.debug("All counties representatives extracted : " + jp.toLongString());
+        logger.debug("All counties representatives requested : " + jp.toLongString());
     }
 
     @Pointcut("execution(* voting.controller.CountyRepController.getCountyRep(..)) && args(id)")
@@ -40,7 +39,7 @@ public class CountyRepServiceLoggingAspect {
 
     @AfterReturning(pointcut = "getCountyRep(id)", argNames = "jp,id")
     public void afterGetCountyRep(JoinPoint jp, Long id) {
-        logger.debug(String.format("County representative [id: %d] extracted : %s", id, jp.toLongString()));
+        logger.debug(String.format("County representative [id: %d] requested : %s", id, jp.toLongString()));
     }
 
     @Pointcut("execution(* voting.controller.CountyRepController.addNewCountyRep(..))")
@@ -49,7 +48,7 @@ public class CountyRepServiceLoggingAspect {
     @AfterReturning(pointcut = "addNewCountyRep()", returning = "crr")
     public void afterAddNewCountyRep(JoinPoint jp, CountyRepresentativeDTO crr) {
         logger.debug(String.format(
-                "County representative [id: %d] (In county [id: %d]) created : %s",
+                "County representative [id: %d] (in county [id: %d]) created : %s",
                 crr.getId(), crr.getCounty().getId(), jp.toLongString())
         );
     }
@@ -57,12 +56,14 @@ public class CountyRepServiceLoggingAspect {
     @Pointcut("execution(* voting.controller.CountyRepController.deleteCountyRep(..)) && args(id)")
     void deleteCountyRep(Long id) { }
 
-    @AfterReturning(pointcut = "deleteCountyRep(id)", argNames = "jp,id")
-    public void afterDeleteCountyRep(JoinPoint jp, Long id) {
-//        CountyRep cr = countyRepService.getCountyRep(id);
-//        logger.debug(String.format(
-//                "County representative [id: %d] (In county [id: %d]) deleted : %s",
-//                cr.getId(), cr.getCounty().getId(), jp.toLongString())
-//        );
+    @Around(value = "deleteCountyRep(id)", argNames = "jp,id")
+    public void afterDeleteCountyRep(ProceedingJoinPoint jp, Long id) throws Throwable {
+        CountyRep cr = countyRepService.getCountyRep(id);
+        jp.proceed();
+
+        logger.debug(String.format(
+                "County representative [id: %d] (in county [id: %d]) deleted : %s",
+                cr.getId(), cr.getCounty().getId(), jp.toLongString())
+        );
     }
 }

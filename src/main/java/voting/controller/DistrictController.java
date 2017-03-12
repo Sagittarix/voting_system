@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,6 +32,7 @@ import java.util.stream.Collectors;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping(path = "/api/district")
+@PreAuthorize("hasRole('ROLE_ADMIN')")
 public class DistrictController {
 
     private DistrictService districtService;
@@ -100,6 +102,7 @@ public class DistrictController {
         return new DistrictDTO(districtService.setCandidateList(id, file));
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_REPRESENTATIVE')")
     @GetMapping("{id}/candidates")
     public List<CandidateDTO> getCandidateList(@PathVariable Long id) {
         return districtService.getCandidateList(id).stream()

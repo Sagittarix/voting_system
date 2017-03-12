@@ -1,6 +1,7 @@
 package voting.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import voting.dto.county.CountyDTO;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping(path = "/api/county")
+@PreAuthorize("hasRole('ROLE_ADMIN')")
 public class CountyController {
 
     private DistrictService districtService;

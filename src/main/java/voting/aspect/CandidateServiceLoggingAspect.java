@@ -24,14 +24,14 @@ public class CandidateServiceLoggingAspect {
 
     @After("getCandidates()")
     public void afterGetAllCandidates(JoinPoint jp) {
-        logger.debug("All candidates extracted : " + jp.toLongString());
+        logger.debug("All candidates requested : " + jp.toLongString());
     }
 
-    @Pointcut("execution(* voting.controller.CandidateController.getCandidate(Long))")
+    @Pointcut("execution(* voting.controller.CandidateController.getCandidate(..))")
     void getCandidate() { }
 
     @AfterReturning(pointcut = "getCandidate()", returning = "returnValue")
     public void afterGetCandidate(JoinPoint jp, CandidateDTO returnValue) {
-        logger.debug(String.format("Candidate [id: %d] extracted : %s", returnValue.getId(), jp.toLongString()));
+        logger.debug(String.format("Candidate [id: %d] requested : %s", returnValue.getId(), jp.toLongString()));
     }
 }

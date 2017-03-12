@@ -3,6 +3,7 @@ package voting.repository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.security.access.prepost.PreAuthorize;
 import voting.model.District;
 
 /**

@@ -26,12 +26,12 @@ var Application = React.createClass({
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
-    /*getInitialState() {
-        return ({ currentUser: {} });
-    },*/
     getInitialState() {
-        return ({ currentUser: representative });
+        return ({ currentUser: {} });
     },
+    /*getInitialState() {
+        return ({ currentUser: representative });
+    },*/
     getPrincipal() {
         const _this = this;
         axios.post(spring.localHost.concat('/api/auth/principal'))
@@ -43,7 +43,7 @@ var Application = React.createClass({
             });
     },
     componentDidMount() {
-        //this.getPrincipal();
+        this.getPrincipal();
     },
     manageUser(command) {
         if (command === "LOGOUT") {

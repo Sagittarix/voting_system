@@ -12,14 +12,14 @@ var styles = {
 
 var AdminPanelComponent = React.createClass({
     getInitialState() {
-        //return ({ tagIds: this.setBackgroundsByLocation(), admin: false });
-        return ({ tagIds: this.setBackgroundsByLocation(), admin: true });
+        return ({ tagIds: this.setBackgroundsByLocation(), admin: false });
+        //return ({ tagIds: this.setBackgroundsByLocation(), admin: true });
     },
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
     componentWillMount() {
-        /*const _this = this;
+        const _this = this;
         let fd = new FormData();
         fd.append("role", "ROLE_ADMIN");
         axios.post(spring.localHost.concat('/api/auth/role'), fd)
@@ -32,7 +32,7 @@ var AdminPanelComponent = React.createClass({
             })
             .catch(err => {
                 console.log(err);
-            });*/
+            });
     },
     resetButtonBackgrounds: function() {
         this.setState({

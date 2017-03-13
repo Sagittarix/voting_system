@@ -108,16 +108,22 @@ public class District {
         return mmResult;
     }
 
-    public void setMmResult(DistrictMMResult mmResult) {
-        this.mmResult = mmResult;
+    public void setMmResult(DistrictMMResult result) {
+        this.mmResult = result;
+        if (result != null) {
+            result.setDistrict(this);
+        }
     }
 
     public DistrictSMResult getSmResult() {
         return smResult;
     }
 
-    public void setSmResult(DistrictSMResult smResult) {
-        this.smResult = smResult;
+    public void setSmResult(DistrictSMResult result) {
+        this.smResult = result;
+        if (result != null) {
+            result.setDistrict(this);
+        }
     }
 
     public DistrictResult getResultByType(ResultType type) {

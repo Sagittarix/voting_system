@@ -22,7 +22,7 @@ import voting.service.PartyService;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static voting.results.model.result.ResultType.SINGLE_MANDATE;
+import static voting.results.model.result.ResultType.*;
 
 /**
  * Created by domas on 2/23/17.
@@ -35,7 +35,7 @@ public class ResultServiceImpl implements ResultService {
     private final CandidateService candidateService;
     private final ResultRepository resultRepository;
 
-    private MultiMandateResultSummary mmSummary;
+    private ConsolidatedResults consolidated;
 
 
     @Autowired
@@ -75,7 +75,7 @@ public class ResultServiceImpl implements ResultService {
         District district = districtService.getDistrict(districtId);
         DistrictMMResult result = resultRepository.findMmResultByDistrict(district);
         if (result == null) {
-            result = (DistrictMMResult) saveNewDistrictResult(district, ResultType.MULTI_MANDATE);
+            result = (DistrictMMResult) saveNewDistrictResult(district, MULTI_MANDATE);
         }
         return result;
     }
@@ -95,60 +95,64 @@ public class ResultServiceImpl implements ResultService {
     }
 
     @Override
-    public MultiMandateResultSummary getMmResultSummary() {
-        if (mmSummary == null) {
-            constructNewMmResultSummary();
+    public ConsolidatedResults getConsolidatedResults() {
+        if (consolidated == null) {
+            constructNewResultSummary();
         }
-        return mmSummary;
+        return consolidated;
     }
 
-    @Transactional
     @Override
     public CountySMResult addCountySmResult(CountyResultData resultDTO) {
-        County county = districtService.getCounty(resultDTO.getCountyId());
-        if (resultRepository.existsSmResultByCounty(county)) {
-            throw new IllegalArgumentException(String.format("Apylinkės \"%s\" rezultatas jau užregistruotas", county));
-        }
-        county.setSmResult((CountySMResult) convertToCountyResult(resultDTO, SINGLE_MANDATE));
-        districtService.save(county.getDistrict());
-        return county.getSmResult();
+        return (CountySMResult) addCountyResult(resultDTO, SINGLE_MANDATE);
+    }
+
+    @Override
+    public CountyMMResult addCountyMmResult(CountyResultData resultDTO) {
+        return (CountyMMResult) addCountyResult(resultDTO, MULTI_MANDATE);
     }
 
     @Transactional
-    @Override
-    public CountyMMResult addCountyMmResult(CountyResultData resultDTO) {
+    private CountyResult addCountyResult(CountyResultData resultDTO, ResultType type) {
         County county = districtService.getCounty(resultDTO.getCountyId());
-        if (resultRepository.existsMmResultByCounty(county)) {
-            throw new IllegalArgumentException(String.format("Apylinkės \"%s\" rezultatas jau užregistruotas", county));
-        }
-        county.setMmResult((CountyMMResult) convertToCountyResult(resultDTO, ResultType.MULTI_MANDATE));
+        throwIllegalArgumentIfCountyResultExists(county, type,
+                String.format("Apylinkės \"%s\" rezultatas jau užregistruotas", county));
+        county.setResultByType(convertToCountyResult(resultDTO, type), type);
         districtService.save(county.getDistrict());
-        return county.getMmResult();
+        return districtService.getCounty(county.getId()).getResultByType(type);
     }
 
     @Transactional
     @Override
     public void confirmCountyResult(Long id) {
-        CountyResult result = getCountyResult(id);
-        throwIllegalArgumentIfConfirmed(result, "Rezultatas jau patvirtintas");
+        CountyResult countyResult = getCountyResult(id);
+        throwIllegalArgumentIfConfirmed(countyResult, "Rezultatas jau patvirtintas");
 
-        result.setConfirmed(true);
-        District district = result.getCounty().getDistrict();
+        countyResult.setConfirmed(true);
+        District district = countyResult.getCounty().getDistrict();
         districtService.save(district);
 
-        ResultType type = result instanceof CountySMResult ?
-                          SINGLE_MANDATE :
-                          ResultType.MULTI_MANDATE;
+        ResultType type = (countyResult instanceof CountySMResult) ? SINGLE_MANDATE : MULTI_MANDATE;
 
-        updateDistrictResult(district, result, type);
-        if (type == ResultType.MULTI_MANDATE) {
-            updateMmResultSummary((CountyMMResult) result);
+        DistrictResult districtResult = updateDistrictResult(district, countyResult, type);
+
+        if (consolidated == null) {
+            constructNewResultSummary();
+        } else {
+            if (type == MULTI_MANDATE) {
+                consolidated.combineCountyMmResult((CountyMMResult) countyResult);
+                consolidated.setMmResults(getAllDistrictMmResults());
+            } else {
+                if (districtResult.getConfirmedCountyResults() == districtResult.getTotalCountyResults()) {
+                    consolidated.processCompletedSmResult((DistrictSMResult) districtResult);
+                }
+            }
         }
     }
 
     @Transactional
-    private void updateDistrictResult(District district, CountyResult countyResult, ResultType type) {
-        DistrictResult districtResult = type == SINGLE_MANDATE ?
+    private DistrictResult updateDistrictResult(District district, CountyResult countyResult, ResultType type) {
+        DistrictResult districtResult = (type == SINGLE_MANDATE) ?
                 resultRepository.findSmResultByDistrict(district) :
                 resultRepository.findMmResultByDistrict(district);
         if (districtResult == null) {
@@ -157,6 +161,19 @@ public class ResultServiceImpl implements ResultService {
             districtResult.addCountyResult(countyResult);
         }
         districtService.save(district);
+        return district.getResultByType(type);
+    }
+
+    private void constructNewResultSummary() {
+        constructMmResultForAllDistricts();
+        consolidated = new ConsolidatedResults(partyService.getParties(), districtService.getDistricts());
+    }
+
+    @Transactional
+    private void constructMmResultForAllDistricts() {
+        districtService.getDistricts().stream()
+                .filter(d -> d.getMmResult() == null)
+                .forEach(d -> saveNewDistrictResult(d, MULTI_MANDATE));
     }
 
     @Transactional
@@ -165,19 +182,6 @@ public class ResultServiceImpl implements ResultService {
         district.setResultByType(result, type);
         districtService.save(district);
         return district.getResultByType(type);
-    }
-
-    private void updateMmResultSummary(CountyMMResult result) {
-        if (mmSummary == null) {
-            constructNewMmResultSummary();
-        } else {
-            mmSummary.combineResults(result);
-            mmSummary.setResults(getAllDistrictMmResults());
-        }
-    }
-
-    private void constructNewMmResultSummary() {
-        mmSummary = new MultiMandateResultSummary(partyService.getParties(), getAllDistrictMmResults());
     }
 
     @Transactional
@@ -195,7 +199,6 @@ public class ResultServiceImpl implements ResultService {
 
         districtService.save(county.getDistrict());
     }
-
 
     private Result getResult(Long id) {
         Result result = resultRepository.findOne(id);
@@ -224,8 +227,9 @@ public class ResultServiceImpl implements ResultService {
 
     private DistrictResult constructBlankDistrictResult(District district, ResultType type) {
         DistrictResult result = type == SINGLE_MANDATE ?
-                new DistrictSMResult(district) :
-                new DistrictMMResult(district);
+                new DistrictSMResult() :
+                new DistrictMMResult();
+        result.setDistrict(district);
         List<Vote> voteList = type == SINGLE_MANDATE ?
                 constructBlankCandidateVoteList(district.getCandidates()):
                 constructBlankPartyVoteList(partyService.getParties());
@@ -247,6 +251,13 @@ public class ResultServiceImpl implements ResultService {
 
     private void throwIllegalArgumentIfConfirmed(CountyResult cr, String message) {
         if (cr.isConfirmed()) {
+            throw new IllegalArgumentException(message);
+        }
+    }
+
+    private void throwIllegalArgumentIfCountyResultExists(County county, ResultType type, String message) {
+        if (type == SINGLE_MANDATE && resultRepository.existsSmResultByCounty(county)
+                || type == MULTI_MANDATE && resultRepository.existsMmResultByCounty(county)) {
             throw new IllegalArgumentException(message);
         }
     }

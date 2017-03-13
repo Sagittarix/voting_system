@@ -5,7 +5,6 @@ import voting.model.District;
 import voting.model.Party;
 import voting.results.model.votecount.PartyVote;
 
-import javax.xml.transform.sax.SAXSource;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -132,13 +131,23 @@ public class ConsolidatedResults {
                 result.getDistrict().getName(), completedSmResults, totalDistricts));
 
         Candidate winner = result.getVotes().get(0).getCandidate();
+        System.out.println("Elected is: " + winner);
+
 
         smElectedCandidates.add(winner);
         if (!electedCandidates.add(winner)) {
             // add next candidate from winners party
 
-            Party party = winner.getParty();
+            System.out.println("Candidate is already elected, searching for net in his party");
+            // TODO; padaryti exceptiona, jeigu pritruksta nariu partijoj
+            Candidate nextCandidate = winner.getParty().getCandidates().stream()
+                    .filter(this::candidateIsNotYetElected)
+                    .findFirst()
+                    .get();
+            System.out.println("Next candidate in list: " + nextCandidate);
 
+
+            partyMandates.merge(winner.getParty(), 1L, Long::sum);
         }
     }
 
@@ -149,16 +158,34 @@ public class ConsolidatedResults {
 
         if (completedMmResults == totalDistricts) {
             System.out.println("MM voting is complete");
-            System.out.println("Mandated won in MM voting: " + preliminaryMmPartyMandates);
+            System.out.println("Mandates won in MM voting: " + preliminaryMmPartyMandates);
 
-            //for each mandate add candidates
+            addCandidatesElectedInMmVoting();
 
+            System.out.println("ELECTED CANDIDATES: ");
+            electedCandidates.forEach(System.out::println);
 
         }
     }
 
+    private void addCandidatesElectedInMmVoting() {
+        preliminaryMmPartyMandates.forEach((party, mandates) -> {
+            party.getCandidates().stream()
+                    .filter(this::candidateIsNotYetElected)
+                    .limit(mandates)
+                    .forEach(c -> {
+                        System.out.println("Candidate elected, based on mm results: " + c);
+                        electedCandidates.add(c);
+                    });
+        });
+    }
+
     private boolean resultIsComplete(DistrictResult result) {
         return result.getConfirmedCountyResults() == result.getTotalCountyResults();
+    }
+
+    private boolean candidateIsNotYetElected(Candidate candidate) {
+        return !electedCandidates.contains(candidate);
     }
 
     public void setMmResults(List<DistrictMMResult> mmResults) {

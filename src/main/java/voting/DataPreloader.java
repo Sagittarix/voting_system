@@ -99,24 +99,24 @@ public class DataPreloader implements CommandLineRunner {
         Candidate cand17 = new Candidate("Septynioliktas", "Septynioliktas", "55500055517", "Ilgas kandidato aprasymas kad virsytu 20 simboliu");
         Candidate cand18 = new Candidate("Astuonioliktas", "Astuonioliktas", "55500055518", "Ilgas kandidato aprasymas kad virsytu 20 simboliu");
 
-        List<Candidate> candidateList1 = new ArrayList<>(Arrays.asList(cand1, cand2, cand16));
-        List<Candidate> candidateList2 = new ArrayList<>(Arrays.asList(cand6, cand7, cand17));
-        List<Candidate> candidateList3 = new ArrayList<>(Arrays.asList(cand11, cand12, cand18));
+        List<Candidate> candidateList1 = new ArrayList<>(Arrays.asList(cand1, cand6, cand16));
+        List<Candidate> candidateList2 = new ArrayList<>(Arrays.asList(cand2, cand7, cand17));
+        List<Candidate> candidateList3 = new ArrayList<>(Arrays.asList(cand3, cand8, cand18));
 
         party1.addCandidate(cand1);
+        party1.addCandidate(cand2);
+        party1.addCandidate(cand3);
         party1.addCandidate(cand4);
-        party1.addCandidate(cand7);
-        party1.addCandidate(cand10);
-        party1.addCandidate(cand13);
-        party2.addCandidate(cand2);
-        party2.addCandidate(cand5);
+        party1.addCandidate(cand5);
+        party2.addCandidate(cand6);
+        party2.addCandidate(cand7);
         party2.addCandidate(cand8);
-        party2.addCandidate(cand11);
-        party2.addCandidate(cand14);
-        party3.addCandidate(cand3);
-        party3.addCandidate(cand6);
-        party3.addCandidate(cand9);
+        party2.addCandidate(cand9);
+        party2.addCandidate(cand10);
+        party3.addCandidate(cand11);
         party3.addCandidate(cand12);
+        party3.addCandidate(cand13);
+        party3.addCandidate(cand14);
         party3.addCandidate(cand15);
 
         candidateList1.forEach(district1::addCandidate);

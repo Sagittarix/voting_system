@@ -8,6 +8,7 @@ import voting.results.model.votecount.PartyVote;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static voting.utils.Constants.PARTY_ENTRY_MARK;
 import static voting.utils.Constants.TOTAL_MANDATES;
 
 /**
@@ -15,7 +16,7 @@ import static voting.utils.Constants.TOTAL_MANDATES;
  */
 public class ConsolidatedResults {
 
-    private int availableMandates;
+    private int mandatesForMmVoting;
     private Set<Candidate> smElectedCandidates;
     private Set<Candidate> electedCandidates;
 
@@ -40,13 +41,12 @@ public class ConsolidatedResults {
         this.preliminaryMmPartyMandates = parties.stream().collect(Collectors.toMap(p -> p, p -> 0L));
         this.partyMandates = parties.stream().collect(Collectors.toMap(p -> p, p -> 0L));
 
-        this.availableMandates = TOTAL_MANDATES - districts.size();
+        this.mandatesForMmVoting = TOTAL_MANDATES - districts.size();
 
         this.totalDistricts = districts.size();
 
         this.mmResults = districts.stream().map(District::getMmResult).collect(Collectors.toList());
-        this.mmResults.forEach(this::combineDistrictMmResult);
-
+        this.mmResults.forEach(this::mergeDistrictResult);
 
         this.smElectedCandidates = new HashSet<>();
         this.electedCandidates = new HashSet<>();
@@ -58,11 +58,12 @@ public class ConsolidatedResults {
                 .forEach(this::processCompletedSmResult);
     }
 
-    private void combineDistrictMmResult(DistrictMMResult result) {
+
+    private void mergeDistrictResult(DistrictMMResult result) {
         validBallots += result.getValidBallots();
         spoiledBallots += result.getSpoiledBallots();
         totalBallots = validBallots + spoiledBallots;
-        addVotes(result.getVotes());
+        mergePartyVotes(result.getVotes());
         computePreliminaryMmPartyMandates();
 
         if (resultIsComplete(result)) {
@@ -70,36 +71,42 @@ public class ConsolidatedResults {
         }
     }
 
-    public void combineCountyMmResult(CountyMMResult result) {
+    public void mergeCountyResult(CountyMMResult result) {
         validBallots += result.getValidBallots();
         spoiledBallots += result.getSpoiledBallots();
         totalBallots = validBallots + spoiledBallots;
-        addVotes(result.getVotes());
-
+        mergePartyVotes(result.getVotes());
         computePreliminaryMmPartyMandates();
 
-        // TODO: temp, fix
         DistrictMMResult dr = result.getCounty().getDistrict().getMmResult();
         if (resultIsComplete(dr)) {
             processCompletedMmResult(dr);
         }
-
     }
 
     private void computePreliminaryMmPartyMandates() {
         Map<Party, Double> mandateFractions = new HashMap<>();
 
+        Long validBallotsForPassingParties = partyVotecount.entrySet().stream()
+                .mapToLong(Map.Entry::getValue)
+                .filter(this::partyPassesEntryMark)
+                .sum();
+
         partyVotecount.forEach((party, votecount) -> {
-            Double floatMandates = computeMandates(votecount);
-            Long longMandates = floatMandates.longValue();
-            preliminaryMmPartyMandates.put(party, longMandates);
-            mandateFractions.put(party, floatMandates - longMandates);
+            if (partyPassesEntryMark(votecount)) {
+                Double floatMandates = computeMandates(votecount, validBallotsForPassingParties);
+                Long longMandates = floatMandates.longValue();
+                preliminaryMmPartyMandates.put(party, longMandates);
+                mandateFractions.put(party, floatMandates - longMandates);
+            } else {
+                preliminaryMmPartyMandates.put(party, 0L);
+            }
         });
 
         Long mandatesGiven = preliminaryMmPartyMandates.values().stream().reduce(Long::sum).get();
-        Long mandatesRemaining = availableMandates - mandatesGiven;
+        Long mandatesRemaining = mandatesForMmVoting - mandatesGiven;
 
-        if (totalBallots != 0) {
+        if (validBallotsForPassingParties > 0) {
             mandateFractions.entrySet().stream()
                     .sorted(Map.Entry.<Party, Double>comparingByValue().reversed())
                     .limit(mandatesRemaining)
@@ -110,17 +117,21 @@ public class ConsolidatedResults {
         System.out.println("PRELIM mm MANDATES: " + preliminaryMmPartyMandates);
     }
 
-    private Double computeMandates(Long votecount) {
-        if (totalBallots == 0) {
+    private boolean partyPassesEntryMark(Long votecount) {
+        return (double) votecount / validBallots > PARTY_ENTRY_MARK;
+    }
+
+    private Double computeMandates(Long votecount, Long validBallots) {
+        if (validBallots == 0) {
             return 0d;
         }
-        double percentOfAllVotes = (double) votecount / totalBallots;
-        return percentOfAllVotes > 0.05d ?
-               percentOfAllVotes * availableMandates :
+        double percentOfAllVotes = (double) votecount / validBallots;
+        return percentOfAllVotes > PARTY_ENTRY_MARK ?
+               percentOfAllVotes * mandatesForMmVoting :
                0d;
     }
 
-    private void addVotes(List<PartyVote> votes) {
+    private void mergePartyVotes(List<PartyVote> votes) {
         votes.forEach(v -> partyVotecount.merge(v.getParty(), v.getVoteCount(), Long::sum));
     }
 
@@ -136,9 +147,8 @@ public class ConsolidatedResults {
 
         smElectedCandidates.add(winner);
         if (!electedCandidates.add(winner)) {
-            // add next candidate from winners party
 
-            System.out.println("Candidate is already elected, searching for net in his party");
+            System.out.println("Candidate " + winner + " is already elected, searching for net in his party");
             // TODO; padaryti exceptiona, jeigu pritruksta nariu partijoj
             Candidate nextCandidate = winner.getParty().getCandidates().stream()
                     .filter(this::candidateIsNotYetElected)

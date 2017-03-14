@@ -140,7 +140,7 @@ public class ResultServiceImpl implements ResultService {
             constructNewResultSummary();
         } else {
             if (type == MULTI_MANDATE) {
-                consolidated.combineCountyMmResult((CountyMMResult) countyResult);
+                consolidated.mergeCountyResult((CountyMMResult) countyResult);
                 consolidated.setMmResults(getAllDistrictMmResults());
             } else {
                 if (districtResult.getConfirmedCountyResults() == districtResult.getTotalCountyResults()) {

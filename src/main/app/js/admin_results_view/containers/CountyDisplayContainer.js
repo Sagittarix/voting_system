@@ -5,6 +5,7 @@ var AdminViewCandidateComponent = require('../components/tiny_components/AdminVi
 var ConfirmButton = require('../components/tiny_components/ConfirmButton');
 var VoteListRow = require('../../counties_results/components/VoteListRow');
 var spring = require('../../config/SpringConfig');
+var ConfirmAction = require('../../components/tiny_components/ConfirmAction');
 
 var CountyDisplayContainer = React.createClass({
     getInitialState: function() {
@@ -14,7 +15,7 @@ var CountyDisplayContainer = React.createClass({
             county: this.props.unit,
             smResult: this.props.unit.smResult,
             mmResult: this.props.unit.mmResult,
-            actveResultId: undefined
+            activeResultId: undefined
         });
     },
     componentWillReceiveProps: function(newProps) {
@@ -72,30 +73,58 @@ var CountyDisplayContainer = React.createClass({
         var result = smDisplay ? this.state.smResult : this.state.mmResult
 
         if (result.confirmed) {
-            confirmBtn = 
-                <ConfirmButton
-                    text="Patvirtinta "
-                    spanClass="glyphicon glyphicon-ok-sign"
-                />
+            confirmBtn =
+
+                    <ConfirmButton
+                        id={"confirmed-results-button-" + this.state.county.name + "-" + this.state.county.district.name}
+                        text="Patvirtinta "
+                        spanClass="glyphicon glyphicon-ok-sign"
+                    />
         } else {
-            confirmBtn = 
-                <ConfirmButton
-                    onClick={this.confirmResults.bind(this, result.id)}
-                    text="Patvirtinti rezultatus "
-                    spanClass="glyphicon glyphicon-exclamation-sign"
-                />
+            confirmBtn =
+                <ConfirmAction
+                    title={"Norite patvirtinti įkeltus rezultatus? Apygarda: " + this.state.county.district.name + ". Apylinkė: " + this.state.county.name +"."}
+                    body="Patvirtintų duomenų atšaukimas neįmanomas."
+                    onConfirm={this.confirmResults.bind(this, result.id)}
+                    confirmText={"Pašalinti apylinkės rezultatus"}
+                >
+
+                    <button
+                        id={"confirm-results-button-" + this.state.county.name + "-" + this.state.county.district.name}
+                        className="btn btn-default btn-sm floaters-right"
+                    >
+                        Patvirtinti rezultatus&nbsp;
+                        <span className="glyphicon glyphicon-exclamation-sign"></span>
+                    </button>
+                </ConfirmAction>
         }
         return confirmBtn;
     },
     determineDeleteButton: function() {
+        if (this.props.unit.smResult != null) {
+            if (this.state.smDisplay && this.props.unit.smResult.confirmed) return undefined;
+        }
+        if (this.props.unit.mmResult != null) {
+            if (!this.state.smDisplay && this.props.unit.mmResult.confirmed) return undefined;
+        }
+
         if (this.state.activeResultId) {
-            deleteBtn = <button 
-                            className="btn btn-default btn-sm floaters-right" 
-                            onClick={this.handleDelete.bind(this, this.state.activeResultId)}
-                        >
-                            Pašalinti 
-                            <span className="glyphicon glyphicon-remove"></span>
-                        </button>    
+            deleteBtn = <ConfirmAction
+                            title={"Norite pašalinti įkeltus rezultatus? Apygarda: " + this.state.county.district.name + ". Apylinkė: " + this.state.county.name +"."}
+                            body="Duomenų atstatymas bus neįmanomas."
+                            onConfirm={this.handleDelete.bind(this, this.state.activeResultId)}
+                            confirmText={"Pašalinti apylinkės rezultatus"}
+                            >
+
+                            <button
+                                id={"delete-results-button-" + this.state.county.name + "-" + this.state.county.district.name}
+                                className="btn btn-default btn-sm floaters-right"
+                            >
+                                Pašalinti rezultatus&nbsp;
+                                <span className="glyphicon glyphicon-remove"></span>
+                            </button>
+
+                        </ConfirmAction>
         } else {
             deleteBtn = undefined
         }

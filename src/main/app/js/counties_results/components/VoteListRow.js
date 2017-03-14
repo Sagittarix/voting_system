@@ -30,9 +30,8 @@ var VoteListRow = React.createClass({
                         </div>
         }
         return (
-            
                 <div className="list-group-item">
-                    <div className="row narrowed">
+                    <div className="row narrowed whitened">
                         <div>
                             <div style={{height: 20}}>
                                 {unitHtml}

@@ -3,13 +3,13 @@ var axios = require('axios');
 var NavigationBarComponent = require('./components/NavigationBarComponent');
 var spring = require('./config/SpringConfig');
 
-/*var representative = {
+var representative = {
     "id": 1,
     "firstName": "Rep",
     "lastName": "Rep",
     "username": "rep.rep",
     "email": "email@email.lt",
-    "county": { "id": 1, "name": "TEST COUNTY", "link": "http://dummy" },
+    "county": { "id": 1, "name": "TEST COUNTY", "voterCount": 10000, "address": "TEST ADDRESS" },
     "district": { "id": 1, "name": "TEST DISTRICT", "link": "http://dummy" },
     "roles": ["ROLE_REPRESENTATIVE"]
 };
@@ -20,14 +20,17 @@ var admin = {
     "lastName": "Admin",
     "username": "admin.admin",
     "roles": ["ROLE_ADMIN"]
-};*/
+};
 
 var Application = React.createClass({
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
-    getInitialState() {
+    /*getInitialState() {
         return ({ currentUser: {} });
+    },*/
+    getInitialState() {
+        return ({ currentUser: representative });
     },
     getPrincipal() {
         const _this = this;
@@ -40,7 +43,7 @@ var Application = React.createClass({
             });
     },
     componentDidMount() {
-        this.getPrincipal();
+        //this.getPrincipal();
     },
     manageUser(command) {
         if (command === "LOGOUT") {
@@ -51,7 +54,7 @@ var Application = React.createClass({
     },
     render() {
         return (
-			<div className="container">
+			<div className="container" id="app">
 				<NavigationBarComponent
 					currentUser={ this.state.currentUser }
 					manageUser={this.manageUser}

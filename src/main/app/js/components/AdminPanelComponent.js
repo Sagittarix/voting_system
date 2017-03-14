@@ -5,20 +5,25 @@ var axios = require('axios');
 var spring = require('../config/SpringConfig');
 
 var styles = {
-    "active": {backgroundColor: '#006B96', color:"white"},
-    "passive": {backgroundColor: '#CDEBF7', color:"#006B96"},
+    "active-location1": {backgroundColor: '#9D9FB5', color:"white"},
+    "active-location2": {backgroundColor: '#B8A668', color:"white"},
+    "active-location3": {backgroundColor: '#77A0AA', color:"white"},
+    "active-location4": {backgroundColor: '#8AB28D', color:"white"},
+    "active-location5": {backgroundColor: '#C47752', color:"white"},
+    "passive": {backgroundColor: '#D8DADB', color:"#006B96"},
     "image": {width: 60, height: 60, marginBottom: 10}
 }
 
 var AdminPanelComponent = React.createClass({
     getInitialState() {
-        return ({ tagIds: this.setBackgroundsByLocation(), admin: false });
+        //return ({ tagIds: this.setBackgroundsByLocation(), currentUser: this.props.currentUser, admin: false });
+        return ({ tagIds: this.setBackgroundsByLocation(), currentUser: this.props.currentUser, admin: true });
     },
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
-    componentWillMount() {
-        const _this = this;
+    componentDidMount() {
+        /*const _this = this;
         let fd = new FormData();
         fd.append("role", "ROLE_ADMIN");
         axios.post(spring.localHost.concat('/api/auth/role'), fd)
@@ -31,7 +36,14 @@ var AdminPanelComponent = React.createClass({
             })
             .catch(err => {
                 console.log(err);
-            });
+            });*/
+    },
+    componentWillReceiveProps(newProps) {
+        let loggedOut = Object.keys(newProps.currentUser).length == 0;
+        if (newProps.currentUser != this.state.currentUser || loggedOut) {
+            this.context.router.push('/');
+            this.setState({ admin: false });
+        }
     },
     resetButtonBackgrounds: function() {
         this.setState({
@@ -49,7 +61,7 @@ var AdminPanelComponent = React.createClass({
         var newState = {};
 
         Object.keys(stateObj.tagIds).forEach(key => {
-            var value = (key === tag.id) ? styles.active : styles.passive;
+            var value = (key === tag.id) ? styles["active-" + key] : styles.passive;
             newState[key] = value;
         });
         this.setState({ tagIds: newState });
@@ -85,19 +97,19 @@ var AdminPanelComponent = React.createClass({
 
         switch (this.props.location.pathname) {
             case '/administravimas/teritorinis-suskirstymas':
-                tagIds.location1 = styles.active;
+                tagIds.location1 = styles["active-location1"];
                 break;
             case '/administravimas/apygardu-kandidatai':
-                tagIds.location2 = styles.active;
+                tagIds.location2 = styles["active-location2"];
                 break;
             case '/administravimas/apylinkiu-atstovai':
-                tagIds.location3 = styles.active;
+                tagIds.location3 = styles["active-location3"];
                 break;
             case '/administravimas/politinis-suskirstymas':
-                tagIds.location4 = styles.active;
+                tagIds.location4 = styles["active-location4"];
                 break;
             case '/administravimas/apylinkiu-rezultatai':
-                tagIds.location5 = styles.active;
+                tagIds.location5 = styles["active-location5"];
         }
 
         return tagIds;
@@ -116,7 +128,7 @@ var AdminPanelComponent = React.createClass({
 									className="adminPanelButton"
 									id="location1"
 									style={this.state.tagIds.location1}>
-									<img src="app/imgs/planet-earth.png" style={ styles.image }/>
+                                    <span className="glyphicon glyphicon-globe big-glyph" aria-hidden="true" style={{ marginBottom: 10 }}></span>
                                     <p style={{ marginBottom: 0 }}>Teritoriniai</p>
                                     <p>vienetai</p>
 								</Link>
@@ -127,7 +139,7 @@ var AdminPanelComponent = React.createClass({
 									className="adminPanelButton"
 									id="location2"
 									style={this.state.tagIds.location2}>
-									<img src="app/imgs/SM_candidate.png" style={ styles.image }/>
+                                    <span className="glyphicon glyphicon-apple big-glyph" aria-hidden="true" style={{ marginBottom: 10 }}></span>
                                     <p style={{ marginBottom: 0 }}>Apygardų</p>
                                     <p>kandidatai</p>
 								</Link>
@@ -138,7 +150,7 @@ var AdminPanelComponent = React.createClass({
 									className="adminPanelButton"
 									id="location3"
 									style={this.state.tagIds.location3}>
-									<img src="app/imgs/representative1.png" style={ styles.image }/>
+                                    <span className="glyphicon glyphicon-grain big-glyph" aria-hidden="true" style={{ marginBottom: 10 }}></span>
                                     <p style={{ marginBottom: 0 }}>Apylinkių</p>
                                     <p>atstovai</p>
 								</Link>
@@ -149,7 +161,7 @@ var AdminPanelComponent = React.createClass({
 									className="adminPanelButton"
 									id="location4"
 									style={this.state.tagIds.location4}>
-									<img src="app/imgs/political_party.png" style={ styles.image }/>
+                                    <span className="glyphicon glyphicon-piggy-bank big-glyph" aria-hidden="true" style={{ marginBottom: 10 }}></span>
                                     <p style={{ marginBottom: 0 }}>Politiniai</p>
                                     <p>vienetai</p>
 								</Link>
@@ -160,7 +172,7 @@ var AdminPanelComponent = React.createClass({
 									className="adminPanelButton"
 									id="location5"
 									style={this.state.tagIds.location5}>
-									<img src="app/imgs/results_chart.png" style={ styles.image }/>
+                                    <span className="glyphicon glyphicon-stats big-glyph" aria-hidden="true" style={{ marginBottom: 10 }}></span>
                                     <p style={{ marginBottom: 0 }}>Apylinkių</p>
                                     <p>rezultatai</p>
 								</Link>

@@ -4,7 +4,7 @@ function AddedCountyDisplayComponent(props) {
     var remove = function() { props.remove((props.index)) };
     return (
         <div style={{ padding: 3 }}>
-            <p style={{ float: 'right', clear: 'both', cursor: 'pointer' }} onClick={remove}>
+            <p id={"remove-county-" + props.county.name} style={{ float: 'right', clear: 'both', cursor: 'pointer' }} onClick={remove}>
                 <span className="glyphicon glyphicon-remove-sign">
                 </span> &nbsp; Pašalinti
             </p>
@@ -18,7 +18,7 @@ function AddedCountyDisplayComponent(props) {
                 <span className="glyphicon glyphicon-map-marker"></span>&nbsp;{props.county.address}
             </p>
             <p style={{ }}>
-                <hr/>
+                <hr id="hr-narrow-around"/>
             </p>
 
         </div>

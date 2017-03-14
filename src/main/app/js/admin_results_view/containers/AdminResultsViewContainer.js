@@ -4,12 +4,16 @@ var AdminResultsViewComponent = require('../components/AdminResultsViewComponent
 var CountyDisplayContainer = require('./CountyDisplayContainer');
 var spring = require('../../config/SpringConfig');
 
+var timer = null;
+
 var AdminResultsViewContainer = React.createClass({
 	getInitialState: function() {
 		return ({ optionsMap: new Map(),
 				  counties: [],
 				  activeDistrict: 0,
-				  activeCounty: 0 });
+				  activeCounty: 0,
+        	      query: ''
+		});
 	},
 	componentDidMount: function() {
 		var _this = this;
@@ -38,10 +42,10 @@ var AdminResultsViewContainer = React.createClass({
 
 	},
 	setActiveDistrict: function(e) {
-		this.setState({ activeDistrict: e.target.value, activeCounty: 0 });
+		this.setState({ activeDistrict: e.target.value, activeCounty: 0, query: '' });
 	},
 	setActiveCounty: function(e) {
-		this.setState({ activeCounty: e.target.value });
+		this.setState({ activeCounty: e.target.value, query: '' });
 	},
 	filterByCounty(county) {
 		return county.name === this.state.activeCounty
@@ -49,17 +53,37 @@ var AdminResultsViewContainer = React.createClass({
 	filterByDistrict(county) {
 		return county.district.name === this.state.activeDistrict
 	},
+    filterByQuery(county) {
+		return county.name.toLowerCase().includes(this.state.query) ||
+			county.district.name.toLowerCase().includes(this.state.query);
+    },
+    onKeyUp() {
+        const value = document.getElementById("territorial-search").value;
+        const _this = this;
+
+        $('#territorial-search').keyup(function() {
+            clearTimeout(timer);
+            timer = setTimeout(_this.handleChangeQuery.bind(_this, value), 1000);
+        })
+    },
+    handleChangeQuery: function(value) {
+        this.setState({ query: value.toLowerCase(), activeDistrict: 0, activeCounty: 0 });
+    },
+    clearQuery: function() {
+        this.setState({ query: '' });
+    },
 	prepareCounties() {
-		var counties = this.state.counties;
-		var preparedCounties = [];
+		let counties = this.state.counties;
 
 		if (this.state.activeCounty != 0) {
 			counties = counties.filter(this.filterByDistrict).filter(this.filterByCounty)
 		} else if (this.state.activeDistrict != 0) {
 			counties = counties.filter(this.filterByDistrict)
+		} else {
+			counties = counties.filter(this.filterByQuery);
 		}
 
-		var preparedCounties = counties.map((c, idx) => {
+		return counties.map((c, idx) => {
 			return (
 				<CountyDisplayContainer
 					key={c.district.id + "." + c.id}
@@ -67,23 +91,21 @@ var AdminResultsViewContainer = React.createClass({
 					unit={c}
 				/>
 			)
-		})
-
-		return preparedCounties;
+		});
 	},
 	districtsSelect: function() {
 		var districtOptions = [];
 
 		this.state.optionsMap.forEach((v, k) => {
 			districtOptions.push(
-				<option 
-					value={k} 
+				<option
+					value={k}
 					key={k + "-" + v.name}
 				> 
 					{k} 
 				</option>
 			);			
-		})
+		});
 
 		return (
 			<select value={this.state.activeDistrict} onChange={this.setActiveDistrict}>
@@ -99,8 +121,8 @@ var AdminResultsViewContainer = React.createClass({
 	},
 	countiesSelect: function() {
 		var countyOptions = [];
-		var dict = this.state.optionsMap
-		var activeDistrict = this.state.activeDistrict
+		var dict = this.state.optionsMap;
+		var activeDistrict = this.state.activeDistrict;
 
 		if (activeDistrict == 0) return undefined;
 
@@ -132,6 +154,9 @@ var AdminResultsViewContainer = React.createClass({
 				  counties={this.prepareCounties()}
 				  districtsSelect ={this.districtsSelect()}
 				  countiesSelect={this.countiesSelect()}
+				  onKeyUp={this.onKeyUp}
+				  clearQuery={this.clearQuery}
+				  activeDistrict={this.state.activeDistrict}
 			   />
 	}
 });

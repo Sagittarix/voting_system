@@ -1,25 +1,36 @@
 body {
     font-family: 'open sans';
-    overflow-x: hidden;
+    overflow-y: scroll;
+    max-height: 100vh;
+
+}
+
+#app, .container {
+    min-height: 100vh;
+    background-color: #e7e9eb;
+}
+
+.container, .row.grayed {
+    background-color: #e7e9eb;
 }
 
 /* dashboards */
 
-#background-video{
-    height: 100%;
-    width: 100%;
-    float: left;
-    top: 0;
-    padding: 0;
-    position: fixed; // optional depending on what you want
+#navigation, #website-page-title, #homeButton {
+    background-color: #273B51;
 }
 
 #bootstrap-overrides-nav-tabs {
     color: #5875db;
-    background-color: #f1eeeb;
-    width: 100%;
+    background-color: #e7e9eb;
+    width: 95%;
     height: auto;
+    margin: auto;
     text-align: center;
+}
+
+#bootstrap-overrides-nav-tabs.nav.nav-tabs.narrow {
+    width: 90%;
 }
 
 #bootstrap-overrides-nav-tabs .tab {
@@ -27,8 +38,16 @@ body {
     height: 100%;
     text-align: center;
     display: table;
-    padding: 15px;
-    background-color: #CDEBF7;
+    padding: 15px 0;
+    margin: 0;
+}
+
+#bootstrap-overrides-nav-tabs .tab.centered.widened {
+    height: 100%;
+    text-align: center;
+    display: table-cell;
+    padding: 15px 0;
+    margin: 0;
 }
 
 #bootstrap-overrides-nav-tabs .tab a {
@@ -44,7 +63,6 @@ body {
     text-align: center;
     display: table;
     padding: 15px;
-    background-color: #CDEBF7;
 }
 
 .main-layout {
@@ -54,14 +72,76 @@ body {
     height: auto;
 }
 
+/* admin panel tabs and views */
+
+.list-group-item.active.location1 {
+    background-color: #9D9FB5;
+}
+
+.location1 {
+    background-color: #9D9FB5;
+}
+
+.list-group-item.active.location2 {
+    background-color: #b8a668;
+}
+
+.location2 {
+    background-color: #b8a668;
+}
+
+.list-group-item.active.location3 {
+    background-color: #77A0AA;
+}
+
+.location3 {
+    background-color: #77A0AA;
+}
+
+.list-group-item.active.location4 {
+    background-color: #8AB28D;
+}
+
+.location4 {
+    background-color: #8AB28D;
+}
+
+.list-group-item.active.location5 {
+    background-color: #C47752;
+}
+
+.location5 {
+    background-color: #C47752;
+}
+
+.list-group-item.active.location6 {
+    background-color: #77A0AA;
+}
+
+.location6 {
+    background-color: #77A0AA;
+}
+
+.list-group-item.active.location8 {
+    background-color: #77A0AA;
+}
+
+.location8 {
+    background-color: #77A0AA;
+}
+
+.big-glyph {
+    font-size: 2.5em;
+}
+
 /*admin panel buttons*/
 
 .adminPanelButton {
-    transition-duration: 0.15s;
+    transition-duration: 0.3s;
 }
 
 adminPanelButton:hover{
-    transition-duration: 0.15s;
+    transition-duration: 0.3s;
 }
 
 /* admin panel - units view */
@@ -69,12 +149,17 @@ adminPanelButton:hover{
 .row {
     margin: 0;
     height: 100vh;
-    background-color: #CDEBF7;
+    background-color: #E7E9EB;
 }
 
 .row.narrowed {
   height: auto;
-  background-color: white;
+  background-color: #E7E9EB;
+}
+
+.row.narrowed.whitened {
+    height: auto;
+    background-color: white;
 }
 
 .container {
@@ -96,6 +181,11 @@ adminPanelButton:hover{
     margin-bottom: 7px;
     width: 100%;
     vertical-align: middle;
+}
+
+#hr-narrow-around {
+    border: 1px solid #9D9FB5;
+    margin: 0;
 }
 
 .inline-add-county-form .form-group {
@@ -122,11 +212,16 @@ adminPanelButton:hover{
 
 .form-group.errors-area {
     padding-top: 10px;
+    margin-bottom: 0;
 }
 
 .form-group.county-aside {
     margin-bottom: 5px;
     margin-left: 15px;
+}
+
+.form-group button {
+    margin-left: 10px;
 }
 
 .aside-county-form .form-control {
@@ -150,7 +245,7 @@ adminPanelButton:hover{
 }
 
 .unit {
-    padding: 5px 0;
+    padding: 1px 0;
 }
 
 .unit.narrowed {
@@ -229,6 +324,16 @@ form div.form-group.browse-button-area, form div.form-group.upload-button-area {
   float: left;
 }
 
+#reps-view-actions-bar {
+    height: 60px;
+    width: 100%;
+    background-color: white;
+}
+
+.verticals {
+    display: table;
+}
+
 /* candidate-card */
 
 .candidate-card {
@@ -289,6 +394,10 @@ form div.form-group.browse-button-area, form div.form-group.upload-button-area {
 }
 
 /* COUNTY RESULTS */
+
+#sort-select-district select, #sort-select-county select {
+    width: 100%;
+}
 
 .county-results {
     margin-bottom: 0;
@@ -484,7 +593,6 @@ form div.form-group.browse-button-area, form div.form-group.upload-button-area {
     display: table-cell;
 }
 
-
 @import url('https://fonts.googleapis.com/css?family=Lato:300,400');
 
 .navbar-default {
@@ -662,4 +770,37 @@ form div.form-group.browse-button-area, form div.form-group.upload-button-area {
     max-height: 0;
     overflow: hidden;
     border-width: 0;
+}
+
+Modal {
+    position: relative;
+    z-index: 1000000;
+    opacity: 1.00;
+}
+
+/* PUBLIC RESULTS */
+
+h3, h4 {
+    font-weight: 900;
+    text-align: center;
+}
+
+.h4-election {
+    margin-bottom: 20px;
+}
+
+.small-p {
+    font-size: 0.8em;
+    text-align: left;
+    margin-bottom: 2px;
+}
+
+.small-p.indented {
+    margin-left: 10px;
+}
+
+.centered-p {
+    font-size: 0.9em;
+    text-align: center;
+    margin: 10px 0;
 }

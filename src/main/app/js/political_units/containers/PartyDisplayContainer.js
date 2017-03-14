@@ -25,7 +25,7 @@ var PartyDisplayContainer = React.createClass({
             this.state.party.candidates.forEach((c, index) => {
                 cand.push(
                       <CandidateCardComponent
-                          key={index}
+                          key={c.personId}
                           candidate={c}
                       />
                 );
@@ -71,7 +71,7 @@ var PartyDisplayContainer = React.createClass({
                       body="Duomenų atstatymas neįmanomas."
                       onConfirm={this.deleteCandidates.bind(this, this.state.party.id)}
                   >
-                      <p className="remove-units-element confirmation-buttons">
+                      <p id ={ "delete-party-members-" + this.state.party.name} className="remove-units-element confirmation-buttons">
                           <span className="glyphicon glyphicon-remove-sign">
                           </span> &nbsp;
                           Šalinti narius
@@ -83,6 +83,7 @@ var PartyDisplayContainer = React.createClass({
                           associationId={this.state.party.id}
                           springErrors={this.state.springErrors}
                           openModal={this.props.openModal}
+                          name={this.state.party.name}
                       />
         }
         return actions;
@@ -99,7 +100,7 @@ var PartyDisplayContainer = React.createClass({
                 body="Duomenų atstatymas neįmanomas."
                 onConfirm={this.deleteParty.bind(this, this.props.raktas, this.state.party.id)}
             >
-                <p className="remove-units-element confirmation-buttons">
+                <p id ={ "delete-party-" + this.state.party.name} className="remove-units-element confirmation-buttons">
                     <span className="glyphicon glyphicon-remove-sign">
                     </span> &nbsp;
                     Šalinti partiją

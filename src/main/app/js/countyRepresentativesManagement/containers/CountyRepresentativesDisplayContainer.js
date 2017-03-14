@@ -7,7 +7,6 @@ var CountyRepresentativesDisplayComponent = require('../components/CountyReprese
 var spring = require('../../config/SpringConfig');
 
 var CountyRepresentativesDisplayContainer = React.createClass({
-
     getInitialState: function () {
         return ({
             representatives: [],
@@ -19,13 +18,12 @@ var CountyRepresentativesDisplayContainer = React.createClass({
             },
             springErrors: [],
             toggleFullRepresentativesDisplayView: false,
+            popupAlert: false
         });
     },
-
     toggleFullRepresentativesList: function () {
         this.setState({ toggleFullRepresentativesDisplayView: !this.state.toggleFullRepresentativesDisplayView });
     },
-
     componentDidMount: function () {
         var self = this;
         axios
@@ -43,7 +41,6 @@ var CountyRepresentativesDisplayContainer = React.createClass({
                 console.log(error);
             })
     },
-
     handleDeleteRepresentative: function (repId, index) {
         var self = this;
         var deleteUrl = spring.localHost.concat('/api/county-rep/') + repId;
@@ -57,28 +54,28 @@ var CountyRepresentativesDisplayContainer = React.createClass({
                 console.log(error);
             });
     },
-
     newRep: function (name, surname, email, district, county) {
-        //e.preventDefault();
-        var self = this;
         var errors = [];
         var countyId = this.getCountyId(district, county);
-
         var RequestBody = {"firstName": name, "lastName": surname, "email": email, "countyId": countyId};
 
         axios.post(spring.localHost.concat('/api/county-rep'), RequestBody)
             .then(function(response){
-                var actualRepresentatives = self.state.representatives;
+                let actualRepresentatives = this.state.representatives;
                 actualRepresentatives.push(response.data);
-                self.setState({ representatives: actualRepresentatives, newRepresentative: response.data });
-            })
+                this.setState({
+                    representatives: actualRepresentatives,
+                    newRepresentative: response.data,
+                    springErrors: [],
+                    popupAlert: true
+                });
+            }.bind(this))
             .catch(function(error){
                 console.log(error);
                 errors.push(error.response.data.rootMessage);
-                self.setState({ springErrors: errors.concat(error.response.data.errorsMessages) });
-            });
+                this.setState({ springErrors: errors.concat(error.response.data.errorsMessages) });
+            }.bind(this));
     },
-
     getCountyId: function (districtName, countyName) {
         var CountyId;
         this.state.districts.map(function(district, index){
@@ -90,7 +87,10 @@ var CountyRepresentativesDisplayContainer = React.createClass({
         });
         return CountyId;
     },
-
+    popupAlert() {
+        if (this.state.popupAlert) this.setState({ popupAlert: false });
+        return this.state.popupAlert;
+    },
     render: function () {
             return (
                     <CountyRepresentativesDisplayComponent
@@ -101,6 +101,7 @@ var CountyRepresentativesDisplayContainer = React.createClass({
                         springErrors={this.state.springErrors}
                         toggleFullRepresentativesList={this.toggleFullRepresentativesList}
                         toggleFullRepresentativesDisplayView={this.state.toggleFullRepresentativesDisplayView}
+                        popupAlert={this.popupAlert()}
                     />
             )
     }

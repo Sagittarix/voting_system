@@ -7,11 +7,26 @@ var  NewCountyAsideFormContainer = React.createClass({
     getInitialState: function() {
         return ({ showAsideForm: false, countyName: "", voterCount: undefined, countyAddress: "" });
     },
+    componentWillReceiveProps: function(newProps) {
+        if (newProps.clearCountyForm) {
+            this.setState({
+                showAsideForm: false,
+                countyName: "",
+                voterCount: undefined,
+                countyAddress: ""
+            });
+        }
+    },
     handleSwitchState: function() {
         this.setState({ showAsideForm: !this.state.showAsideForm });
     },
     handleCountyCancel: function() {
-      this.setState({ showAsideForm: !this.state.showAsideForm, countyName: "", voterCount: undefined, countyAddress: "" });
+      this.setState({
+          showAsideForm: !this.state.showAsideForm,
+          countyName: "",
+          voterCount: undefined,
+          countyAddress: ""
+      });
       this.props.reportCountyErrors([]);
     },
     handleCountyAdd(e) {

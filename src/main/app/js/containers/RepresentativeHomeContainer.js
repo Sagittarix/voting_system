@@ -11,14 +11,17 @@ var RepresentativeHomeContainer = React.createClass({
         router: React.PropTypes.object.isRequired
     },
     getInitialState() {
-        return { representative: false };
+        return {
+            //representative: false, currentUser: this.props.currentUser
+            representative: true, currentUser: this.props.currentUser
+        };
     },
     componentDidMount() {
         const _this = this;
         let fd = new FormData();
         fd.append("role", "ROLE_REPRESENTATIVE");
 
-        axios.post(spring.localHost.concat('/api/auth/role'), fd)
+        /*axios.post(spring.localHost.concat('/api/auth/role'), fd)
             .then(resp => {
                 if (resp.data == false) {
                     _this.context.router.push('/')
@@ -28,10 +31,14 @@ var RepresentativeHomeContainer = React.createClass({
             })
             .catch(err => {
                 console.log(err);
-            });
+            });*/
     },
     componentWillReceiveProps(newProps) {
-        if (Object.keys(newProps.currentUser).length == 0) this.context.router.push('/');
+        let loggedOut = Object.keys(newProps.currentUser).length == 0;
+        if (newProps.currentUser != this.state.currentUser || loggedOut) {
+            this.context.router.push('/');
+            this.setState({ representative: false });
+        }
     },
     render: function() {
         let displayer;

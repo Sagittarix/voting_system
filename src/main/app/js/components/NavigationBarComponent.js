@@ -54,6 +54,7 @@ var NavigationBarComponent = React.createClass ({
             return (
                 <li className="dropdown">
                     <Link to="#"
+                          id="user-menu"
                           className="dropdown-toggle"
                           data-toggle="dropdown"
                           role="button"
@@ -66,13 +67,13 @@ var NavigationBarComponent = React.createClass ({
                     </Link>
                     <ul className="dropdown-menu">
                         <li>
-                            <Link to={this.dashboardLink()} style={{ cursor: 'pointer' }}>
+                            <Link id="user-menu-option1" to={this.dashboardLink()} style={{ cursor: 'pointer' }}>
                                 <span className="glyphicon glyphicon-tasks" aria-hidden="true"></span> &nbsp;
                                 Darbo aplinka
                             </Link>
                         </li>
                         <li>
-                            <Link to="" onClick={this.doLogout} style={{ cursor: 'pointer' }}>
+                            <Link id="user-menu-option2-logout" to="" onClick={this.doLogout} style={{ cursor: 'pointer' }}>
                                 <span className="glyphicon glyphicon-log-out" aria-hidden="true"></span> &nbsp;
                                 {this.state.logout}
                             </Link>
@@ -90,7 +91,7 @@ var NavigationBarComponent = React.createClass ({
         var b3 = (this.props.thirdMenu == '') ? {display : 'none'} : {display : 'inline'};
 
         return (
-            <nav className="navbar navbar-default">
+            <nav className="navbar navbar-default" id="navigation">
                 <div className="container-fluid">
 
                     <div className="navbar-header">
@@ -100,9 +101,15 @@ var NavigationBarComponent = React.createClass ({
 
                         <ul className="nav navbar-nav">
                             {/*<li><a id="homePageButton" onClick={this.props.homePageButtonPressed} href="#"><span className="glyphicon glyphicon-home" aria-hidden="true"></span> Pradžia </a></li>*/}
-                            <li><div className="navBarTitle">{this.state.pageTitle}</div></li>
+                            <li><div id="website-page-title" className="navBarTitle">{this.state.pageTitle}</div></li>
                             <Link to="/">
-                                <button id="homeButton" onClick={this.props.homePageButtonPressed} ><span className="glyphicon glyphicon-home" aria-hidden="true"></span> {this.state.homeButtonText}</button>
+                                <button
+                                    id="homeButton"
+                                    style={{ backgroundColor: '#273B51' }}
+                                    onClick={this.props.homePageButtonPressed}>
+                                    <span className="glyphicon glyphicon-home" aria-hidden="true"></span>
+                                    {this.state.homeButtonText}
+                                </button>
                             </Link>
                         </ul>
 

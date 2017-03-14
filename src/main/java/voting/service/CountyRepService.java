@@ -3,6 +3,7 @@ package voting.service;
 import voting.dto.countyrep.CountyRepresentativeData;
 import voting.model.CountyRep;
 
+import javax.mail.MessagingException;
 import java.util.List;
 
 /**
@@ -10,7 +11,7 @@ import java.util.List;
  */
 public interface CountyRepService {
 
-    CountyRep addNewCountyRep(CountyRepresentativeData countyRepData);
+    CountyRep addNewCountyRep(CountyRepresentativeData countyRepData) throws MessagingException;
 
     void deleteCountyRep(Long id);
 

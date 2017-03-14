@@ -13,7 +13,6 @@ public class CountyMMResultDTO extends CountyResultDTO {
 
     private List<PartyVoteDTO> votes;
 
-
     public CountyMMResultDTO(CountyMMResult result) {
         super(result);
         votes = result.getVotes().stream().map(PartyVoteDTO::new).collect(Collectors.toList());

@@ -11,7 +11,7 @@ public class Formatter {
         latinizedFirstName = latinizedFirstName.replace('č', 'c');
         latinizedFirstName = latinizedFirstName.replace('ė', 'e');
         latinizedFirstName = latinizedFirstName.replace('ū', 'u');
-        String latinizedLastName = firstName.toLowerCase().replace('ą', 'a');
+        String latinizedLastName = lastName.toLowerCase().replace('ą', 'a');
         latinizedLastName = latinizedLastName.replace('č', 'c');
         latinizedLastName = latinizedLastName.replace('ė', 'e');
         latinizedLastName = latinizedLastName.replace('ū', 'u');

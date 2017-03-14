@@ -31,7 +31,6 @@ public class CountyRepresentativeData {
     @NotNull(message = "Apylinkės identifikatorius būtinas")
     private Long countyId;
 
-
     public Long getId() {
         return id;
     }

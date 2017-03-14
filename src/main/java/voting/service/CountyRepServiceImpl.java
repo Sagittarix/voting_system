@@ -5,11 +5,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import voting.dto.countyrep.CountyRepresentativeData;
 import voting.exception.NotFoundException;
+import voting.service.mail.MailService;
 import voting.model.County;
 import voting.model.CountyRep;
 import voting.repository.CountyRepRepository;
 import voting.utils.BCryptUtils;
 
+import javax.mail.MessagingException;
 import java.util.List;
 
 /**
@@ -21,20 +23,22 @@ public class CountyRepServiceImpl implements CountyRepService {
 
     private CountyRepRepository countyRepRepository;
     private DistrictService districtService;
+    private MailService mailService;
 
     @Autowired
     public CountyRepServiceImpl(CountyRepRepository countyRepRepository,
-                                DistrictService districtService) {
+                                DistrictService districtService,
+                                MailService mailService) {
         this.countyRepRepository = countyRepRepository;
         this.districtService = districtService;
+        this.mailService = mailService;
     }
 
     @Transactional
     @Override
-    public CountyRep addNewCountyRep(CountyRepresentativeData countyRepData) {
+    public CountyRep addNewCountyRep(CountyRepresentativeData countyRepData) throws MessagingException {
         County county = districtService.getCounty(countyRepData.getCountyId());
         CountyRep countyRep = new CountyRep();
-        //TODO: JavaMail password
         String randomPassword = BCryptUtils.generateRandomPassword(9);
 
         countyRep.setFirstName(countyRepData.getFirstName());
@@ -43,6 +47,9 @@ public class CountyRepServiceImpl implements CountyRepService {
         countyRep.setPassword_digest(randomPassword);
         countyRep.setCounty(county);
         countyRep.setRoles(new String[]{"ROLE_REPRESENTATIVE"});
+
+        mailService.sendMail(countyRep, randomPassword);
+
         return countyRepRepository.save(countyRep);
     }
 

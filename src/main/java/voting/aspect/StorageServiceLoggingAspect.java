@@ -21,14 +21,12 @@ public class StorageServiceLoggingAspect {
 
     private final Logger logger = Logger.getLogger(StorageServiceLoggingAspect.class);
 
-    @Pointcut("execution(* voting.service.FileSystemStorageService.store(..)) && args(file)")
-    void store(MultipartFile file) { }
+    @Pointcut("execution(* voting.service.FileSystemStorageService.store(..))")
+    void store() { }
 
-    @AfterReturning(
-            pointcut = "store(file)",
-            returning = "returnValue",
-            argNames = "jp,file,returnValue")
-    public void afterStoringFile(JoinPoint jp, MultipartFile file, Path returnValue) {
+    @AfterReturning(pointcut = "store()", returning = "returnValue")
+    public void afterStoringFile(JoinPoint jp, Path returnValue) {
+        MultipartFile file = (MultipartFile)jp.getArgs()[1];
         logger.debug(
                 String.format("File [fileName: %s, type: %s] stored [location: %s] : %s",
                 file.getOriginalFilename(), file.getContentType(), returnValue.toAbsolutePath(), jp.toLongString()));

@@ -26,7 +26,6 @@ public abstract class CountyResultDTO extends ResultDTO {
         setVoterCount(result.getCounty().getVoterCount());
     }
 
-
     public CountyShortDTO getCounty() {
         return county;
     }

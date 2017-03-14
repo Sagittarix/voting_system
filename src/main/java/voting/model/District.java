@@ -15,6 +15,7 @@ import java.util.Objects;
 /**
  * Created by domas on 1/10/17.
  */
+
 @Entity
 public class District {
 
@@ -41,7 +42,6 @@ public class District {
     private DistrictSMResult smResult;
 
     public District() { }
-
 
     public District(String name) {
         this.name = name;
@@ -160,6 +160,5 @@ public class District {
     public String toString() {
         return String.format("%s (id %d)", name, id);
     }
-
 
 }

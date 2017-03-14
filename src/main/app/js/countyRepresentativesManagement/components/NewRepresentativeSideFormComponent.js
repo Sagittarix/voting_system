@@ -28,7 +28,7 @@ var NewRepresentativeSideFormComponent = React.createClass({
         if (newProps.popupAlert) {
             var element = document.getElementById("rep-success-alert");
             element.classList.remove('hide');
-            setTimeout(function() { element.classList.add('hide') }, 300000);
+            setTimeout(function() { element.classList.add('hide') }, 3000);
         }
     },
     handleNameChange(event) {

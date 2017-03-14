@@ -10,6 +10,7 @@ import voting.model.County;
 import voting.model.CountyRep;
 import voting.repository.CountyRepRepository;
 import voting.utils.BCryptUtils;
+import voting.utils.Formatter;
 
 import javax.mail.MessagingException;
 import java.util.List;
@@ -43,6 +44,7 @@ public class CountyRepServiceImpl implements CountyRepService {
 
         countyRep.setFirstName(countyRepData.getFirstName());
         countyRep.setLastName(countyRepData.getLastName());
+        countyRep.setUsername(Formatter.formUsername(countyRepData.getFirstName(), countyRepData.getLastName()));
         countyRep.setEmail(countyRepData.getEmail());
         countyRep.setPassword_digest(randomPassword);
         countyRep.setCounty(county);

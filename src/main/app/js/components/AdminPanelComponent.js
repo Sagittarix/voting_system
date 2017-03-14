@@ -36,7 +36,7 @@ var AdminPanelComponent = React.createClass({
             })
             .catch(err => {
                 console.log(err);
-            });
+            });*/
     },
     componentWillReceiveProps(newProps) {
         let loggedOut = Object.keys(newProps.currentUser).length == 0;

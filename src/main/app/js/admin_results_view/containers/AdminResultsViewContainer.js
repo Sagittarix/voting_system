@@ -10,8 +10,8 @@ var AdminResultsViewContainer = React.createClass({
 	getInitialState: function() {
 		return ({ optionsMap: new Map(),
 				  counties: [],
-				  activeDistrict: '',
-				  activeCounty: '',
+				  activeDistrict: 0,
+				  activeCounty: 0,
         	      query: ''
 		});
 	},

@@ -4,6 +4,7 @@ import com.github.javafaker.Faker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+import voting.dto.district.DistrictData;
 import voting.model.*;
 import voting.repository.*;
 
@@ -46,11 +47,13 @@ public class DataPreloader implements CommandLineRunner {
     public void run(String... strings) throws Exception {
         // loadStressData();
 
+        DistrictData d1 = new DistrictData();
+        d1.setName("Vilnius");
+
+
         District district1 = new District("Vilnius");
         District district2 = new District("Kaunas");
         District district3 = new District("Klaipėda");
-//        District district4 = new District("District 4");
-//        District district5 = new District("District asd");
 
         County county1 = new County("Senamiestis", 3000L, "Adresas 1");
         County county2 = new County("Naujamiestis", 3000L, "Adresas 2");
@@ -70,8 +73,6 @@ public class DataPreloader implements CommandLineRunner {
         districtRepository.save(district1);
         districtRepository.save(district2);
         districtRepository.save(district3);
-//        districtRepository.save(district4);
-//        districtRepository.save(district5);
 
         Party party1 = new Party("Demokratai");
         Party party2 = new Party("Tvarka ir tesingumas");
@@ -79,36 +80,52 @@ public class DataPreloader implements CommandLineRunner {
 
         partyRepository.save(Arrays.asList(party1, party2, party3));
 
-        Candidate cand1 = new Candidate("Jonas", "Joinaitis", "55500055501", "Ilgas kandidato aprasymas kad virsytu 20 simboliu");
-        Candidate cand2 = new Candidate("Petras", "Petraitis", "55500055502", "Ilgas kandidato aprasymas kad virsytu 20 simboliu");
-        Candidate cand3 = new Candidate("Jonas", "Kubilius", "55500055503", "Ilgas kandidato aprasymas kad virsytu 20 simboliu");
-        Candidate cand4 = new Candidate("Jonas", "Adamkus", "55500055504", "Ilgas kandidato aprasymas kad virsytu 20 simboliu");
-        Candidate cand5 = new Candidate("Jonas", "Grybas", "55500055505", "Ilgas kandidato aprasymas kad virsytu 20 simboliu");
-        Candidate cand6 = new Candidate("Jonas", "Alekna", "55500055506", "Ilgas kandidato aprasymas kad virsytu 20 simboliu");
-        Candidate cand7 = new Candidate("Jonas", "Juršėnas", "55500055507", "Ilgas kandidato aprasymas kad virsytu 20 simboliu");
-        Candidate cand8 = new Candidate("Jonas", "Uspaskichas", "55500055508", "Ilgas kandidato aprasymas kad virsytu 20 simboliu");
-        Candidate cand9 = new Candidate("Jonas", "Aparatas", "55500055509", "Ilgas kandidato aprasymas kad virsytu 20 simboliu");
+        Candidate cand1 = new Candidate("Pirmas", "Pirmas", "55500055501", "Ilgas kandidato aprasymas kad virsytu 20 simboliu");
+        Candidate cand2 = new Candidate("Antras", "Antras", "55500055502", "Ilgas kandidato aprasymas kad virsytu 20 simboliu");
+        Candidate cand3 = new Candidate("Trecias", "Trecias", "55500055503", "Ilgas kandidato aprasymas kad virsytu 20 simboliu");
+        Candidate cand4 = new Candidate("Ketvirtas", "Ketvirtas", "55500055504", "Ilgas kandidato aprasymas kad virsytu 20 simboliu");
+        Candidate cand5 = new Candidate("Penktas", "Penktas", "55500055505", "Ilgas kandidato aprasymas kad virsytu 20 simboliu");
+        Candidate cand6 = new Candidate("Sestas", "Sestas", "55500055506", "Ilgas kandidato aprasymas kad virsytu 20 simboliu");
+        Candidate cand7 = new Candidate("Septintas", "Septintas", "55500055507", "Ilgas kandidato aprasymas kad virsytu 20 simboliu");
+        Candidate cand8 = new Candidate("Astuntas", "Astuntas", "55500055508", "Ilgas kandidato aprasymas kad virsytu 20 simboliu");
+        Candidate cand9 = new Candidate("Devintas", "Devintas", "55500055509", "Ilgas kandidato aprasymas kad virsytu 20 simboliu");
+        Candidate cand10 = new Candidate("Desimtas", "Desimtas", "55500055510", "Ilgas kandidato aprasymas kad virsytu 20 simboliu");
+        Candidate cand11 = new Candidate("Vienuoliktas", "Vienuoliktas", "55500055511", "Ilgas kandidato aprasymas kad virsytu 20 simboliu");
+        Candidate cand12 = new Candidate("Dvyliktas", "Dvyliktas", "55500055512", "Ilgas kandidato aprasymas kad virsytu 20 simboliu");
+        Candidate cand13 = new Candidate("Tryliktas", "Tryliktas", "55500055513", "Ilgas kandidato aprasymas kad virsytu 20 simboliu");
+        Candidate cand14 = new Candidate("Keturioliktas", "Keturioliktas", "55500055514", "Ilgas kandidato aprasymas kad virsytu 20 simboliu");
+        Candidate cand15 = new Candidate("Penkioliktas", "Penkioliktas", "55500055515", "Ilgas kandidato aprasymas kad virsytu 20 simboliu");
+        Candidate cand16 = new Candidate("Sesioliktas", "Sesioliktas", "55500055516", "Ilgas kandidato aprasymas kad virsytu 20 simboliu");
+        Candidate cand17 = new Candidate("Septynioliktas", "Septynioliktas", "55500055517", "Ilgas kandidato aprasymas kad virsytu 20 simboliu");
+        Candidate cand18 = new Candidate("Astuonioliktas", "Astuonioliktas", "55500055518", "Ilgas kandidato aprasymas kad virsytu 20 simboliu");
 
-        List<Candidate> candidateList1 = new ArrayList<Candidate>(Arrays.asList(cand1, cand2, cand3, cand4));
-        List<Candidate> candidateList2 = new ArrayList<Candidate>(Arrays.asList(cand5, cand6, cand7));
+        List<Candidate> candidateList1 = new ArrayList<>(Arrays.asList(cand1, cand6, cand16));
+        List<Candidate> candidateList2 = new ArrayList<>(Arrays.asList(cand2, cand7, cand17));
+        List<Candidate> candidateList3 = new ArrayList<>(Arrays.asList(cand3, cand8, cand18));
 
         party1.addCandidate(cand1);
         party1.addCandidate(cand2);
-        party2.addCandidate(cand3);
+        party1.addCandidate(cand3);
+        party1.addCandidate(cand4);
+        party1.addCandidate(cand5);
         party2.addCandidate(cand6);
-        party3.addCandidate(cand7);
-        party3.addCandidate(cand8);
-        party3.addCandidate(cand9);
+        party2.addCandidate(cand7);
+        party2.addCandidate(cand8);
+        party2.addCandidate(cand9);
+        party2.addCandidate(cand10);
+        party3.addCandidate(cand11);
+        party3.addCandidate(cand12);
+        party3.addCandidate(cand13);
+        party3.addCandidate(cand14);
+        party3.addCandidate(cand15);
 
-        candidateList1.forEach(c -> {
-            district1.addCandidate(c);
-            candidateRepository.save(c);
-        });
+        candidateList1.forEach(district1::addCandidate);
+        candidateList2.forEach(district2::addCandidate);
+        candidateList3.forEach(district3::addCandidate);
 
-        candidateList2.forEach(c -> {
-            district2.addCandidate(c);
-            candidateRepository.save(c);
-        });
+
+        candidateRepository.save(Arrays.asList(cand1, cand2, cand3, cand4, cand5, cand6, cand7, cand8, cand9, cand10,
+                cand11, cand12, cand13, cand14, cand15, cand16, cand17, cand18));
 
         Faker faker = new Faker();
         CountyRep cr1 = new CountyRep(

@@ -1,17 +1,16 @@
 package voting.dto.results;
 
 import voting.model.Party;
-import voting.results.model.result.MultiMandateResultSummary;
-import voting.results.model.result.ResultType;
+import voting.results.model.result.ConsolidatedResults;
 
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
  * Created by domas on 3/9/17.
  */
-public class MultiMandateResultSummaryDTO {
+public class MMSummaryDTO {
 
     private List<PartyResultDTO> partyResults;
     private Long totalBallots = 0L;
@@ -20,7 +19,7 @@ public class MultiMandateResultSummaryDTO {
 
     private List<DistrictResultSummaryDTO> districtResults;
 
-    public MultiMandateResultSummaryDTO(MultiMandateResultSummary summary) {
+    public MMSummaryDTO(ConsolidatedResults summary) {
         Map<Party, Long> partyVotes = summary.getPartyVotecount();
         Map<Party, Long> partyMandates = summary.getPartyMandates();
         this.validBallots = summary.getValidBallots();
@@ -29,7 +28,7 @@ public class MultiMandateResultSummaryDTO {
         this.partyResults = partyVotes.keySet().stream()
                 .map(p -> new PartyResultDTO(p, partyVotes.get(p), partyMandates.get(p)))
                 .collect(Collectors.toList());
-        this.districtResults = summary.getResults().stream()
+        this.districtResults = summary.getMmResults().stream()
                 .map(DistrictResultSummaryDTO::new)
                 .collect(Collectors.toList());
     }

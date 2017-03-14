@@ -29,5 +29,6 @@ public interface ResultService {
 
     public void deleteCountyResult(Long resultId);
 
-    MultiMandateResultSummary getMmResultSummary();
+    public ConsolidatedResults getConsolidatedResults();
+
 }

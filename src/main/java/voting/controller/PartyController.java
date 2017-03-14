@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.opencsv.exceptions.CsvException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
@@ -31,6 +32,7 @@ import java.util.stream.Collectors;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping(path="/api/party")
+//@PreAuthorize("hasRole('ROLE_ADMIN')")
 public class PartyController {
 
     private final PartyService partyService;
@@ -46,7 +48,7 @@ public class PartyController {
         this.partyService = partyService;
     }
 
-
+    //@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_REPRESENTATIVE')")
     @GetMapping
     public List<PartyDTO> getParties() {
         return partyService.getParties().stream().map(p -> new PartyDTO(p)).collect(Collectors.toList());

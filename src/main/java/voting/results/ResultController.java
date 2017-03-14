@@ -5,12 +5,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import voting.dto.results.*;
 import voting.exception.MultiErrorException;
-import voting.model.District;
 import voting.results.model.result.CountyMMResult;
 import voting.results.model.result.CountySMResult;
 import voting.results.model.result.DistrictMMResult;
 import voting.results.model.result.DistrictSMResult;
-import voting.service.DistrictService;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -26,12 +24,10 @@ import java.util.stream.Collectors;
 public class ResultController {
 
     private ResultService resultService;
-    private DistrictService districtService;
 
     @Autowired
-    public ResultController(ResultService resultService, DistrictService districtService) {
+    public ResultController(ResultService resultService) {
         this.resultService = resultService;
-        this.districtService = districtService;
     }
 
 
@@ -66,11 +62,17 @@ public class ResultController {
     }
 
     @GetMapping(path = "single-mandate")
-    public List<SingleMandateSummaryDTO> getSingleMandateResultsSummary() {
-        List<District> results = districtService.getDistricts();
-        return results.stream().map(SingleMandateSummaryDTO::new).collect(Collectors.toList());
+    public List<DistrictSmResultSummaryDTO> getSingleMandateResultsSummary() {
+        return resultService.getAllDistrictSmResults()
+                    .stream()
+                    .map(DistrictSmResultSummaryDTO::new)
+                    .collect(Collectors.toList());
     }
 
+    @GetMapping(path = "multi-mandate")
+    public MMSummaryDTO getMultiMandateResultsSummary() {
+        return new MMSummaryDTO(resultService.getConsolidatedResults());
+    }
 
     @PostMapping(path = "county/single-mandate")
     public CountySMResultDTO addCountySMResult(@Valid @RequestBody CountyResultData resultData, BindingResult result) {

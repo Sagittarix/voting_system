@@ -28,7 +28,7 @@ public class CandidateData {
     @Length(min = 3, max = 40, message = "Pavardės ilgis nuo 3 iki 40 simbolių")
     private String lastName;
 
-    @NotNull(message = "Aprašymas būtina")
+    @NotNull(message = "Aprašymas būtinas")
     @Length(min = 20, max = 250, message = "Aprašymas nuo 20 iki 250 simbolių")
     private String description;
 

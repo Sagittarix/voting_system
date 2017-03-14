@@ -1,5 +1,7 @@
 package voting.model;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import voting.results.model.result.DistrictMMResult;
 import voting.results.model.result.DistrictResult;
 import voting.results.model.result.DistrictSMResult;
@@ -13,6 +15,7 @@ import java.util.Objects;
 /**
  * Created by domas on 1/10/17.
  */
+
 @Entity
 public class District {
 
@@ -25,6 +28,7 @@ public class District {
 
     private Long voterCount = 0L;
 
+    @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "district", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<County> counties = new ArrayList<>();
 
@@ -38,7 +42,6 @@ public class District {
     private DistrictSMResult smResult;
 
     public District() { }
-
 
     public District(String name) {
         this.name = name;
@@ -105,18 +108,22 @@ public class District {
         return mmResult;
     }
 
-    public void setMmResult(DistrictMMResult mmResult) {
-        this.mmResult = mmResult;
-        mmResult.setDistrict(this);
+    public void setMmResult(DistrictMMResult result) {
+        this.mmResult = result;
+        if (result != null) {
+            result.setDistrict(this);
+        }
     }
 
     public DistrictSMResult getSmResult() {
         return smResult;
     }
 
-    public void setSmResult(DistrictSMResult smResult) {
-        this.smResult = smResult;
-        smResult.setDistrict(this);
+    public void setSmResult(DistrictSMResult result) {
+        this.smResult = result;
+        if (result != null) {
+            result.setDistrict(this);
+        }
     }
 
     public DistrictResult getResultByType(ResultType type) {
@@ -153,6 +160,5 @@ public class District {
     public String toString() {
         return String.format("%s (id %d)", name, id);
     }
-
 
 }

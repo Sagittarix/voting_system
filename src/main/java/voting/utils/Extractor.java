@@ -28,14 +28,14 @@ public class Extractor {
                        .toArray(new String[counties.size()]);
     }
 
-    public static List<Candidate> getOrphanCandidates(List<Candidate> cands) {
+    public static List<Candidate> getOrphanCandidates(List<Candidate> cands, boolean orphan) {
         return cands.stream()
-                    .filter(c -> c.getDistrict() == null)
+                    .filter(c -> (c.getDistrict() == null) == orphan)
                     .collect(Collectors.toList());
     }
 
-    public static String[] extractIdsFromOrphanCandidates(Party party) {
-        List<Candidate> cands = getOrphanCandidates(party.getCandidates());
+    public static String[] extractIdsFromCandidates(Party party, boolean orphan) {
+        List<Candidate> cands = getOrphanCandidates(party.getCandidates(), orphan);
         return cands.stream()
                     .map(c -> c.getId().toString())
                     .collect(Collectors.toList())

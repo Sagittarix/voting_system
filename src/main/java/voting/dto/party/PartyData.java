@@ -18,7 +18,7 @@ public class PartyData {
     private Long id;
 
     @NotNull(message = "Partijos pavadinimas būtinas")
-    @Length(min = 6, max = 40, message = "Partijos pavadinimas nuo 6 iki 40 simbolių")
+    @Length(min = 3, max = 40, message = "Partijos pavadinimas nuo 3 iki 40 simbolių")
     @Pattern(regexp = "^([a-zA-ZąčęėįšųūžĄČĘĖĮŠŲŪŽ\\s\\-][^qQwWxX0-9]*)$", message = "Netinkamas partijos pavadinimas")
     private String name;
 

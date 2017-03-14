@@ -2,10 +2,9 @@ package voting.results;
 
 
 import voting.dto.results.CountyResultData;
-import voting.results.model.result.CountyMMResult;
-import voting.results.model.result.CountySMResult;
-import voting.results.model.result.DistrictMMResult;
-import voting.results.model.result.DistrictSMResult;
+import voting.results.model.result.*;
+
+import java.util.List;
 
 /**
  * Created by domas on 2/22/17.
@@ -20,6 +19,8 @@ public interface ResultService {
 
     public CountyMMResult getCountyMmResult(Long countyId);
 
+    List<DistrictSMResult> getAllDistrictSmResults();
+
     DistrictSMResult getDistrictSmResult(Long districtId);
 
     DistrictMMResult getDistrictMmResult(Long districtId);
@@ -27,5 +28,7 @@ public interface ResultService {
     public void confirmCountyResult(Long resultId);
 
     public void deleteCountyResult(Long resultId);
+
+    public ConsolidatedResults getConsolidatedResults();
 
 }

@@ -10,7 +10,7 @@ import java.util.Date;
  * Created by andrius on 2/9/17.
  */
 
-public class CountyResultDTO extends ResultDTO {
+public abstract class CountyResultDTO extends ResultDTO {
 
     private CountyShortDTO county;
     private boolean confirmed;
@@ -22,10 +22,9 @@ public class CountyResultDTO extends ResultDTO {
         confirmed = result.isConfirmed();
         createdOn = result.getCreatedOn();
         confirmedOn = result.getConfirmedOn();
-        county = result.getCounty() == null ? null : new CountyShortDTO(result.getCounty());
+        county = new CountyShortDTO(result.getCounty());
         setVoterCount(result.getCounty().getVoterCount());
     }
-
 
     public CountyShortDTO getCounty() {
         return county;

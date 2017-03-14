@@ -3,7 +3,7 @@ var axios = require('axios');
 var NavigationBarComponent = require('./components/NavigationBarComponent');
 var spring = require('./config/SpringConfig');
 
-var representative = {
+/*var representative = {
     "id": 1,
     "firstName": "Rep",
     "lastName": "Rep",
@@ -20,17 +20,14 @@ var admin = {
     "lastName": "Admin",
     "username": "admin.admin",
     "roles": ["ROLE_ADMIN"]
-};
+};*/
 
 var Application = React.createClass({
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
-    /*getInitialState() {
-        return ({ currentUser: {} });
-    },*/
     getInitialState() {
-        return ({ currentUser: representative });
+        return ({ currentUser: {} });
     },
     getPrincipal() {
         const _this = this;
@@ -43,7 +40,7 @@ var Application = React.createClass({
             });
     },
     componentDidMount() {
-        //this.getPrincipal();
+        this.getPrincipal();
     },
     manageUser(command) {
         if (command === "LOGOUT") {

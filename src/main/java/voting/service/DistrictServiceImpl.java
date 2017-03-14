@@ -3,6 +3,8 @@ package voting.service;
 import com.opencsv.exceptions.CsvException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -100,6 +102,11 @@ public class DistrictServiceImpl implements DistrictService {
     @Override
     public List<District> getDistricts() {
         return (List<District>) districtRepository.findAll();
+    }
+
+    @Override
+    public Page<District> listAllByPage(Pageable pageable) {
+        return districtRepository.findAll(pageable);
     }
 
     @Override

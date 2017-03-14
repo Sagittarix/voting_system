@@ -2,6 +2,11 @@ package voting.controller;
 
 import com.opencsv.exceptions.CsvException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,6 +20,7 @@ import voting.model.District;
 import voting.service.DistrictService;
 
 import javax.validation.Valid;
+import javax.websocket.server.PathParam;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,6 +32,7 @@ import java.util.stream.Collectors;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping(path = "/api/district")
+//@PreAuthorize("hasRole('ROLE_ADMIN')")
 public class DistrictController {
 
     private DistrictService districtService;
@@ -39,6 +46,18 @@ public class DistrictController {
     @GetMapping
     public List<DistrictDTO> getDistricts() {
         return districtService.getDistricts().stream().map(DistrictDTO::new).collect(Collectors.toList());
+    }
+
+    @GetMapping(path = "paged")
+    public Page<DistrictDTO> getDistrictsPaged(Pageable pageable) {
+        Page<District> loadedPage = districtService.listAllByPage(pageable);
+
+        List<DistrictDTO> list = loadedPage.getContent()
+                                           .stream()
+                                           .map(DistrictDTO::new)
+                                           .collect(Collectors.toList());
+
+        return new PageImpl<>(list, pageable, loadedPage.getTotalElements());
     }
 
     @GetMapping("{id}")
@@ -83,6 +102,7 @@ public class DistrictController {
         return new DistrictDTO(districtService.setCandidateList(id, file));
     }
 
+    //@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_REPRESENTATIVE')")
     @GetMapping("{id}/candidates")
     public List<CandidateDTO> getCandidateList(@PathVariable Long id) {
         return districtService.getCandidateList(id).stream()

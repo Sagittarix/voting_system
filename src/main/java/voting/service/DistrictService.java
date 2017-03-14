@@ -1,6 +1,8 @@
 package voting.service;
 
 import com.opencsv.exceptions.CsvException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 import voting.dto.county.CountyData;
 import voting.dto.district.DistrictData;
@@ -27,6 +29,8 @@ public interface DistrictService {
     District getDistrict(String name);
 
     List<District> getDistricts();
+
+    Page<District> listAllByPage(Pageable pageable);
 
     List<Candidate> getCandidateList(Long id);
 

@@ -1,6 +1,5 @@
 package voting.results.model.result;
 
-
 import voting.results.model.votecount.PartyVote;
 
 import javax.persistence.DiscriminatorValue;

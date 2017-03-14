@@ -19,7 +19,7 @@ public class DistrictData {
     private Long id;
 
     @NotNull(message = "Apygardos pavadinimas būtinas")
-    @Length(min= 6, max=40, message = "Apygardos pavadinimas nuo 6 iki 40 simbolių")
+    @Length(min = 3, max = 40, message = "Apygardos pavadinimas nuo 3 iki 40 simbolių")
     @Pattern(regexp = "^([a-zA-ZąčęėįšųūžĄČĘĖĮŠŲŪŽ\\s\\-][^qQwWxX0-9]*)$", message = "Netinkamas apygardos pavadinimas")
     private String name;
 

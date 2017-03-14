@@ -194,10 +194,10 @@ public class ResultServiceIntegrationTest {
         county2 = districtService.getCounty(2L);
         county3 = districtService.getCounty(3L);
 
-        candidate1 = candidateService.getCandidate(1L);
-        candidate2 = candidateService.getCandidate(2L);
-        candidate3 = candidateService.getCandidate(3L);
-        candidate4 = candidateService.getCandidate(4L);
+        candidate1 = candidateService.getCandidate("55500055501");
+        candidate2 = candidateService.getCandidate("55500055502");
+        candidate3 = candidateService.getCandidate("55500055503");
+        candidate4 = candidateService.getCandidate("55500055504");
 
     }
 
@@ -216,12 +216,12 @@ public class ResultServiceIntegrationTest {
         //Verify
         List<CandidateVote> votes = result.getVotes();
         assertThat(votes.size(), is(3));
-        assertThat(votes.get(0).getCandidate(), is(candidate1));
-        assertThat(votes.get(0).getVoteCount(), is(100L));
+        assertThat(votes.get(0).getCandidate(), is(candidate3));
+        assertThat(votes.get(0).getVoteCount(), is(300L));
         assertThat(votes.get(1).getCandidate(), is(candidate2));
         assertThat(votes.get(1).getVoteCount(), is(200L));
-        assertThat(votes.get(2).getCandidate(), is(candidate3));
-        assertThat(votes.get(2).getVoteCount(), is(300L));
+        assertThat(votes.get(2).getCandidate(), is(candidate1));
+        assertThat(votes.get(2).getVoteCount(), is(100L));
 
     }
 
@@ -236,10 +236,10 @@ public class ResultServiceIntegrationTest {
 
         //Verify
         assertThat(votes.size(), is(2));
-        assertThat(votes.get(0).getParty(), is(party1));
-        assertThat(votes.get(0).getVoteCount(), is(1000L));
-        assertThat(votes.get(1).getParty(), is(party2));
-        assertThat(votes.get(1).getVoteCount(), is(2000L));
+        assertThat(votes.get(0).getParty(), is(party2));
+        assertThat(votes.get(0).getVoteCount(), is(2000L));
+        assertThat(votes.get(1).getParty(), is(party1));
+        assertThat(votes.get(1).getVoteCount(), is(1000L));
 
     }
 
@@ -258,18 +258,18 @@ public class ResultServiceIntegrationTest {
         //Verify
         assertThat(smResult.getCounty(), is(county1));
         assertThat(smResult.getVotes().size(), is(3));
-        assertThat(smResult.getVotes().get(0).getCandidate(), is(candidate1));
-        assertThat(smResult.getVotes().get(0).getVoteCount(), is(100L));
+        assertThat(smResult.getVotes().get(0).getCandidate(), is(candidate3));
+        assertThat(smResult.getVotes().get(0).getVoteCount(), is(300L));
         assertThat(smResult.getVotes().get(1).getCandidate(), is(candidate2));
         assertThat(smResult.getVotes().get(1).getVoteCount(), is(200L));
-        assertThat(smResult.getVotes().get(2).getCandidate(), is(candidate3));
-        assertThat(smResult.getVotes().get(2).getVoteCount(), is(300L));
+        assertThat(smResult.getVotes().get(2).getCandidate(), is(candidate1));
+        assertThat(smResult.getVotes().get(2).getVoteCount(), is(100L));
         assertThat(mmResult.getCounty(), is(county1));
         assertThat(mmResult.getVotes().size(), is(2));
-        assertThat(mmResult.getVotes().get(0).getParty(), is(party1));
-        assertThat(mmResult.getVotes().get(0).getVoteCount(), is(1000L));
-        assertThat(mmResult.getVotes().get(1).getParty(), is(party2));
-        assertThat(mmResult.getVotes().get(1).getVoteCount(), is(2000L));
+        assertThat(mmResult.getVotes().get(0).getParty(), is(party2));
+        assertThat(mmResult.getVotes().get(0).getVoteCount(), is(2000L));
+        assertThat(mmResult.getVotes().get(1).getParty(), is(party1));
+        assertThat(mmResult.getVotes().get(1).getVoteCount(), is(1000L));
     }
 
     @Transactional
@@ -305,7 +305,7 @@ public class ResultServiceIntegrationTest {
 
         //Verify
         assertThat(result.getSpoiledBallots(), is(222L));
-        assertThat(result.getTotalBallots(), is(1200L));
+        assertThat(result.getTotalBallots(), is(1422L));
 
 
     }

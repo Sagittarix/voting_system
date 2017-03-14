@@ -32,7 +32,6 @@ public class DistrictDTO {
         }
     }
 
-
     public Long getId() {
         return id;
     }

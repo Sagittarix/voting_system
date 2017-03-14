@@ -16,8 +16,14 @@ body {
 
 /* dashboards */
 
-#navigation, #website-page-title, #homeButton {
-    background-color: #273B51;
+
+#background-video{
+    height: 100%;
+    width: 100%;
+    float: left;
+    top: 0;
+    padding: 0;
+    position: fixed; // optional depending on what you want
 }
 
 #bootstrap-overrides-nav-tabs {

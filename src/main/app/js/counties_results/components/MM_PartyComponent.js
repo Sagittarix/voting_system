@@ -9,7 +9,7 @@ var MM_PartyComponent = React.createClass({
 
         return (
             <div className="unit">
-                  <div className="list-group-item location6">
+                  <div className="list-group-item ">
                     <div>
                       <div style={{height: "20px"}}>
                         <div id={"party-name-" + this.props.party.name} className="col-md-8">

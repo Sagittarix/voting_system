@@ -21,12 +21,12 @@ public class MMSummaryDTO {
 
     public MMSummaryDTO(ConsolidatedResults summary) {
         Map<Party, Long> partyVotes = summary.getPartyVotecount();
-        Map<Party, Long> partyMandates = summary.getPartyMandates();
+        Map<Party, Long> mmPartyMandates = summary.getPreliminaryMmPartyMandates();
         this.validBallots = summary.getValidBallots();
         this.totalBallots = summary.getTotalBallots();
         this.spoiledBallots = summary.getSpoiledBallots();
         this.partyResults = partyVotes.keySet().stream()
-                .map(p -> new PartyResultDTO(p, partyVotes.get(p), partyMandates.get(p)))
+                .map(p -> new PartyResultDTO(p, partyVotes.get(p), mmPartyMandates.get(p)))
                 .collect(Collectors.toList());
         this.districtResults = summary.getMmResults().stream()
                 .map(DistrictResultSummaryDTO::new)

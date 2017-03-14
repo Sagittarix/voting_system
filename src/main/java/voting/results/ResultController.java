@@ -74,6 +74,11 @@ public class ResultController {
         return new MMSummaryDTO(resultService.getConsolidatedResults());
     }
 
+    @GetMapping(path = "consolidated")
+    public ConsolidatedResultsDTO getConsolidatedResults() {
+        return new ConsolidatedResultsDTO(resultService.getConsolidatedResults());
+    }
+
     @PostMapping(path = "county/single-mandate")
     public CountySMResultDTO addCountySMResult(@Valid @RequestBody CountyResultData resultData, BindingResult result) {
         if (result.hasErrors()) {

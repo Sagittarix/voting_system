@@ -16,13 +16,15 @@ import static voting.utils.Constants.TOTAL_MANDATES;
  */
 public class ConsolidatedResults {
 
+    private Long selfServingElectees;
+
     private int mandatesForMmVoting;
     private Set<Candidate> smElectedCandidates;
     private Set<Candidate> electedCandidates;
 
     private Map<Party, Long> partyVotecount;
     private Map<Party, Long> preliminaryMmPartyMandates;
-    private Map<Party, Long> partyMandates;
+    private Map<Party, Long> totalPartyMandates;
 
     private int completedSmResults = 0;
     private int completedMmResults = 0;
@@ -39,7 +41,8 @@ public class ConsolidatedResults {
 
         this.partyVotecount = parties.stream().collect(Collectors.toMap(p -> p, p -> 0L));
         this.preliminaryMmPartyMandates = parties.stream().collect(Collectors.toMap(p -> p, p -> 0L));
-        this.partyMandates = parties.stream().collect(Collectors.toMap(p -> p, p -> 0L));
+        this.totalPartyMandates = parties.stream().collect(Collectors.toMap(p -> p, p -> 0L));
+        this.selfServingElectees = 0L;
 
         this.mandatesForMmVoting = TOTAL_MANDATES - districts.size();
 
@@ -113,8 +116,6 @@ public class ConsolidatedResults {
                     .map(Map.Entry::getKey)
                     .forEach(party -> preliminaryMmPartyMandates.merge(party, 1L, Long::sum));
         }
-
-        System.out.println("PRELIM mm MANDATES: " + preliminaryMmPartyMandates);
     }
 
     private boolean partyPassesEntryMark(Long votecount) {
@@ -138,57 +139,42 @@ public class ConsolidatedResults {
 
     public void processCompletedSmResult(DistrictSMResult result) {
         completedSmResults++;
-        System.out.println(String.format("SM result complete for %s, completed %d/%d",
-                result.getDistrict().getName(), completedSmResults, totalDistricts));
-
         Candidate winner = result.getVotes().get(0).getCandidate();
-        System.out.println("Elected is: " + winner);
-
 
         smElectedCandidates.add(winner);
+        if (winner.getParty() == null) {
+            selfServingElectees++;
+        }
         if (!electedCandidates.add(winner)) {
-
-            System.out.println("Candidate " + winner + " is already elected, searching for net in his party");
             // TODO; padaryti exceptiona, jeigu pritruksta nariu partijoj
             Candidate nextCandidate = winner.getParty().getCandidates().stream()
                     .filter(this::candidateIsNotYetElected)
                     .findFirst()
                     .get();
-            System.out.println("Next candidate in list: " + nextCandidate);
-
-
-            partyMandates.merge(winner.getParty(), 1L, Long::sum);
+            electedCandidates.add(nextCandidate);
+            totalPartyMandates.merge(winner.getParty(), 1L, Long::sum);
         }
     }
 
     private void processCompletedMmResult(DistrictMMResult result) {
         completedMmResults++;
-        System.out.println(String.format("MM result complete for %s, completed %d/%d",
-                result.getDistrict().getName(), completedMmResults, totalDistricts));
-
         if (completedMmResults == totalDistricts) {
-            System.out.println("MM voting is complete");
-            System.out.println("Mandates won in MM voting: " + preliminaryMmPartyMandates);
-
-            addCandidatesElectedInMmVoting();
-
-            System.out.println("ELECTED CANDIDATES: ");
-            electedCandidates.forEach(System.out::println);
-
+            addMandatesWonInMultiMandateVoting();
         }
     }
 
-    private void addCandidatesElectedInMmVoting() {
+    private void addMandatesWonInMultiMandateVoting() {
         preliminaryMmPartyMandates.forEach((party, mandates) -> {
             party.getCandidates().stream()
                     .filter(this::candidateIsNotYetElected)
                     .limit(mandates)
-                    .forEach(c -> {
-                        System.out.println("Candidate elected, based on mm results: " + c);
-                        electedCandidates.add(c);
-                    });
+                    .forEach(electedCandidates::add);
+        });
+        preliminaryMmPartyMandates.forEach((party, mandates) -> {
+            totalPartyMandates.merge(party, mandates, Long::sum);
         });
     }
+
 
     private boolean resultIsComplete(DistrictResult result) {
         return result.getConfirmedCountyResults() == result.getTotalCountyResults();
@@ -200,6 +186,10 @@ public class ConsolidatedResults {
 
     public void setMmResults(List<DistrictMMResult> mmResults) {
         this.mmResults = mmResults;
+    }
+
+    public Long getSelfServingElectees() {
+        return selfServingElectees;
     }
 
     public Set<Candidate> getElectedCandidates() {
@@ -214,8 +204,8 @@ public class ConsolidatedResults {
         return partyVotecount;
     }
 
-    public Map<Party, Long> getPartyMandates() {
-        return partyMandates;
+    public Map<Party, Long> getTotalPartyMandates() {
+        return totalPartyMandates;
     }
 
     public int getCompletedSmResults() {

@@ -136,6 +136,7 @@ public class ResultServiceImpl implements ResultService {
 
         DistrictResult districtResult = updateDistrictResult(district, countyResult, type);
 
+        // TODO: mega ugly, needs refactoring
         if (consolidated == null) {
             constructNewResultSummary();
         } else {
@@ -143,7 +144,7 @@ public class ResultServiceImpl implements ResultService {
                 consolidated.mergeCountyResult((CountyMMResult) countyResult);
                 consolidated.setMmResults(getAllDistrictMmResults());
             } else {
-                if (districtResult.getConfirmedCountyResults() == districtResult.getTotalCountyResults()) {
+                if (resultIsComplete(districtResult)) {
                     consolidated.processCompletedSmResult((DistrictSMResult) districtResult);
                 }
             }
@@ -260,6 +261,10 @@ public class ResultServiceImpl implements ResultService {
                 || type == MULTI_MANDATE && resultRepository.existsMmResultByCounty(county)) {
             throw new IllegalArgumentException(message);
         }
+    }
+
+    private boolean resultIsComplete(DistrictResult result) {
+        return result.getConfirmedCountyResults() == result.getTotalCountyResults();
     }
 
     private boolean isCountyResult(Result result) {

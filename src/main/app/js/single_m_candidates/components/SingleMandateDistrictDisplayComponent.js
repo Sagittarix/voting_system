@@ -3,7 +3,7 @@ var React = require('react');
 function SingleMandateDistrictDisplayComponent(props) {
     return (
         <div className="unit">
-            <div className="list-group-item list-group-item-success">
+            <div className="list-group-item active location2" style={{position: "relative", zIndex: "0" }}>
                 <div id={"district-title-" + props.name} onClick={props.toggleShow} style={{ cursor: 'pointer' }}>
                     {props.name}
                 </div>

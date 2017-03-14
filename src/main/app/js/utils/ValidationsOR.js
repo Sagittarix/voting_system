@@ -17,7 +17,8 @@ var ValidationsOR = {
         if (!checkMaxLength){
             currentErrors.push(Helpers.errorWrapperWarning(ErrorMessages.nameTooLongBeginning + Variables.maxNameLength + ErrorMessages.nameTooLongEnding + name.length, 2));
         }
-        if (!name.length >= 3){
+        var checkMinLength = name.length >= Variables.minNameLength;
+        if (!checkMinLength){
             currentErrors.push(Helpers.errorWrapperWarning(ErrorMessages.nameTooShort, 3));
         }
         return currentErrors;
@@ -61,7 +62,7 @@ var Variables = {
     firstNameCharacterRegex: /^[AaĄąBbCcČčDdEeĘęĖėFfGgHhIiĮįYyJjKkLlMmNnOoPpRrSsŠšTtUuŲųŪūVvZzŽž\s]*$/,
     otherNameCharactersRegex: /^([AaĄąBbCcČčDdEeĘęĖėFfGgHhIiĮįYyJjKkLlMmNnOoPpRrSsŠšTtUuŲųŪūVvZzŽž\s\-]*)$/,
     maxNameLength: 15,
-    minNameLength: 1,
+    minNameLength: 3,
     emailRegex: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
 };
 
@@ -69,7 +70,7 @@ var ErrorMessages = {
     wrongNameCharacters: "Įvedėte netinkamus simbolius: įveskite tik lietuviškas raides",
     nameTooLongBeginning: "Per daug simbolių: įveskite ne daugiau ",
     nameTooLongEnding: " simbolių. Dabar įvesta: ",
-    nameTooShort: "Įveskite bent 1 simbolį",
+    nameTooShort: "Įveskite bent 3 simbolius",
     emailFormat: "El. pašto adreso pavyzdys: vartotojas@e-mail.lt",
     emailAlreadyExists: "Toks el. pašto adresas jau yra sistemoje.",
 };

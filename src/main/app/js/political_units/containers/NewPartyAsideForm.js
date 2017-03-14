@@ -16,11 +16,12 @@ var NewPartyAsideForm = React.createClass({
         var errors = Validations.checkErrorsPartyAsideForm(this.state.partyName, file);
 
         if (errors.length > 0) {
-            this.setState({ jsErrors: errors });
+            this.setState({ jsErrors: this.prepareJSerrors(errors, this.state.partyName), springErrors: [] });
         } else {
             var fd = new FormData();
             fd.append('file',file);
             refs.fileCSV.value = "";
+
             this.setState({ jsErrors: [], partyName: "" });
             this.props.create(fd, this.state.partyName);
         }
@@ -30,17 +31,13 @@ var NewPartyAsideForm = React.createClass({
     },
     prepareSpringErrors: function() {
         var errors = [];
-        if (this.props.springErrors.length > 0) {
+        if (this.state.springErrors.length > 0) {
             errors = Validations.prepareSpringErrors(this.state.springErrors);
         }
         return errors;
     },
-    prepareJSerrors: function() {
-        var errors = [];
-        if (this.state.jsErrors.length > 0) {
-            errors = Validations.prepareJSerrors(this.state.jsErrors, "Klaida registruojant partiją!");
-        }
-        return errors;
+    prepareJSerrors: function(errors, name) {
+        return Validations.prepareJSerrors(errors, "Klaida registruojant partiją " + name);
     },
     render: function() {
         return (
@@ -48,8 +45,9 @@ var NewPartyAsideForm = React.createClass({
                 name={this.state.partyName}
                 changeName={this.handleNameChange}
                 create={this.create}
-                jsErrors={this.prepareJSerrors()}
+                jsErrors={this.state.jsErrors}
                 springErrors={this.prepareSpringErrors()}
+                popupAlert={this.props.popupAlert}
             />
         );
     }

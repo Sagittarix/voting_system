@@ -41,13 +41,13 @@ var InlineEditComponent = React.createClass({
                     var finalErrors = [];
                     
                     if (err.response == undefined) {
-                        finalErrors.push("Tinklo klaida");
+                        errors.push("Tinklo klaida");
                     } else {
                         errors.push(err.response.data.rootMessage);
-                        errors.concat(err.response.data.errorsMessages);
+                        errors = errors.concat(err.response.data.errorsMessages);
                     }
 
-                    _this.setState({ springErrors: finalErrors, jsErrors: [] });
+                    _this.setState({ springErrors: errors, jsErrors: [] });
                 });
         }
         
@@ -68,7 +68,7 @@ var InlineEditComponent = React.createClass({
         return Validations.prepareJSerrors(this.state.jsErrors, "Klaida registruojant apylinkę", style)
     },
     springErrors() {
-        return Validations.prepareSpringErrors(this.props.springErrors);
+        return Validations.prepareSpringErrors(this.state.springErrors);
     },
     render() {
         var jsErrors = (this.state.jsErrors.length > 0) ? this.jsErrors() : [];
@@ -79,6 +79,7 @@ var InlineEditComponent = React.createClass({
                     <form className="inline-add-county-form" style={{ minHeight: 45, marginBottom: 0, display: 'table-cell' }}>
                         <div className="form-group" style={{ width: '40%' }}>
                             <input type="text"
+                                id={"edit-district-name-field-" + this.state.newName}
                                 onChange={this.handleNameChange}
                                 className="form-control"
                                 value={this.state.newName}
@@ -86,10 +87,10 @@ var InlineEditComponent = React.createClass({
                             />
                         </div>
                         <div className="form-group">
-                            <button id="inline-create-btn" className="btn btn-default btn-sm" onClick={this.handleUnitUpdate}>
+                            <button id={"inline-confirm-btn-" + this.state.newName} className="btn btn-default btn-sm" onClick={this.handleUnitUpdate}>
                                 Atnaujinti
                             </button>
-                            <button id="inline-cancel-btn" className="btn btn-default btn-sm" onClick={this.cancelUpdate}>
+                            <button id={"inline-cancel-btn-" + this.state.newName} className="btn btn-default btn-sm" onClick={this.cancelUpdate}>
                                 Atšaukti
                             </button>
                         </div>

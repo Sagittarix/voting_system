@@ -64,7 +64,7 @@ var SingleMandateDistrictDisplayContainer = React.createClass({
                     <p className="remove-units-element">
                         <span className="glyphicon glyphicon-remove-sign" >
                         </span> &nbsp;
-                        <span>Šalinti kandidatus</span>
+                        <span id={"remove-candidates-" + this.state.district.name}>Šalinti kandidatus</span>
                     </p>
                 </ConfirmAction>
         } else {

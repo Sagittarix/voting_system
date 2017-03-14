@@ -20,7 +20,7 @@ var DistrictDisplayComponent = React.createClass({
         } else {
             return (
                 <div>
-                    <div className="unit-name-area-"
+                    <div className="unit-name-area- location1"
                         onClick={this.props.toggleCountiesList}
                         style={{ cursor: 'pointer' }}
                     >
@@ -46,10 +46,10 @@ var DistrictDisplayComponent = React.createClass({
                             <p className="remove-units-element confirmation-buttons">
                                 <span className="glyphicon glyphicon-remove-sign">
                                 </span>&nbsp;
-                                <span id="remove-county-button">Šalinti apygardą</span>
+                                <span id={"remove-district-" + this.state.unit.name}>Šalinti apygardą</span>
                             </p>
                         </ConfirmAction>
-                        <p className="remove-units-element confirmation-buttons"
+                        <p  id={"edit-district-"+this.state.unit.name} className="remove-units-element confirmation-buttons"
                             onClick={this.toggleEdit}
                         >
                             <span className="glyphicon glyphicon-edit">
@@ -60,9 +60,9 @@ var DistrictDisplayComponent = React.createClass({
                     <div
                         className="list-group-item"
                         style={{ textAlign: 'center' }}>
-                        <strong>Apylinkės</strong>
+                        <strong id={"counties-header-" + this.state.unit.name}>Apylinkės</strong>
                         <span
-                            id="sorting-button"
+                            id={"sorting-button-" + this.state.unit.name}
                             className="btn btn-sm btn-default"
                             style={{ marginLeft: 10 }}
                             onClick={this.props.toggleSortOrder}>
@@ -78,7 +78,7 @@ var DistrictDisplayComponent = React.createClass({
     render() {
         return (
             <div className="unit">
-                <div className="list-group-item active" id={"district-" + this.state.unit.name}>
+                <div className="list-group-item active location1" id={"district-" + this.state.unit.name}>
                     {this.updateOrDisplay()}
                 </div>
                 {this.actions()}

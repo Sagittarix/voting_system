@@ -4,7 +4,7 @@ var SearchCandidatesHeaderComponent = React.createClass({
     render: function() {
         return (
             <div className="unit">
-                  <div className="list-group-item">
+                  <div className="list-group-item location1">
                     <div>
                       <div style={{height: "20px"}}>
                         <div className="col-md-6">

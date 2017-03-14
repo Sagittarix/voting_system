@@ -11,7 +11,10 @@ var TerritorialBreakdownContainer = React.createClass({
         return ({ districts: [],
                   districtName: "",
                   counties: [],
-                  springErrors: [] });
+                  springErrors: [],
+                  clearCountyForm: false,
+                  popupAlert: false
+        });
     },
     componentDidMount: function() {
         var _this = this;
@@ -42,7 +45,7 @@ var TerritorialBreakdownContainer = React.createClass({
         this.state.counties.forEach((c, index) => {
             counties.push(
                 <AddedCountyDisplayComponent
-                    key={c.name}
+                    key={c.name + "" + index}
                     index={index}
                     county={c}
                     remove={this.handleAddedCountyRemove}
@@ -68,7 +71,10 @@ var TerritorialBreakdownContainer = React.createClass({
                 _this.setState({ districts: districts,
                                  districtName: "",
                                  counties: [],
-                                 springErrors: [] });
+                                 springErrors: [],
+                                 clearCountyForm: true,
+                                 popupAlert: true
+                });
             })
             .catch(function(err) {
                 console.log(err);
@@ -91,8 +97,11 @@ var TerritorialBreakdownContainer = React.createClass({
         counties.splice(idx, 1);
         this.setState({ counties: counties });
     },
+    popupAlert() {
+        if (this.state.popupAlert) this.setState({ popupAlert: false });
+        return this.state.popupAlert;
+    },
     render: function() {
-        console.log("RENDERING TERRITORIALBREAKDOWNCONTAINER")
         return <TerritorialBreakdownComponent
                   districts={this.prepareDistricts()}
                   delete={this.handleDistrictRemove}
@@ -102,6 +111,8 @@ var TerritorialBreakdownContainer = React.createClass({
                   addCounty={this.handleAddCounty}
                   counties={this.prepareCounties()}
                   springErrors={this.state.springErrors}
+                  clearCountyForm={this.state.clearCountyForm}
+                  popupAlert={this.popupAlert()}
                />
     }
 });

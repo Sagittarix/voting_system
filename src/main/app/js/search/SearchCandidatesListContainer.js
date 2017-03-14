@@ -7,9 +7,11 @@ var SearchCandidateCardComponent = require('./SearchCandidateCardComponent');
 var EmptySearchCandidateCardComponent = require('./EmptySearchCandidateCardComponent');
 var spring = require('../config/SpringConfig');
 
+var timer = null;
+
 var SearchCandidatesListContainer = React.createClass({
     getInitialState: function() {
-        return ({ candidates: [], query: "", activeCandidate: undefined });
+        return ({ candidates: [], query: '', activeCandidate: undefined });
     },
     componentDidMount: function() {
         var _this = this;
@@ -32,11 +34,15 @@ var SearchCandidatesListContainer = React.createClass({
         var candidates = [];
         this.state.candidates.forEach((c, idx) => {
             var match = false;
+
             if ((c.firstName + " " + c.lastName).toLowerCase().includes(query)) match = true;
             else if (c.firstName.toLowerCase().includes(query)) match = true;
             else if (c.lastName.toLowerCase().includes(query)) match = true;
-            else if (c.partyName != undefined) {
-              if (c.partyName.toLowerCase().includes(query)) match = true;
+            else if (c.party != null) {
+              if (c.party.name.toLowerCase().includes(query)) match = true;
+            }
+            else if (c.party == null) {
+                if ("išsikėlęs pats".includes(query)) match = true;
             }
 
             if (match) {
@@ -52,11 +58,20 @@ var SearchCandidatesListContainer = React.createClass({
         candidates.unshift(<SearchCandidatesHeaderComponent key={this.state.candidates.length}/>);
         return candidates;
     },
-    handleChangeQuery: function(e) {
-        this.setState({ query: e.target.value });
+    handleChangeQuery: function(value) {
+        this.setState({ query: value });
+    },
+    onKeyUp() {
+        var value = document.getElementById("system-search").value;
+        var _this = this;
+
+        $('#system-search').keyup(function() {
+            clearTimeout(timer);
+            timer = setTimeout(_this.handleChangeQuery.bind(_this, value), 1000);
+        })
     },
     clearQuery: function() {
-        this.setState({ query: "" });
+        this.setState({ query: '' });
     },
     render() {
         var activeCandidate = (this.state.activeCandidate != undefined) ?
@@ -70,9 +85,9 @@ var SearchCandidatesListContainer = React.createClass({
         return (
             <div>
                 <SearchBarComponent
-                    query={this.state.query}
                     changeQuery={this.handleChangeQuery}
                     clearQuery={this.clearQuery}
+                    onKeyUp={this.onKeyUp}
                 />
                 <div className="col-md-8">
                     {this.prepareCandidates()}

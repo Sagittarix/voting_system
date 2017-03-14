@@ -9,7 +9,8 @@ var CountyResultsComponent = React.createClass({
     },
     submitResults: function(e) {
         e.preventDefault();
-        var errors = Validations.checkErrorsResultForm(this.props.dictionary, this.props.spoiled);
+
+        var errors = Validations.checkErrorsResultForm(this.props.dictionary, this.props.spoiled, this.props.representative.county.voterCount);
         if (errors.length > 0) {
             this.setState({ jsErrors: errors });
         } else {
@@ -42,14 +43,14 @@ var CountyResultsComponent = React.createClass({
                             votees={this.props.votees}
                         />
                     </div>
-                    <div className="col-md-4 units-create-area">
-                        <div className="col-md-11">
+                    <div className="col-md-4 units-create-area" style={{ textAlign: 'center' }}>
+                        <div className="col-md-12">
                             <RepresentativeCard representative={this.props.representative} />
                             <div style={{ marginTop: 30 }}>
-                                <button className="btn btn-default btn-md county-results-form-btns" onClick={this.submitResults}>
+                                <button id="send-county-results-button" className="btn btn-default btn-md county-results-form-btns" onClick={this.submitResults}>
                                     SIŲSTI REZULTATUS
                                 </button>
-                                <button className="btn btn-default btn-md county-results-form-btns" onClick={this.clearForm}>
+                                <button id="clear-form-button" className="btn btn-default btn-md county-results-form-btns" onClick={this.clearForm}>
                                     IŠVALYTI FORMĄ
                                 </button>
                             </div>

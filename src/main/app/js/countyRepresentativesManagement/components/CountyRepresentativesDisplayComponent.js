@@ -7,6 +7,8 @@ var CountyRepresentativeListLineComponent = require('./CountyRepresentativeListL
 var Helper = require('../../utils/Helper');
 var Fields = require('../../utils/Fields');
 
+var timer = null;
+
 var CountyRepresentativesDisplayComponent = React.createClass ({
     getInitialState() {
         return ({
@@ -14,24 +16,17 @@ var CountyRepresentativesDisplayComponent = React.createClass ({
             ASCcounty: true,
             field: "",
             needToSort: false,
-
-
             showFullListStyle: {visibility: "visible"},
             fullListShowing: true,
+            query: '',
+            showReps: false
         });
     },
-
     shouldComponentUpdate: function () {
-        console.log("scu");
         return true;
     },
-
-    toggleFullRepresentativesList: function () {
-        if(this.state.fullListShowing){
-            this.setState({showFullListStyle: {visibility: "hidden"}, fullListShowing: false})
-        } else {
-            this.setState({showFullListStyle: {visibility: "visible"}, fullListShowing: true})
-        }
+    toggleRepsList: function () {
+        this.setState({ showReps: !this.state.showReps });
     },
     toggleNameSortOrder() {
         this.setState({
@@ -50,22 +45,57 @@ var CountyRepresentativesDisplayComponent = React.createClass ({
         });
     },
     sortRepresentatives(collection) {
-        return (this.state.needToSort) ? Helper.sortRepresentatives(collection, this.state) : collection;
+        return (this.state.needToSort && collection.length > 0) ?
+            Helper.sortRepresentatives(collection, this.state) : collection;
     },
-    render: function () {
-        var CountyRepresentativesArray = [];
-        var ArrayOfUniqueCombinationsOfDistrictAndCountyNames = [];
-        var CountyRepresentativesEmailsArray = [];
+    handleChangeQuery: function(value) {
+        this.setState({ query: value.toLowerCase() });
+    },
+    onKeyUp() {
+        var value = document.getElementById("representatives-search").value;
         var _this = this;
 
-        this.props.repData.forEach(function (rep, index) {
+        $('#representatives-search').keyup(function() {
+            clearTimeout(timer);
+            timer = setTimeout(_this.handleChangeQuery.bind(_this, value), 1000);
+        })
+    },
+    clearQuery: function() {
+        document.getElementById('representatives-search').value = '';
+        this.setState({ query: '' });
+    },
+    filterByQuery(rep) {
+        const query = this.state.query;
+
+        console.log(rep.county.name + "");
+        console.log(rep.county.name.includes(query));
+
+        return rep.username.includes(query) ||
+            rep.email.includes(query) ||
+            rep.county.name.toLowerCase().includes(query) ||
+            rep.district.name.toLowerCase().includes(query);
+    },
+    render: function () {
+        let CountyRepresentativesArray = [];
+        let ArrayOfUniqueCombinationsOfDistrictAndCountyNames = [];
+        let CountyRepresentativesEmailsArray = [];
+        let queryMatchesAny = false;
+
+        const filtered = (this.state.query.length > 0) ? this.props.repData.filter(this.filterByQuery) : [];
+        let newCollection = this.props.repData;
+        if (filtered.length > 0) {
+            newCollection = filtered;
+            queryMatchesAny = true;
+        }
+
+        newCollection.forEach(function (rep, index) {
             CountyRepresentativesArray.push(
                 <CountyRepresentativeListLineComponent
                     unit={rep}
                     index={index}
                     id={rep.id}
                     key={index}
-                    onDeleteRepresentative={_this.props.onDeleteRepresentative}
+                    onDeleteRepresentative={this.props.onDeleteRepresentative}
                 />
             );
             CountyRepresentativesEmailsArray.push(rep.email);
@@ -73,34 +103,45 @@ var CountyRepresentativesDisplayComponent = React.createClass ({
             var RepresentativeIsFromCounty = rep.county.name;
             var UniqueCombinaitonOfDistrictAndCounty = RepresentativeIsFromDistrict.concat(RepresentativeIsFromCounty);
             ArrayOfUniqueCombinationsOfDistrictAndCountyNames.push(UniqueCombinaitonOfDistrictAndCounty);
-        });
+        }.bind(this));
+
         var rotationName = (this.state.ASCname) ? " Z-A" : "A-Z";
         var rotationCounty = (this.state.ASCcounty) ? " Z-A" : "A-Z";
+        var showOrHide = (this.state.showReps) ? CountyRepresentativesArray : [];
+        showOrHide = (queryMatchesAny) ? CountyRepresentativesArray : showOrHide;
 
-        if (this.props.toggleFullRepresentativesDisplayView){
-            return (
-                <div>
-                    <div className="container">
-                        <button onClick={this.toggleFullRepresentativesList}>Rodyti - nerodyti</button>
-                        <div className="row">
-                            <div className="col-md-8 units-list-area" style={this.state.showFullListStyle}>
+        let toggleShowWord = 'Rodyti';
+        let eyeClass = 'open';
+        if (this.state.showReps) {
+            toggleShowWord = 'Slėpti';
+            eyeClass = 'close';
+        }
 
-
-
+        return (
+            <div>
+                <div className="container">
+                    <div className="row grayed">
+                        <div className="col-md-8 units-list-area">
                             <div >
-                                <div className="list-group-item active">
+                                <div className="list-group-item active location3">
                                     <div style={{textAlign:"center"}}><b>RINKIMŲ APYLINKIŲ ATSTOVAI</b></div>
                                 </div>
-                                <div className="list-group-item active">
+                                <div className="list-group-item active location3">
                                     <div>
                                         <div style={{height: "20px"}}>
                                             <div className="col-md-4">
                                                 Atstovas &nbsp;
-                                                <small onClick={this.toggleNameSortOrder}>[Rūšiuoti {rotationName}]</small>
+                                                <small style={{cursor: "pointer" }}
+                                                       id="representatives-sorting-button"
+                                                       onClick={this.toggleNameSortOrder}>
+                                                    [Rūšiuoti {rotationName}]
+                                                </small>
                                             </div>
                                             <div className="col-md-4">
                                                 Apylinkė &nbsp;
-                                                <small onClick={this.toggleCountySortOrder}>[Rūšiuoti {rotationCounty}]</small>
+                                                <small style={{cursor: "pointer" }}
+                                                       id="county-sorting-button"
+                                                       onClick={this.toggleCountySortOrder}>[Rūšiuoti {rotationCounty}]</small>
                                             </div>
                                             <div className="col-md-3">El. paštas</div>
                                             <div className="col-md-1">Trinti</div>
@@ -108,7 +149,34 @@ var CountyRepresentativesDisplayComponent = React.createClass ({
                                     </div>
                                 </div>
                                 <div>
-                                    {this.sortRepresentatives(CountyRepresentativesArray)}
+                                    <div className="row list-group-item" id="reps-view-actions-bar">
+                                        <div className="col-md-5 verticals">
+                                            <form>
+                                                <div className="input-group">
+                                                    <input
+                                                        className="form-control"
+                                                        id="representatives-search"
+                                                        placeholder="Ieškoti atstovo"
+                                                        onChange={this.onKeyUp}
+                                                    />
+                                                    <span className="input-group-addon" style={{ padding: 0 }} onClick={this.clearQuery}>
+                                               <button className="btn btn-secondary" type="button">
+                                                   <span className="glyphicon glyphicon-remove-circle"></span>
+                                               </button>
+                                           </span>
+                                                </div>
+                                            </form>
+                                        </div>
+                                        <div className="col-md-3 verticals">
+                                            <button id="show-hide-button" onClick={this.toggleRepsList}>
+                                                <span className={"glyphicon glyphicon-eye-" + eyeClass}></span> &nbsp;
+                                                {toggleShowWord + ' visus'}
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        {this.sortRepresentatives(showOrHide)}
+                                    </div>
                                 </div>
                             </div>
                             </div>
@@ -120,39 +188,14 @@ var CountyRepresentativesDisplayComponent = React.createClass ({
                                         CountyRepresentativesEmailsArray={CountyRepresentativesEmailsArray}
                                         uniqueDistrictAndCountyNameCombinationArray={ArrayOfUniqueCombinationsOfDistrictAndCountyNames}
                                         springErrors={this.props.springErrors}
+                                        popupAlert={this.props.popupAlert}
                                     />
                                 </div>
                             </div>
-                        </div>
                     </div>
                 </div>
-            )
-        } else {
-            return (
-                    <div>
-                        <div className="container">
-                            <div className="row">
-                                <div className="col-md-8 units-list-area" style={this.state.showFullListStyle}>
-                                    <button onClick={this.props.toggleFullRepresentativesList}>Rodyti visus atstovus</button>
-                                </div>
-                                <div className="col-md-4 units-create-area">
-                                    <div className="col-md-11">
-                                        <NewRepresentativeSideFormContainer
-                                            newRep={this.props.newRep}
-                                            districtsData={this.props.districtsData}
-                                            CountyRepresentativesEmailsArray={CountyRepresentativesEmailsArray}
-                                            uniqueDistrictAndCountyNameCombinationArray={ArrayOfUniqueCombinationsOfDistrictAndCountyNames}
-                                            springErrors={this.props.springErrors}
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-            )
-
-        }
+            </div>
+        )
     }
 });
 

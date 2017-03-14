@@ -12,8 +12,8 @@ var RepresentativeHomeContainer = React.createClass({
     },
     getInitialState() {
         return {
-            //representative: false
-            representative: true
+            //representative: false, currentUser: this.props.currentUser
+            representative: true, currentUser: this.props.currentUser
         };
     },
     componentDidMount() {
@@ -32,6 +32,13 @@ var RepresentativeHomeContainer = React.createClass({
             .catch(err => {
                 console.log(err);
             });*/
+    },
+    componentWillReceiveProps(newProps) {
+        let loggedOut = Object.keys(newProps.currentUser).length == 0;
+        if (newProps.currentUser != this.state.currentUser || loggedOut) {
+            this.context.router.push('/');
+            this.setState({ representative: false });
+        }
     },
     render: function() {
         let displayer;

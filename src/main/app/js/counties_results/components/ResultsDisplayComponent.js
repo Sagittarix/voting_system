@@ -1,5 +1,5 @@
 var React = require('react')
-var RepresentativeCard = require('./CountyDetailsCard')
+var CountyDetailsCard = require('./CountyDetailsCard')
 var VoteListComponent = require('./VoteListComponent')
 
 var ResultsDisplayComponent = React.createClass({
@@ -9,9 +9,8 @@ var ResultsDisplayComponent = React.createClass({
         return (
             <div className="container">
                 <div className="row">
-
                     <div className="col-md-8 units-list-area">
-                        <div className="list-group-item active">
+                        <div className="list-group-item active location6">
                             <span>{header}</span>
                         </div>
                         <div className="list-group-item">
@@ -26,7 +25,7 @@ var ResultsDisplayComponent = React.createClass({
 
                     <div className="col-md-4 units-create-area">
                         <div className="col-md-11">
-                            <RepresentativeCard representative={representative} />
+                            <CountyDetailsCard representative={representative} />
                             {createdOn}
                             {confirmedOn}
                         </div>

@@ -1,11 +1,10 @@
 var React = require('react');
-var Validations = require('../../utils/Validations');
 
 var MM_PartyDisplayWithResultsComponent = React.createClass({
     render: function() {
         return (
           <div className="unit">
-                <div className="list-group-item">
+                <div className="list-group-item location6">
                   <div>
                     <div style={{height: "20px"}}>
                       <div className="col-md-8">

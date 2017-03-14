@@ -34,6 +34,7 @@ var NewCountyInlineForm = React.createClass({
                 <form className="inline-add-county-form" style={{ minHeight: 45 }}>
                     <div className="form-group">
                         <input type="text"
+                            id={"input-county-" + this.props.districtName}
                             onChange={this.props.changeName}
                             className="form-control"
                             value={this.props.name}
@@ -42,6 +43,7 @@ var NewCountyInlineForm = React.createClass({
                     </div>
                     <div className="form-group">
                         <input type="number"
+                            id={"input-voters-count-" + this.props.districtName}
                             onChange={this.props.changeVoterCount}
                             className="form-control"
                             value={this.props.count}
@@ -52,6 +54,7 @@ var NewCountyInlineForm = React.createClass({
                     <div className="form-group">
                         <Geosuggest
                             ref={el=>this._geoSuggest=el}
+                            id={"input-county-address-" + this.props.districtName}
                             placeholder="Adresas"
                             initialValue={this.props.address}
                             inputClassName="form-control"
@@ -63,10 +66,10 @@ var NewCountyInlineForm = React.createClass({
                         />
                     </div>
                     <div className="form-group">
-                        <button id="inline-create-btn" className="btn btn-default btn-sm" onClick={this.submit}>
-                            Sukurti
+                        <button id={"create-county-btn-" + this.props.districtName} className="btn btn-default btn-sm" onClick={this.submit}>
+                            {this.props.btnName}
                         </button>
-                        <button id="inline-cancel-btn" className="btn btn-default btn-sm" onClick={this.props.cancel}>
+                        <button id={"cancel-county-creation-btn-" + this.props.districtName} className="btn btn-default btn-sm" onClick={this.props.cancel}>
                             Atšaukti
                         </button>
                     </div>

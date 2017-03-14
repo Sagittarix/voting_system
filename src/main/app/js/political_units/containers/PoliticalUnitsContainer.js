@@ -9,7 +9,9 @@ var spring = require('../../config/SpringConfig');
 var PoliticalUnitsContainer = React.createClass({
     getInitialState: function() {
         return ({ parties: [],
-                  springErrors: [] });
+                  springErrors: [],
+                  popupAlert: false
+        });
     },
     componentDidMount: function() {
         var _this = this;
@@ -27,7 +29,7 @@ var PoliticalUnitsContainer = React.createClass({
             parties.push(
 
                 <PleaseWaitModal
-                    key={idx}
+                    key={p.id + '.' + p.name}
                     raktas={idx}
                     index={idx}
                     unit={p}
@@ -89,7 +91,7 @@ var PoliticalUnitsContainer = React.createClass({
         axios.post(spring.localHost.concat('/api/party'), fd, { headers: { 'Content-Type': 'multipart/form-data' } })
             .then(function(resp) {
                 parties.push(resp.data);
-                _this.setState({ parties: parties, springErrors: [] });
+                _this.setState({ parties: parties, springErrors: [], popupAlert: true });
             })
             .catch(function(err) {
                 console.log(err);
@@ -111,11 +113,16 @@ var PoliticalUnitsContainer = React.createClass({
             });
 
     },
+    popupAlert() {
+        if (this.state.popupAlert) this.setState({ popupAlert: false });
+        return this.state.popupAlert;
+    },
     render: function() {
         return <PoliticalUnitsComponent
                   parties={this.prepareParties()}
                   create={this.handlePartySubmit}
                   springErrors={this.state.springErrors}
+                  popupAlert={this.popupAlert()}
                />
     }
 });

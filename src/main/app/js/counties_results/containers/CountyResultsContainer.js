@@ -4,7 +4,6 @@ var CountyResultsComponent = require('../components/CountyResultsComponent');
 var ResultsDisplayComponent = require('../components/ResultsDisplayComponent');
 var CandidateDisplayComponent = require('../components/CandidateDisplayComponent');
 var MM_PartyComponent = require('../components/MM_PartyComponent')
-var Validations = require('../../utils/Validations');
 var Helpers = require('../../utils/Helper');
 var spring = require('../../config/SpringConfig');
 

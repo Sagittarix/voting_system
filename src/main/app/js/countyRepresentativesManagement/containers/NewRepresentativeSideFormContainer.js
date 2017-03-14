@@ -31,7 +31,6 @@ var NewRepresentativeSideFormContainer = React.createClass ({
 
     render: function () {
         {this.getAllDistricts()}
-
         return (
             <div>
                 <NewRepresentativeSideFormComponent
@@ -40,6 +39,7 @@ var NewRepresentativeSideFormContainer = React.createClass ({
                     CountyRepresentativesEmailsArray={this.props.CountyRepresentativesEmailsArray}
                     uniqueDistrictAndCountyNameCombinationArray={this.props.uniqueDistrictAndCountyNameCombinationArray}
                     springErrors={this.props.springErrors}
+                    popupAlert={this.props.popupAlert}
                 />
             </div>
         )

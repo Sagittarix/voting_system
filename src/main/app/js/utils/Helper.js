@@ -9,7 +9,7 @@ var Helpers = {
         if (millis == null) {
             return (
                 <div>
-                    <div className="list-group-item active" style={{'marginTop': 10}}>
+                    <div className="list-group-item active location6" style={{'marginTop': 10}}>
                         {message}
                     </div>
                     <div className="list-group-item">
@@ -34,7 +34,7 @@ var Helpers = {
 
         return (
             <div>
-                <div className="list-group-item active" style={{'marginTop': 10}}>
+                <div className="list-group-item active location6" style={{'marginTop': 10}}>
                     {message}
                 </div>
                 <div className="list-group-item">
@@ -72,12 +72,14 @@ var Helpers = {
         collection.sort(function(a, b) {
             let aa = a.props.unit.name;
             let bb = b.props.unit.name;
-            if (aa > bb) {
-                return 1;
-            } else if (aa < bb) {
-                return -1;
-            }
-            return 0;
+
+            return aa.localeCompare(bb);
+            // if (aa > bb) {
+            //     return 1;
+            // } else if (aa < bb) {
+            //     return -1;
+            // }
+            // return 0;
         });
         return (ascending) ? collection : collection.reverse();
     },
@@ -90,16 +92,17 @@ var Helpers = {
                 aa = a.props.unit.firstName;
                 bb = b.props.unit.firstName;
             } else {
-                aa = a.props.unit.countyName;
-                bb = b.props.unit.countyName;
+                aa = a.props.unit.county.name;
+                bb = b.props.unit.county.name;
             }
 
-            if (aa > bb) {
-                return 1;
-            } else if (aa < bb) {
-                return -1;
-            }
-            return 0;
+            return aa.localeCompare(bb);
+            // if (aa > bb) {
+            //     return 1;
+            // } else if (aa < bb) {
+            //     return -1;
+            // }
+            // return 0;
         });
 
         if (isSortingByName) {
@@ -107,6 +110,22 @@ var Helpers = {
         } else {
             return (state.ASCcounty) ? collection : collection.reverse();
         }
+    },
+    sortSMresultDesc(collection) {
+        collection.sort(function(a, b) {
+            let aa; let bb;
+            aa = a.voteCount;
+            bb = b.voteCount;
+
+            if (aa < bb) {
+                return 1;
+            } else if (aa > bb) {
+                return -1;
+            }
+            return 0;
+        });
+
+        return collection;
     }
 };
 

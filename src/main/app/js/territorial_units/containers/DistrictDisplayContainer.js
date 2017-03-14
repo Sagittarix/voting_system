@@ -86,14 +86,13 @@ var DistrictDisplayContainer = React.createClass({
             .catch(function(err) {
                 console.log(err);
                 var finalErrors = [];
-                
+
                 if (err.response == undefined) {
                     finalErrors.push("Tinklo klaida");
                 } else {
-                    errors.push(err.response.data.rootMessage);
-                    errors.concat(err.response.data.errorsMessages);
+                    finalErrors.push(err.response.data.rootMessage);
+                    finalErrors = finalErrors.concat(err.response.data.errorsMessages);
                 }
-
                 _this.setState({ springErrors: finalErrors });
             });
     },
@@ -150,10 +149,13 @@ var DistrictDisplayContainer = React.createClass({
                       count={this.state.voterCount}
                       address={this.state.countyAddress}
                       springErrors={this.state.springErrors}
+                      districtName={this.props.unit.name}
+                      btnName="Sukurti"
                    />
         } else {
             return <NewCountyFormButton
                 renderCountyForm={this.toggleShowInlineState}
+                districtName={this.props.unit.name}
             />
         }
     },

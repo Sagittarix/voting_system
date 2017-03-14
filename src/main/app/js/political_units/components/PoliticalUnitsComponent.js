@@ -16,14 +16,16 @@ var PoliticalUnitsComponent = React.createClass({
         var rotation = (this.state.ASC) ? " Z-A" : "A-Z";
         return (
             <div className="container">
-                <div className="row">
+                <div className="row grayed">
                     <div className="col-md-8 units-list-area">
-                        <div className="list-group-item list-group-item-success">
-                            <span>Partijų sąrašas</span>
+                        <div className="list-group-item active location4" style={{display: "inline-block", verticalAlign: "middle", width: "100%", position: "relative", zIndex: "0" }}>
+                            <span id = "party-list-header">Partijų sąrašas</span>
                             <span
+                                id="sorting-button"
                                 className="btn btn-sm btn-success no-background"
+                                style={{ color: '#FFFFFF', borderColor: '#FFFFFF'}}
                                 onClick={this.toggleSortOrder}>
-                                Rušiuoti {rotation}
+                                Rūšiuoti {rotation}
                             </span>
                         </div>
                         <div className="list-group-item" style={{ height: 'auto' }}>
@@ -35,6 +37,7 @@ var PoliticalUnitsComponent = React.createClass({
                             <NewPartyAsideForm
                                 create={this.props.create}
                                 springErrors={this.props.springErrors}
+                                popupAlert={this.props.popupAlert}
                             />
                         </div>
                     </div>

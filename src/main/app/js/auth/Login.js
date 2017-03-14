@@ -8,7 +8,13 @@ const Login = React.createClass({
         router: React.PropTypes.object.isRequired
     },
     getInitialState() {
-        return ({ username: "", password: "", loginError: false });
+        return ({ username: "", password: "", loginError: false, currentUser: this.props.currentUser });
+    },
+    componentDidMount() {
+        if (Object.keys(this.state.currentUser).length > 0) this.context.router.push('/');
+    },
+    componentWillReceiveProps(newProps) {
+        if (newProps.currentUser != this.state.currentUser) this.setState({ currentUser: newProps.currentUser })
     },
     doLogin(e) {
         e.preventDefault();

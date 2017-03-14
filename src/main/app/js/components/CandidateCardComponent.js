@@ -14,15 +14,15 @@ function CandidateCardComponent(props) {
         <div className="well well-sm candidate-card">
                 <div className="row candidate-card-low">
                     <div className="col-sm-8 col-md-12">
-                        <h4 style={ styles.marginLeft, styles.strong }>{props.candidate.firstName}&nbsp;{props.candidate.lastName}</h4><br />
-                        <p><cite><img src="app/imgs/political_party.png" style={ styles.image }/>&nbsp; {partyName}</cite></p>
-                        <p>
+                        <h4 id={"candidate-name-main-" + props.candidate.personId} style={ styles.marginLeft, styles.strong }>{props.candidate.firstName}&nbsp;{props.candidate.lastName}</h4><br />
+                        <p id={"party-name-main-" + props.candidate.personId}><cite><img src="app/imgs/political_party.png" style={ styles.image }/>&nbsp; {partyName}</cite></p>
+                        <p id={"candidate-id-main-" + props.candidate.personId}>
                             <img src="app/imgs/fingerprint.png" style={ styles.image }/>&nbsp; {props.candidate.personId}
                         </p>
-                        <p>
+                        <p id={"candidate-birthdate-main-" + props.candidate.personId}>
                             <img src="app/imgs/cupcake.png" style={ styles.image }/>&nbsp; {props.candidate.birthDate}
                         </p>
-                        <p>
+                        <p id={"candidate-description-main-" + props.candidate.personId}>
                             <img src="app/imgs/books.png" style={ styles.image }/>&nbsp; {truncate(props.candidate.description, 50)}
                         </p>
                         <CandidateDetails

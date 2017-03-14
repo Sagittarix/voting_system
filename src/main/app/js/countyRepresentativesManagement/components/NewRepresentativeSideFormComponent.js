@@ -4,12 +4,10 @@
 var React = require('react');
 var ValidationsOR = require("../../utils/ValidationsOR");
 var Validations = require("../../utils/Validations");
-
 var onlyRequiredCounties = [];
 
 var NewRepresentativeSideFormComponent = React.createClass({
-
-    getInitialState: function () {
+    getInitialState() {
         return {
             countiesOfDistrict: [],
             name: '',
@@ -17,46 +15,51 @@ var NewRepresentativeSideFormComponent = React.createClass({
             email: '',
             district: 'Pasirinkite apygardą',
             county: 'Pasirinkite apylinkę',
-
             nameErrors: [],
             surnameErrors: [],
-            emailErrors: [],
+            emailErrors: []
         }
     },
-
-    componentWillMount: function () {
+    componentWillMount() {
         onlyRequiredCounties = [];
     },
-    handleNameChange: function (event) {
+    componentWillReceiveProps: function(newProps) {
+        // denotes that axios POST returned 201
+        if (newProps.popupAlert) {
+            var element = document.getElementById("rep-success-alert");
+            element.classList.remove('hide');
+            setTimeout(function() { element.classList.add('hide') }, 300000);
+        }
+    },
+    handleNameChange(event) {
         this.setState({
             name: event.target.value,
             nameErrors: ValidationsOR.nameValidation(event.target.value.trim())
         });
     },
-    handleSurnameChange: function (event) {
+    handleSurnameChange(event) {
         this.setState({
             surname: event.target.value,
             surnameErrors: ValidationsOR.nameValidation(event.target.value.trim())
         });
     },
-    hendleEmailChange: function (event) {
+    hendleEmailChange(event) {
         this.setState({
             email: event.target.value,
             emailErrors: ValidationsOR.emailValidation(event.target.value.trim(), this.props.CountyRepresentativesEmailsArray)
         });
     },
-    handleDistrictChange: function (event) {
+    handleDistrictChange(event) {
         this.setState({district: event.target.value})
     },
-    handleCountyChange: function (event) {
+    handleCountyChange(event) {
         this.setState({county: event.target.value});
     },
-    callHelperFunction: function (event) {
+    callHelperFunction(event) {
         this.changePossibleCounties(event);
         this.handleDistrictChange(event);
     },
-
-    changePossibleCounties: function (event) {
+    changePossibleCounties(event) {
         onlyRequiredCounties = [];
         var self = this;
         var matchFound = false;
@@ -65,6 +68,7 @@ var NewRepresentativeSideFormComponent = React.createClass({
         var currentDistrictName = '';
         var currentCountyName = '';
         var uniqueCombinationOfDistrictAndCounty = '';
+
         this.props.OnlyDistricts.map(function(district, index){
             currentDistrictObject = district;
             currentDistrictName = district.name;
@@ -86,41 +90,36 @@ var NewRepresentativeSideFormComponent = React.createClass({
             }
         });
     },
-
-    onSubmit: function (event) {
+    onSubmit(event) {
         event.preventDefault();
-        var tempName = this.state.name.trim()[0].toUpperCase() + this.state.name.trim().substring(1).toLowerCase();
-        var tempSurname = this.state.surname.trim()[0].toUpperCase() + this.state.surname.trim().substring(1).toLowerCase();
+        var tempName = this.state.name.trim()[0].toUpperCase() +
+            this.state.name.trim().substring(1).toLowerCase();
+        var tempSurname = this.state.surname.trim()[0].toUpperCase() +
+            this.state.surname.trim().substring(1).toLowerCase();
         tempSurname[0].toUpperCase();
         var tempEmail = this.state.email.toLowerCase();
         this.props.newRep(tempName, tempSurname, tempEmail, this.state.district, this.state.county);
-        this.setState({name: ''});
-        this.setState({surname: ''});
-        this.setState({email: ''});
-        this.setState({district: 'Pasirinkite apygardą'});
-        this.setState({county: 'Pasirinkite apylinkę'});
+
+        this.setState({
+            name: '',
+            surname: '',
+            email: '',
+            district: 'Pasirinkite apygardą',
+            county: 'Pasirinkite apylinkę'
+        });
         this.changePossibleCounties(event);
     },
-
-    springErrors: function() {
-        return Validations.prepareSpringErrors(this.props.springErrors, {marginTop: 10});
+    springErrors() {
+        return (this.props.springErrors.length > 0) ?
+            Validations.prepareSpringErrors(this.props.springErrors, {marginTop: 10}) :
+            [];
     },
-
-    render: function () {
-
+    render() {
         {this.changePossibleCounties}
-
         var DistrictNames = [];
         DistrictNames = this.props.OnlyDistricts;
-
-        MakeDistrictItem = function(X) {
-            return <option key={X.id}>{X.name}</option>;
-        };
-        MakeCountyItem = function(X) {
-            return <option key={X.id}>{X.name}</option>;
-        };
-
-        var springErrors = (this.props.springErrors.length > 0) ? this.springErrors() : [];
+        MakeDistrictItem = function(X) { return <option key={X.id}>{X.name}</option> };
+        MakeCountyItem = function(X) { return <option key={X.id}>{X.name}</option> };
 
         return (
             <form>
@@ -145,24 +144,34 @@ var NewRepresentativeSideFormComponent = React.createClass({
                         {onlyRequiredCounties.map(MakeCountyItem)}
                     </select>
                 </div>
-                <div>
-                    <button id="create-representative-button" type="submit" disabled={
-                        this.state.nameErrors.length > 0 ||
-                        this.state.surnameErrors.length > 0 ||
-                        this.state.emailErrors.length > 0 ||
-                        this.state.district == 'Pasirinkite apygardą' ||
-                        this.state.county == 'Pasirinkite apylinkę' ||
-                        this.state.name == '' ||
-                        this.state.surname == '' ||
-                        this.state.email == ''
-                    } className="btn btn-primary btn-md" onClick={this.onSubmit} style={{ marginTop: 10 }} >Sukurti</button>
+                <div style={{ marginBottom: 15 }}>
+                    <button
+                        id="create-representative-button"
+                        type="submit"
+                        disabled={
+                            this.state.nameErrors.length > 0 ||
+                            this.state.surnameErrors.length > 0 ||
+                            this.state.emailErrors.length > 0 ||
+                            this.state.district == 'Pasirinkite apygardą' ||
+                            this.state.county == 'Pasirinkite apylinkę' ||
+                            this.state.name == '' ||
+                            this.state.surname == '' ||
+                            this.state.email == ''
+                        }
+                        className="btn btn-primary btn-md"
+                        onClick={this.onSubmit}
+                        style={{ marginTop: 10 }}
+                    >
+                        Sukurti
+                    </button>
                 </div>
-                {springErrors}
-
+                {this.springErrors()}
+                <div className="alert alert-success hide" id="rep-success-alert">
+                    <span>Atstovas sukurtas!</span>
+                </div>
             </form>
         )
     }
-
 });
 
 module.exports = NewRepresentativeSideFormComponent;

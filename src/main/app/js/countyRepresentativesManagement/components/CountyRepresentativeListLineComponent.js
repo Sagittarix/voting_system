@@ -59,7 +59,7 @@ var CountyRepresentativeListLineComponent = React.createClass ({
                         </div>
                         <div className="col-md-1" style={{ textAlign: 'center' }}>
                             <ConfirmAction
-                                title={"Norite pašalinti " + this.unitCredentials() + " iš " + this.props.unit.countyName +" apylinkės atstovo pareigų ?"}
+                                title={"Norite pašalinti " + this.unitCredentials() + " iš " + this.props.unit.county.name +" apylinkės atstovo pareigų ?"}
                                 body="Duomenų atstatymas bus neįmanomas."
                                 onConfirm={this.onRemoveRep}
                             >

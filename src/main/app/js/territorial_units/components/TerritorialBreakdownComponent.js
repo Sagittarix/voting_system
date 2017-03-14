@@ -17,16 +17,16 @@ var TerritorialBreakdownComponent = React.createClass({
         return (
             <div className="container">
                 {/*<nav className="navbar navbar-inverse" data-spy="affix" data-offset-top="197">*/}
-                <div className="row">
+                <div className="row grayed">
                     <div className="col-md-8 units-list-area">
-                        <div className="list-group-item active">
-                            <span>Apygardų sąrašas</span>
+                        <div className="list-group-item active location1" style={{display: "inline-block", verticalAlign: "middle", width: "100%"}}>
+                            <span id="district-list-header">Apygardų sąrašas</span>
                             <span
                                 id="sorting-button"
-                                className="btn btn-sm btn-primary no-background"
+                                className="btn btn-sm btn-success no-background"
                                 style={{ color: '#FFFFFF', borderColor: '#FFFFFF'}}
                                 onClick={this.toggleSortOrder}>
-                                Rušiuoti {rotation}
+                                Rūšiuoti {rotation}
                             </span>
                         </div>
                         <div className="list-group-item" style={{ height: 'auto' }}>
@@ -43,6 +43,8 @@ var TerritorialBreakdownComponent = React.createClass({
                                 name={this.props.name}
                                 create={this.props.create}
                                 springErrors={this.props.springErrors}
+                                clearCountyForm={this.props.clearCountyForm}
+                                popupAlert={this.props.popupAlert}
                             />
                         </div>
                     </div>

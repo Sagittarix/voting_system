@@ -1,6 +1,5 @@
 package voting.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import voting.results.model.result.DistrictMMResult;
@@ -33,15 +32,12 @@ public class District {
     @OneToMany(mappedBy = "district", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<County> counties = new ArrayList<>();
 
-    @JsonIgnore
     @OneToMany(mappedBy = "district")
     private List<Candidate> candidates = new ArrayList<>();
 
-    @JsonIgnore
     @OneToOne(mappedBy = "district", cascade = CascadeType.ALL)
     private DistrictMMResult mmResult;
 
-    @JsonIgnore
     @OneToOne(mappedBy = "district", cascade = CascadeType.ALL)
     private DistrictSMResult smResult;
 

@@ -4,12 +4,12 @@ var SortingFilter = function(props) {
     return(
         <div className="sorting-filter">
             <form>
-                <label> Rikiuoti pagal:</label>
+                <label> Rikiuoti pagal: &nbsp;</label>
                 <label className="radio-inline">
-                    <input checked={props.orderBy==='abc'} onChange={props.onChange} value="abc" type="radio" name="optradio"/>vardą
+                    <input checked={props.orderBy==='value'} onChange={props.onChange} value="value" type="radio" name="optradio"/>balsus
                 </label>
                 <label className="radio-inline">
-                    <input checked={props.orderBy==='count'} onChange={props.onChange} value="count" type="radio" name="optradio"/>balsus
+                    <input checked={props.orderBy==='key'} onChange={props.onChange} value="key" type="radio" name="optradio"/>vardą
                 </label>
             </form>
         </div>

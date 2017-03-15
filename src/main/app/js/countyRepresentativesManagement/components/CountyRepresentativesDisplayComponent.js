@@ -105,14 +105,10 @@ var CountyRepresentativesDisplayComponent = React.createClass ({
     },
     filterByQuery(rep) {
         const query = this.state.query;
-
-        console.log(rep.county.name + "");
-        console.log(rep.county.name.includes(query));
-
         return rep.username.includes(query) ||
-            rep.email.includes(query) ||
-            rep.county.name.toLowerCase().includes(query) ||
-            rep.district.name.toLowerCase().includes(query);
+               rep.email.includes(query) ||
+               rep.county.name.toLowerCase().includes(query) ||
+               rep.district.name.toLowerCase().includes(query);
     },
     getColumns() {
         return (
@@ -212,8 +208,6 @@ var CountyRepresentativesDisplayComponent = React.createClass ({
         }
 
         let dataTable; let viewToggler; let header; let btnName;
-
-        console.log(this.props.newLook)
 
         if (this.props.newLook) {
             dataTable = (

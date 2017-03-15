@@ -1,3 +1,7 @@
+/**
+ * Created by osvaldas on 17.3.15.
+ */
+
 var React = require('react');
 var ReactRouter = require('react-router');
 var Link = ReactRouter.Link;
@@ -8,17 +12,17 @@ var Helper = require('../utils/Helper');
 
 var hide = { display: 'none' };
 
-var AllSMresultView = React.createClass({
+var AllMMResultsView = React.createClass({
     getInitialState() {
         return ({ collection: [] });
     },
     componentWillMount() {
-        axios.get(spring.localHost.concat('/api/results/single-mandate/'))
+        axios.get(spring.localHost.concat('/api/results/multi-mandate/'))
             .then(function(resp) {
-                const calcs = this.calcHeaderData(resp.data);
+                const calcs = this.calcHeaderData(resp.data.districtResults);
                 this.setState({
-                    collection: resp.data,
-                    districts: resp.data.length,
+                    collection: resp.data.districtResults,
+                    districts: resp.data.districtResults.length,
                     counties: calcs[0],
                     voters: calcs[1],
                     totalBallots: calcs[2],
@@ -41,7 +45,8 @@ var AllSMresultView = React.createClass({
         let spoiledBallots = 0;
         let validBallots = 0;
 
-        collection.forEach(d => {
+        // collection.forEach(d => {
+        Array.from(collection).forEach(d=>{
             counties += d.totalCounties;
             voters += d.voterCount;
             totalBallots += d.totalBallots;
@@ -71,26 +76,26 @@ var AllSMresultView = React.createClass({
         let totalConfirmedCounties = 0;
         let rows = [];
 
-        this.state.collection.forEach(d => {
+        // this.state.collection.forEach(d => {
+        Array.from(this.state.collection).forEach(d=>{
             const percentTotalVoters = (d.totalBallots / (d.voterCount * 1.0) * 100).toFixed(2);
             const percentSpoiledBallots = (d.spoiledBallots / (d.totalBallots * 1.0) * 100).toFixed(2);
             const percentValidBallots = (d.validBallots / (d.totalBallots * 1.0) * 100).toFixed(2);
-            const topCandidate = (d.topCandidate == null) ? 'Nėra' : (d.topCandidate.firstName + " " + d.topCandidate.lastName );
-
+            const topParty = (d.topParty == null) ? 'Nėra' : d.topParty.name;
 
             totalConfirmedCounties += d.confirmedCountyResults;
 
             rows.push(
                 {
-                    district: <Link to={"apygardos-vienmandaciai-rezultatai/" + d.district.id}>{d.district.name}</Link>,
+                    district: <Link to={"apygardos-daugiamandaciai-rezultatai/" + d.district.id}>{d.district.name}</Link>,
                     counties: d.totalCounties,
                     confirmedCounties: d.confirmedCountyResults,
                     voterCount: d.voterCount,
                     totalBallots: d.totalBallots + " (" + percentTotalVoters + "%)",
                     spoiledBallots: d.spoiledBallots + " (" + percentSpoiledBallots + "%)",
                     validBallots: d.validBallots + " (" + percentValidBallots + "%)",
-                    topCandidate: topCandidate,
-                    votesForTopCandidate: d.votesForTopParty
+                    topParty: topParty,
+                    votesForTopParty: d.votesForTopParty
                 }
             );
         });
@@ -107,7 +112,7 @@ var AllSMresultView = React.createClass({
                 spoiledBallots: <strong>{this.state.spoiledBallots} ({this.state.percentSpoiledBallots}%)</strong>,
                 validBallots: <strong>{this.state.validBallots} ({this.state.percentValidBallots}%)</strong>,
                 topCandidate: '',
-                votesForTopCandidate: ''
+                votesForTopParty: ''
             }
         );
 
@@ -168,8 +173,8 @@ var AllSMresultView = React.createClass({
                     id: 7
                 },
                 {
-                    header: 'Lyderis',
-                    accessor: 'topCandidate',
+                    header: 'TOP partija',
+                    accessor: 'topParty',
                     headerStyle: { fontWeight: 'bold' },
                     style: { textAlign: 'center' },
                     width: 200,
@@ -250,4 +255,4 @@ var AllSMresultView = React.createClass({
     }
 });
 
-module.exports = AllSMresultView;
+module.exports = AllMMResultsView;

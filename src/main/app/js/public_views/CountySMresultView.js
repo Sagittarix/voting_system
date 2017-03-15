@@ -6,6 +6,7 @@ var ReactTable = require('react-table').default;
 var spring = require('../config/SpringConfig');
 var Helper = require('../utils/Helper');
 var ChartContainer = require('./chart_components/ChartContainer');
+var DataProcessor = require('./chart_components/DataProcessor');
 
 var hide = {
     display: 'none'
@@ -13,19 +14,21 @@ var hide = {
 
 var CountySMresultView = React.createClass({
     getInitialState() {
-        return ({ collection: {} });
+        return ({ collection: {}, chartData: undefined, chartMetadata: undefined });
     },
     componentWillMount() {
+        // console.log(this.props.params.id)
+        var id = this.props.params.id;
         axios.get(
                 spring.localHost
                       .concat('/api/results/county/')
-                      .concat(1 + '')                       // blogai imamas id
+                      .concat(id + '')                       // blogai imamas id
                       .concat('/single-mandate')
             )
             .then(function(resp) {
                 this.setState({ 
                     collection: resp.data,
-                    chartData: this.cleanDataForChart(resp.data.votes),
+                    chartData: DataProcessor.cleanSingleMandateVotingDataForChart(resp.data.votes),
                     chartMetadata: { 
                         total: resp.data.totalBallots,
                         valid: resp.data.validBallots
@@ -142,14 +145,6 @@ var CountySMresultView = React.createClass({
             }
             return 0;
         });
-    },
-    cleanDataForChart(rawVotesData) {
-        return rawVotesData.map(function (vote) {
-            return {
-                key: vote.candidate.firstName + ' ' + vote.candidate.lastName,
-                value: vote.voteCount
-            }
-        })
     },
     render() {
         return (

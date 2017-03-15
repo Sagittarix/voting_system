@@ -7,9 +7,9 @@ var SortableBarChart = React.createClass({
     propTypes: {
         width: React.PropTypes.number.isRequired,
         height: React.PropTypes.number.isRequired,
-        orderBy: React.PropTypes.string.isRequired,
+        orderBy: React.PropTypes.string,
         data: React.PropTypes.arrayOf(React.PropTypes.object).isRequired,
-        metadata: React.PropTypes.object.isRequired,
+        metadata: React.PropTypes.object,
         showPercent: React.PropTypes.bool.isRequired,
         showTooltip: React.PropTypes.bool.isRequired,
         width: React.PropTypes.number.isRequired,
@@ -17,11 +17,16 @@ var SortableBarChart = React.createClass({
         margin: React.PropTypes.object.isRequired,
         padding: React.PropTypes.number.isRequired
     }, 
+    getDefaultProps() {
+        return {
+            orderBy: 'value'
+        }
+    },
     getInitialState() {
         return {
             data: [],
             metadata: { valid: 0, total: 0 },
-            orderBy: 'abc'
+            orderBy: 'value'
         };
     },
     componentWillMount() {
@@ -45,7 +50,7 @@ var SortableBarChart = React.createClass({
         this.innerHeight = props.height - props.margin.top - props.margin.bottom
     },
     sortData(data, orderBy) {
-        if (orderBy === 'abc') {
+        if (orderBy === 'key') {
             return data.sort(function(x, y) {
                 return d3.ascending(x.key, y.key);
             })

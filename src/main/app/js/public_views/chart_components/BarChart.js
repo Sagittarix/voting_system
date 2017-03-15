@@ -13,7 +13,7 @@ var SortingFilter = require('./SortingFilter')
 var BarChart = React.createClass({
     propTypes: {
             data: React.PropTypes.array.isRequired,
-            metadata: React.PropTypes.object.isRequired,
+            metadata: React.PropTypes.object,
             width: React.PropTypes.number.isRequired,
             height: React.PropTypes.number.isRequired,
             showTooltip: React.PropTypes.bool.isRequired,
@@ -46,7 +46,7 @@ var BarChart = React.createClass({
 
     makeScales: function (props) {
         this.maxVal = d3.max(props.data, function(d) {return d.value})
-        this.total = props.metadata.total
+        this.total = props.metadata.total || d3.sum(props.data, function(d) {return d.value})
         this.totalValid = props.metadata.valid || this.total
 
         this.yScale = d3.scaleBand()

@@ -6,6 +6,7 @@ var ReactTable = require('react-table').default;
 var spring = require('../config/SpringConfig');
 var Helper = require('../utils/Helper');
 var ChartContainer = require('./chart_components/ChartContainer');
+var DataProcessor = require('./chart_components/DataProcessor');
 
 var hide = {
     display: 'none'
@@ -25,7 +26,7 @@ var DistrictSMresultView = React.createClass({
             .then(function(resp) {
                 this.setState({ 
                     collection: resp.data,
-                    chartData: this.cleanDataForChart(resp.data.votes),
+                    chartData: DataProcessor.cleanSingleMandateVotingDataForChart(resp.data.votes),
                     chartMetadata: { 
                         total: resp.data.totalBallots,
                         valid: resp.data.validBallots
@@ -77,7 +78,7 @@ var DistrictSMresultView = React.createClass({
         let percentTotalValidBallots = 0.0;
 
         this.state.collection.countyResults.forEach(r => {
-            const county = <Link to="">{r.county.name}</Link>;
+            const county = <Link to={"apylinkes-vienmandaciai-rezultatai/" + r.county.id}>{r.county.name}</Link>;
             const voterCount = r.voterCount;
             const totalBallotsAndPercent = r.totalBallots + " (" + ((r.totalBallots / (r.voterCount * 1.0) * 100).toFixed(2)) + "%)";
             const spoiledBallotsAndPercent = r.spoiledBallots + " (" + ((r.spoiledBallots / (r.totalBallots * 1.0) * 100).toFixed(2)) + "%)";
@@ -85,11 +86,11 @@ var DistrictSMresultView = React.createClass({
 
             totalVoterCount += voterCount;
             grandTotalBallots += r.totalBallots;
-            percentGrandTotalBallots += parseFloat((r.totalBallots / (r.voterCount * 1.0) * 100).toFixed(2));
+            percentGrandTotalBallots = parseFloat((grandTotalBallots / (totalVoterCount * 1.0) * 100).toFixed(2));
             totalSpoiledBallots += r.spoiledBallots;
-            percentTotalSpoiledBallots += parseFloat((r.spoiledBallots / (r.totalBallots * 1.0) * 100).toFixed(2));
+            percentTotalSpoiledBallots = parseFloat((totalSpoiledBallots / (grandTotalBallots * 1.0) * 100).toFixed(2));
             totalValidBallots += r.validBallots;
-            percentTotalValidBallots += parseFloat((r.validBallots / (r.totalBallots * 1.0) * 100).toFixed(2));
+            percentTotalValidBallots = parseFloat((totalValidBallots / (grandTotalBallots * 1.0) * 100).toFixed(2));
 
             rows.push(
                 {
@@ -247,14 +248,6 @@ var DistrictSMresultView = React.createClass({
             return array;
         }
     },
-    cleanDataForChart(rawVotesData) {
-        return rawVotesData.map(function (vote) {
-            return {
-                key: vote.candidate.firstName + ' ' + vote.candidate.lastName,
-                value: vote.voteCount
-            }
-        })
-    },
     getCountyOptions() {
         const array = [5, 10, 20];
         if (Object.keys(this.state.collection).length > 0) {
@@ -309,7 +302,6 @@ var DistrictSMresultView = React.createClass({
                 <ReactTable
                     data={this.prepareData()}
                     columns={this.getColumns()}
-                    showPagination={false}
                     defaultPageSize={6}
                     pageSizeOptions={this.getOptions()}
                     showPageJump={false}

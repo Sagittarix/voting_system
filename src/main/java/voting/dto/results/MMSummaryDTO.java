@@ -17,7 +17,7 @@ public class MMSummaryDTO {
     private Long validBallots = 0L;
     private Long spoiledBallots = 0L;
 
-    private List<DistrictResultSummaryDTO> districtResults;
+    private List<DistrictMmResultSummaryDTO> districtResults;
 
     public MMSummaryDTO(ConsolidatedResults summary) {
         Map<Party, Long> partyVotes = summary.getPartyVotecount();
@@ -29,7 +29,7 @@ public class MMSummaryDTO {
                 .map(p -> new PartyResultDTO(p, partyVotes.get(p), mmPartyMandates.get(p)))
                 .collect(Collectors.toList());
         this.districtResults = summary.getMmResults().stream()
-                .map(DistrictResultSummaryDTO::new)
+                .map(DistrictMmResultSummaryDTO::new)
                 .collect(Collectors.toList());
     }
 
@@ -50,7 +50,7 @@ public class MMSummaryDTO {
         return spoiledBallots;
     }
 
-    public List<DistrictResultSummaryDTO> getDistrictResults() {
+    public List<DistrictMmResultSummaryDTO> getDistrictResults() {
         return districtResults;
     }
 }

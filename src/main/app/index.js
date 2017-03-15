@@ -24,7 +24,12 @@ const Login = require('./js/auth/Login');
 
 var CountySMresultView = require('./js/public_views/CountySMresultView');
 var DistrictSMresultView = require('./js/public_views/DistrictSMresultView');
+
 var AllSMresultView = require('./js/public_views/AllSMresultView');
+var AllMMResultsView = require('./js/public_views/AllMMResultsView');
+var ConsolidatedResultsView = require('./js/public_views/ConsolidatedResultsView');
+
+
 
 var CountyMMResultsView = require('./js/public_views/CountyMMResultsView');
 var DistrictMMResultsView = require('./js/public_views/DistrictMMResultsView');
@@ -47,17 +52,19 @@ ReactDOM.render((
                     <Route path="vienmandaciai" component={CountyResultsContainer}/>
                     <Route path="daugiamandaciai" component={CountyResultsContainer}/>
                 </Route>
-
             </Route>
-            {/*<Route path="rezultatai" component={}/>*/}
             <Route path="paieska" component={SearchCandidatesListContainer}/>
             <Route path="prisijungti" component={Login}/>
-            <Route path="test" component={Tester}/>
-            <Route path="csmres" component={CountySMresultView}/>
-            <Route path="dsmres" component={DistrictSMresultView}/>
-            <Route path="allsmres" component={AllSMresultView}/>
-            <Route path="cmmres" component={CountyMMResultsView}/>
-            <Route path="dmmres" component={DistrictMMResultsView}/>
+            <Route path="apylinkes-vienmandaciai-rezultatai/:id" component={CountySMresultView}/>
+            <Route path="apygardos-vienmandaciai-rezultatai/:id" component={DistrictSMresultView}/>
+
+            <Route path="bendri-vienmandaciai-rezultatai" component={AllSMresultView}/>
+            <Route path="bendri-daugimandaciai-rezultatai" component={AllMMResultsView}/>
+            <Route path="suvestine" component={ConsolidatedResultsView}/>
+
+            <Route path="apylinkes-daugiamandaciai-rezultatai/:id" component={CountyMMResultsView}/>
+            <Route path="apygardos-daugiamandaciai-rezultatai/:id" component={DistrictMMResultsView}/>
+
             <Route path="*" component={NoMatch} />
         </Route>
     </Router>

@@ -6,7 +6,7 @@ var SortableBarChart = require('./SortableBarChart');
 var ChartContainer = React.createClass({
     propTypes: {
         data: React.PropTypes.arrayOf(React.PropTypes.object).isRequired,
-        metadata: React.PropTypes.object.isRequired,
+        metadata: React.PropTypes.object,
         showPercent: React.PropTypes.bool,
         showTooltip: React.PropTypes.bool
     },
@@ -20,13 +20,8 @@ var ChartContainer = React.createClass({
     getInitialState: function () {
         return {
             w: 0,
-            data: []
+            data: this.props.data
         }
-    },
-    componentWillMount() {
-        this.setState({ 
-            data: this.sortData(this.props.data, 'abc')
-        });
     },
     componentDidMount() {
         window.addEventListener('resize', this.fitToParentSize)
@@ -47,25 +42,6 @@ var ChartContainer = React.createClass({
             this.setState({ w: w });
         }
     },
-    sortData(data, orderBy) {
-        if (orderBy === 'abc') {
-            return data.sort(function(x, y) {
-                return d3.ascending(x.key, y.key);
-            })
-        } else {
-            return data.sort(function(x, y) {
-                return d3.descending(x.value, y.value);
-            })
-        }
-    },
-    handleSortingOptionChange(e) {
-        if (this.state.orderBy !== e.target.value) {
-            this.setState({
-                orderBy: e.target.value,
-                data: this.sortData(this.state.data, e.target.value)
-            });
-        }
-    },
     render() {
 
         let data = this.state.data
@@ -76,7 +52,7 @@ var ChartContainer = React.createClass({
         let { metadata, showPercent, showTooltip } = this.props
 
         let params = {
-            orderBy: 'abc',
+            orderBy: 'value',
             data: data,
             metadata: metadata,
             showPercent: showPercent,

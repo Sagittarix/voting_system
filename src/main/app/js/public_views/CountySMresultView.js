@@ -162,7 +162,7 @@ var CountySMresultView = React.createClass({
                     <ReactTable
                         data={this.prepareData()}
                         columns={this.getColumns()}
-                        defaultPageSize={5}
+                        defaultPageSize={6}
                         pageSizeOptions={this.getOptions()}
                         showPageJump={false}
                         previousText='Ankstesnis'

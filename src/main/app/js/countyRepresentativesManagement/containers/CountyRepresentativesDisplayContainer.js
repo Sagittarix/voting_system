@@ -18,7 +18,8 @@ var CountyRepresentativesDisplayContainer = React.createClass({
             },
             springErrors: [],
             toggleFullRepresentativesDisplayView: false,
-            popupAlert: false
+            popupAlert: false,
+            newLook: true
         });
     },
     toggleFullRepresentativesList: function () {
@@ -91,6 +92,9 @@ var CountyRepresentativesDisplayContainer = React.createClass({
         if (this.state.popupAlert) this.setState({ popupAlert: false });
         return this.state.popupAlert;
     },
+    toggleLook: function () {
+        this.setState({ newLook: !this.state.newLook });
+    },
     render: function () {
             return (
                     <CountyRepresentativesDisplayComponent
@@ -102,6 +106,8 @@ var CountyRepresentativesDisplayContainer = React.createClass({
                         toggleFullRepresentativesList={this.toggleFullRepresentativesList}
                         toggleFullRepresentativesDisplayView={this.state.toggleFullRepresentativesDisplayView}
                         popupAlert={this.popupAlert()}
+                        toggleLook={this.toggleLook}
+                        newLook={this.state.newLook}
                     />
             )
     }

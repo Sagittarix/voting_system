@@ -86,7 +86,7 @@ var CountyDisplayContainer = React.createClass({
                     title={"Norite patvirtinti įkeltus rezultatus? Apygarda: " + this.state.county.district.name + ". Apylinkė: " + this.state.county.name +"."}
                     body="Patvirtintų duomenų atšaukimas neįmanomas."
                     onConfirm={this.confirmResults.bind(this, result.id)}
-                    confirmText={"Pašalinti apylinkės rezultatus"}
+                    confirmText={"Patvirtinti"}
                 >
 
                     <button
@@ -113,7 +113,7 @@ var CountyDisplayContainer = React.createClass({
                             title={"Norite pašalinti įkeltus rezultatus? Apygarda: " + this.state.county.district.name + ". Apylinkė: " + this.state.county.name +"."}
                             body="Duomenų atstatymas bus neįmanomas."
                             onConfirm={this.handleDelete.bind(this, this.state.activeResultId)}
-                            confirmText={"Pašalinti apylinkės rezultatus"}
+                            confirmText={"Pašalinti"}
                             >
 
                             <button

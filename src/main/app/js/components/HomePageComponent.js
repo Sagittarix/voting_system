@@ -11,22 +11,22 @@ var HomePageComponent = React.createClass({
 
                 <div className="homePageButtonsRow">
                     <div className="col-sm-3">
-                        <Link to="paieska" className="NoUnderlineLink" href="#" title="title">
+                        <Link to="paieska" className="NoUnderlineLink" title="title">
                             <button className="frontPageButton" id="candidate-search-button"><span className="glyphicon glyphicon-search"></span><div className="innerButtonDiv">{this.props.search}</div></button>
                         </Link>
                     </div>
                     <div className="col-sm-3">
-                        <Link to="" className="NoUnderlineLink" href="#" title="title">
+                        <Link to="bendri-vienmandaciai-rezultatai" className="NoUnderlineLink" title="title">
                             <button className="frontPageButton" id="single-mandate-results-button"><span className="glyphicon glyphicon-knight"></span><div className="innerButtonDiv">{this.props.smResults}</div></button>
                         </Link>
                     </div>
                     <div className="col-sm-3">
-                        <Link to="" className="NoUnderlineLink" href="#" title="title">
+                        <Link to="bendri-daugiamandaciai-rezultatai" className="NoUnderlineLink" title="title">
                             <button className="frontPageButton" id="multi-mandate-results-button"><span className="glyphicon glyphicon-bishop"></span><div className="innerButtonDiv">{this.props.mmResults}</div></button>
                         </Link>
                     </div>
                     <div className="col-sm-3">
-                        <Link to="" className="NoUnderlineLink" href="#" title="title">
+                        <Link to="konsoliduoti-rezultatai" className="NoUnderlineLink" title="title">
                             <button className="frontPageButton" id="combined-results-button"><span className="glyphicon glyphicon-king"></span><div className="innerButtonDiv">{this.props.finalResults}</div></button>
                         </Link>
                     </div>

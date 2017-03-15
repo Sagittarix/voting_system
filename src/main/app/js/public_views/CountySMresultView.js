@@ -43,6 +43,7 @@ var CountySMresultView = React.createClass({
         if (Object.keys(this.state.collection).length == 0) return [];
         var rows = [];
         let totalPercentageOfTotalBallots = 0.0;
+        var totalPercentageOfValidBallots = 0.0;
 
         this.state.collection.votes.forEach(v => {
             const candName = <Link to="">{v.candidate.firstName.concat(' ').concat(v.candidate.lastName)}</Link>;
@@ -51,6 +52,7 @@ var CountySMresultView = React.createClass({
             const percFromValid = v.voteCount / (this.state.collection.validBallots * 1.0) * 100;
             const percFromTotal = v.voteCount / (this.state.collection.totalBallots * 1.0) * 100;
             totalPercentageOfTotalBallots += percFromTotal;
+            totalPercentageOfValidBallots += percFromValid;
 
             rows.push(
                 {
@@ -70,7 +72,7 @@ var CountySMresultView = React.createClass({
                 candidate: '',
                 partyName: <strong style={{ float: 'right', marginRight: 10 }}>Iš viso:</strong>,
                 voteCount: <strong>{this.state.collection.validBallots}</strong>,
-                votesFromValid: <strong>{100.00}</strong>,
+                votesFromValid: <strong>{totalPercentageOfValidBallots}</strong>,
                 votesFromTotal: <strong>{totalPercentageOfTotalBallots.toFixed(2)}</strong>
             }
         );
@@ -138,12 +140,14 @@ var CountySMresultView = React.createClass({
         array.push(max);
 
         return Array.from(new Set(array)).sort((a, b) => {
-            if (a > b) {
-                return 1;
-            } else if (a < b) {
-                return -1;
-            }
-            return 0;
+
+            return a.localeCompare(b);
+            // if (a > b) {
+            //     return 1;
+            // } else if (a < b) {
+            //     return -1;
+            // }
+            // return 0;
         });
     },
     render() {

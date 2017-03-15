@@ -338,6 +338,11 @@ form div.form-group.browse-button-area, form div.form-group.upload-button-area {
     display: table;
 }
 
+.inline-search {
+    float: right;
+    margin-right: 20px;
+}
+
 /* candidate-card */
 
 .candidate-card {

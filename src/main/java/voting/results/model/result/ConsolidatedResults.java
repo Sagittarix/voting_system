@@ -16,7 +16,7 @@ import static voting.utils.Constants.TOTAL_MANDATES;
  */
 public class ConsolidatedResults {
 
-    private Long selfServingElectees;
+    private Long nonPartyElectees;
 
     private int mandatesForMmVoting;
     private Set<Candidate> smElectedCandidates;
@@ -42,7 +42,7 @@ public class ConsolidatedResults {
         this.partyVotecount = parties.stream().collect(Collectors.toMap(p -> p, p -> 0L));
         this.preliminaryMmPartyMandates = parties.stream().collect(Collectors.toMap(p -> p, p -> 0L));
         this.totalPartyMandates = parties.stream().collect(Collectors.toMap(p -> p, p -> 0L));
-        this.selfServingElectees = 0L;
+        this.nonPartyElectees = 0L;
 
         this.mandatesForMmVoting = TOTAL_MANDATES - districts.size();
 
@@ -143,8 +143,11 @@ public class ConsolidatedResults {
 
         smElectedCandidates.add(winner);
         if (winner.getParty() == null) {
-            selfServingElectees++;
+            nonPartyElectees++;
+        } else {
+            totalPartyMandates.merge(winner.getParty(), 1L, Long::sum);
         }
+
         if (!electedCandidates.add(winner)) {
             // TODO; padaryti exceptiona, jeigu pritruksta nariu partijoj
             Candidate nextCandidate = winner.getParty().getCandidates().stream()
@@ -152,7 +155,6 @@ public class ConsolidatedResults {
                     .findFirst()
                     .get();
             electedCandidates.add(nextCandidate);
-            totalPartyMandates.merge(winner.getParty(), 1L, Long::sum);
         }
     }
 
@@ -188,8 +190,8 @@ public class ConsolidatedResults {
         this.mmResults = mmResults;
     }
 
-    public Long getSelfServingElectees() {
-        return selfServingElectees;
+    public Long getNonPartyElectees() {
+        return nonPartyElectees;
     }
 
     public Set<Candidate> getElectedCandidates() {

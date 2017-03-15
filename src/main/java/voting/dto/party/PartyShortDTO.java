@@ -12,6 +12,9 @@ public class PartyShortDTO {
     private String name;
     private String link;
 
+    public PartyShortDTO(String name) {
+        this.name = name;
+    }
 
     public PartyShortDTO(Party party) {
         this.id = party.getId();

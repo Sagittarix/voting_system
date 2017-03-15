@@ -36,7 +36,6 @@ public class ResultController {
         this.resultService = resultService;
     }
 
-
     @GetMapping(path = "county/{id}/single-mandate")
     public CountySMResultDTO getCountySingleMandateResult(@PathVariable("id") Long countyId) {
         CountySMResult result = resultService.getCountySmResult(countyId);
@@ -85,6 +84,7 @@ public class ResultController {
         return new ConsolidatedResultsDTO(resultService.getConsolidatedResults());
     }
 
+    //@PreAuthorize("hasRole('ROLE_REPRESENTATIVE')")
     @PostMapping(path = "county/single-mandate")
     public CountySMResultDTO addCountySMResult(@Valid @RequestBody CountyResultData resultData, BindingResult result) {
         if (result.hasErrors()) {
@@ -93,6 +93,7 @@ public class ResultController {
         return new CountySMResultDTO(resultService.addCountySmResult(resultData));
     }
 
+    //@PreAuthorize("hasRole('ROLE_REPRESENTATIVE')")
     @PostMapping(path = "county/multi-mandate")
     public CountyMMResultDTO addCountyMMResult(@Valid @RequestBody CountyResultData resultData, BindingResult result) {
         if (result.hasErrors()) {
@@ -101,11 +102,13 @@ public class ResultController {
         return new CountyMMResultDTO(resultService.addCountyMmResult(resultData));
     }
 
+    //@PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping(path = "confirm")
     public void confirmCountyResult(@RequestParam Long resultId) {
         resultService.confirmCountyResult(resultId);
     }
 
+    //@PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping(path = "{id}")
     public void deleteCountyResult(@PathVariable(name = "id") Long resultId) {
         resultService.deleteCountyResult(resultId);

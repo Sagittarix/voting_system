@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 /**
  * Created by domas on 2/27/17.
  */
-public class DistrictResultDTO extends ResultDTO {
+public abstract class DistrictResultDTO extends ResultDTO {
 
     private DistrictShortDTO district;
     private int confirmedCountyResults;

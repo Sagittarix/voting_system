@@ -1,8 +1,8 @@
 package voting.dto.county;
 
 import voting.dto.district.DistrictShortDTO;
-import voting.dto.results.CountyMMResultDTO;
-import voting.dto.results.CountySMResultDTO;
+import voting.dto.results.multimandate.CountyMMResultDTO;
+import voting.dto.results.singlemandate.CountySMResultDTO;
 import voting.model.County;
 
 /**

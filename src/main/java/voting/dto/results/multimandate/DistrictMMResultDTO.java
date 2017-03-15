@@ -1,5 +1,6 @@
-package voting.dto.results;
+package voting.dto.results.multimandate;
 
+import voting.dto.results.DistrictResultDTO;
 import voting.dto.results.vote.PartyVoteDTO;
 import voting.results.model.result.DistrictMMResult;
 

@@ -1,6 +1,7 @@
 package voting.dto.results;
 
 import voting.dto.candidate.CandidateShortDTO;
+import voting.dto.results.multimandate.PartyMandatesDTO;
 import voting.results.model.result.ConsolidatedResults;
 
 import java.util.List;

@@ -3,7 +3,6 @@ package voting.dto.results;
 import voting.dto.county.CountyShortDTO;
 import voting.model.County;
 import voting.results.model.result.CountyResult;
-import voting.results.model.result.ResultType;
 
 import java.util.Date;
 

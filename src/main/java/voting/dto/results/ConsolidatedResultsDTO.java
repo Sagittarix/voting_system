@@ -1,6 +1,7 @@
 package voting.dto.results;
 
 import voting.dto.candidate.CandidateShortDTO;
+import voting.dto.results.multimandate.PartyMandatesDTO;
 import voting.results.model.result.ConsolidatedResults;
 
 import java.util.List;
@@ -14,7 +15,6 @@ public class ConsolidatedResultsDTO {
 
     private List<PartyMandatesDTO> partyMandates;
     private List<CandidateShortDTO> electedCandidates;
-    private Long selfServingElectees;
 
     private int completedSmResults;
     private int completedMmResults;
@@ -24,10 +24,10 @@ public class ConsolidatedResultsDTO {
         this.partyMandates = consolidated.getTotalPartyMandates().entrySet().stream()
                 .map(e -> new PartyMandatesDTO(e.getKey(), e.getValue()))
                 .collect(Collectors.toList());
+        this.partyMandates.add(new PartyMandatesDTO("Išsikėlę patys", consolidated.getNonPartyElectees()));
         this.electedCandidates = consolidated.getElectedCandidates().stream()
                 .map(CandidateShortDTO::new)
                 .collect(Collectors.toList());
-        this.selfServingElectees = consolidated.getSelfServingElectees();
         this.completedSmResults = consolidated.getCompletedSmResults();
         this.completedMmResults = consolidated.getCompletedMmResults();
         this.totalDistricts = consolidated.getTotalDistricts();
@@ -43,10 +43,6 @@ public class ConsolidatedResultsDTO {
 
     public int getCompletedSmResults() {
         return completedSmResults;
-    }
-
-    public Long getSelfServingElectees() {
-        return selfServingElectees;
     }
 
     public int getCompletedMmResults() {

@@ -7,7 +7,7 @@ import voting.results.model.result.DistrictResult;
 /**
  * Created by domas on 2/27/17.
  */
-public class DistrictResultSummaryDTO {
+public abstract class DistrictResultSummaryDTO {
 
     private DistrictShortDTO district;
     private ResultShortDTO result;

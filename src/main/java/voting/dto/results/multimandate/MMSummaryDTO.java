@@ -1,4 +1,4 @@
-package voting.dto.results;
+package voting.dto.results.multimandate;
 
 import voting.model.Party;
 import voting.results.model.result.ConsolidatedResults;

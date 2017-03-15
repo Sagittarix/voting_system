@@ -1,4 +1,4 @@
-package voting.dto.results;
+package voting.dto.results.multimandate;
 
 import voting.dto.party.PartyShortDTO;
 import voting.model.Party;
@@ -10,6 +10,11 @@ public class PartyMandatesDTO {
 
     PartyShortDTO party;
     Long mandates;
+
+    public PartyMandatesDTO(String name, Long mandates) {
+        this.party = new PartyShortDTO(name);
+        this.mandates = mandates;
+    }
 
     public PartyMandatesDTO(Party party, Long mandates) {
         this.party = new PartyShortDTO(party);

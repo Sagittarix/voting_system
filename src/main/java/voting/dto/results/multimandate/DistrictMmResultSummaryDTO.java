@@ -1,13 +1,14 @@
-package voting.dto.results;
+package voting.dto.results.multimandate;
 
 import voting.dto.party.PartyShortDTO;
+import voting.dto.results.DistrictResultSummaryDTO;
 import voting.results.model.result.DistrictMMResult;
 import voting.results.model.votecount.PartyVote;
 
 /**
  * Created by domas on 3/7/17.
  */
-public class DistrictMmResultSummaryDTO extends DistrictResultSummaryDTO{
+public class DistrictMmResultSummaryDTO extends DistrictResultSummaryDTO {
 
     private PartyShortDTO topParty;
     private Long votesForTopParty;

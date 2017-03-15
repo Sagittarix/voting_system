@@ -1,13 +1,14 @@
-package voting.dto.results;
+package voting.dto.results.singlemandate;
 
 import voting.dto.candidate.CandidateShortDTO;
+import voting.dto.results.DistrictResultSummaryDTO;
 import voting.results.model.result.DistrictSMResult;
 import voting.results.model.votecount.CandidateVote;
 
 /**
  * Created by domas on 3/7/17.
  */
-public class DistrictSmResultSummaryDTO extends DistrictResultSummaryDTO{
+public class DistrictSmResultSummaryDTO extends DistrictResultSummaryDTO {
 
     private CandidateShortDTO topCandidate;
     private Long votesForTopCandidate;

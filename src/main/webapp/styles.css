@@ -309,6 +309,10 @@ form div.form-group.browse-button-area, form div.form-group.upload-button-area {
     top: -25%;
 }
 
+.remove-representative-tiny {
+    cursor: pointer;
+}
+
 #unit-header {
     display: table;
     width: 100%;
@@ -427,6 +431,11 @@ form div.form-group.browse-button-area, form div.form-group.upload-button-area {
 }
 
 .btn.btn-default.btn-sm.floaters-right {
+    float: right;
+    margin-right: 15px;
+}
+
+.btn.btn-default.btn-xs.floaters-right {
     float: right;
     margin-right: 15px;
 }
@@ -803,4 +812,34 @@ h3, h4 {
     font-size: 0.9em;
     text-align: center;
     margin: 10px 0;
+}
+
+
+
+/* CHARTS */
+
+.bar {
+  fill: steelblue;
+  fill-opacity: .7;
+}
+
+.axis.x text {
+    font: 14px sans-serif;
+}
+
+.axis.y text {
+    font: 16px sans-serif;
+}
+
+.axis.y > path.domain {
+    display: none;
+}
+
+.hidden {
+    display: none;
+}
+
+svg {
+    /*background: gray;*/
+    width: 100%;
 }

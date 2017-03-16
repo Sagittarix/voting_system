@@ -800,7 +800,16 @@ h3, h4 {
 }
 
 .h4-election {
-    margin-bottom: 20px;
+    margin: 40px 0px 20px 0px;
+}
+
+.table.table-bordered {
+    width: 60%;
+    margin-left: 20%;
+}
+
+.lefters {
+    margin-left: 20px;
 }
 
 .small-p {

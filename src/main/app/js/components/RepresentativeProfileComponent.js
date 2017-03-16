@@ -5,7 +5,6 @@ var RepresentativeProfileComponent = React.createClass({
         
     }, 
     render: function() {
-        console.log("PROFILIS")
         return (
             <div className="row">
                 <div className="col-sm-3">

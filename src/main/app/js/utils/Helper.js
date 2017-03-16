@@ -73,13 +73,13 @@ var Helpers = {
             let aa = a.props.unit.name;
             let bb = b.props.unit.name;
 
-            return aa.localeCompare(bb);
-            // if (aa > bb) {
-            //     return 1;
-            // } else if (aa < bb) {
-            //     return -1;
-            // }
-            // return 0;
+            //return aa.localeCompare(bb);
+            if (aa > bb) {
+                return 1;
+            } else if (aa < bb) {
+                return -1;
+            }
+            return 0;
         });
         return (ascending) ? collection : collection.reverse();
     },
@@ -96,13 +96,13 @@ var Helpers = {
                 bb = b.props.unit.county.name;
             }
 
-            return aa.localeCompare(bb);
-            // if (aa > bb) {
-            //     return 1;
-            // } else if (aa < bb) {
-            //     return -1;
-            // }
-            // return 0;
+            //return aa.localeCompare(bb);
+            if (aa > bb) {
+                return 1;
+            } else if (aa < bb) {
+                return -1;
+            }
+            return 0;
         });
 
         if (isSortingByName) {

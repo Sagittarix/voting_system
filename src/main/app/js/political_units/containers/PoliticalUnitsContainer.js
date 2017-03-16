@@ -37,16 +37,6 @@ var PoliticalUnitsContainer = React.createClass({
                     deleteCandidates={this.deleteCandidates}
                     updateParties={this.updateParties}
                 />
-
-
-                // <PartyDisplayContainer
-                //     key={idx}
-                //     index={idx}
-                //     party={p}
-                //     delete={this.deleteParty}
-                //     deleteCandidates={this.deleteCandidates}
-                //     updateParties={this.updateParties}
-                // />
             );
         });
         return parties;

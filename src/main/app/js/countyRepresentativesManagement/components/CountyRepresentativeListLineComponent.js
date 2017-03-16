@@ -18,7 +18,6 @@ var CountyRepresentativeListLineComponent = React.createClass ({
         this.props.onDeleteRepresentative(this.props.unit.id, this.props.index);
     },
     popupTruncated(title, clazz) {
-        // console.log(clazz);
         if (title.length > truncLength) {
             $("." + clazz).popover({ trigger: "click" })
         }

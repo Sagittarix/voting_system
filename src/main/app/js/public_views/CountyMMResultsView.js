@@ -24,7 +24,7 @@ var CountyMMResultsView = React.createClass({
         axios.get(
             spring.localHost
                 .concat('/api/results/county/')
-                .concat(id + '')                       // blogai imamas id   //TODO fix needed
+                .concat(id + '')
                 .concat('/multi-mandate')
         )
             .then(function(resp) {
@@ -50,10 +50,10 @@ var CountyMMResultsView = React.createClass({
 
         this.state.collection.votes.forEach(v => {
             const partyName = <Link to="">{v.party.name}</Link>;
-            const percFromValid = v.voteCount / (this.state.collection.validBallots * 1.0) * 100;
-            const percFromTotal = v.voteCount / (this.state.collection.totalBallots * 1.0) * 100;
-            totalPercentageOfTotalBallots += percFromTotal;
-            totalPercentageOfValidBallots += percFromValid;
+            const percFromValid = (isNaN(v.voteCount / (this.state.collection.validBallots * 1.0) * 100)) ? 0 : (v.voteCount / (this.state.collection.validBallots * 1.0) * 100);
+            const percFromTotal = (isNaN(v.voteCount / (this.state.collection.totalBallots * 1.0) * 100)) ? 0 : (v.voteCount / (this.state.collection.totalBallots * 1.0) * 100);
+            totalPercentageOfTotalBallots += (isNaN(percFromTotal)) ? 0 : percFromTotal;
+            totalPercentageOfValidBallots += (isNaN(percFromValid)) ? 0 : percFromValid;
 
             rows.push(
                 {
@@ -133,7 +133,7 @@ var CountyMMResultsView = React.createClass({
             <div>
                 <h4 className="h4-election">2017 m. kovo 16 d. Lietuvos Respublikos Seimo rinkimai</h4>
                 {/*<h3>{this.getDistrictName()} apygarda</h3>*/}
-                <h3>KAZKAIP REIKIA APYGARDA GAUTI?</h3>
+                {/*<h3>KAZKAIP REIKIA APYGARDA GAUTI?</h3>*/}
                 <h4 className="h4-election">apylinkė: {this.getCountyName()}</h4>
                 <div className="row narrowed" style={{ margin: '30px 0px 30px 0px' }}>
                     <div className="col-md-4"></div>

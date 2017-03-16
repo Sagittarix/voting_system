@@ -29,9 +29,6 @@ function SearchCandidateCardComponent(props) {
                             <small id={"candidate-info-tab-party-dependency-" + props.candidate.personId} ><img src="app/imgs/political_party.png" style={ styles.image }/>&nbsp;&nbsp;<b>Partija:</b>&nbsp; {partyName}</small>
                         </p>
                         <p>
-                            <small id={"candidate-info-tab-personal-id-" + props.candidate.personId} ><img src="app/imgs/fingerprint.png" style={ styles.image }/>&nbsp;&nbsp;<b>A/K:</b>&nbsp; {props.candidate.personId}</small>
-                        </p>
-                        <p>
                             <small id={"candidate-info-tab-birth-day-" + props.candidate.personId} ><img src="app/imgs/cupcake.png" style={ styles.image }/>&nbsp;&nbsp;<b>Gimimo data:</b>&nbsp; {props.candidate.birthDate}</small>
                         </p>
                         <p>
@@ -39,20 +36,6 @@ function SearchCandidateCardComponent(props) {
                                 <img src="app/imgs/books.png" style={ styles.image }/>&nbsp;&nbsp;
                                 <b>Apie:</b>&nbsp;<br />
                                 <span style={ styles.marginLeft }>{props.candidate.description}</span>
-                            </small>
-                        </p>
-                        <br />
-                        <p>
-                            <small>
-                                <b style={{color: "red"}}>/funkcionalumo nėra/</b><br />
-                                Užimta vieta vienmandačiuose - <span id={"candidate-info-tab-single-mandate-position-" + props.candidate.personId} >10</span><br />
-                                <b id={"candidate-info-tab-single-elected-" + props.candidate.personId}>Išrinktas</b>
-                            </small>
-                        </p>
-                        <p>
-                            <small>
-                                Užimta vieta daugiamandačiuose - <span id={"candidate-info-tab-multi-mandate-position-" + props.candidate.personId} >10</span><br />
-                                <b id={"candidate-info-tab-multi-elected-" + props.candidate.personId}>Neišrinktas</b>
                             </small>
                         </p>
                     </div>

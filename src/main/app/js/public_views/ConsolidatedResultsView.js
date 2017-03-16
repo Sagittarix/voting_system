@@ -21,7 +21,6 @@ var ConsolidatedResultsView = React.createClass({
                     results: response.data,
                     chartData: DataProcessor.cleanConsolidatedResultsDataForChart(response.data.partyMandates),
                 });
-                console.log(response.data)
             }.bind(this))
             .catch(err => {
                 console.log(err);
@@ -30,26 +29,28 @@ var ConsolidatedResultsView = React.createClass({
     generatePartyTable() {
         let results = this.state.results
         return (
-            <table className="table table-bordered">
-                <thead>
+            <div>
+                <table className="table table-bordered">
+                    <thead>
                     <tr>
-                        <th>Partija</th>
-                        <th>Laimėti mandatai</th>
+                        <th className="lefters">Partija</th>
+                        <th className="lefters">Laimėti mandatai</th>
                     </tr>
-                </thead>
-                <tbody>
+                    </thead>
+                    <tbody>
                     { results &&
-                        results.partyMandates.map(function(result, idx) {
-                            return (
-                                <tr key={idx + '-' + result.party.name}>
-                                    <td>{result.party.name}</td>
-                                    <td>{result.mandates}</td>
-                                </tr>
-                            )
-                        })
+                    results.partyMandates.map(function(result, idx) {
+                        return (
+                            <tr key={idx + '-' + result.party.name}>
+                                <td className='lefters'>{result.party.name}</td>
+                                <td>{result.mandates}</td>
+                            </tr>
+                        )
+                    })
                     }
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
         )
     },
     generateElecteesTable() {
@@ -84,18 +85,22 @@ var ConsolidatedResultsView = React.createClass({
             electedCandidatesTable
 
         if (results) {
-            heading = <div>
-                            <p>Iš viso rinkimuose dalyvauja {results.totalDistricts} apygardų.</p>
-                            <p>Vienamdačių apygardų rezultatai gauti iš {results.completedSmResults} apygardų.</p>
-                            <p>Daugiamandačių apygardų rezultatai gauti iš {results.completedMmResults} apygardų.</p>
-                      </div>
+            heading =
+                <div className="row narrowed" style={{ margin: '30px 0px 30px 0px' }}>
+                    <div className="col-md-4"></div>
+                    <div className="col-md-5">
+                        <p className="small-p">Iš viso rinkimuose dalyvauja - <strong>{results.totalDistricts}</strong> apygardų.</p>
+                        <p className="small-p">Vienamdačių apygardų rezultatai gauti iš - <strong>{results.completedSmResults}</strong> apygardų.</p>
+                        <p className="small-p">Daugiamandačių apygardų rezultatai gauti iš - <strong>{results.completedMmResults}</strong> apygardų.</p>
+                    </div>
+                </div>
             partyTable = this.generatePartyTable()
             electedCandidatesTable = this.generateElecteesTable()
         }
 
         return (
             <div>
-                <h2> Seimo rinkimų rezultatai </h2>
+                <h4 className="h4-election">2017 m. kovo 16 d. Lietuvos Respublikos Seimo rinkimai</h4>
                 { heading }
                 <h3> Partijų laimėti mandatai: </h3>
                 {this.state.chartData && 
@@ -107,8 +112,7 @@ var ConsolidatedResultsView = React.createClass({
                 }
                 { partyTable }
                 <h3> Į seimą išrinkti kandidatai: </h3>
-                { electedCandidatesTable }
-
+                <div>{ electedCandidatesTable }</div>
             </div>
         );
     }

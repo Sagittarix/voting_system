@@ -28,7 +28,6 @@ var AllSMresultView = React.createClass({
                     validBallots: calcs[6],
                     percentValidBallots: calcs[7]
                 });
-                console.log(resp.data)
             }.bind(this))
             .catch(err => {
                 console.log(err);
@@ -197,7 +196,6 @@ var AllSMresultView = React.createClass({
         }
     },
     render() {
-        // console.log(this.state.collection.length);
         var rows = (this.state.collection.length > 0) ? this.state.collection.length + 1 : 5;
         return (
             <div>

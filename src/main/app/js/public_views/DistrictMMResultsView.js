@@ -24,7 +24,7 @@ var DistrictMMResultsView = React.createClass({
         axios.get(
             spring.localHost
                 .concat('/api/results/district/')
-                .concat(id + '')                       // blogai imamas id  //TODO fix needed
+                .concat(id + '')
                 .concat('/multi-mandate')
         )
             .then(function(resp) {
@@ -36,7 +36,6 @@ var DistrictMMResultsView = React.createClass({
                         valid: resp.data.validBallots
                     }
                 });
-                console.log(resp.data)
             }.bind(this))
             .catch(err => {
                 console.log(err);
@@ -80,10 +79,7 @@ var DistrictMMResultsView = React.createClass({
         return rows;
     },
     prepareCountiesData() {
-        //TODO code needed
         if (Object.keys(this.state.collection).length == 0) return [];
-        console.log(this.state.collection);
-        console.log("test");
         var rows = [];
         let totalVoterCount = 0;
         let grandTotalBallots = 0;
@@ -169,16 +165,14 @@ var DistrictMMResultsView = React.createClass({
     },
 
     getCountyColumns() {
-
         let data = this.state.collection;
-        console.log(data);
         let summary = {
             county: 'Iš viso',
             voterCount: data.voterCount,
             totalBallotsAndPercent: data.totalBallots,
             spoiledBallotsAndPercent: data.spoiledBallots,
             validBallotsAndPercent: data.validBallots,
-        }
+        };
 
         return (
             [
@@ -253,7 +247,6 @@ var DistrictMMResultsView = React.createClass({
         });
     },
     render() {
-        console.log(this.state.collection);
         return (
             <div>
                 <h4 className="h4-election">2017 m. kovo 16 d. Lietuvos Respublikos Seimo rinkimai</h4>

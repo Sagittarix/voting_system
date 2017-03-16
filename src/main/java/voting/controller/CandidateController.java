@@ -32,7 +32,7 @@ public class CandidateController {
                                                .collect(Collectors.toList());
     }
 
-    //@PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @GetMapping("{id}")
     public CandidateDTO getCandidate(@PathVariable Long id) {
         return new CandidateDTO(candidateService.getCandidate(id));

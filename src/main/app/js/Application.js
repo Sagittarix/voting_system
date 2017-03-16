@@ -26,11 +26,11 @@ var Application = React.createClass({
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
-    /*getInitialState() {
-        return ({ currentUser: {} });
-    },*/
     getInitialState() {
-        return ({ currentUser: representative });
+        return ({ currentUser: {} });
+    },
+    getInitialState() {
+        return ({ currentUser: {} });
     },
     getPrincipal() {
         const _this = this;
@@ -43,7 +43,7 @@ var Application = React.createClass({
             });
     },
     componentDidMount() {
-        //this.getPrincipal();
+        this.getPrincipal();
     },
     manageUser(command) {
         if (command === "LOGOUT") {

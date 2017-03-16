@@ -28,11 +28,11 @@ public class District {
 
     private Long voterCount = 0L;
 
-    //@LazyCollection(LazyCollectionOption.FALSE)
+    @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "district", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<County> counties = new ArrayList<>();
 
-    @LazyCollection(LazyCollectionOption.FALSE)
+    //@LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "district")
     private List<Candidate> candidates = new ArrayList<>();
 

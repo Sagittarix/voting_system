@@ -18,7 +18,7 @@ import java.util.stream.IntStream;
  * Created by domas on 1/11/17.
  */
 
-@Component
+//@Component
 public class DataPreloader implements CommandLineRunner {
 
     private static Random rand = new Random(0);

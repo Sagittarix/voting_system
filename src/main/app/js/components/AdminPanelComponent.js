@@ -16,14 +16,13 @@ var styles = {
 
 var AdminPanelComponent = React.createClass({
     getInitialState() {
-        //return ({ tagIds: this.setBackgroundsByLocation(), currentUser: this.props.currentUser, admin: false });
-        return ({ tagIds: this.setBackgroundsByLocation(), currentUser: this.props.currentUser, admin: true });
+        return ({ tagIds: this.setBackgroundsByLocation(), currentUser: this.props.currentUser, admin: false });
     },
     contextTypes: {
         router: React.PropTypes.object.isRequired
     },
     componentDidMount() {
-        /*const _this = this;
+        const _this = this;
         let fd = new FormData();
         fd.append("role", "ROLE_ADMIN");
         axios.post(spring.localHost.concat('/api/auth/role'), fd)
@@ -36,7 +35,7 @@ var AdminPanelComponent = React.createClass({
             })
             .catch(err => {
                 console.log(err);
-            });*/
+            });
     },
     componentWillReceiveProps(newProps) {
         let loggedOut = Object.keys(newProps.currentUser).length == 0;

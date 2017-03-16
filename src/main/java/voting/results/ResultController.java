@@ -1,6 +1,7 @@
 package voting.results;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import voting.dto.results.*;
@@ -84,7 +85,7 @@ public class ResultController {
         return new ConsolidatedResultsDTO(resultService.getConsolidatedResults());
     }
 
-    //@PreAuthorize("hasRole('ROLE_REPRESENTATIVE')")
+    @PreAuthorize("hasRole('ROLE_REPRESENTATIVE')")
     @PostMapping(path = "county/single-mandate")
     public CountySMResultDTO addCountySMResult(@Valid @RequestBody CountyResultData resultData, BindingResult result) {
         if (result.hasErrors()) {
@@ -93,7 +94,7 @@ public class ResultController {
         return new CountySMResultDTO(resultService.addCountySmResult(resultData));
     }
 
-    //@PreAuthorize("hasRole('ROLE_REPRESENTATIVE')")
+    @PreAuthorize("hasRole('ROLE_REPRESENTATIVE')")
     @PostMapping(path = "county/multi-mandate")
     public CountyMMResultDTO addCountyMMResult(@Valid @RequestBody CountyResultData resultData, BindingResult result) {
         if (result.hasErrors()) {
@@ -102,13 +103,13 @@ public class ResultController {
         return new CountyMMResultDTO(resultService.addCountyMmResult(resultData));
     }
 
-    //@PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping(path = "confirm")
     public void confirmCountyResult(@RequestParam Long resultId) {
         resultService.confirmCountyResult(resultId);
     }
 
-    //@PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping(path = "{id}")
     public void deleteCountyResult(@PathVariable(name = "id") Long resultId) {
         resultService.deleteCountyResult(resultId);

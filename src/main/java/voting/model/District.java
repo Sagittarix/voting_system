@@ -32,6 +32,7 @@ public class District {
     @OneToMany(mappedBy = "district", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<County> counties = new ArrayList<>();
 
+    //@LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "district")
     private List<Candidate> candidates = new ArrayList<>();
 

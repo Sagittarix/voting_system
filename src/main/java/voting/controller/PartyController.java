@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping(path="/api/party")
-//@PreAuthorize("hasRole('ROLE_ADMIN')")
+@PreAuthorize("hasRole('ROLE_ADMIN')")
 public class PartyController {
 
     private final PartyService partyService;
@@ -48,7 +48,7 @@ public class PartyController {
         this.partyService = partyService;
     }
 
-    //@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_REPRESENTATIVE')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_REPRESENTATIVE')")
     @GetMapping
     public List<PartyDTO> getParties() {
         return partyService.getParties().stream().map(p -> new PartyDTO(p)).collect(Collectors.toList());

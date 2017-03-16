@@ -6,8 +6,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import voting.model.*;
 import voting.repository.*;
-import voting.results.model.result.CountySMResult;
 
+import javax.persistence.EntityManager;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -18,7 +18,7 @@ import java.util.stream.IntStream;
  * Created by domas on 1/11/17.
  */
 
-@Component
+//@Component
 public class DataPreloader implements CommandLineRunner {
 
     private static Random rand = new Random(0);
@@ -29,160 +29,190 @@ public class DataPreloader implements CommandLineRunner {
     private final PartyRepository partyRepository;
     private final CandidateRepository candidateRepository;
     private final CountyRepository countyRepository;
+    private final EntityManager em;
 
     @Autowired
     public DataPreloader(CountyRepRepository countyRepRepository,
                          DistrictRepository districtRepository,
                          PartyRepository partyRepository,
                          CandidateRepository candidateRepository,
-                         AdminRepository adminRepository, CountyRepository countyRepository) {
+                         AdminRepository adminRepository, CountyRepository countyRepository, EntityManager em) {
         this.countyRepRepository = countyRepRepository;
         this.districtRepository = districtRepository;
         this.partyRepository = partyRepository;
         this.candidateRepository = candidateRepository;
         this.adminRepRepository = adminRepository;
         this.countyRepository = countyRepository;
+        this.em = em;
     }
 
     @Override
     public void run(String... strings) throws Exception {
-        loadStressData();
-        System.out.println("=======================");
+        //loadStressData();
+        /*System.out.println("=======================");
         System.out.println("STRESS LOADED");
-        System.out.println("=======================");
+        System.out.println("=======================");*/
 
         District district1 = new District("Vilnius");
         District district2 = new District("Kaunas");
         District district3 = new District("Klaipėda");
+        District district4 = new District("Alytus");
+        District district5 = new District("Šiauliai");
+        District district6 = new District("Panevėžys");
+        District district7 = new District("Tauragės");
+        District district8 = new District("Plungės");
+        District district9 = new District("Kretingos-Palangos");
+        District district10 = new District("Kuršo");
 
         County county1 = new County("Senamiestis", 3000L, faker.address().streetAddress());
         County county2 = new County("Naujamiestis", 3000L, faker.address().streetAddress());
         County county3 = new County("Pašilaičiai", 3000L, faker.address().streetAddress());
         County county4 = new County("Senamiestis", 3000L, faker.address().streetAddress());
         County county5 = new County("Šilainiai", 3000L, faker.address().streetAddress());
-        County county6 = new County("Sausainiai", 10000L, faker.address().streetAddress());
+        County county6 = new County("Barstyčių", 10000L, faker.address().streetAddress());
+        County county7 = new County("Gėsalų", 3000L, faker.address().streetAddress());
+        County county8 = new County("Kūlupėnų", 3000L, faker.address().streetAddress());
+        County county9 = new County("Laisvės", 3000L, faker.address().streetAddress());
+        County county10 = new County("Lazdininkų", 3000L, faker.address().streetAddress());
+        County county11 = new County("Leliūnų", 3000L, faker.address().streetAddress());
+        County county12 = new County("Luknės", 10000L, faker.address().streetAddress());
+        County county13 = new County("Mosėdžio", 3000L, faker.address().streetAddress());
+        County county14 = new County("Nasrėnų", 3000L, faker.address().streetAddress());
+        County county15 = new County("Pašilės", 3000L, faker.address().streetAddress());
+        County county16 = new County("Rubulių", 3000L, faker.address().streetAddress());
+        County county17 = new County("Šačių", 3000L, faker.address().streetAddress());
+        County county18 = new County("Skuodo", 10000L, faker.address().streetAddress());
+        County county19 = new County("Šliktinės", 3000L, faker.address().streetAddress());
+        County county20 = new County("Trumplaukės", 3000L, faker.address().streetAddress());
+        County county21 = new County("Vilniaus", 3000L, faker.address().streetAddress());
+        County county22 = new County("Ylakių", 3000L, faker.address().streetAddress());
+        County county23 = new County("Žvainių", 3000L, faker.address().streetAddress());
+        County county24 = new County("Gabijos", 10000L, faker.address().streetAddress());
+        County county25 = new County("Kęstučio", 3000L, faker.address().streetAddress());
+        County county26 = new County("Leckavos", 3000L, faker.address().streetAddress());
+        County county27 = new County("Pavasario", 3000L, faker.address().streetAddress());
+        County county28 = new County("Reivyčių", 3000L, faker.address().streetAddress());
+        County county29 = new County("Senamieščio", 3000L, faker.address().streetAddress());
+        County county30 = new County("Sodų", 10000L, faker.address().streetAddress());
 
         List<County> countyList1 = new ArrayList<County>(Arrays.asList(county1, county2, county3));
         List<County> countyList2 = new ArrayList<County>(Arrays.asList(county4, county5));
-        List<County> countyList3 = new ArrayList<County>(Arrays.asList(county6));
+        List<County> countyList3 = new ArrayList<County>(Arrays.asList(county6, county27, county28, county29, county30));
+        List<County> countyList4 = new ArrayList<County>(Arrays.asList(county7, county8));
+        List<County> countyList5 = new ArrayList<County>(Arrays.asList(county9, county10));
+        List<County> countyList6 = new ArrayList<County>(Arrays.asList(county11, county24, county25, county26));
+        List<County> countyList7 = new ArrayList<County>(Arrays.asList(county12, county13, county14, county19));
+        List<County> countyList8 = new ArrayList<County>(Arrays.asList(county15, county16));
+        List<County> countyList9 = new ArrayList<County>(Arrays.asList(county17, county18));
+        List<County> countyList10 = new ArrayList<County>(Arrays.asList(county21, county22, county20, county23));
 
         countyList1.forEach(district1::addCounty);
         countyList2.forEach(district2::addCounty);
         countyList3.forEach(district3::addCounty);
+        countyList4.forEach(district4::addCounty);
+        countyList5.forEach(district5::addCounty);
+        countyList6.forEach(district6::addCounty);
+        countyList7.forEach(district7::addCounty);
+        countyList8.forEach(district8::addCounty);
+        countyList9.forEach(district9::addCounty);
+        countyList10.forEach(district10::addCounty);
 
-        districtRepository.save(district1);
-        districtRepository.save(district2);
-        districtRepository.save(district3);
+        List<District> districts = new ArrayList<District>(Arrays.asList(
+                new District[]{
+                        district1,
+                        district2,
+                        district3,
+                        district4,
+                        district5,
+                        district6,
+                        district7,
+                        district8,
+                        district9,
+                        district10
+                }
+        ));
 
-        /*Candidate cand1 = new Candidate(faker.name().firstName(), faker.name().lastName(), generateRandomPersonId(), faker.shakespeare().hamletQuote());
-        Candidate cand2 = new Candidate(faker.name().firstName(), faker.name().lastName(), generateRandomPersonId(), faker.shakespeare().hamletQuote());
-        Candidate cand3 = new Candidate(faker.name().firstName(), faker.name().lastName(), generateRandomPersonId(), faker.shakespeare().hamletQuote());
-        Candidate cand4 = new Candidate(faker.name().firstName(), faker.name().lastName(), generateRandomPersonId(), faker.shakespeare().hamletQuote());
-        Candidate cand5 = new Candidate(faker.name().firstName(), faker.name().lastName(), generateRandomPersonId(), faker.shakespeare().hamletQuote());
-        Candidate cand6 = new Candidate(faker.name().firstName(), faker.name().lastName(), generateRandomPersonId(), faker.shakespeare().hamletQuote());
-        Candidate cand7 = new Candidate(faker.name().firstName(), faker.name().lastName(), generateRandomPersonId(), faker.shakespeare().hamletQuote());
-        Candidate cand8 = new Candidate(faker.name().firstName(), faker.name().lastName(), generateRandomPersonId(), faker.shakespeare().hamletQuote());
-        Candidate cand9 = new Candidate(faker.name().firstName(), faker.name().lastName(), generateRandomPersonId(), faker.shakespeare().hamletQuote());
-        Candidate cand10 = new Candidate(faker.name().firstName(), faker.name().lastName(), generateRandomPersonId(), faker.shakespeare().hamletQuote());
-        Candidate cand11 = new Candidate(faker.name().firstName(), faker.name().lastName(), generateRandomPersonId(), faker.shakespeare().hamletQuote());
-        Candidate cand12 = new Candidate(faker.name().firstName(), faker.name().lastName(), generateRandomPersonId(), faker.shakespeare().hamletQuote());
-        Candidate cand13 = new Candidate(faker.name().firstName(), faker.name().lastName(), generateRandomPersonId(), faker.shakespeare().hamletQuote());
-        Candidate cand14 = new Candidate(faker.name().firstName(), faker.name().lastName(), generateRandomPersonId(), faker.shakespeare().hamletQuote());
-        Candidate cand15 = new Candidate(faker.name().firstName(), faker.name().lastName(), generateRandomPersonId(), faker.shakespeare().hamletQuote());
-        Candidate cand16 = new Candidate(faker.name().firstName(), faker.name().lastName(), generateRandomPersonId(), faker.shakespeare().hamletQuote());
-        Candidate cand17 = new Candidate(faker.name().firstName(), faker.name().lastName(), generateRandomPersonId(), faker.shakespeare().hamletQuote());
-        Candidate cand18 = new Candidate(faker.name().firstName(), faker.name().lastName(), generateRandomPersonId(), faker.shakespeare().hamletQuote());
+        districtRepository.save(districts);
 
-        List<Candidate> candidateList1 = new ArrayList<>(Arrays.asList(cand1, cand6, cand16));
-        List<Candidate> candidateList2 = new ArrayList<>(Arrays.asList(cand2, cand7, cand17));
-        List<Candidate> candidateList3 = new ArrayList<>(Arrays.asList(cand3, cand8, cand18));*/
+        List<County> counties = new ArrayList<>(countyList1);
+        counties.addAll(countyList2);
+        counties.addAll(countyList3);
+        counties.addAll(countyList4);
+        counties.addAll(countyList5);
+        counties.addAll(countyList6);
+        counties.addAll(countyList7);
+        counties.addAll(countyList8);
+        counties.addAll(countyList9);
+        counties.addAll(countyList10);
 
-        /*party1.addCandidate(cand1);
-        party1.addCandidate(cand2);
-        party1.addCandidate(cand3);
-        party1.addCandidate(cand4);
-        party1.addCandidate(cand5);
-        party2.addCandidate(cand6);
-        party2.addCandidate(cand7);
-        party2.addCandidate(cand8);
-        party2.addCandidate(cand9);
-        party2.addCandidate(cand10);
-        party3.addCandidate(cand11);
-        party3.addCandidate(cand12);
-        party3.addCandidate(cand13);
-        party3.addCandidate(cand14);
-        party3.addCandidate(cand15);*/
+        List<CountyRep> reps = new ArrayList<>();
+        IntStream.range(0, 29).forEach(i -> {
+            String _1name1 = faker.name().firstName();
+            String _2name1 = faker.name().firstName();
+            reps.add(new CountyRep(
+                    _1name1,
+                    _2name1,
+                    faker.internet().emailAddress(_1name1.toLowerCase().concat(".").concat(_2name1.toLowerCase())),
+                    "pass",
+                    counties.get(i),
+                    new String[]{"ROLE_REPRESENTATIVE"}
+            ));
+        });
 
-        /*candidateList1.forEach(district1::addCandidate);
-        candidateList2.forEach(district2::addCandidate);
-        candidateList3.forEach(district3::addCandidate);*/
-
-        /*candidateRepository.save(Arrays.asList(cand1, cand2, cand3, cand4, cand5, cand6, cand7, cand8, cand9, cand10,
-                cand11, cand12, cand13, cand14, cand15, cand16, cand17, cand18));*/
-
-        String _1name1 = faker.name().firstName();
-        String _2name1 = faker.name().firstName();
-        CountyRep cr1 = new CountyRep(
-                _1name1,
-                _2name1,
-                faker.internet().emailAddress(_1name1.toLowerCase().concat(".").concat(_2name1.toLowerCase())),
-                "passpass",
-                county1,
-                new String[]{"ROLE_REPRESENTATIVE"}
-        );
-        String _1name2 = faker.name().firstName();
-        String _2name2 = faker.name().firstName();
-        CountyRep cr2 = new CountyRep(
-                _1name2,
-                _2name2,
-                faker.internet().emailAddress(_1name2.toLowerCase().concat(".").concat(_2name2.toLowerCase())),
-                "passpass",
-                county1,
-                new String[]{"ROLE_REPRESENTATIVE"}
-        );
-        String _1name3 = faker.name().firstName();
-        String _2name3 = faker.name().firstName();
-        CountyRep cr3 = new CountyRep(
-                _1name3,
-                _2name3,
-                faker.internet().emailAddress(_1name3.toLowerCase().concat(".").concat(_2name3.toLowerCase())),
-                "passpass",
-                county1,
-                new String[]{"ROLE_REPRESENTATIVE"}
-        );
-        String _1name4 = faker.name().firstName();
-        String _2name4 = faker.name().firstName();
-        CountyRep cr4 = new CountyRep(
-                _1name4,
-                _2name4,
-                faker.internet().emailAddress(_1name4.toLowerCase().concat(".").concat(_2name4.toLowerCase())),
-                "passpass",
-                county1,
-                new String[]{"ROLE_REPRESENTATIVE"}
-        );
-        String _1name5 = faker.name().firstName();
-        String _2name5 = faker.name().firstName();
-        CountyRep cr5 = new CountyRep(
-                _1name5,
-                _2name5,
-                faker.internet().emailAddress(_1name5.toLowerCase().concat(".").concat(_2name5.toLowerCase())),
-                "passpass",
-                county1,
-                new String[]{"ROLE_REPRESENTATIVE"}
-        );
-        CountyRep cr6 = new CountyRep(
-                "Faker",
-                "Faaker",
-                faker.internet().emailAddress("faker.faker"),
-                "faker",
-                county1,
-                new String[]{"ROLE_REPRESENTATIVE"}
+        reps.add(new CountyRep(
+                        "Faker",
+                        "Faker",
+                        faker.internet().emailAddress("faker.faker"),
+                        "faker",
+                        counties.get(counties.size()-1),
+                        new String[]{"ROLE_REPRESENTATIVE"}
+                )
         );
 
-        List<CountyRep> crs = new ArrayList<>(Arrays.asList(new CountyRep[]{cr1, cr2, cr3, cr4, cr5, cr6}));
-        countyRepRepository.save(crs);
+        countyRepRepository.save(reps);
         Admin admin = new Admin("Admin", "Admin", "admin@admin.lt", new String[]{"ROLE_ADMIN"});
         adminRepRepository.save(admin);
+
+        List<Party> parties = createParties();
+        List<Candidate> candidates = new ArrayList<>();
+
+        for (int i = 0; i < parties.size(); i++) {
+            for (int j = 0; j < 20; j++) {
+                Candidate c = new Candidate(
+                        faker.name().firstName(),
+                        faker.name().lastName(),
+                        generateRandomPersonId(),
+                        faker.shakespeare().hamletQuote()
+                );
+                candidates.add(c);
+                parties.get(i).addCandidate(c);
+            }
+        }
+
+        for (int i = 0; i < districts.size(); i++) {
+            for (int j = 0; j < 10; j++) {
+                Candidate c = new Candidate(
+                        faker.name().firstName(),
+                        faker.name().lastName(),
+                        generateRandomPersonId(),
+                        faker.shakespeare().hamletQuote()
+                );
+                Candidate cc = new Candidate(
+                        faker.name().firstName(),
+                        faker.name().lastName(),
+                        generateRandomPersonId(),
+                        faker.shakespeare().hamletQuote()
+                );
+                districts.get(i).addCandidate(cc);
+                districts.get(i).addCandidate(c);
+                parties.get(i).addCandidate(c);
+                candidates.add(cc);
+                candidates.add(c);
+            }
+        }
+
+        partyRepository.save(parties);
+        candidateRepository.save(candidates);
     }
 
     public static String generateRandomPersonId() {
@@ -365,42 +395,44 @@ public class DataPreloader implements CommandLineRunner {
         int delegates = randomizer.nextInt(parties.size()) + 1;
         districts.forEach(d -> {
            List<Party> randParties = getRandomParties(parties, delegates);
+
            randParties.forEach(p -> {
                List<Candidate> partyCandidates = p.getCandidates();
-               Candidate candidate = new Candidate(
-                       faker.name().firstName(),
-                       faker.name().lastName(),
-                       generateRandomPersonId(),
-                       faker.shakespeare().kingRichardIIIQuote(),
-                       (long) partyCandidates.size() + 1
+               Candidate candidate = candidateRepository.save(
+                       new Candidate(
+                           faker.name().firstName(),
+                           faker.name().lastName(),
+                           generateRandomPersonId(),
+                           faker.shakespeare().kingRichardIIIQuote(),
+                           (long) partyCandidates.size() + 1
+                       )
                );
-               partyCandidates.add(candidate);
+               p.addCandidate(candidate);
                d.addCandidate(candidate);
-               candidateRepository.save(candidate);
+
            });
            IntStream.range(0, delegates).forEach(i -> {
-               Candidate candidate = new Candidate(
+               Candidate candidate = candidateRepository.save(new Candidate(
                        faker.name().firstName(),
                        faker.name().lastName(),
                        generateRandomPersonId(),
                        faker.shakespeare().kingRichardIIIQuote()
-               );
+               ));
                d.addCandidate(candidate);
-               candidateRepository.save(candidate);
            });
         });
-        districtRepository.save(districts);
-        partyRepository.save(parties);
+        districts.forEach(d -> em.persist(em.merge(d)));
+        parties.forEach(p -> em.persist(em.merge(p)));
         System.out.println("=====================");
         System.out.println("SM candidates assigned");
 
-        List<County> counties = new ArrayList<>();
+        /*List<County> counties = new ArrayList<>();
         countyRepository.findAll().forEach(counties::add);
         counties.forEach(c -> {
             c.setSmResult(new CountySMResult());
         });
 
-        countyRepository.save(counties);
+        countyRepository.save(counties);*/
     }
 
     private List<Party> getRandomParties(List<Party> list, int num) {
@@ -411,15 +443,15 @@ public class DataPreloader implements CommandLineRunner {
     }
 
     private List<Party> createParties() {
-        Party party1 = new Party("Socialdemokratų partija");
-        Party party2 = new Party("Tvarka ir tesingumas");
+        Party party1 = new Party("Soc-demai");
+        Party party2 = new Party("TT");
         Party party3 = new Party("Liberalai");
-        Party party4 = new Party("Kovotojų už Lietuvą sąjunga");
-        Party party5 = new Party("Lietuvos žalioji partija");
-        Party party6 = new Party("Lietuvos reformų partija");
-        Party party7 = new Party("Žemaičių partija");
-        Party party8 = new Party("Lietuvos žmonių partija");
-        Party party9 = new Party("Lietuvos sąrašas");
+        Party party4 = new Party("Už Lietuvą");
+        Party party5 = new Party("Žalioji");
+        Party party6 = new Party("Reformų");
+        Party party7 = new Party("Žemaičių");
+        Party party8 = new Party("Žmonių");
+        Party party9 = new Party("LS");
         Party party10 = new Party("Frontas");
 
         List<Party> parties = new ArrayList<>(

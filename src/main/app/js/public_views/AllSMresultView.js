@@ -89,7 +89,7 @@ var AllSMresultView = React.createClass({
                     spoiledBallots: d.spoiledBallots + " (" + percentSpoiledBallots + "%)",
                     validBallots: d.validBallots + " (" + percentValidBallots + "%)",
                     topCandidate: topCandidate,
-                    votesForTopCandidate: d.votesForTopParty
+                    votesForTopCandidate: d.votesForTopCandidate
                 }
             );
         });
@@ -176,7 +176,7 @@ var AllSMresultView = React.createClass({
                 },
                 {
                     header: 'Balsai',
-                    accessor: 'votesForTopParty',
+                    accessor: 'votesForTopCandidate',
                     headerStyle: { fontWeight: 'bold' },
                     style: { textAlign: 'center' },
                     width: 50,

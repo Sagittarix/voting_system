@@ -45,7 +45,7 @@ var ChartContainer = React.createClass({
     render() {
 
         let data = this.state.data
-        let margin = {left: 170, right: 60, top: 30, bottom: 130}
+        let margin = {left: 200, right: 60, top: 30, bottom: 130}
         let width = this.state.w
         let height = data.length * 40 + margin.top + margin.bottom        
         
